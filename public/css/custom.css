@@ -1,0 +1,97 @@
+.ts-control, .ts-control input{
+    color: var(--dark) !important;
+}
+
+
+.table.table-bordered td, .table.table-bordered th, .table.table-bordered tr {
+    border: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color) !important;
+    border-left: 1px solid var(--border-color) !important;
+}
+
+table.dataTable input.form-control {
+    color: black;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: var(--color-lighter);
+    opacity: 1;
+}
+
+.dataTables_filter input[type="search"] {
+    padding-right: 24px;
+}
+
+
+
+ .btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .btn-loading {
+    color: transparent;
+  }
+  .btn-loading i{
+    visibility: hidden;
+  }
+
+  .btn-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin-top: -0.5rem;
+    margin-left: -0.5rem;
+    border: 2px solid transparent;
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+
+#toast-container.toast-top-right {
+    top: 72px !important;
+}
+
+
+
+.form-control.opt-required:focus {
+    border-color: #FA8B0C;
+    -webkit-box-shadow: 0 0 0 .25rem rgba(220, 195, 53, 0.25);
+    box-shadow: 0 0 0 .25rem rgba(220, 189, 53, 0.25);
+}
+
+.form-control.opt-required {
+    border-color: #FA8B0C;
+    padding-right: calc(1.5em + .75rem);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='4.5' stroke='%23FA8B0C' fill='none'/%3E%3Ctext x='6' y='8' text-anchor='middle' font-size='5' fill='%23FA8B0C' font-family='Arial' dy='-0.2'%3EA%3C/text%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right calc(.375em + .1875rem) center;
+    -webkit-background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+    background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+}
+html {
+    font-size: 14px; /* adjust to your preferred default */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    font-family: 'Jost', Arial, sans-serif;
+    line-height: 1.5;
+    font-size: 1rem;
+}
+
+input[type="text"], input[type="number"] {
+    min-width: 96px;
+}

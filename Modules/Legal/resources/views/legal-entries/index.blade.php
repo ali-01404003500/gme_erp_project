@@ -1,0 +1,189 @@
+@section('title', 'Legal Notice List')
+@section('description', 'Legal Notice List')
+@extends('layout.app')
+@section('content')
+    <div class="container-fluid">
+        <div class="social-dash-wrap">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-main">
+                        <div class="breadcrumb-action justify-content-center flex-wrap">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">{{ trans('Legal Notice list') }}
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
+                            @if (hasPermission('legal.legal-entries.create'))
+                                <a href="{{ route('legal.legal-entries.create', app()->getLocale()) }}"
+                                    class="btn px-20 btn-primary btn-sm">
+                                    <i class="las la-plus fs-16"></i>Add New
+                                </a>
+                            @endif
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" style="padding-bottom: 20px">
+                    <h4 class="text-capitalize breadcrumb-title">{{ trans('Legal Notice list') }}</h4>
+                </div>
+                <div class="col-md-12 my-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <form>
+                                <div class="col-sm-12">
+                                    <table class="table table-bordered">
+                                        <tr>
+                                         
+                                          
+                                            <td colspan="2">
+                                                <div class="input-daterange input-group">
+                                                    <input type="text" class="form-control datePicker" name="from"
+                                                        value="{{ request('from') }}" autocomplete="off"
+                                                        placeholder="From" />
+                                                    <span class="input-group-text">
+                                                        <i class="fa fa-exchange-alt"></i>
+                                                    </span>
+
+                                                    <input type="text" class="form-control datePicker" name="to"
+                                                        value="{{ request('to') }}" autocomplete="off" placeholder="To" />
+                                                </div>
+                                            </td>
+                                            <td colspan="3" class="text-right">
+                                                <div class="btn-group btn-corner">
+                                                    <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
+                                                        Search</button>
+                                                    <a href="{{ request()->url() }}" class="btn btn-xs btn-warning"><i
+                                                            class="fa fa-refresh"></i> Refresh</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                   
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $legalEntrys])'
+                                style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>
+                                            Legal ID
+                                        </th>
+                                        <th>
+                                            Customer Name
+                                        </th>
+                                        <th>
+                                            Convict Name
+                                        </th>
+                                        <th>
+                                            Complainant Name
+                                        </th>
+                                        <th>
+                                            Advocate Name
+                                        </th>
+                                       
+                                        <th>
+                                            Prepared By
+                                        </th>
+                                        <th>
+                                           Date
+                                        </th>
+                                        <th class="no-content">
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{-- @dd($legalEntrys) --}}
+                                    @foreach ($legalEntrys as $legal)
+                                        {{-- @dd($salesOrder->delivery) --}}
+                                        <tr>
+                                            <td class="text-center">{{ ($legalEntrys->currentPage() - 1) * $legalEntrys->perPage() + $loop->iteration  }}</td>
+
+                                            <td>
+                                                {{ $legal->legal_id }}
+                                            </td>
+                                             <td>
+                                                @foreach ($legal->convicts as $convict )
+                                                    {{ $convict->customer->company_name }},
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @foreach ($legal->convicts as $convict )
+                                                    {{ $convict->convict_name }},
+                                                @endforeach
+                                            </td>
+                                           
+                                           
+                                            <td>
+                                                {{ $legal->complainant->complainant_name }}
+                                            </td>
+                                            <td>
+                                                {{ $legal->advocate_name }}
+                                            </td>
+                                            <td>
+                                                {{ $legal->createdBy->name }}
+                                            </td>
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($legal->created_at)->format('d-m-Y') }}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group"
+                                                    aria-label="Small button group">
+
+
+                                                    @if (hasPermission('legal.legal-entries.update') )
+                                                        <a class="btn btn-outline-warning"
+                                                            href="{{ route('legal.legal-entries.edit', $legal->id) }}"><i
+                                                                class="far fa-edit"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    @if (hasPermission('legal.legal-entries.destroy') )
+                                                        <button type="button"
+                                                            data-action="{{ route('legal.legal-entries.destroy', $legal->id) }}"
+                                                            class="btn btn-outline-danger delete-confirm"><i
+                                                                class="far fa-trash-alt"></i>
+                                                        </button>
+                                                    @endif
+                                                    
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div class="d-none">
+                                <form class="delete-form" action="" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('page_scripts')
+    <script>
+        $(".datePicker").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        });
+    </script>
+@endSection

@@ -1,0 +1,342 @@
+@section('title', 'Delivery Detail')
+@section('description', 'Delivery Detail')
+@extends('layout.app')
+@section('content')
+    <div class="container-fluid">
+        <div class="social-dash-wrap">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-main">
+                        <div class="breadcrumb-action justify-content-center flex-wrap">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        {{ trans('menu.sales-order-delivery-view-menu-title') }}</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                }
+
+                .invoice-container {
+                    width: 80%;
+                    margin: 20px auto;
+                    padding: 100px;
+                    background-color: #fff;
+                    border: 1px solid #ccc;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+
+                .header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                }
+
+                .header img {
+                    max-width: 100px;
+                    margin-right: 20px;
+                }
+
+                .header h1 {
+                    margin: 0;
+                    font-size: 50px;
+                    font-weight: bold;
+                    color: rgb(0, 0, 187);
+                }
+
+                .header p {
+                    margin: 5px 0;
+                    font-size: 12px;
+                }
+
+                .title {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+
+                .title h2 {
+                    margin: 0;
+                    font-size: 20px;
+                    text-decoration: underline;
+                }
+
+                .delivery-info {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 20px;
+                }
+
+                .delivery-info .left,
+                .delivery-info .right {
+                    width: 70%;
+                    /* Adjusted width */
+                }
+
+                .delivery-info table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    border: none;
+                    /* Removed border color */
+                }
+
+                .delivery-info th,
+                .delivery-info td {
+                    padding: 5px;
+                    text-align: left;
+                    font-size: 14px;
+                }
+
+                .delivery-details {
+                    margin-bottom: 20px;
+                }
+
+                .delivery-details table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-bottom: 10px;
+                }
+
+                .delivery-details table,
+                .delivery-details th,
+                .delivery-details td {
+                    border: 1px solid #000;
+                }
+
+                .delivery-details th,
+                .delivery-details td {
+                    padding: 8px;
+                    text-align: left;
+                    font-size: 14px;
+                }
+
+                .delivery-details p {
+                    margin: 5px 0;
+                    font-size: 14px;
+                }
+
+                .delivery-details .totals {
+                    text-align: right;
+                }
+
+                .delivery-details .totals p {
+                    margin: 5px 0;
+                    font-size: 14px;
+                }
+
+                footer {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 20px;
+                    align-items: flex-end;
+                }
+            </style>
+            <div class="row">
+                <div class="d-flex justify-content-between align-items-center user-member__title mb-30">
+                    <h3 class="text-capitalize">{{ trans('menu.sales-order-delivery-view-menu-title') }}</h3>
+                    <div class="row">
+                        <a href="{{ route('sales.deliveries.index') }}"
+                            class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"
+                            style="margin-right: 5px;">
+                            <i class="fa fa-list"></i> List</a>
+                        <a href="{{ route('sales.deliveries.show', $delivery->id) }}?export=pdf" target="_blank"
+                            class="btn btn-primary ml-auto btn-sm">PDF</a>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="header">
+                                @php
+                                    $company_info = DB::table('company_infos')->first();
+                                @endphp
+                                <img class="header-img" src="{{ $company_info->company_logo }}" alt="Company Logo">
+                                <div>
+                                    <table class="content-table" style="border: none;">
+                                        <tr>
+                                            <td class="com-info" style="border: none; padding-top: 20px;">
+                                                <div class="com">
+                                                    <div style="margin-right: 160px;line-height: 0.8;">
+                                                        <h1
+                                                            style="color: rgb(13, 13, 92); font-size: 21px!important;margin-left: 45px;">
+                                                            {{ $company_info->company_name }}</h1>
+                                                        <p style="font-size: 8px!important; color:black; text-align:center">
+                                                            {{ $company_info->company_bio }}</p>
+                                                        <p style="font-size: 8px!important; color:black; text-align:center">
+                                                            {{ $company_info->company_address }}</p>
+                                                        <p style="font-size: 8px!important; color:black; text-align:center">
+                                                            Hotline : {{ $company_info->company_phone }}</p>
+                                                        <p style="font-size: 8px!important; color:black; text-align:center">
+                                                            e-mail : {{ $company_info->company_email }} web:
+                                                            {{ $company_info->website }}</p>
+                                                    </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <section class="title">
+                                <h2>Delivery Invoice Bill</h2>
+                            </section>
+
+                            <section class="delivery-info">
+                                <div class="left">
+                                    <table>
+                                        <tr>
+                                            <th style="width:150px;">Invoice No</th>
+                                            <td>:</td>
+                                            <th>{{ $source->invoice_id ?? $source->id }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:150px;">Name</th>
+                                            <td>:</td>
+                                            <th>{{ $source->customer->company_name }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:150px;">Address</th>
+                                            <td>:</td>
+                                            <th>{{ optional($source->customer->area)->area ?? $source->shipment?->address }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:150px;">Phone</th>
+                                            <td>:</td>
+                                            <th>{{ $source->shipment?->contact_person_number ?? $source->customer?->phone }}</th>
+                                        </tr>
+                                         <tr>
+                                             <th>Arranged By</th>
+                                             <td>:</td>
+                                             <td>
+                                                 @if($delivery->arranged_by)
+                                                     {{ $delivery->arrangedBy->full_name ?? '' }}
+                                                 @else
+                                                     {{ $delivery->createdBy->name ?? '' }}
+                                                 @endif
+                                             </td>
+                                         </tr>
+                                    </table>
+                                </div>
+                                <div class="right">
+                                    <table>
+                                        <tr>
+                                            <th>Date</th>
+                                            <td>:</td>
+                                            <td>{{ $source->invoice_date }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Time</th>
+                                            <td>:</td>
+                                            <td>{{ $delivery->created_at->format('h:i A') ?? '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Sold By</th>
+                                            <td>:</td>
+                                            <td>{{ $source->createdBy->name ?? $source->created_by ?? '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Delivery No</th>
+                                            <td>:</td>
+                                            <td>{{ $delivery->delivery_no ?? '' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Carton No</th>
+                                            <td>:</td>
+                                            <td>{{ $delivery->carton_no ?? '' }}</td>
+                                        </tr>
+                                       
+                                        <tr>
+                                            <th>Checked By</th>
+                                            <td>:</td>
+                                            <td>
+                                                @if($delivery->checked_by)
+                                                    {{ $delivery->checkedBy->full_name ?? '' }}
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </section>
+
+                            <section class="delivery-details">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Model</th>
+                                            <th>Sales Quantity</th>
+                                            <th>Remaining Quantity</th>
+                                            <th>Delivered Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($source->details as $key => $detail)
+                                            @php
+                                                $deliveredQty = $previousDeliveries
+                                                    ->flatMap(function ($delivery) {
+                                                        return $delivery->deliveryDetails;
+                                                    })
+                                                    ->where('product_id', $detail->product_id)
+                                                    ->sum('quantity');
+
+                                                $remainingQty = $detail->quantity - $deliveredQty;
+                                            @endphp
+                                            <tr>
+                                                <td>{{ $detail->product->name }}</td>
+                                                <td>{{ $detail->product->model }}</td>
+                                                <td>{{ numberFormat($detail->quantity) }}</td>
+                                                <td>{{ numberFormat($remainingQty) }}</td>
+                                                <td>{{ numberFormat($detail->quantity) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </section>
+
+                         
+                            
+                            <div class="row">
+                                <p><strong>Description :</strong> {{ $delivery->description ?? '' }}</p>
+                                @if($delivery->file_uploads)
+                                    <p><strong>Files :</strong>
+                                        @foreach(json_decode($delivery->file_uploads) as $file)
+                                            <a href="{{ asset('storage/' . $file) }}" target="_blank">{{ basename($file) }}</a>
+                                            @if(!$loop->last), @endif
+                                        @endforeach
+                                    </p>
+                                @endif
+                            </div>
+
+                            <footer style="margin-top: 100px">
+                                <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 320px;">
+                                    @include('partials._seek_sign', [
+                                        'model' => $delivery,
+                                        'field' => 'signature',
+                                    ])
+                                    <p class="text-center mt-2 mb-0 font-weight-bold">Receiver Signature</p>
+                                </div>
+                                <p style="margin-bottom: 0;">Authorized ___________________________</p>
+                            </footer> 
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('page_scripts')
+    @stack('script')
+    <script type="text/javascript">
+        // Add any specific delivery-related JavaScript here if needed
+    </script>
+@endsection

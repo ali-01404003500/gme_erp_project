@@ -1,0 +1,4 @@
+product_type,product_brand,name,model,mrp,unit_type,product_tag,product_origin,status,is_serial,is_expire_date,is_warranty,warranty_period,warranty_period_input,force_barcode_scan,ecommerce_product,description,profile_image_upload,image_uploads,catalog_file,price_list_file
+Accessories,AIKANG,Test Product 1,Model 1,100,Box,IC,Bangladesh,active,yes,no,yes,1,year,on,yes,"Test Description 1","","","",""
+Electrolyte Analyzer,BODITECH,Test Product 2,Model 2,200,PCS,BC,USA,inactive,no,yes,no,2,month,off,no,"Test Description 2","","","",""
+Strip,GE-BIOMED,Test Product 3,Model 3,300,Cartridge,CC,China,active,yes,no,yes,3,day,on,yes,"Test Description 3","","","",""

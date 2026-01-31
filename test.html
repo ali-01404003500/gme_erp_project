@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+
+    <title>Medical Equipment Catalog</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .catalog-container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .product-card {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fafafa;
+        }
+
+        .product-image {
+            flex: 1;
+            min-width: 900px;
+            max-width: 900px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-details {
+            flex: 2;
+            min-width: 250px;
+            padding-left: 20px;
+        }
+
+        .product-details h2 {
+            color: #007BFF;
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        .product-details p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .product-details span {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .keyword-description {
+            margin-top: 20px;
+        }
+
+        .keyword-description p {
+            margin: 5px 0;
+        }
+
+        .uploaded-images {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .uploaded-images h3 {
+            font-size: 20px;
+            color: #007BFF;
+            margin-bottom: 10px;
+        }
+
+        .images-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .images-container img {
+            width: 400px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="catalog-container">
+        <h1>Medical Equipment Catalog</h1>
+        <div class="product-card">
+            <div class="product-image">
+                <img src="default.jpg" alt="Product Image">
+            </div>
+            <div class="product-details">
+                <h2 style="font-size: 30px; margin-bottom: 20px;">Product Brand: <span style="font-size: 31px;">Brand Name</span></h2>
+                <p style="font-size: 17px; margin-bottom: 20px;">Name: <span style="font-size: 21px;">Product Name</span></p>
+                <p style="font-size: 17px; margin-bottom: 20px;">Model: <span style="font-size: 21px;">Model Number</span></p>
+                <p style="font-size: 17px; margin-bottom: 20px;">MRP: <span style="font-size: 21px;">$999.99</span></p>
+                <p style="font-size: 17px; margin-bottom: 20px;">Unit Type: <span style="font-size: 21px;">Unit Type</span></p>
+                <p style="font-size: 17px; margin-bottom: 20px;">Product Origin: <span style="font-size: 21px;">Country</span></p>
+                <p style="font-size: 17px; margin-bottom: 20px;">Is Warranty: <span style="font-size: 21px;">Yes</span></p>
+                <p style="font-size: 17px; margin-bottom: 20px;">Warranty Period: <span style="font-size: 21px;">2 Years</span></p>
+            </div>
+            <div class="keyword-description">
+                <h2>Keyword & Descriptions</h2>
+                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quidem exercitationem vitae nihil. Ea eius, vel itaque, nihil sunt consequuntur veritatis obcaecati, voluptas dolores blanditiis dicta iusto omnis ex. Ex, ducimus. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate eaque atque eos, et obcaecati a ex porro eveniet doloribus in ratione tempore? Id quaerat ipsam minus, quasi sequi odit alias? Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate libero qui architecto fuga quibusdam voluptas itaque quo ipsam similique laboriosam fugiat iste, illum sequi consequuntur autem tenetur neque incidunt explicabo?</span></p>
+                
+            </div>
+        </div>
+        <div class="uploaded-images">
+            <h3>Product Images</h3>
+            <div class="images-container">
+                <img src="default.jpg" alt="Uploaded Image 1">
+                <img src="default.jpg" alt="Uploaded Image 2">
+                <img src="default.jpg" alt="Uploaded Image 3">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

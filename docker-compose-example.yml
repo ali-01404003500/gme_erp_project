@@ -1,0 +1,96 @@
+version: '3.8'
+services:
+  gme-nginx:
+    container_name: gme-nginx
+    image: nginx:stable-alpine
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - gme-app
+      - gme-test
+      - gme-phpmyadmin
+    networks:
+      - gme-network
+  gme-app:
+    container_name: gme-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - env_postfix=production
+    # volumes:
+    #   - .:/app/
+    #   - .env:/app/.env
+    depends_on:
+      - gme-redis
+      - gme-mysql
+    networks:
+      - gme-network
+  gme-test:
+    container_name: gme-test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - env_postfix=test
+    # volumes:
+    #   - .:/app/
+    #   - .env:/app/.env
+    depends_on:
+      - gme-redis
+      - gme-mysql
+    ports:
+      - 8080:8000  
+    networks:
+      - gme-network
+
+  gme-redis:
+    container_name: gme-redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6479:6379'
+    command: redis-server --requirepass "r**a@p@ss#sspa"
+    networks:
+      - gme-network
+
+  gme-mysql:
+    container_name: gme-mysql
+    image: mysql:8.0
+    restart: always
+    ports:
+      - '3310:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: "r**t@p@ss#sspa"
+      MYSQL_DATABASE: gme
+    volumes:
+        - gme-db-data:/var/lib/mysql
+    networks:
+      - gme-network
+  gme-phpmyadmin:
+    container_name: gme-phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8081:80
+    depends_on:
+      - gme-mysql
+    environment:
+      PMA_HOST: gme-mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: "r**t@p@ss#sspa"
+    networks:
+      - gme-network
+
+networks:
+  gme-network:
+    external: true
+    name: gme-network
+    driver: bridge
+
+volumes:
+    gme-db-data:
