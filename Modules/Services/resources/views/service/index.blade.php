@@ -16,8 +16,8 @@
                             </nav>
                         </div>
                         <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
-                            @if (hasPermission('services.service.create'))
-                            <a href="{{ route('services.service.create') }}" class="btn px-20 btn-primary btn-sm mr-5">
+                            @if (hasPermission('services.service.index'))
+                            <a href="{{ route('services.service.index') }}" class="btn px-20 btn-primary btn-sm mr-5">
                                 <i class="las la-plus fs-16"></i>Add New
                             </a>
                             @endif
