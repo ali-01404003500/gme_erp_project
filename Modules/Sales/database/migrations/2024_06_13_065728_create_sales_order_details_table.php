@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('sales_order_details', function (Blueprint $table) {
+        /*Schema::create('sales_order_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sales_order_id')->constrained('sales_orders')->onDelete('set null');
             $table->foreignId('product_id')->constrained('product_catalogs');
@@ -20,7 +20,24 @@ return new class extends Migration {
             $table->decimal('total_discount', 20, 5)->default(0);
             $table->decimal('amount', 20, 5);
             $table->timestamps();
+        });*/
+
+        Schema::create('sales_order_details', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('sales_order_id')
+                ->nullable()               // allow NULL for ON DELETE SET NULL
+                ->constrained('sales_orders')
+                ->onDelete('set null');
+            $table->foreignId('product_id')
+                ->constrained('product_catalogs');
+            $table->decimal('quantity', 20, 5);
+            $table->decimal('price', 20, 5);
+            $table->decimal('unit_discount', 20, 5)->default(0);
+            $table->decimal('total_discount', 20, 5)->default(0);
+            $table->decimal('amount', 20, 5);
+            $table->timestamps();
         });
+
     }
 
     /**
