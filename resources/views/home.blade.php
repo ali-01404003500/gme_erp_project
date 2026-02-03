@@ -1,937 +1,314 @@
 @extends('layout.app')
 @section('title', 'Home')
 @section('description', 'Dashboard')
+
 @section('content')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            /* Aesthetic Palette */
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --primary-grad: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+            --success-grad: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --info-grad: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            --danger-grad: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+            --panel-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        .social-dash-wrap {
+            padding: 30px 0;
+            /* Aesthetic Mesh Gradient Background */
+            background-color: #3ebbc6;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(186,66%,45%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(199,76%,59%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(180,60%,40%,1) 0, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Specific Header Spacing (Left and Right) */
+        .header-container {
+            padding-left: 45px;
+            padding-right: 45px;
+        }
+
+        /* Modern Card Design */
+        .overview-card-modern {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--panel-shadow);
+            height: 100%;
+        }
+
+        .overview-card-modern:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 30px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .card-value {
+            font-size: 30px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 10px 0;
+        }
+
+        .icon-box {
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-primary-grad { background: var(--primary-grad); }
+        .bg-secondary-grad { background: var(--danger-grad); }
+        .bg-success-grad { background: var(--success-grad); }
+        .bg-info-grad { background: var(--info-grad); }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: var(--panel-shadow);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .activity-item {
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cal-header {
+            background: var(--primary-grad);
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 20px -5px rgba(67, 56, 202, 0.4);
+        }
+
+        .cal-day { font-size: 48px; font-weight: 900; }
+        .stat-badge { font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .text-success { color: #10b981 !important; }
+        .text-danger { color: #f43f5e !important; }
+    </style>
+
     <div class="container-fluid">
         <div class="social-dash-wrap">
-            <div class="row ">
-                <div class="col-lg-12">
-                    <div class="breadcrumb-main">
-                        <h4 class="text-capitalize breadcrumb-title">Dashboard</h4>
-                        <div class="breadcrumb-action justify-content-center flex-wrap">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="#"><i class="uil uil-estate"></i>Dashboard</a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">Home</li>
-                                </ol>
-                            </nav>
+
+            <div class="row mb-4 header-container">
+                <div class="col-12">
+                    <div class="breadcrumb-main d-flex justify-content-between align-items-center bg-white p-4 radius-xl shadow-sm border-0" style="border-radius: 20px;">
+                        <div>
+                            <h4 class="fw-bold mb-1 text-dark">Dashboard Overview</h4>
+                            <p class="text-muted small mb-0">Managing Director: <strong>Engr. Tarikul Islam</strong></p>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <span class="badge bg-soft-info p-2 px-3 radius-pill text-info d-flex align-items-center" style="background: #e0f2fe;">
+                                <i class="uil uil-history me-1"></i> Real-time Analytics
+                            </span>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-sm-6  col-ssm-12 mb-25">
-                    <!-- Card 1  -->
-                    <div
-                        class="ap-po-details ap-po-details--luodcy  overview-card-shape radius-xl d-flex justify-content-between">
-
-                        <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
-                            <div class="ap-po-details__titlebar">
-                                <p>Total Products</p>
-                                <h1 id="total-products">0</h1>
-                                <div class="ap-po-details-time">
-                                    <span class="color-success" id="sales-block">
-                                        <i id="icon" class="las la-arrow-up"></i>
-                                        <strong id="current-month-products">0</strong>
-                                    </span>
-                                    <small>Since last month</small>
-                                </div>
-                            </div>
-                            <div class="ap-po-details__icon-area color-primary">
-                                <i class="uil uil-arrow-growth"></i>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Card 1 End  -->
-                </div>
-
-                <div class="col-xl-3 col-sm-6  col-ssm-12 mb-25">
-                    <!-- Card 2 -->
-                    <div
-                        class="ap-po-details ap-po-details--luodcy  overview-card-shape radius-xl d-flex justify-content-between">
-
-
-
-
-
-                        <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
-                            <div class="ap-po-details__titlebar">
-                                <p>Total Orders</p>
-                                <h1 id="total-orders">0</h1>
-                                <div class="ap-po-details-time">
-                                    <span class="color-success" id="Ordergrowth-block">
-                                        <i id="icon" class="las la-arrow-up"></i>
-                                        <strong id="current-month-total-orders">0</strong></span>
-                                    <small>Since last month</small>
-                                </div>
-                            </div>
-                            <div class="ap-po-details__icon-area color-secondary">
-                                <i class="uil uil-users-alt"></i>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Card 2 End  -->
-                </div>
-
-                <div class="col-xl-3 col-sm-6  col-ssm-12 mb-25">
-                    <!-- Card 3 -->
-                    <div
-                        class="ap-po-details ap-po-details--luodcy  overview-card-shape radius-xl d-flex justify-content-between">
-
-
-
-
-
-                        <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
-                            <div class="ap-po-details__titlebar">
-                                <p>Total Sales</p>
-                                <h1 id="total-sales">0</h1>
-                                <div class="ap-po-details-time">
-                                    <span class="color-success" id="salesTotal-block">
-                                        <i id="icon" class="las la-arrow-up"></i>
-                                        <strong id="current-month-total-sales">0</strong></span>
-                                    <small>Since last month</small>
-                                </div>
-                            </div>
-                            <div class="ap-po-details__icon-area color-success">
-                                <i class="uil uil-usd-circle"></i>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Card 3 End  -->
-                </div>
-
-                <div class="col-xl-3 col-sm-6  col-ssm-12 mb-25">
-                    <!-- Card 4  -->
-                    <div
-                        class="ap-po-details ap-po-details--luodcy  overview-card-shape radius-xl d-flex justify-content-between">
-
-
-
-
-
-                        <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
-                            <div class="ap-po-details__titlebar">
-                                <p>New Customers</p>
-                                <h1 id="total-customers">0</h1>
-                                <div class="ap-po-details-time">
-                                    <span class="color-success" id="customerTotal-block">
-                                        <i id="icon" class="las la-arrow-up"></i>
-                                        <strong id="current-month-customer">0</strong></span>
-                                    <small>Since last month</small>
-                                </div>
-                            </div>
-                            <div class="ap-po-details__icon-area color-info">
-                                <i class="uil uil-tachometer-fast"></i>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Card 4 End  -->
-                </div>
-                {{-- <div class="col-xxl-6 mb-25">
-
-                    <div class="card revenueChartTwo border-0">
-                        <div class="card-header border-0">
-                            <h6>Sales Revenue</h6>
-                            <div class="card-extra">
-                                <ul class="card-tab-links nav-tabs nav" role="tablist">
-                                    <li>
-                                        <a class="active" href="#tl_revenue-today" data-bs-toggle="tab"
-                                            id="tl_revenue-today-tab" role="tab" aria-selected="false">Today</a>
-                                    </li>
-                                    <li>
-                                        <a href="#tl_revenue-week" data-bs-toggle="tab" id="tl_revenue-week-tab"
-                                            role="tab" aria-selected="false">Week</a>
-                                    </li>
-                                    <li>
-                                        <a href="#tl_revenue-month" data-bs-toggle="tab" id="tl_revenue-month-tab"
-                                            role="tab" aria-selected="false">Month</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- ends: .card-header -->
-                        <div class="card-body pt-0 pb-40">
-                            <div class="tab-content">
-                                <div class="tab-pane fade active show" id="tl_revenue-today" role="tabpanel"
-                                    aria-labelledby="tl_revenue-today-tab">
-                                    <div class="cashflow-display cashflow-display2 d-flex">
-
-                                    </div>
-                                    <!-- ends: .performance-stats -->
-
-                                    <div class="wp-chart">
-                                        <div class="parentContainer">
-
-
-                                            <div>
-                                                <canvas id="saleRevenueToday"></canvas>
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-
-                                    <!-- ends: .performance-stats -->
-                                </div>
-                                <div class="tab-pane fade" id="tl_revenue-week" role="tabpanel"
-                                    aria-labelledby="tl_revenue-week-tab">
-                                    <div class="cashflow-display cashflow-display2 d-flex">
-
-                                    </div>
-                                    <!-- ends: .performance-stats -->
-
-                                    <div class="wp-chart">
-                                        <div class="parentContainer">
-
-
-                                            <div>
-                                                <canvas id="saleRevenueWeek"></canvas>
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-
-                                    <!-- ends: .performance-stats -->
-                                </div>
-                                <div class="tab-pane fade" id="tl_revenue-month" role="tabpanel"
-                                    aria-labelledby="tl_revenue-month-tab">
-                                    <div class="cashflow-display cashflow-display2 d-flex">
-
-                                    </div>
-                                    <!-- ends: .performance-stats -->
-
-                                    <div class="wp-chart">
-                                        <div class="parentContainer">
-
-
-                                            <div>
-                                                <canvas id="saleRevenueMonth"></canvas>
-                                            </div>
-
-
-                                        </div>
-                                    </div>
-
-                                    <!-- ends: .performance-stats -->
-                                </div>
-                            </div>
-                        </div>
-                        <!-- ends: .card-body -->
-                    </div>
-
-                </div> --}}
-                {{-- <div class="col-xxl-6 mb-25">
-
-                    <div class="card border-0 px-25 h-100">
-                        <div class="card-header px-0 border-0">
-                            <h6>Source Of Revenue Generated</h6>
-                            <div class="dropdown dropleft">
-                                <a href="#" role="button" id="todo12" data-bs-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <img src="{{ asset('assets/img/svg/more-horizontal.svg') }}"
-                                        alt="more-horizontal" class="svg">
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="todo12">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-0 card-body">
-                            <div class="revenueSourceChart px-0">
-                                <div class="parentContainer position-relative">
-
-                                    <div class="apexpie ms-md-n50">
-                                        <div class="apexPieToday"></div>
-                                    </div>
-
-                                </div>
-                                <div class="chart-content__details">
-                                    <div class="chart-content__single">
-                                        <span class="icon color-facebook">
-                                            <span class="uil uil-facebook-f"></span>
-                                        </span>
-                                        <span class="label">Facebook</span>
-                                        <span class="data">$4621</span>
-                                    </div>
-                                    <div class="chart-content__single">
-                                        <span class="icon color-twitter">
-                                            <span class="uil uil uil-twitter"></span>
-                                        </span>
-                                        <span class="label">twitter</span>
-                                        <span class="data">$3621</span>
-                                    </div>
-                                    <div class="chart-content__single">
-                                        <span class="icon color-secondary">
-                                            <span class="uil uil uil-google"></span>
-                                        </span>
-                                        <span class="label">google</span>
-                                        <span class="data">$8945</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> --}}
-                {{-- <div class="col-xxl-4 mb-25">
-
-                    <div class="card border-0 px-25">
-                        <div class="card-header px-0 border-0">
-                            <h6>New Product</h6>
-                            <div class="card-extra">
-                                <ul class="card-tab-links nav-tabs nav" role="tablist">
-                                    <li>
-                                        <a class="active" href="#t_selling-today" data-bs-toggle="tab"
-                                            id="t_selling-today-tab" role="tab" aria-selected="true">Today</a>
-                                    </li>
-                                    <li>
-                                        <a href="#t_selling-week" data-bs-toggle="tab" id="t_selling-week-tab"
-                                            role="tab" aria-selected="true">Week</a>
-                                    </li>
-                                    <li>
-                                        <a href="#t_selling-month" data-bs-toggle="tab" id="t_selling-month-tab"
-                                            role="tab" aria-selected="true">Month</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="tab-content">
-                                <div class="tab-pane fade active show" id="t_selling-today" role="tabpanel"
-                                    aria-labelledby="t_selling-today-tab">
-                                    <div class="selling-table-wrap">
-                                        <div class="table-responsive">
-                                            <table class="table table--default table-borderless ">
-                                                <thead>
-                                                    <tr>
-                                                        <th>PRDUCTS NAME</th>
-                                                        <th>Price</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="radius-xs img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/giorgio.png') }}"
-                                                                    alt="img">
-                                                                <span>UV Protected Sunglass</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$38,536</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="radius-xs img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/headphone.png') }}"
-                                                                    alt="img">
-                                                                <span>Black Headphone</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$20,573</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="radius-xs img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/shoes.png') }}"
-                                                                    alt="img">
-                                                                <span>Nike Shoes</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$17,457</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="radius-xs img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/mac-pro.png') }}"
-                                                                    alt="img">
-                                                                <span>15" Mackbook Pro</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$15,354</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="radius-xs img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/creativ-bag.png') }}"
-                                                                    alt="img">
-                                                                <span>Women Bag</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$12,354</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="t_selling-week" role="tabpanel"
-                                    aria-labelledby="t_selling-week-tab">
-                                    <div class="selling-table-wrap">
-                                        <div class="table-responsive">
-                                            <table class="table table--default table-borderless">
-                                                <thead>
-                                                    <tr>
-                                                        <th>PRDUCTS NAME</th>
-                                                        <th>Price</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/287.png') }}"
-                                                                    alt="img">
-                                                                <span>Samsung Galaxy S8 256GB</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$60,258</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid"
-                                                                    src="{{ asset('assets/img/165.png') }}"
-                                                                    alt="img">
-                                                                <span>Half Sleeve Shirt</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$2,483</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/166.png') }}"
-                                                                    alt="img">
-                                                                <span>Marco Shoes</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$19,758</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/315.png') }}"
-                                                                    alt="img">
-                                                                <span>15" Mackbook Pro</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$197,458</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/506.png') }}"
-                                                                    alt="img">
-                                                                <span>Apple iPhone X</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>115,254</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="t_selling-month" role="tabpanel"
-                                    aria-labelledby="t_selling-month-tab">
-                                    <div class="selling-table-wrap">
-                                        <div class="table-responsive">
-                                            <table class="table table--default table-borderless">
-                                                <thead>
-                                                    <tr>
-                                                        <th>PRDUCTS NAME</th>
-                                                        <th>Price</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/287.png') }}"
-                                                                    alt="img">
-                                                                <span>Samsung Galaxy S8 256GB</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$60,258</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid"
-                                                                    src="{{ asset('assets/img/165.png') }}"
-                                                                    alt="img">
-                                                                <span>Half Sleeve Shirt</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$2,483</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/166.png') }}"
-                                                                    alt="img">
-                                                                <span>Marco Shoes</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$19,758</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/315.png') }}"
-                                                                    alt="img">
-                                                                <span>15" Mackbook Pro</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>$197,458</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <img class="me-15 wh-34 img-fluid order-bg-opacity-primary"
-                                                                    src="{{ asset('assets/img/506.png') }}"
-                                                                    alt="img">
-                                                                <span>Apple iPhone X</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>115,254</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div> --}}
-                {{-- <div class="col-xxl-8 mb-25">
-
-                    <div class="card border-0 px-25">
-                        <div class="card-header px-0 border-0">
-                            <h6>Best Seller</h6>
-                            <div class="card-extra">
-                                <ul class="card-tab-links nav-tabs nav" role="tablist">
-                                    <li>
-                                        <a class="active" href="#t_selling-today222" data-bs-toggle="tab"
-                                            id="t_selling-today222-tab" role="tab" aria-selected="true">Today</a>
-                                    </li>
-                                    <li>
-                                        <a href="#t_selling-week222" data-bs-toggle="tab" id="t_selling-week222-tab"
-                                            role="tab" aria-selected="true">Week</a>
-                                    </li>
-                                    <li>
-                                        <a href="#t_selling-month333" data-bs-toggle="tab" id="t_selling-month333-tab"
-                                            role="tab" aria-selected="true">Month</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="tab-content">
-                                <div class="tab-pane fade active show" id="t_selling-today222" role="tabpanel"
-                                    aria-labelledby="t_selling-today222-tab">
-                                    <div class="selling-table-wrap selling-table-wrap--source">
-                                        <div class="table-responsive">
-                                            <table class="table table--default table-borderless">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Seller name</th>
-                                                        <th>Company</th>
-                                                        <th>Product</th>
-                                                        <th>Revenue</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <div
-                                                                    class="selling-product-img-wrapper order-bg-opacity-primary align-items-end">
-                                                                    <img class=" img-fluid"
-                                                                        src="{{ asset('assets/img/author/robert-1.png') }}"
-                                                                        alt="img">
-                                                                </div>
-                                                                <span>Robert Clinton</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>Samsung</td>
-                                                        <td>Smart Phone</td>
-                                                        <td>
-                                                            $38,536
-                                                        </td>
-                                                        <td>Done</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <div
-                                                                    class="selling-product-img-wrapper order-bg-opacity-primary align-items-end">
-                                                                    <img class=" img-fluid"
-                                                                        src="{{ asset('assets/img/author/robert-2.png') }}"
-                                                                        alt="img">
-                                                                </div>
-                                                                <span>Michael Johnson </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>Asus</td>
-                                                        <td>Laptop</td>
-                                                        <td>
-                                                            $20,573
-                                                        </td>
-                                                        <td>Done</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <div
-                                                                    class="selling-product-img-wrapper order-bg-opacity-secondary align-items-end">
-                                                                    <img class=" img-fluid"
-                                                                        src="{{ asset('assets/img/author/robert-3.png') }}"
-                                                                        alt="img">
-                                                                </div>
-                                                                <span>Daniel White</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>Google</td>
-                                                        <td>Watch</td>
-                                                        <td>
-                                                            $17,457
-                                                        </td>
-                                                        <td>Pending</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <div
-                                                                    class="selling-product-img-wrapper order-bg-opacity-success align-items-end">
-                                                                    <img class=" img-fluid"
-                                                                        src="{{ asset('assets/img/author/robert-4.png') }}"
-                                                                        alt="img">
-                                                                </div>
-                                                                <span>Chris Barin </span>
-                                                            </div>
-                                                        </td>
-                                                        <td>Apple</td>
-                                                        <td>Computer</td>
-                                                        <td>
-                                                            $15,354
-                                                        </td>
-                                                        <td>Done</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="selling-product-img d-flex align-items-center">
-                                                                <div
-                                                                    class="selling-product-img-wrapper order-bg-opacity-info align-items-end">
-                                                                    <img class=" img-fluid"
-                                                                        src="{{ asset('assets/img/author/robert-5.png') }}"
-                                                                        alt="img">
-                                                                </div>
-                                                                <span>Daniel Pink</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>Panasonic</td>
-                                                        <td>Sunglass</td>
-                                                        <td>
-                                                            $12,354
-                                                        </td>
-                                                        <td>Done</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                      
-                            </div>
-                        </div>
-                    </div>
-
-                </div> --}}
             </div>
-        </div>
-    </div>
-    </div>
-    <footer class="footer-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="footer-copyright">
-                        <p>© 2024<a href="#">Sovware</a></p>
+
+            <div class="row px-4">
+                <div class="col-xl-3 col-sm-6 mb-25">
+                    <div class="overview-card-modern">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="card-label">Inventory</p>
+                                <h1 class="card-value" id="total-products">0</h1>
+                                <span class="stat-badge" id="sales-block"><i id="icon"></i> <strong id="current-month-products">0</strong></span>
+                            </div>
+                            <div class="icon-box bg-primary-grad"><i class="uil uil-layers"></i></div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="footer-menu text-end">
-                        <ul>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Team</a></li>
-                            <li><a href="#">Contact</a></li>
-                        </ul>
+                <div class="col-xl-3 col-sm-6 mb-25">
+                    <div class="overview-card-modern">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="card-label">Orders</p>
+                                <h1 class="card-value" id="total-orders">0</h1>
+                                <span class="stat-badge" id="Ordergrowth-block"><i id="icon"></i> <strong id="current-month-total-orders">0</strong></span>
+                            </div>
+                            <div class="icon-box bg-secondary-grad"><i class="uil uil-shopping-cart-alt"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-25">
+                    <div class="overview-card-modern">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="card-label">Net Revenue</p>
+                                <h1 class="card-value" id="total-sales">0</h1>
+                                <span class="stat-badge" id="salesTotal-block"><i id="icon"></i> <strong id="current-month-total-sales">0</strong></span>
+                            </div>
+                            <div class="icon-box bg-success-grad"><i class="uil uil-money-bill"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-25">
+                    <div class="overview-card-modern">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <p class="card-label">Active Clients</p>
+                                <h1 class="card-value" id="total-customers">0</h1>
+                                <span class="stat-badge" id="customerTotal-block"><i id="icon"></i> <strong id="current-month-customer">0</strong></span>
+                            </div>
+                            <div class="icon-box bg-info-grad"><i class="uil uil-users-alt"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8 mb-25">
+                    <div class="glass-panel h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold m-0">Revenue Trajectory</h5>
+                            <div class="btn-group shadow-sm radius-md">
+                                <button class="btn btn-sm btn-white active border">Weekly</button>
+                                <button class="btn btn-sm btn-white border">Monthly</button>
+                            </div>
+                        </div>
+                        <div style="height: 320px;">
+                            <canvas id="revenueFlowChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-25">
+                    <div class="glass-panel h-100 text-center">
+                        <h5 class="fw-bold mb-4">Operations Calendar</h5>
+                        <div class="cal-header mb-4">
+                            <div class="cal-month" id="calMonth">...</div>
+                            <div class="cal-day" id="calDay">..</div>
+                            <div class="fw-bold opacity-75" id="calYear">....</div>
+                        </div>
+                        <div class="text-start mt-4">
+                            <p class="fw-bold small text-muted text-uppercase mb-3">Today's Priority</p>
+                            <div class="activity-item">
+                                <div style="width: 4px; height: 35px; background: #6366f1; border-radius: 10px;"></div>
+                                <div>
+                                    <div class="small fw-bold">Equipment Inspection</div>
+                                    <div class="extra-small text-muted">09:00 AM - Central Warehouse</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div style="width: 4px; height: 35px; background: #10b981; border-radius: 10px;"></div>
+                                <div>
+                                    <div class="small fw-bold">Client Support Meeting</div>
+                                    <div class="extra-small text-muted">02:30 PM - Virtual</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <footer class="footer-wrapper p-4 text-center mt-auto" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(5px);">
+        <p class="mb-0 text-muted small">© 2026 <strong>Global Medical Engineering Bid Limited</strong>. Dashboard v3.0</p>
     </footer>
-    </main>
-    <div id="overlayer">
-        <span class="loader-overlay">
-            <div class="dm-spin-dots spin-lg">
-                <span class="spin-dot badge-dot dot-primary"></span>
-                <span class="spin-dot badge-dot dot-primary"></span>
-                <span class="spin-dot badge-dot dot-primary"></span>
-                <span class="spin-dot badge-dot dot-primary"></span>
-            </div>
-        </span>
-    </div>
-    <div class="overlay-dark-sidebar"></div>
-    <div class="customizer-overlay"></div>
-    <div class="customizer-wrapper">
-        <div class="customizer">
-            <div class="customizer__head">
-                <h4 class="customizer__title">Customizer</h4>
-                <span class="customizer__sub-title">Customize your overview page layout</span>
-                <a href="#" class="customizer-close">
-                    <img class="svg" src="{{ asset('assets/img/svg/close.svg') }}" alt="">
-                </a>
-            </div>
-            <div class="customizer__body">
-                <div class="customizer__single">
-                    <h4>Layout Type</h4>
-                    <ul class="customizer-list d-flex layout">
-                        <li class="customizer-list__item">
-                            <a href="{{ asset('lang/en') }}" class="active">
-                                <img src="{{ asset('assets/img/ltr.png') }}" alt="">
-                                <i class="fa fa-check-circle"></i>
-                            </a>
-                        </li>
-                        <li class="customizer-list__item">
-                            <a href="{{ asset('lang/ar') }}" class="">
-                                <img src="{{ asset('assets/img/rtl.png') }}" alt="">
-                                <i class="fa fa-check-circle"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="customizer__single">
-                    <h4>Sidebar Type</h4>
-                    <ul class="customizer-list d-flex l_sidebar">
-                        <li class="customizer-list__item">
-                            <a href="#" data-layout="light" class="dark-mode-toggle active">
-                                <img src="{{ asset('assets/img/light.png') }}" alt="">
-                                <i class="fa fa-check-circle"></i>
-                            </a>
-                        </li>
-                        <li class="customizer-list__item">
-                            <a href="#" data-layout="dark" class="dark-mode-toggle">
-                                <img src="{{ asset('assets/img/dark.png') }}" alt="">
-                                <i class="fa fa-check-circle"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="customizer__single">
-                    <h4>Navbar Type</h4>
-                    <ul class="customizer-list d-flex l_navbar">
-                        <li class="customizer-list__item">
-                            <a href="#" data-layout="side" class="active">
-                                <img src="{{ asset('assets/img/side.png') }}" alt="">
-                                <i class="fa fa-check-circle"></i>
-                            </a>
-                        </li>
-                        <li class="customizer-list__item top">
-                            <a href="#" data-layout="top">
-                                <img src="{{ asset('assets/img/top.png') }}" alt="">
-                                <i class="fa fa-check-circle"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('page_scripts')
     <script>
-        $(document).ready(async function() {
-            const [countProduct, countSalesOrder, countTotalSales, countCustomer, countProductCurrentMonth] =
-            await Promise.all([
+        $(document).ready(async function () {
+            // 1. Live Calendar
+            const now = new Date();
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            $('#calMonth').text(months[now.getMonth()]);
+            $('#calDay').text(now.getDate());
+            $('#calYear').text(now.getFullYear());
+
+            // 2. Premium Revenue Chart
+            const flowCtx = document.getElementById('revenueFlowChart').getContext('2d');
+            new Chart(flowCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        data: [42000, 38000, 55000, 48000, 70000, 65000, 82000],
+                        borderColor: '#6366f1',
+                        borderWidth: 4,
+                        fill: true,
+                        backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 8,
+                        pointBackgroundColor: '#6366f1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(0,0,0,0.03)' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+
+            // 3. API Data Fetching
+            const [countProduct, countSalesOrder, countTotalSales, countCustomer] = await Promise.all([
                 $.get("{{ route('inv.products.count') }}"),
                 $.get("{{ route('sales.sales-orders.count') }}"),
                 $.get("{{ route('sales.total-sales.count') }}"),
                 $.get("{{ route('crm.customer.count') }}"),
             ]);
 
-            $("#total-products").prop('Counter', 0).animate({
-                Counter: countProduct.count
-            }, {
-                duration: 500,
-                step: function(now) {
-                    $(this).text(Math.ceil(now));
-                }
-            });
-            $("#total-products").prop('Counter', 0).animate({
-                Counter: countProduct.count
-            }, {
-                duration: 500,
-                step: function(now) {
-                    $(this).text(Math.ceil(now));
-                }
-            });
+            const animateCount = (id, target) => {
+                $({ Counter: 0 }).animate({ Counter: target }, {
+                    duration: 1500,
+                    easing: 'swing',
+                    step: function () { $(id).text(Math.ceil(this.Counter).toLocaleString()); }
+                });
+            };
 
-            let sales = 0;
-            if (countProduct.previous_month == 0) {
-                sales = 100;
-            } else {
-                sales = (((countProduct.current_month - countProduct.previous_month) / countProduct
-                    .previous_month) * 100) || 0;
-            }
+            animateCount("#total-products", countProduct.count);
+            animateCount("#total-orders", countSalesOrder.count);
+            animateCount("#total-sales", countTotalSales.count);
+            animateCount("#total-customers", countCustomer.count);
 
-            $("#current-month-products").prop('Counter', 0).animate({
-                Counter: Math.abs(sales)
-            }, {
-                duration: 500,
-                step: function(now) {
-                    const className = sales < 0 ? 'color-danger' : 'color-success';
-                    const arrowClass = sales < 0 ? 'las la-arrow-down' : 'las la-arrow-up';
-                    $(this).text(Math.ceil(now) + '%');
-                    $('#sales-block').removeClass('color-danger color-success').addClass(className);
-                    $('#sales-block #icon').removeClass('la-arrow-down la-arrow-up').addClass(
-                        arrowClass);
-                }
-            });
+            const updateGrowthUI = (blockSelector, textSelector, current, previous) => {
+                let growth = previous == 0 ? (current > 0 ? 100 : 0) : (((current - previous) / previous) * 100);
+                const isNeg = growth < 0;
+                $(textSelector).text(Math.abs(Math.ceil(growth)) + '%');
+                $(blockSelector).addClass(isNeg ? 'text-danger' : 'text-success');
+                $(blockSelector + ' #icon').addClass(isNeg ? 'las la-arrow-down' : 'las la-arrow-up');
+            };
 
-
-            $("#total-orders").prop('Counter', 0).animate({
-                Counter: countSalesOrder.count
-            }, {
-                duration: 500,
-                step: function(now) {
-                    $(this).text(Math.ceil(now));
-                }
-            });
-            // const Ordergrowth = (((countSalesOrder.current_month - countSalesOrder.previous_month)/countSalesOrder.previous_month) * 100);
-
-            let Ordergrowth = 0;
-
-            if (countSalesOrder.previous_month == 0) {
-                Ordergrowth = 100;
-            } else {
-                Ordergrowth = (((countSalesOrder.current_month - countSalesOrder.previous_month) /
-                    countSalesOrder.previous_month) * 100);
-            }
-
-            $("#current-month-total-orders").prop('Counter', 0).animate({
-                Counter: Math.abs(Ordergrowth)
-            }, {
-                duration: 500,
-                step: function(now) {
-                    const className = Ordergrowth < 0 ? 'color-danger' : 'color-success';
-                    const arrowClass = Ordergrowth < 0 ? 'las la-arrow-down' : 'las la-arrow-up';
-                    $(this).text(Math.ceil(now) + '%');
-                    $('#Ordergrowth-block').removeClass('color-danger color-success').addClass(
-                        className);
-                    $('#Ordergrowth-block #icon').removeClass('la-arrow-down la-arrow-up').addClass(
-                        arrowClass);
-                }
-            });
-
-            $("#total-sales").prop('Counter', 0).animate({
-                Counter: countTotalSales.count
-            }, {
-                duration: 500,
-                step: function(now) {
-                    $(this).text(Math.ceil(now));
-                }
-            });
-            let salesTotal = 0;
-
-            if (countTotalSales.previous_month == 0) {
-                salesTotal = 100;
-            } else {
-                salesTotal = (((countTotalSales.current_month - countTotalSales.previous_month) /
-                    countTotalSales.previous_month) * 100);
-            }
-
-
-            $("#current-month-total-sales").prop('Counter', 0).animate({
-                Counter: Math.abs(salesTotal)
-            }, {
-                duration: 500,
-                step: function(now) {
-                    const className = salesTotal < 0 ? 'color-danger' : 'color-success';
-                    const arrowClass = salesTotal < 0 ? 'las la-arrow-down' : 'las la-arrow-up';
-                    $(this).text(Math.ceil(now) + '%');
-                    $('#salesTotal-block').removeClass('color-danger color-success').addClass(
-                        className);
-                    $('#salesTotal-block #icon').removeClass('la-arrow-down la-arrow-up').addClass(
-                        arrowClass);
-                }
-            });
-
-
-
-            $("#total-customers").prop('Counter', 0).animate({
-                Counter: countCustomer.count
-            }, {
-                duration: 500,
-                step: function(now) {
-                    $(this).text(Math.ceil(now));
-                }
-            });
-
-            let customerTotal = 0;
-
-            if (countCustomer.previous_month == 0) {
-                customerTotal = 100;
-            } else {
-                customerTotal = (((countCustomer.current_month - countCustomer.previous_month) / countCustomer
-                    .previous_month) * 100);
-            }
-
-
-            $("#current-month-customer").prop('Counter', 0).animate({
-                Counter: Math.abs(customerTotal)
-            }, {
-                duration: 500,
-                step: function(now) {
-                    const className = customerTotal < 0 ? 'color-danger' : 'color-success';
-                    const arrowClass = customerTotal < 0 ? 'las la-arrow-down' : 'las la-arrow-up';
-                    $(this).text(Math.ceil(now) + '%');
-                    $('#customerTotal-block').removeClass('color-danger color-success').addClass(
-                        className);
-                    $('#customerTotal-block #icon').removeClass('la-arrow-down la-arrow-up')
-                        .addClass(arrowClass);
-                }
-            });
-
-
-
-
-
-            //here more api response for get data
+            updateGrowthUI('#sales-block', '#current-month-products', countProduct.current_month, countProduct.previous_month);
+            updateGrowthUI('#Ordergrowth-block', '#current-month-total-orders', countSalesOrder.current_month, countSalesOrder.previous_month);
+            updateGrowthUI('#salesTotal-block', '#current-month-total-sales', countTotalSales.current_month, countTotalSales.previous_month);
+            updateGrowthUI('#customerTotal-block', '#current-month-customer', countCustomer.current_month, countCustomer.previous_month);
         });
     </script>
 @endsection

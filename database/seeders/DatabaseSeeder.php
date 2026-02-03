@@ -21,17 +21,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-       
+
         //create company info
         CompanyInfo::updateOrCreate([
-            'id'=>1,
-        ],[
-          
-            'company_name' => 'Opzo Company',
-            'company_email' => 'info@opzo.app',
-            'company_phone' => '+880 1606 107 310',
-            'company_address' => 'Banani CA, Block-B, House-77/A, Road- 14, Dhaka-1213',
-            'company_logo' => 'https://opzo.app/wp-content/uploads/2024/03/Opzp.app-Logo-White-03-300x69.png',
+            'id' => 1,
+        ], [
+
+            'company_name' => 'Global Medical Engineering (BD) Ltd. ',
+            'company_email' => 'info@gmebd.com',
+            'company_phone' => '+880 17 11 020 555',
+            'company_address' => '17/2, Topkhana Road (2nd Floor), Dhaka – 1000, Bangladesh.',
+            // 'company_logo' => 'https://opzo.app/wp-content/uploads/2024/03/Opzp.app-Logo-White-03-300x69.png',
+            'company_logo' => public_path('assets/img/gme-logo.png'),
         ]);
 
         $commercialInfo = CommercialInfo::where('company_id', 1)->first();
@@ -112,13 +113,10 @@ class DatabaseSeeder extends Seeder
         );
 
 
-        
-        
-        
-            
+
+
+
+
         $role->users()->sync(1);
-
-
-
     }
 }
