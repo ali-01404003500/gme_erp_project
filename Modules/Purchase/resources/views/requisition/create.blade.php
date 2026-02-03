@@ -255,7 +255,7 @@
         const row = $(this).closest('tr');
         calculateTotalPrice(row);
         calculateTotalAmount();
-        calculateNetAmount(); 
+        calculateNetAmount();
     });
     $("#product_info_table tbody").on("click", "#remove_row", function() {
         $(this).closest('tr').remove();
@@ -334,7 +334,6 @@
              $(selectElement).val('');
             if (selectElement.tomselect) {
                 selectElement.tomselect.clear();
-              
             }
             // Clear any loaded data for this row.
             delete row.dataset.loadedProductId;
@@ -342,10 +341,6 @@
             salespriceInput.value = '';
             qtyInput.value = '';
             return;
-        }
-        else
-        {
-            $("#add_row").click();
         }
 
         try {

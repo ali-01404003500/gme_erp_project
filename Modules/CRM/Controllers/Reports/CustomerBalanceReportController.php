@@ -4,6 +4,7 @@ namespace Modules\CRM\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Models\GeoLocation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -58,6 +59,8 @@ class CustomerBalanceReportController extends Controller
                 'recovery_percentage' => $recoveryPercentage,
                 'search' => $search
             ],
+            'divisions' => $filterData['divisions'],
+            'districts' => $filterData['districts'],
             'totals' => $totals
         ]);
     }
@@ -328,7 +331,9 @@ class CustomerBalanceReportController extends Controller
                 ->select('id', 'company_name')
                 ->orderBy('company_name')
                 ->get(),
-            'company_info' => $companyInfo
+            'company_info' => $companyInfo,
+            'divisions' => GeoLocation::where('type', 'Division')->get(),
+            'districts' => GeoLocation::where('type', 'District')->get(),
         ];
     }
 

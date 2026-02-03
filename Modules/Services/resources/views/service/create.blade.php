@@ -43,8 +43,8 @@
                             </nav>
                         </div>
                         <div class="action-btn mt-sm-0 mt-15">
-                            @if (hasPermission('services.service.create'))
-                                <a href="{{ route('services.service.create') }}"
+                            @if (hasPermission('services.service.index'))
+                                <a href="{{ route('services.service.index') }}"
                                     class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
                                         class="fa fa-list"></i> List</a>
                             @endif

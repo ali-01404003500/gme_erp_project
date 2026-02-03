@@ -39,33 +39,10 @@ class ServiceController extends Controller
     }
     
     /**
-     * Show the form for creating a new resource.
-    */
-    public function index()
-    {
-        $data['serviceTypes'] = ServiceType::all();
-        $data['problemTypes'] = ProblemType::all();
-        $data['employees'] = Employee::all();
-        $data['customers'] = Customer::activeCustomers()->get();
-        $data['productCatalogs'] = ProductCatalog::all();
-        $data['salesOrders'] = SalesOrder::where('status', 'delivered')
-        ->whereHas('salesOrderDetails', function($query) {
-            $query->whereHas('product', function($query) {
-                $query->where('is_serial', 'yes');
-            });
-        })
-        ->get();
-        $data['dongleOrSerialEntries'] = DongleOrSerialEntry::all();
-        return view('Services::service.create', $data);
-    }
-
-    /**
      * Display a listing of the resource.
-    */
-  
-    public function create(Request $request)
+     */
+    public function index(Request $request)
     {
-        
         $data ['serviceTypes'] = ServiceType::all();
         $data['service'] = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
@@ -89,7 +66,28 @@ class ServiceController extends Controller
 
 
         return view("Services::service.index", $data);
-    
+    }
+
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $data['serviceTypes'] = ServiceType::all();
+        $data['problemTypes'] = ProblemType::all();
+        $data['employees'] = Employee::all();
+        $data['customers'] = Customer::activeCustomers()->get();
+        $data['productCatalogs'] = ProductCatalog::all();
+        $data['salesOrders'] = SalesOrder::where('status', 'delivered')
+        ->whereHas('salesOrderDetails', function($query) {
+            $query->whereHas('product', function($query) {
+                $query->where('is_serial', 'yes');
+            });
+        })
+        ->get();
+        $data['dongleOrSerialEntries'] = DongleOrSerialEntry::all();
+        return view('Services::service.create', $data);
     }
 
     /**

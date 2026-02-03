@@ -4,6 +4,7 @@ namespace Modules\Account\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
+use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Account\Models\Setup\Bank;
@@ -46,5 +47,11 @@ class ChequeVerification extends BaseModel
     public function source()
     {
         return $this->morphTo('source', 'source_type', 'source_id');
+    }
+
+    public function depositedBy()
+    {
+        return $this->belongsTo(User::class, 'deposited_by');
+
     }
 }

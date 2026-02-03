@@ -191,6 +191,7 @@ class ChequeVerificationService
             'debit_amount' => $amount,
             'credit_amount' => 0,
             'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
+            'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
         ]);
 
         // 3. Credit Accounts Receivable (Asset decrease)
@@ -202,6 +203,7 @@ class ChequeVerificationService
             'debit_amount' => 0,
             'credit_amount' => $amount,
             'description' => "Settlement of customer receivable via Cheque #{$chequeVerification->cheque_no}",
+            'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
         ]);
 
         // 4. Check balance

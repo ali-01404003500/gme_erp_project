@@ -122,6 +122,32 @@
                                         </select>
                                     </div>
 
+                                    <div class="col-md-3 mb-3">
+                                        <label>Division</label>
+                                        <select name="division_id" class="tom-select" data-placeholder="Select Division">
+                                            <option value=""></option>
+                                            @foreach ($divisions as $division)
+                                                <option value="{{ $division->id }}"
+                                                    {{ request('division_id') == $division->id ? 'selected' : '' }}>
+                                                    {{ $division->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 mb-3">
+                                        <label>District</label>
+                                        <select name="district_id" class="tom-select" data-placeholder="Select District">
+                                            <option value=""></option>
+                                            @foreach ($districts as $district)
+                                                <option value="{{ $district->id }}"
+                                                    {{ request('district_id') == $district->id ? 'selected' : '' }}>
+                                                    {{ $district->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
                                     <!-- Action Buttons -->
                                     <div class="col-md-12 mb-3">
                                         <div class="button-group d-flex pt-25 justify-content-end">
