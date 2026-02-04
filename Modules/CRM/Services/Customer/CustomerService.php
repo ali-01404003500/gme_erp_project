@@ -240,7 +240,7 @@ class CustomerService
                 'invoice_no' => $customer->company_name,
                 'debit_amount' => $openingBalance,
                 'credit_amount' => 0,
-                'description' => "Invoice for Sales Order #" . $customer->company_name,
+                'description' => "Opening Balance Adjustment #" . $customer->company_name,
                 'transaction_date' => date('05-10-2021')
             ]);
 
@@ -251,7 +251,7 @@ class CustomerService
                 'invoice_no' => $customer->company_name,
                 'debit_amount' => 0,
                 'credit_amount' => $openingBalance,
-                'description' => "Invoice for Sales Order #" . $customer->company_name,
+                'description' => "Opening Balance Adjustment #" . $customer->company_name,
                 'transaction_date' => date('05-10-2021')
             ]);
         }
