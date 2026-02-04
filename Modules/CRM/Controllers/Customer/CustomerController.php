@@ -35,7 +35,7 @@ class CustomerController extends Controller
      *
      * @var CustomerService
      */
-    private $service; 
+    private $service;
     private $customerSetting;
     function __construct(CustomerService $service, CustomerSettingService $customerSetting)
     {
@@ -46,7 +46,7 @@ class CustomerController extends Controller
         $this->customerSetting = $customerSetting;
         // middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -65,7 +65,7 @@ class CustomerController extends Controller
             $options = new Options();
             $options->setIsHtml5ParserEnabled(true);
             $options->setIsRemoteEnabled(true);
-            
+
             $dompdf = new Dompdf($options);
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'portrait');
@@ -84,7 +84,7 @@ class CustomerController extends Controller
     {
         $data['customerTypes'] = CustomerType::pluck('name', 'id');
         $data['customers'] = Customer::get();
-        $data['employees'] = Employee::pluck('full_name','id');
+        $data['employees'] = Employee::pluck('full_name', 'id');
         $data['areas'] = Area::get();
         return view('CRM::customer.create', $data);
     }
@@ -94,62 +94,61 @@ class CustomerController extends Controller
      * 'regex:/^(?:(?:\+|00)88)?01[3-9]\d{8}$/'
      */
     public function store(Request $request)
-{
-    // dd($request->all());
-    $validate = $request->validate([
-        'company_name' => 'required|string|max:255',
-        'company_place_id' => 'required',
-        'phone' => ['required', 'regex:/^(?:\+?88|00)?01[3-9]\d{8}$/','unique:customers,phone,NULL,id,deleted_at,NULL'],
-        'email' => 'nullable|email|max:255|unique:customers,email,NULL,id,deleted_at,NULL',
-        'contact_for_sms' => 'nullable|string|max:20',
-        'user_ref_id'=> 'required|exists:employees,id',
-        'customer_ref_id'=> 'nullable|exists:customers,id',
-        'customer_type' => 'required|integer',
-        'address' => 'required|string',
-        'nid' => 'nullable|string|max:255|unique:customers,nid,NULL,id,deleted_at,NULL',
-        'front_image' =>  'nullable',
-        'back_image' =>  'nullable',
-        'visiting_card_front' =>  'nullable',
-        'visiting_card_back' =>  'nullable',
-        'trade_license' => 'nullable',
-        'signature' => 'nullable',
-        'remarks' => 'nullable|string',   
-        'logo' => 'nullable',    
-        'customer_id' => 'nullable',                          
-    ]);
-    $customerShipping = $request->validate([
-        'ship_to' => 'array',
-        'ship_to.*' => 'nullable|string',
-        'shipping_address' => 'array',
-        'shipping_address.*' => 'nullable|string',
-        'shipping_phone' => 'array',
-        'shipping_phone.*' => 'nullable|string',
-    ]);
+    {
+        // dd($request->all());
+        $validate = $request->validate([
+            'company_name' => 'required|string|max:255',
+            'company_place_id' => 'required',
+            'phone' => ['required', 'regex:/^(?:\+?88|00)?01[3-9]\d{8}$/', 'unique:customers,phone,NULL,id,deleted_at,NULL'],
+            'email' => 'nullable|email|max:255|unique:customers,email,NULL,id,deleted_at,NULL',
+            'contact_for_sms' => 'nullable|string|max:20',
+            'user_ref_id' => 'required|exists:employees,id',
+            'customer_ref_id' => 'nullable|exists:customers,id',
+            'customer_type' => 'required|integer',
+            'address' => 'required|string',
+            'nid' => 'nullable|string|max:255|unique:customers,nid,NULL,id,deleted_at,NULL',
+            'front_image' => 'nullable',
+            'back_image' => 'nullable',
+            'visiting_card_front' => 'nullable',
+            'visiting_card_back' => 'nullable',
+            'trade_license' => 'nullable',
+            'signature' => 'nullable',
+            'remarks' => 'nullable|string',
+            'logo' => 'nullable',
+            'customer_id' => 'nullable',
+        ]);
+        $customerShipping = $request->validate([
+            'ship_to' => 'array',
+            'ship_to.*' => 'nullable|string',
+            'shipping_address' => 'array',
+            'shipping_address.*' => 'nullable|string',
+            'shipping_phone' => 'array',
+            'shipping_phone.*' => 'nullable|string',
+        ]);
 
-    $customerOwner = $request->validate([
-        'owner_name'=> 'array',
-        'owner_name.*' => 'nullable|string|max:255',
-        'owner_designation'=> 'array',
-        'owner_designation.*' => 'nullable', 
-        'owner_mobile'=> 'array',
-        'owner_mobile.*'=> 'nullable',
-        'owner_email'=> 'array',
-        'owner_email.*'=> 'nullable',
-        'owner_dob'=> 'array',
-        'owner_dob.*'=> 'nullable',
-    ]);
-    
-    try {
-        // dd($validate);
-        $result = $this->service->create($validate, $customerShipping , $customerOwner);
+        $customerOwner = $request->validate([
+            'owner_name' => 'array',
+            'owner_name.*' => 'nullable|string|max:255',
+            'owner_designation' => 'array',
+            'owner_designation.*' => 'nullable',
+            'owner_mobile' => 'array',
+            'owner_mobile.*' => 'nullable',
+            'owner_email' => 'array',
+            'owner_email.*' => 'nullable',
+            'owner_dob' => 'array',
+            'owner_dob.*' => 'nullable',
+        ]);
 
-        return redirect()->route('crm.customers.edit', $result['customers']->id)->with('success', 'Customer created successfully.');
+        try {
+            // dd($validate);
+            $result = $this->service->create($validate, $customerShipping, $customerOwner);
+
+            return redirect()->route('crm.customers.edit', $result['customers']->id)->with('success', 'Customer created successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
     }
-    catch (\Exception $e) {
-        return redirect()->back()->with('error', $e->getMessage());
-    }
-    
-}
     public function approve($id)
     {
         $customer = Customer::findOrFail($id);
@@ -158,6 +157,7 @@ class CustomerController extends Controller
 
         $customer->createUser();
         $customer->save();
+        $this->service->dummyTransactionForOpeningBalance($customer);
 
         return redirect()->route('crm.customers.index')->with('success', 'Customer approved successfully.');
     }
@@ -192,20 +192,21 @@ class CustomerController extends Controller
         return null;
     }
 
-    public function customerSettings($id, Request $request){
+    public function customerSettings($id, Request $request)
+    {
         $customer = CustomerSetting::where('customer_id', $id)->first();
         // dd($data['customer']);
-        if($customer == null){
-             $data['customer'] = Customer::findOrFail($id);
-        }else{
+        if ($customer == null) {
+            $data['customer'] = Customer::findOrFail($id);
+        } else {
             $data['customer'] = $customer;
         }
         // dd($data['customer']);
         $data['customerRatings'] = CustomerRating::all();
         $data['percentageTypes'] = Tag::all();
         $data['brokers'] = Broker::activeBrokers()->get();
-        
-        $data['products'] = ProductCatalog::with('tag')->get();      
+
+        $data['products'] = ProductCatalog::with('tag')->get();
         return view('CRM::customer.settings', $data);
     }
     public function getBrokerDetails(Request $request)
@@ -213,11 +214,12 @@ class CustomerController extends Controller
         $broker = Broker::with(['brokerCommission', 'brokerCommission.PercentageType'])->find($request->id);
         return response()->json($broker);
     }
-    public function customerSettingStore($id, Request $request){
+    public function customerSettingStore($id, Request $request)
+    {
 
         // try {
-            $this->customerSetting->customerSettingStore($request);
-            return redirect()->route('crm.customers.settings', $request->customer_id)->with('success', 'Customer Settings updated successfully.');
+        $this->customerSetting->customerSettingStore($request);
+        return redirect()->route('crm.customers.settings', $request->customer_id)->with('success', 'Customer Settings updated successfully.');
         // }
         // catch (\Exception $e) {
         //     return redirect()->back()->with('error', $e->getMessage());
@@ -225,21 +227,23 @@ class CustomerController extends Controller
 
     }
 
-    public function editBrokerWithSettings($id, Request $request){
+    public function editBrokerWithSettings($id, Request $request)
+    {
         $data['broker'] = Broker::find($id);
         $data['customers'] = Customer::all();
         $data['percentageTypes'] = Tag::all();
         return view("CRM::customer.broker", $data);
     }
 
-    public function updateBrokerWithSettings(Request $request) {
+    public function updateBrokerWithSettings(Request $request)
+    {
         $brokerCommission = BrokerCommission::where("broker_id", $request->broker_id)->delete();
         $broker = Broker::find($request->broker_id);
-    
+
         $broker->update([
             "commission_type" => $request->commission_type
         ]);
-    
+
         if ($request->commission_type == 1 && $request->has('percentage_type')) {
             foreach ($request->percentage_type as $key => $percentageType) {
                 if ($percentageType != null) {
@@ -261,10 +265,10 @@ class CustomerController extends Controller
                 ]);
             }
         }
-    
+
         return response()->json(['success' => true, 'message' => 'Broker Commission updated successfully.']);
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -294,7 +298,7 @@ class CustomerController extends Controller
             $options = new Options();
             $options->setIsHtml5ParserEnabled(true);
             $options->setIsRemoteEnabled(true);
-            
+
             $dompdf = new Dompdf($options);
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'portrait');
@@ -307,9 +311,9 @@ class CustomerController extends Controller
         return view("CRM::customer.show", $data);
     }
 
-    
 
-    
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -318,7 +322,7 @@ class CustomerController extends Controller
     {
         $data['customerTypes'] = CustomerType::pluck('name', 'id');
         $data['customers'] = Customer::get();
-        $data['employees'] = Employee::pluck('full_name','id');
+        $data['employees'] = Employee::pluck('full_name', 'id');
         $data['areas'] = Area::get();
         $data['customer'] = $customer;
         return view("CRM::customer.edit", $data);
@@ -336,8 +340,8 @@ class CustomerController extends Controller
             'phone' => ['required', 'regex:/^(?:\+?88|01)?01[3-9]\d{8}$/'],
             'email' => 'nullable|email|max:255',
             'contact_for_sms' => 'nullable|string|max:20',
-            'user_ref_id'=> 'required|exists:employees,id',
-            'customer_ref_id'=> 'nullable|exists:customers,id',
+            'user_ref_id' => 'required|exists:employees,id',
+            'customer_ref_id' => 'nullable|exists:customers,id',
             'customer_type' => 'required|integer',
             'address' => 'required|string',
             'nid' => 'nullable|string|max:255',
@@ -348,7 +352,7 @@ class CustomerController extends Controller
             'trade_license' => 'nullable',
             'signature' => 'nullable',
             'remarks' => 'nullable|string',
-            'logo'=> 'nullable',
+            'logo' => 'nullable',
             'customer_id' => 'nullable',
         ]);
 
@@ -360,22 +364,22 @@ class CustomerController extends Controller
             'shipping_phone' => 'array',
             'shipping_phone.*' => 'nullable|string',
         ]);
-    
+
         $customerOwner = $request->validate([
-            'owner_name'=> 'array',
+            'owner_name' => 'array',
             'owner_name.*' => 'nullable|string|max:255',
-            'owner_designation'=> 'array',
-            'owner_designation.*' => 'nullable', 
-            'owner_mobile'=> 'array',
-            'owner_mobile.*'=> 'nullable',
-            'owner_email'=> 'array',
-            'owner_email.*'=> 'nullable',
-            'owner_dob'=> 'array',
-            'owner_dob.*'=> 'nullable',
+            'owner_designation' => 'array',
+            'owner_designation.*' => 'nullable',
+            'owner_mobile' => 'array',
+            'owner_mobile.*' => 'nullable',
+            'owner_email' => 'array',
+            'owner_email.*' => 'nullable',
+            'owner_dob' => 'array',
+            'owner_dob.*' => 'nullable',
         ]);
         $result = $this->service->update($customer, $validate, $customerShipping, $customerOwner);
 
-        return redirect()->route('crm.customers.edit', $customer->id )->with('success', 'Customer updated successfully.');
+        return redirect()->route('crm.customers.edit', $customer->id)->with('success', 'Customer updated successfully.');
     }
 
     /**
@@ -388,8 +392,9 @@ class CustomerController extends Controller
         return redirect()->route('crm.customers.index')->with('success', 'Customer deleted successfully.');
     }
 
-    public function countCustomer(){
-        return response()->json(["count" => $this->service->countCustomer(),"current_month" =>$this->service->countCustomerCurrentMonth(), "previous_month" => $this->service->countCustomerPreviousMonth()]);
+    public function countCustomer()
+    {
+        return response()->json(["count" => $this->service->countCustomer(), "current_month" => $this->service->countCustomerCurrentMonth(), "previous_month" => $this->service->countCustomerPreviousMonth()]);
     }
 
     /**
@@ -408,11 +413,11 @@ class CustomerController extends Controller
     public function downloadSampleCSV()
     {
         $headers = [
-            'Content-Type'        => 'text/csv',
+            'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="sample_customers.csv"',
-            'Pragma'              => 'no-cache',
-            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires'             => '0'
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
         ];
 
         $columns = [
@@ -514,13 +519,13 @@ class CustomerController extends Controller
         return response()->streamDownload($callback, 'sample_customers.csv', $headers);
     }
 
-public function insertFromCSV(Request $request)
-{
-    $file = $request->file('csv_file');
-    $filename = $file->getClientOriginalName();
-    $path = $file->storeAs('public', $filename);
-    $this->service->insertFromCSV($filename);
-    return redirect()->route('crm.customers.index')->with('success', 'Customer imported successfully.');
-}
+    public function insertFromCSV(Request $request)
+    {
+        $file = $request->file('csv_file');
+        $filename = $file->getClientOriginalName();
+        $path = $file->storeAs('public', $filename);
+        $this->service->insertFromCSV($filename);
+        return redirect()->route('crm.customers.index')->with('success', 'Customer imported successfully.');
+    }
 
 }

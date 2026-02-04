@@ -5,6 +5,7 @@ namespace Modules\CRM\Models\Customer;
 use App\Models\AccessControl\Role;
 use App\Models\BaseModel;
 use App\Models\User;
+use Modules\Account\Models\Transaction;
 use Modules\HRMS\Models\Employee;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -172,6 +173,10 @@ class Customer extends BaseModel
     public function customerSetting()
     {
         return $this->hasMany(CustomerSetting::class, 'customer_id');
+    }
+    public function setting()
+    {
+        return $this->hasOne(CustomerSetting::class, 'customer_id');
     }
 
     public function dailyCall()
@@ -463,6 +468,11 @@ class Customer extends BaseModel
     public function usgOrOpgLicenseRequisitions()
     {
         return $this->hasMany(UsgOrOpgLicenseRequisition::class);
+    }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transactionable');
     }
 
 

@@ -4,6 +4,7 @@ namespace Modules\CRM\Services\Customer;
 
 use App\Traits\S3FileHandler;
 use Carbon\Carbon;
+use Modules\Account\Models\Account;
 use Modules\CRM\Models\Customer\Broker;
 use Modules\CRM\Models\Customer\BrokerCustomerAttached;
 use Modules\CRM\Models\Customer\Customer;
@@ -102,7 +103,7 @@ class CustomerService
             'vat_status' => 0,
             'is_document_return' => 0,
             'service_applicable' => 0,
-            'discount_type' =>  0,
+            'discount_type' => 0,
         ]);
 
         return $result;
@@ -220,6 +221,42 @@ class CustomerService
         return Customer::query()->whereMonth('created_at', Carbon::now()->subMonth()->month)->count();
     }
 
+    public function dummyTransactionForOpeningBalance(Customer $customer)
+    {
+        $openingBalance = $customer->setting?->opening_balance ?? 0;
+
+        if ($openingBalance != 0) {
+            //debit
+            $customerReceivable = $customer->getAccount();
+            $openingBalanceAdjestmentAccount = Account::where('account_subsidiary_id', 3004)->where('name', 'Opening Balance Adjustment')->first();
+            if (!$customerReceivable || !$openingBalanceAdjestmentAccount) {
+                throw new \Exception('Account not found for transaction.');
+            }
+
+            //create transaction
+            $customer->transactions()->create([
+                'account_id' => $customerReceivable->id,
+                'balance_type' => 'debit',
+                'invoice_no' => $customer->company_name,
+                'debit_amount' => $openingBalance,
+                'credit_amount' => 0,
+                'description' => "Invoice for Sales Order #" . $customer->company_name,
+                'transaction_date' => date('05-10-2021')
+            ]);
+
+            //credit
+            $customer->transactions()->create([
+                'account_id' => $openingBalanceAdjestmentAccount->id,
+                'balance_type' => 'credit',
+                'invoice_no' => $customer->company_name,
+                'debit_amount' => 0,
+                'credit_amount' => $openingBalance,
+                'description' => "Invoice for Sales Order #" . $customer->company_name,
+                'transaction_date' => date('05-10-2021')
+            ]);
+        }
+    }
+
     public function insertFromCSV($filename)
     {
         $path = storage_path('app/public/' . $filename);
@@ -269,19 +306,19 @@ class CustomerService
 
                 // Prepare data for creating a Customer record.
                 $customerData = [
-                    'customer_id'     => $data['customer_id'] ?? null,
-                    'company_name'    => $data['company_name'] ?? null,
+                    'customer_id' => $data['customer_id'] ?? null,
+                    'company_name' => $data['company_name'] ?? null,
                     'company_place_id' => $data['company_place_id'] ?? null,
-                    'phone'           => $data['phone'] ?? null,
-                    'email'           => $data['email'] ?? null,
+                    'phone' => $data['phone'] ?? null,
+                    'email' => $data['email'] ?? null,
                     'contact_for_sms' => $data['contact_for_sms'] ?? null,
-                    'user_ref_id'     => $data['user_ref_id'] ?? null,
+                    'user_ref_id' => $data['user_ref_id'] ?? null,
                     'customer_ref_id' => $data['customer_ref_id'] ?? null,
-                    'customer_type'   => $data['customer_type_id'] ?? null,
-                    'address'         => $data['address'] ?? null,
-                    'nid'             => $data['nid'] ?? null,
-                    'remarks'         => $data['remarks'] ?? null,
-                    'status'          => 2,
+                    'customer_type' => $data['customer_type_id'] ?? null,
+                    'address' => $data['address'] ?? null,
+                    'nid' => $data['nid'] ?? null,
+                    'remarks' => $data['remarks'] ?? null,
+                    'status' => 2,
                 ];
 
                 // Create the Customer record.
@@ -290,10 +327,10 @@ class CustomerService
                 // Insert shipping information if provided.
                 if (!empty($data['ship_to']) && !empty($data['shipping_address'])) {
                     CustomerShippingNew::create([
-                        'customer_id'      => $customer->id,
-                        'ship_to'          => $data['ship_to'],
+                        'customer_id' => $customer->id,
+                        'ship_to' => $data['ship_to'],
                         'shipping_address' => $data['shipping_address'],
-                        'shipping_phone'   => $data['shipping_phone'] ?? null,
+                        'shipping_phone' => $data['shipping_phone'] ?? null,
                     ]);
                 }
 
@@ -307,29 +344,29 @@ class CustomerService
 
                     $ownerDesignationId = array_search($data['owner_designation'] ?? '', $designations);
                     CustomerOwner::create([
-                        'customer_id'       => $customer->id,
-                        'owner_name'        => $data['owner_name'],
+                        'customer_id' => $customer->id,
+                        'owner_name' => $data['owner_name'],
                         'owner_designation' => $ownerDesignationId,
-                        'owner_mobile'      => $data['owner_mobile'] ?? null,
-                        'owner_email'       => $data['owner_email'] ?? null,
-                        'owner_dob'         => $data['owner_dob'] ?? null,
+                        'owner_mobile' => $data['owner_mobile'] ?? null,
+                        'owner_email' => $data['owner_email'] ?? null,
+                        'owner_dob' => $data['owner_dob'] ?? null,
                     ]);
                 }
 
                 // Create the Customer settings record.
                 $customerSettings = CustomerSetting::create([
-                    'customer_id'             => $customer->id,
-                    'customer_rating'         => $data['customer_rating'] ?? 1,
-                    'customer_status'         => $data['customer_status'] ?? 1,
-                    'credit_limit'            => $data['credit_limit'] ?? 0,
+                    'customer_id' => $customer->id,
+                    'customer_rating' => $data['customer_rating'] ?? 1,
+                    'customer_status' => $data['customer_status'] ?? 1,
+                    'credit_limit' => $data['credit_limit'] ?? 0,
                     'additional_credit_limit' => $data['additional_credit_limit'] ?? 0,
-                    'opening_balance'         => $data['opening_balance'] ?? 0,
-                    'is_condition_bill'       => $data['is_condition_bill'] ?? 0,
-                    'minimum_condition_bill'  => $data['minimum_condition_bill'] ?? 1,
-                    'vat_status'              => $data['vat_status'] ?? 0,
-                    'is_document_return'      => $data['is_document_return'] ?? 0,
-                    'service_applicable'      => $data['service_applicable'] ?? 0,
-                    'discount_type'           => $data['discount_type'] ?? 0,
+                    'opening_balance' => $data['opening_balance'] ?? 0,
+                    'is_condition_bill' => $data['is_condition_bill'] ?? 0,
+                    'minimum_condition_bill' => $data['minimum_condition_bill'] ?? 1,
+                    'vat_status' => $data['vat_status'] ?? 0,
+                    'is_document_return' => $data['is_document_return'] ?? 0,
+                    'service_applicable' => $data['service_applicable'] ?? 0,
+                    'discount_type' => $data['discount_type'] ?? 0,
                 ]);
 
                 // Handle multiple discounts (percentage-based)

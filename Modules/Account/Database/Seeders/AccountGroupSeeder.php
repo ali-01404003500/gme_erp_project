@@ -11,7 +11,7 @@ class AccountGroupSeeder extends Seeder
 {
     public function run()
     {
-      
+
 
         $accountGroup = [
             [
@@ -19,40 +19,40 @@ class AccountGroupSeeder extends Seeder
                 'name' => 'Assets',
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2,
                 'name' => 'Liabilities',
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 3,
                 'name' => 'Equity',
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 4,
                 'name' => 'Income',
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5,
                 'name' => 'Expenses',
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
         ];
 
@@ -63,101 +63,101 @@ class AccountGroupSeeder extends Seeder
             );
         }
 
-/**
- ACCOUNT_CATEGORY = [
-    # ASSET -> CURRENT_ASSET
-    ('CASH', 'Cash'),
-    ('BANK', 'Bank'),
-    ('PAYMENT_CLEARING', 'Payment Clearing'),
-    ('INPUT_TAX', 'Input Tax'),
-    ('ACCOUNTS_RECEIVABLE', 'Accounts Receivable'),
-    ('VENDOR_ADVANCE', 'Vendor Advance'),
-    # ASSET -> FIXED_ASSET
-    ('STOCK', 'Stock'),
-    ('INTANGIBLE_ASSETS', 'Intangible Assets'),
-    ('OTHER_ASSET', 'Other Asset'),
-    # LIABILITY -> CURRENT_LIABILITY
-    ('ACCOUNTS_PAYABLE', 'Accounts Payable'),
-    ('ACCRUED_LIABILITIES', 'Accrued Liabilities'),
-    ('CUSTOMER_ADVANCE', 'Customer Advance'),
-    ('SHIPPING_ADVANCE', 'Shipping Advance'),
-    ('UNEARNED_REVENUE', 'Unearned Revenue'),
-    # LIABILITY -> LONG_TERM_LIABILITY
-    ('CREDIT_CARD', 'Credit Card'),
-    ('TAX_PAYABLE', 'Tax Payable'),
-    ('OVERSEAS_TAX_PAYABLE', 'Overseas Tax Payable'),
-    ('OTHER_LIABILITY', 'Other Liability'),
-    # EQUITY -> OWNER_EQUITY
-    ('RETAINED_EARNINGS', 'Retained Earnings'),
-    ('COMMON_STOCK', 'Common Stock'),
-    ('DIVIDENDS', 'Dividends'),
-    ('OTHER_EQUITY', 'Other Equity'),
-    # INCOME -> SALES_INCOME
-    ('SALES_REVENUE', 'Sales Revenue'),
-    # INCOME -> SERVICE_INCOME
-    ('SERVICE_REVENUE', 'Service Revenue'),
-    # INCOME -> OTHER_INCOME
-    ('INTEREST_INCOME', 'Interest Income'),
-    ('RENTAL_INCOME', 'Rental Income'),
-    ('ADJUSTMENT_INCOME', 'Adjustment Income'),
-    ('OTHER_INCOME_SOURCE', 'Other Income Source'),
-    # EXPENSE -> GENERAL_EXPENSE
-    ('OFFICE_SUPPLIES', 'Office Supplies'),
-    ('UTILITIES', 'Utilities'),
-    ('INTERNET_BILL', 'Internet Bill'),
-    ('T_T_AND_MOBILE_BILL', 'T&T and Mobile Bill'),
-    ('PRINTING_STATIONERY', 'Printing & Stationery'),
-    ('BANK_CHARGES', 'Bank Charges'),
-    ('ADJUSTMENT_EXPENSE', 'Adjustment Expense'),
-    ('OTHER_EXPENSES', 'Other Expenses'),
-    # EXPENSE -> COST_OF_GOODS_SOLD
-    ('DIRECT_EXPENSE', 'Direct Expense'),
-    ('INDIRECT_EXPENSE', 'Indirect Expense'),
-    ('PACKING_MATERIALS', 'Packing Materials'),
-    ('CLEANING_MATERIALS', 'Cleaning Materials'),
-    # EXPENSE -> PAYROLL_EXPENSE
-    ('SALARIES_WAGES', 'Salaries and Wages'),
-    ('BENEFITS', 'Employee Benefits (Medical, Welfare)'),
-    ('ALLOWANCES', 'Allowances'),
-    ('BONUSES', 'Bonuses (Eid Bonus, Tips)'),
-    ('STAFF_MEALS', 'Staff Meals'),
-    ('STAFF_WELFARE', 'Staff Welfare'),
-    ('INCENTIVES', 'Incentives'),
-    ('CONVEYANCE', 'Conveyance'),
-    # EXPENSE -> DEPRECIATION
-    ('ACCUMULATED_DEPRECIATION', 'Accumulated Depreciation'),
-    # EXPENSE -> OPERATIONAL_EXPENSE
-    ('RENT', 'Rent'),
-    ('REPAIR_MAINTENANCE', 'Repair & Maintenance'),
-    ('SOFTWARE_MAINTENANCE', 'Software Maintenance'),
-    ('INSURANCE_PREMIUM', 'Insurance Premium'),
-    ('SECURITY_CHARGES', 'Security Charges'),
-    ('PEST_CONTROL', 'Pest Control'),
-    ('PROMOTIONAL_EXPENSES', 'Promotional Expenses'),
-    ('MARKETING_EXPENSES', 'Marketing Expenses'),
-    ('TOUR_TRAVELS', 'Tour & Travels'),
-    ('MEETING_EXPENSES', 'Meeting Expenses'),
-    ('ROYALTY_FEE', 'Royalty Fee'),
-    ('DELIVERY_EXPENSE', 'Delivery Expense'),
-    ('TRAINING_EXPENSES', 'Training Expenses'),
-    ('GARDENING_EXPENSE', 'Gardening Expense'),
-    ('CHANGE_COMMISSION', 'Change Commission'),
-    ('LUNCH_FOR_TRAINER', 'Lunch for Trainer'),
-    ('COMPLEMENTARY_BILL', 'Complementary Bill'),
-    ('OTHERS', 'Others'),
-]
- */
-        
+        /**
+         ACCOUNT_CATEGORY = [
+            # ASSET -> CURRENT_ASSET
+            ('CASH', 'Cash'),
+            ('BANK', 'Bank'),
+            ('PAYMENT_CLEARING', 'Payment Clearing'),
+            ('INPUT_TAX', 'Input Tax'),
+            ('ACCOUNTS_RECEIVABLE', 'Accounts Receivable'),
+            ('VENDOR_ADVANCE', 'Vendor Advance'),
+            # ASSET -> FIXED_ASSET
+            ('STOCK', 'Stock'),
+            ('INTANGIBLE_ASSETS', 'Intangible Assets'),
+            ('OTHER_ASSET', 'Other Asset'),
+            # LIABILITY -> CURRENT_LIABILITY
+            ('ACCOUNTS_PAYABLE', 'Accounts Payable'),
+            ('ACCRUED_LIABILITIES', 'Accrued Liabilities'),
+            ('CUSTOMER_ADVANCE', 'Customer Advance'),
+            ('SHIPPING_ADVANCE', 'Shipping Advance'),
+            ('UNEARNED_REVENUE', 'Unearned Revenue'),
+            # LIABILITY -> LONG_TERM_LIABILITY
+            ('CREDIT_CARD', 'Credit Card'),
+            ('TAX_PAYABLE', 'Tax Payable'),
+            ('OVERSEAS_TAX_PAYABLE', 'Overseas Tax Payable'),
+            ('OTHER_LIABILITY', 'Other Liability'),
+            # EQUITY -> OWNER_EQUITY
+            ('RETAINED_EARNINGS', 'Retained Earnings'),
+            ('COMMON_STOCK', 'Common Stock'),
+            ('DIVIDENDS', 'Dividends'),
+            ('OTHER_EQUITY', 'Other Equity'),
+            # INCOME -> SALES_INCOME
+            ('SALES_REVENUE', 'Sales Revenue'),
+            # INCOME -> SERVICE_INCOME
+            ('SERVICE_REVENUE', 'Service Revenue'),
+            # INCOME -> OTHER_INCOME
+            ('INTEREST_INCOME', 'Interest Income'),
+            ('RENTAL_INCOME', 'Rental Income'),
+            ('ADJUSTMENT_INCOME', 'Adjustment Income'),
+            ('OTHER_INCOME_SOURCE', 'Other Income Source'),
+            # EXPENSE -> GENERAL_EXPENSE
+            ('OFFICE_SUPPLIES', 'Office Supplies'),
+            ('UTILITIES', 'Utilities'),
+            ('INTERNET_BILL', 'Internet Bill'),
+            ('T_T_AND_MOBILE_BILL', 'T&T and Mobile Bill'),
+            ('PRINTING_STATIONERY', 'Printing & Stationery'),
+            ('BANK_CHARGES', 'Bank Charges'),
+            ('ADJUSTMENT_EXPENSE', 'Adjustment Expense'),
+            ('OTHER_EXPENSES', 'Other Expenses'),
+            # EXPENSE -> COST_OF_GOODS_SOLD
+            ('DIRECT_EXPENSE', 'Direct Expense'),
+            ('INDIRECT_EXPENSE', 'Indirect Expense'),
+            ('PACKING_MATERIALS', 'Packing Materials'),
+            ('CLEANING_MATERIALS', 'Cleaning Materials'),
+            # EXPENSE -> PAYROLL_EXPENSE
+            ('SALARIES_WAGES', 'Salaries and Wages'),
+            ('BENEFITS', 'Employee Benefits (Medical, Welfare)'),
+            ('ALLOWANCES', 'Allowances'),
+            ('BONUSES', 'Bonuses (Eid Bonus, Tips)'),
+            ('STAFF_MEALS', 'Staff Meals'),
+            ('STAFF_WELFARE', 'Staff Welfare'),
+            ('INCENTIVES', 'Incentives'),
+            ('CONVEYANCE', 'Conveyance'),
+            # EXPENSE -> DEPRECIATION
+            ('ACCUMULATED_DEPRECIATION', 'Accumulated Depreciation'),
+            # EXPENSE -> OPERATIONAL_EXPENSE
+            ('RENT', 'Rent'),
+            ('REPAIR_MAINTENANCE', 'Repair & Maintenance'),
+            ('SOFTWARE_MAINTENANCE', 'Software Maintenance'),
+            ('INSURANCE_PREMIUM', 'Insurance Premium'),
+            ('SECURITY_CHARGES', 'Security Charges'),
+            ('PEST_CONTROL', 'Pest Control'),
+            ('PROMOTIONAL_EXPENSES', 'Promotional Expenses'),
+            ('MARKETING_EXPENSES', 'Marketing Expenses'),
+            ('TOUR_TRAVELS', 'Tour & Travels'),
+            ('MEETING_EXPENSES', 'Meeting Expenses'),
+            ('ROYALTY_FEE', 'Royalty Fee'),
+            ('DELIVERY_EXPENSE', 'Delivery Expense'),
+            ('TRAINING_EXPENSES', 'Training Expenses'),
+            ('GARDENING_EXPENSE', 'Gardening Expense'),
+            ('CHANGE_COMMISSION', 'Change Commission'),
+            ('LUNCH_FOR_TRAINER', 'Lunch for Trainer'),
+            ('COMPLEMENTARY_BILL', 'Complementary Bill'),
+            ('OTHERS', 'Others'),
+        ]
+         */
+
         $accountControl = [
             [
-                'id' => 1000, 
+                'id' => 1000,
                 'name' => 'Current Assets',
                 'account_group_id' => 1,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1050,
@@ -166,8 +166,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1070,
@@ -176,8 +176,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1090,
@@ -186,8 +186,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
             //Liabilities
@@ -198,8 +198,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2010,
@@ -208,8 +208,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2020,
@@ -218,8 +218,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2030,
@@ -228,8 +228,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             // Equity
             [
@@ -239,8 +239,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
             // Income
@@ -251,8 +251,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 4010,
@@ -261,8 +261,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 4020,
@@ -271,18 +271,18 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id' => 4030, 
+                'id' => 4030,
                 'name' => 'Direct Income',
                 'account_group_id' => 4,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 4040,
@@ -291,9 +291,9 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
-            ], 
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
             [
                 'id' => 4050,
                 'name' => 'Sales Accounts',
@@ -301,110 +301,110 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
             // Expense
             [
                 'id' => 5000,
-                'name'=> 'General Expense',
+                'name' => 'General Expense',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5010,
-                'name'=> 'Cost of Goods Sold',
+                'name' => 'Cost of Goods Sold',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5020,
-                'name'=> 'Payroll Expense',
+                'name' => 'Payroll Expense',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5030,
-                'name'=> 'Depreciation',
+                'name' => 'Depreciation',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5040,
-                'name'=> 'Administration Expense',
+                'name' => 'Administration Expense',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5050,
-                'name'=> 'Direct Expense',
+                'name' => 'Direct Expense',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5060,
-                'name'=> 'Financial Expense',
+                'name' => 'Financial Expense',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5070,
-                'name'=> 'Indirect Expense',
+                'name' => 'Indirect Expense',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5080,
-                'name'=> 'Selling & Distribution Expense',
+                'name' => 'Selling & Distribution Expense',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 5090,
-                'name'=> 'Service Overhead',
+                'name' => 'Service Overhead',
                 'account_group_id' => 5,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ]
         ];
 
@@ -418,7 +418,7 @@ class AccountGroupSeeder extends Seeder
         // AccountControl::updateOrInsert($accountControl);
 
         $accountSubsidiarys = [
-        //Current Asset
+            //Current Asset
             [
                 'id' => 1001,
                 'name' => 'Cash',
@@ -427,8 +427,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1002,
@@ -438,8 +438,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1003,
@@ -449,8 +449,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1004,
@@ -460,8 +460,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
             [
@@ -472,8 +472,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1006,
@@ -483,8 +483,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1007,
@@ -494,8 +494,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
 
             ],
             [
@@ -506,8 +506,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1009,
@@ -517,8 +517,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1010,
@@ -528,10 +528,10 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
-            
+
             [
                 'id' => 1011,
                 'name' => 'Security Deposit for Tender',
@@ -540,8 +540,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1012,
@@ -551,8 +551,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1013,
@@ -562,8 +562,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1014,
@@ -573,8 +573,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1015,
@@ -584,8 +584,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1016,
@@ -595,8 +595,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1017,
@@ -606,8 +606,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1018,
@@ -617,8 +617,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1019,
@@ -628,8 +628,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1020,
@@ -653,8 +653,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1052,
@@ -664,8 +664,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 1053,
@@ -675,8 +675,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             //current Liabilities
             [
@@ -687,8 +687,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2002,
@@ -698,8 +698,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2003,
@@ -709,8 +709,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2004,
@@ -720,8 +720,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2005,
@@ -731,9 +731,9 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
-            ], 
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
             [
                 'id' => 2006,
                 'name' => 'Provisions',
@@ -742,9 +742,9 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
-            ], 
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
             [
                 'id' => 2007,
                 'name' => 'Expenses Payable',
@@ -753,8 +753,8 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 2008,
@@ -764,9 +764,9 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
-            ], 
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
             [
                 'id' => 2009,
                 'name' => 'Employee Cash',
@@ -791,236 +791,237 @@ class AccountGroupSeeder extends Seeder
             ],
             //Long Term Liabilities
             [
-                'id'=> 2011,
-                'name'=> 'Credit Card',
+                'id' => 2011,
+                'name' => 'Credit Card',
                 'account_group_id' => 2,
                 'account_control_id' => 2010,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 2012,
-                'name'=> 'Tax Payable',
+                'id' => 2012,
+                'name' => 'Tax Payable',
                 'account_group_id' => 2,
                 'account_control_id' => 2010,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 2013,
-                'name'=> 'Overseas Tax Payable',
+                'id' => 2013,
+                'name' => 'Overseas Tax Payable',
                 'account_group_id' => 2,
                 'account_control_id' => 2010,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 2014,
-                'name'=> 'Other Liability',
+                'id' => 2014,
+                'name' => 'Other Liability',
                 'account_group_id' => 2,
                 'account_control_id' => 2010,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=> 1,
+                'created_by' => 1,
+                'updated_by' => 1,
             ],
             //Capital Account(liabilities)
             [
-                'id'=> 2021,
-                'name'=> 'Rserve and Surplus',
+                'id' => 2021,
+                'name' => 'Rserve and Surplus',
                 'account_group_id' => 2,
                 'account_control_id' => 2020,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=> 1,
+                'created_by' => 1,
+                'updated_by' => 1,
             ],
             //Loan liabilities
             [
-                'id'=> 2031,
-                'name'=> 'Bank OD A/c',
+                'id' => 2031,
+                'name' => 'Bank OD A/c',
                 'account_group_id' => 2,
                 'account_control_id' => 2030,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=> 1,
+                'created_by' => 1,
+                'updated_by' => 1,
             ],
             [
-                'id'=> 2032,
-                'name'=> 'Loan from Others',
+                'id' => 2032,
+                'name' => 'Loan from Others',
                 'account_group_id' => 2,
                 'account_control_id' => 2030,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=> 1,
+                'created_by' => 1,
+                'updated_by' => 1,
             ],
             [
-                'id'=> 2033,
-                'name'=> 'Secured Loans',
+                'id' => 2033,
+                'name' => 'Secured Loans',
                 'account_group_id' => 2,
                 'account_control_id' => 2030,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=> 1,
+                'created_by' => 1,
+                'updated_by' => 1,
             ],
             [
-                'id'=> 2034,
-                'name'=> 'Unsecured Loans',
+                'id' => 2034,
+                'name' => 'Unsecured Loans',
                 'account_group_id' => 2,
                 'account_control_id' => 2030,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=> 1,
+                'created_by' => 1,
+                'updated_by' => 1,
             ],
 
             //Owner Equity
             [
-                'id'=> 3001,
-                'name'=> 'Retained Earnings',
+                'id' => 3001,
+                'name' => 'Retained Earnings',
                 'account_group_id' => 3,
                 'account_control_id' => 3000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 3002,
-                'name'=> 'Common Stock',
+                'id' => 3002,
+                'name' => 'Common Stock',
                 'account_group_id' => 3,
                 'account_control_id' => 3000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 3003,
-                'name'=> 'Dividends',
+                'id' => 3003,
+                'name' => 'Dividends',
                 'account_group_id' => 3,
                 'account_control_id' => 3000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 3004,
-                'name'=> 'Other Equity',
+                'id' => 3004,
+                'name' => 'Other Equity',
                 'account_group_id' => 3,
                 'account_control_id' => 3000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
+
             //Sales Income
             [
-                'id'=> 4001,
-                'name'=> 'Sales Income',
+                'id' => 4001,
+                'name' => 'Sales Income',
                 'account_group_id' => 4,
                 'account_control_id' => 4000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
 
             //Sales Discounts
             [
-                'id'=> 4002,
-                'name'=> 'Sales Discounts',
+                'id' => 4002,
+                'name' => 'Sales Discounts',
                 'account_group_id' => 4,
                 'account_control_id' => 4000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
             //Sales Returns & Allowances
             [
-                'id'=> 4003,
-                'name'=> 'Sales Returns & Allowances',
+                'id' => 4003,
+                'name' => 'Sales Returns & Allowances',
                 'account_group_id' => 4,
                 'account_control_id' => 4000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             //Service Income
             [
-                'id'=> 4011,
-                'name'=>  'Service Revenue',
+                'id' => 4011,
+                'name' => 'Service Revenue',
                 'account_group_id' => 4,
                 'account_control_id' => 4010,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             //OTHER_INCOME
             [
-                'id'=> 4021,
-                'name'=>  'Interest Income',
+                'id' => 4021,
+                'name' => 'Interest Income',
                 'account_group_id' => 4,
                 'account_control_id' => 4020,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 4022,
-                'name'=>  'Rental Income',
+                'id' => 4022,
+                'name' => 'Rental Income',
                 'account_group_id' => 4,
                 'account_control_id' => 4020,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 4023,
-                'name'=>  'Other Income Source',
+                'id' => 4023,
+                'name' => 'Other Income Source',
                 'account_group_id' => 4,
                 'account_control_id' => 4020,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
                 'id' => 4024,
@@ -1035,351 +1036,351 @@ class AccountGroupSeeder extends Seeder
             ],
             //DIRECT_INCOME
             [
-                'id'=> 4031,
-                'name'=>  'Other direct Income',
+                'id' => 4031,
+                'name' => 'Other direct Income',
                 'account_group_id' => 4,
                 'account_control_id' => 4030,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             //INDIRECT_INCOME
             [
-                'id'=> 4041,
-                'name'=>  'Other indirect Income',
+                'id' => 4041,
+                'name' => 'Other indirect Income',
                 'account_group_id' => 4,
                 'account_control_id' => 4040,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 4042,
-                'name'=>  'Discount',
+                'id' => 4042,
+                'name' => 'Discount',
                 'account_group_id' => 4,
                 'account_control_id' => 4040,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             // Sales Accounts
             [
-                'id'=> 4051,
-                'name'=>  'Sales(Faith)',
+                'id' => 4051,
+                'name' => 'Sales(Faith)',
                 'account_group_id' => 4,
                 'account_control_id' => 4050,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 4052,
-                'name'=>  'Sales(Kanghui)',
+                'id' => 4052,
+                'name' => 'Sales(Kanghui)',
                 'account_group_id' => 4,
                 'account_control_id' => 4050,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 4053,
-                'name'=>  'Sales(Medtronic)',
+                'id' => 4053,
+                'name' => 'Sales(Medtronic)',
                 'account_group_id' => 4,
                 'account_control_id' => 4050,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 1,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
-            
+
             // GENERAL EXPENSE
             [
-                'id'=> 5001,
-                'name'=>  'OFFICE_SUPPLIES',
+                'id' => 5001,
+                'name' => 'OFFICE_SUPPLIES',
                 'account_group_id' => 5,
                 'account_control_id' => 5000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 5002,
-                'name'=>  'UTILITIES',
+                'id' => 5002,
+                'name' => 'UTILITIES',
                 'account_group_id' => 5,
                 'account_control_id' => 5000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 5003,
-                'name'=>  'OTHER_EXPENSES',
+                'id' => 5003,
+                'name' => 'OTHER_EXPENSES',
                 'account_group_id' => 5,
                 'account_control_id' => 5000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 5004,
-                'name'=>  'Adjustment Expense',
+                'id' => 5004,
+                'name' => 'Adjustment Expense',
                 'account_group_id' => 5,
                 'account_control_id' => 5000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 5005,
-                'name'=>  'Bank Charges',
+                'id' => 5005,
+                'name' => 'Bank Charges',
                 'account_group_id' => 5,
                 'account_control_id' => 5000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
-            
-            
+
+
 
             //'COST OF GOODS SOLD'
             [
-                'id'=> 5011,
-                'name'=> 'DIRECT EXPENSE',
+                'id' => 5011,
+                'name' => 'DIRECT EXPENSE',
                 'account_group_id' => 5,
                 'account_control_id' => 5010,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 5010,
-                'name'=> 'INDIRECT EXPENSE',
+                'id' => 5010,
+                'name' => 'INDIRECT EXPENSE',
                 'account_group_id' => 5,
                 'account_control_id' => 5010,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
             //Payroll Expense
             [
-                'id'=> 5021,
-                'name'=> 'SALARIES_WAGES',
+                'id' => 5021,
+                'name' => 'SALARIES_WAGES',
                 'account_group_id' => 5,
                 'account_control_id' => 5020,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
             [
-                'id'=> 5022,
-                'name'=> 'BENEFITS',
+                'id' => 5022,
+                'name' => 'BENEFITS',
                 'account_group_id' => 5,
                 'account_control_id' => 5020,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
-             [
-                'id'=> 5023,
-                'name'=> ' Commission Expense ',
+            [
+                'id' => 5023,
+                'name' => ' Commission Expense ',
                 'account_group_id' => 5,
                 'account_control_id' => 5000,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
             ],
 
             //Depreciation
             [
-                'id'=> 5031,
-                'name'=> 'ACCUMULATED DEPRECIATION',
+                'id' => 5031,
+                'name' => 'ACCUMULATED DEPRECIATION',
                 'account_group_id' => 5,
                 'account_control_id' => 5030,
                 'branch_id' => 1,
                 'status' => 1,
                 'is_deletable' => 0,
-                'created_by'=>1,
-                'updated_by'=>1
+                'created_by' => 1,
+                'updated_by' => 1
 
             ],
-           //Administration Expense
-           [
-            'id'=> 5041,
-            'name'=> 'Salaries and Allowance Expense',
-            'account_group_id' => 5,
-            'account_control_id' => 5040,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            //Administration Expense
+            [
+                'id' => 5041,
+                'name' => 'Salaries and Allowance Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5040,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-           ],
-        //Direct Expense
-        [
-            'id'=> 5051,
-            'name'=> 'Purchase Accounts',
-            'account_group_id' => 5,
-            'account_control_id' => 5050,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            //Direct Expense
+            [
+                'id' => 5051,
+                'name' => 'Purchase Accounts',
+                'account_group_id' => 5,
+                'account_control_id' => 5050,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        [
-            'id'=> 5052,
-            'name'=> 'Discount Allowed',
-            'account_group_id' => 5,
-            'account_control_id' => 5050,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            [
+                'id' => 5052,
+                'name' => 'Discount Allowed',
+                'account_group_id' => 5,
+                'account_control_id' => 5050,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        [
-            'id'=> 5053,
-            'name'=> 'Others Expense',
-            'account_group_id' => 5,
-            'account_control_id' => 5050,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            [
+                'id' => 5053,
+                'name' => 'Others Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5050,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        //Financial Expense
-        [
-            'id'=> 5061,
-            'name'=> 'Interest on LTR',
-            'account_group_id' => 5,
-            'account_control_id' => 5060,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            //Financial Expense
+            [
+                'id' => 5061,
+                'name' => 'Interest on LTR',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        [
-            'id'=> 5062,
-            'name'=> 'Interest on OD',
-            'account_group_id' => 5,
-            'account_control_id' => 5060,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            [
+                'id' => 5062,
+                'name' => 'Interest on OD',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        //Indirect Expense
-        [
-            'id'=> 5071,
-            'name'=> 'Entertainment',
-            'account_group_id' => 5,
-            'account_control_id' => 5070,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            //Indirect Expense
+            [
+                'id' => 5071,
+                'name' => 'Entertainment',
+                'account_group_id' => 5,
+                'account_control_id' => 5070,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        [
-            'id'=> 5072,
-            'name'=> 'Rent , Rate Taxes',
-            'account_group_id' => 5,
-            'account_control_id' => 5070,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            [
+                'id' => 5072,
+                'name' => 'Rent , Rate Taxes',
+                'account_group_id' => 5,
+                'account_control_id' => 5070,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        //Selling & Distribution Expense
-        [
-            'id'=> 5081,
-            'name'=> 'Distribution Expenses',
-            'account_group_id' => 5,
-            'account_control_id' => 5080,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            //Selling & Distribution Expense
+            [
+                'id' => 5081,
+                'name' => 'Distribution Expenses',
+                'account_group_id' => 5,
+                'account_control_id' => 5080,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        [
-            'id'=> 5082,
-            'name'=> 'Marketing Expenses',
-            'account_group_id' => 5,
-            'account_control_id' => 5080,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            [
+                'id' => 5082,
+                'name' => 'Marketing Expenses',
+                'account_group_id' => 5,
+                'account_control_id' => 5080,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ],
-        //Service Overhead
-        [
-            'id'=> 5091,
-            'name'=> 'Service Overhead',
-            'account_group_id' => 5,
-            'account_control_id' => 5090,
-            'branch_id' => 1,
-            'status' => 1,
-            'is_deletable' => 0,
-            'created_by'=>1,
-            'updated_by'=>1
+            ],
+            //Service Overhead
+            [
+                'id' => 5091,
+                'name' => 'Service Overhead',
+                'account_group_id' => 5,
+                'account_control_id' => 5090,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
 
-        ]
+            ]
 
 
         ];
 
-        foreach($accountSubsidiarys as $key => $accountSubsidiary){
+        foreach ($accountSubsidiarys as $key => $accountSubsidiary) {
 
             AccountSubsidiary::updateOrInsert(['id' => $accountSubsidiary['id']], $accountSubsidiary);
-            
+
         }
 
         // AccountSubsidiary::updateOrInsert($accountSubsidiary);
@@ -1437,7 +1438,7 @@ class AccountGroupSeeder extends Seeder
         *
          */
 
-         $accounts = [
+        $accounts = [
             // Assets
             [
                 'name' => 'Cash-in-Hand',
@@ -1520,7 +1521,7 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'account_number' => '1800',
             ],
-            
+
             // Liabilities
             [
                 'name' => 'Accounts Payable',
@@ -1576,7 +1577,7 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'account_number' => '2500',
             ],
-            
+
             // Equity
             [
                 'name' => 'Retained Earnings',
@@ -1614,7 +1615,15 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'account_number' => '3300',
             ],
-            
+            [
+                'name' => 'Opening Balance Adjustment',
+                'account_group_id' => 3,
+                'account_control_id' => 3000,
+                'account_subsidiary_id' => 3004,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '3400',
+            ],
             // Income
             [
                 'name' => 'Sales Revenue',
@@ -1661,7 +1670,7 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'account_number' => '4400',
             ],
-            
+
             // Expenses
             [
                 'name' => 'Office Supplies',
@@ -1736,7 +1745,7 @@ class AccountGroupSeeder extends Seeder
                 'account_number' => '5700',
             ],
             [
-                'name'=> 'Salaries and Allowance Expense',
+                'name' => 'Salaries and Allowance Expense',
                 'account_group_id' => 5,
                 'account_control_id' => 5040,
                 'account_subsidiary_id' => 5041,
@@ -1748,17 +1757,18 @@ class AccountGroupSeeder extends Seeder
 
         foreach ($accounts as $key => $account) {
             Account::updateOrCreate([
-                'name' => $account['name'],
                 'account_group_id' => $account['account_group_id'],
                 'account_control_id' => $account['account_control_id'],
                 'account_subsidiary_id' => $account['account_subsidiary_id'],
+                'account_number' => $account['account_number'],
+            ], [
+                'name' => $account['name'],
                 'branch_id' => $account['branch_id'],
                 'is_deletable' => isset($account['is_deletable']) ? $account['is_deletable'] : 0, // Default to 0 if not set
-                'account_number' => $account['account_number'],
             ]);
         }
 
-        
+
 
     }
 }
