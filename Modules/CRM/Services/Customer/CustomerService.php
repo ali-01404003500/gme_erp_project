@@ -237,7 +237,7 @@ class CustomerService
             $customer->transactions()->create([
                 'account_id' => $customerReceivable->id,
                 'balance_type' => 'debit',
-                'invoice_no' => $customer->company_name,
+                'invoice_no' => $customer->customer_id ?? $customer->id,
                 'debit_amount' => $openingBalance,
                 'credit_amount' => 0,
                 'description' => "Opening Balance Adjustment #" . $customer->company_name,
@@ -248,7 +248,7 @@ class CustomerService
             $customer->transactions()->create([
                 'account_id' => $openingBalanceAdjestmentAccount->id,
                 'balance_type' => 'credit',
-                'invoice_no' => $customer->company_name,
+                'invoice_no' => $customer->customer_id ?? $customer->id,
                 'debit_amount' => 0,
                 'credit_amount' => $openingBalance,
                 'description' => "Opening Balance Adjustment #" . $customer->company_name,
