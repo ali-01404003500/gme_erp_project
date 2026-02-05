@@ -186,8 +186,10 @@ class GeneralNotificationController extends Controller
                 'description' => 'New OTP verification request pending approval',
                 'action' =>   $this->service->actionBuilder(GeneralNotificationController::class, 'handleOtpVerification', [$requestId]),
             ];
-            $this->service->store($notificationData, [1]);
+            //$this->service->store($notificationData, [1]);
             // dd($notificationData);
+
+            $this->handleOtpVerification($requestId);
 
             return response()->json([
                 'success' => true,
@@ -257,7 +259,7 @@ class GeneralNotificationController extends Controller
         $this->service->store($notificationData, $permittedUsers??[1]);
 
 
-        echo "<script>if (window.history.length > 1) { window.history.back(); } else { window.close(); }</script>";
-        exit;
+       // echo "<script>if (window.history.length > 1) { window.history.back(); } else { window.close(); }</script>";
+       // exit;
     }
 }
