@@ -94,6 +94,8 @@
                                     <th>Account Complain Details</th>
                                     <th>Service Complain</th>
                                     <th>Service Complain Details</th>
+                                    <th>Sales Complain</th>
+                                    <th>Sales Complain Details</th>
                                     <th>Requirement of Product</th>
                                     <th>Requirement of Product Details</th>
                                     <th class="no-content">Action</th>
@@ -122,6 +124,8 @@
                                         <td>{{ $value->complains_details }}</td>
                                         <td>{{ $value->is_service_complain == 1 ? 'Yes' : 'No' }}</td>
                                         <td>{{ $value->service_complain_details }}</td>
+                                        <td>{{ $value->is_sales_complain == 1 ? 'Yes' : 'No' }}</td> 
+                                        <td>{{ $value->sales_complain_details }}</td>
                                         <td>{{ $value->is_product_required == 1 ? 'Yes' : 'No' }}</td>
                                         <td>{{ $value->product_required_details }}</td>
                                         <td>

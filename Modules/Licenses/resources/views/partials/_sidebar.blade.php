@@ -6,22 +6,22 @@
         <span class="toggle-icon"></span>
     </a>
     <ul>
-        @if (hasPermission('licenses.dongle-or-serial-entries.index'))
-            <li><a href="{{ route('licenses.dongle-or-serial-entries.index') }}"
+        @if (hasPermission('licenses.dongle-or-serial-entries.create'))
+            <li><a href="{{ route('licenses.dongle-or-serial-entries.create') }}"
                     class="{{ request()->routeIs('licenses.dongle-or-serial-entries.*') ? 'active' : '' }}">
                     <span class="nav-icon fa fa-list" style="margin-right: 20px;"></span>
                     {{ t_('menu.Dongle/Serial Entries') }}</a>
             </li>
         @endif
-        @if (hasPermission('licenses.usg-opg-license-requisitions.index'))
-            <li><a href="{{ route('licenses.usg-opg-license-requisitions.index') }}"
+        @if (hasPermission('licenses.usg-opg-license-requisitions.create'))
+            <li><a href="{{ route('licenses.usg-opg-license-requisitions.create') }}"
                     class="{{ request()->routeIs('licenses.usg-opg-license-requisitions.*') ? 'active' : '' }}">
                     <span class="nav-icon fa fa-file" style="margin-right: 20px;"></span>
                     {{ t_('menu.USG/OPG License Requisitions') }}</a>
             </li>
         @endif
-        @if (hasPermission('licenses.cbc-license-requisitions.index'))
-            <li><a href="{{ route('licenses.cbc-license-requisitions.index') }}"
+        @if (hasPermission('licenses.cbc-license-requisitions.create'))
+            <li><a href="{{ route('licenses.cbc-license-requisitions.create') }}"
                     class="{{ request()->routeIs('licenses.cbc-license-requisitions.*') ? 'active' : '' }}">
                     <span class="nav-icon fa fa-file-archive" style="margin-right: 20px;"></span>
                     {{ t_('menu.CBC License Requisitions') }}</a>

@@ -68,6 +68,7 @@ class BranchService
 
     public function delete(Branch $branch)
     {
+        $branch->contactPersionDetails()->delete();
         $branch->delete();
     }
 

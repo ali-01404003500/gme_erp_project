@@ -6,8 +6,8 @@
             <span class="toggle-icon"></span>
         </a>
         <ul>
-            @if (hasPermission('sales.sales-orders.index'))
-                <li><a href="{{ route('sales.sales-orders.index') }}"
+            @if (hasPermission('sales.sales-orders.create'))
+                <li><a href="{{ route('sales.sales-orders.create') }}"
                         class="{{ request()->routeIs('sales.sales-orders.*') ? 'active' : '' }}">
                         <span class="nav-icon fa fa-shopping-cart" style="margin-right: 20px;"></span>
                         {{ t_('menu.sales orders') }}</a>
@@ -57,16 +57,16 @@
                 </li>
             @endif
 
-            @if (hasPermission('sales.fake-invoices.index'))
-                <li><a href="{{ route('sales.fake-invoices.index') }}"
+            @if (hasPermission('sales.fake-invoices.create'))
+                <li><a href="{{ route('sales.fake-invoices.create') }}"
                         class="{{ request()->routeIs('sales.fake-invoices.*') ? 'active' : '' }}">
                         <span class="nav-icon fa fa-file-invoice" style="margin-right: 20px;"></span>
                         {{ t_('menu.fake-invoices') }}</a>
                 </li>
             @endif
 
-            @if (hasPermission('sales.sales-requisitions.index'))
-                <li><a href="{{ route('sales.sales-requisitions.index') }}"
+            @if (hasPermission('sales.sales-requisitions.create'))
+                <li><a href="{{ route('sales.sales-requisitions.create') }}"
                         class="{{ request()->routeIs('sales.sales-requisitions.*') ? 'active' : '' }}">
                         <span class="nav-icon fa fa-shopping-cart" style="margin-right: 20px;"></span>
                         {{ t_('menu.sales requisitions') }}</a>
@@ -95,15 +95,15 @@
                 </li>
             @endif
 
-            @if (hasPermission('sales.backup-challans.index'))
-                <li><a href="{{ route('sales.backup-challans.index') }}"
+            @if (hasPermission('sales.backup-challans.create'))
+                <li><a href="{{ route('sales.backup-challans.create') }}"
                         class="{{ request()->routeIs('sales.backup-challans.*') ? 'active' : '' }}">
                         <span class="nav-icon fa fa-shopping-cart" style="margin-right: 20px;"></span>
                         {{ t_('menu.backup/challan') }}</a>
                 </li>
             @endif
-            @if (hasPermission('sales.quotations.index'))
-                <li><a href="{{ route('sales.quotations.index') }}"
+            @if (hasPermission('sales.quotations.create'))
+                <li><a href="{{ route('sales.quotations.create') }}"
                         class="{{ request()->routeIs('sales.quotations.*') ? 'active' : '' }}">
                         <span class="nav-icon fa fa-shopping-cart" style="margin-right: 20px;"></span>
                         {{ t_('menu.quotations') }}</a>

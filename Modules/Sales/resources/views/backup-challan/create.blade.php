@@ -488,6 +488,10 @@
                     qtyInput.value = '';
                     return;
                 }
+                else
+                {
+                    $("#add_row").click();
+                }
 
                 try {
                     const response = await $.get('{{ route('purchase.get.product.list') }}?id=' + productId);
