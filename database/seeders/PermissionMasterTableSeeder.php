@@ -1107,6 +1107,24 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'legal',
             ],
 
+            //Sales Target     sales_target.settings.achievement-based-salary-policy.index
+            [
+                'title' => 'Sales Target',
+                'description' => "Sales Target of Add, Remove, Update, Delete",
+                'key' => 'sales_target',
+            ],
+            [
+                'title' => 'Sales Target Settings',
+                'description' => "Sales Target Settings of Add, Remove, Update, Delete",
+                'key' => 'sales_target.settings',
+                'parent_key' => 'sales_target',
+            ],
+            [
+                'title' => 'Achievement Based Salary Policy',
+                'description' => "Achievement Based Salary Policy of Add, Remove, Update, Delete",
+                'key' => 'sales_target.settings.achievement-based-salary-policy',
+                'parent_key' => 'sales_target.settings',
+            ],
         ];
         
         DB::statement('SET FOREIGN_KEY_CHECKS=0');

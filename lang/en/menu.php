@@ -576,4 +576,7 @@
         'iou-requisition-view' => 'IOU Requisition Details',
 
         'payment list' => 'Due Payments',
+
+        'sales_target' => 'Sales Target',
+        'sales_target Settings' => 'Sales Target Settings',
     ];

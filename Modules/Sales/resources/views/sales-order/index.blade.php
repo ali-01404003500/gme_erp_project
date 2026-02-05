@@ -51,7 +51,7 @@
                                                         @foreach ($customers as $customer)
                                                             <option @if (request('customer_id') == $customer->id) selected @endif
                                                                 value="{{ $customer->id }}">
-                                                                {{ $customer->company_name }} - {{ $customer->address}}
+                                                                {{ $customer->company_name }} - {{ $customer->area->area ?? ''   }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -193,6 +193,9 @@
                                                 @elseif($salesOrder->paid_status == 'due')
                                                     <span
                                                         class="badge badge-round badge-warning text-capitalize">{{ $salesOrder->paid_status }}</span>
+                                                @elseif($salesOrder->paid_status == 'condition')
+                                                    <span
+                                                        class="badge badge-round badge-info text-capitalize">{{ $salesOrder->paid_status }}</span>
                                                 @else
                                                     <span class="badge badge-round badge-danger text-capitalize">Unpaid</span>
                                                 @endif

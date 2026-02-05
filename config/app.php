@@ -183,6 +183,7 @@ return [
         Modules\Services\Providers\ServicesServiceProvider::class,
         Modules\Account\Providers\AccountServiceProvider::class,
         Modules\Legal\Providers\LegalServiceProvider::class,
+        Modules\SalesTarget\Providers\SalesTargetServiceProvider::class,
         // Add your module providers here
     ])->toArray(),
 
