@@ -7,18 +7,18 @@
         <span class="toggle-icon"></span>
     </a>
     <ul>
-        @if (hasPermission('crm.customers.create'))
+        @if (hasPermission('crm.customers.index'))
             <li>
-                <a href="{{ route('crm.customers.create') }}"
+                <a href="{{ route('crm.customers.index') }}"
                     class="{{ request()->routeIs('crm.customers.*') ? 'active' : '' }}">
                     <span class="nav-icon uil uil-users-alt" style="margin-right: 20px;"></span>
                     {{ t_('menu.customers') }}
                 </a>
             </li>
         @endif
-        @if (hasPermission('crm.brokers.create'))
+        @if (hasPermission('crm.brokers.index'))
             <li>
-                <a href="{{ route('crm.brokers.create') }}"
+                <a href="{{ route('crm.brokers.index') }}"
                     class="{{ request()->routeIs('crm.brokers.*') ? 'active' : '' }}">
                     <span class="nav-icon uil uil-user" style="margin-right: 20px;"></span>
                     {{ t_('menu.brokers') }}

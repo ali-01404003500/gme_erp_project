@@ -130,8 +130,8 @@
                                                     class="form-control tom-select">
                                                     <option value="">Select Customer Rating</option>
                                                     @foreach ($customerRatings as $key => $value)
-                                                        <option value="{{ $key }}"
-                                                            @if (optional($customer)->customer_rating == $key) selected @endif>{{ $value->name }}</option>
+                                                        <option value="{{ $value->id }}"
+                                                            @if (optional($customer)->customer_rating == $value->id) selected @endif>{{ $value->name }}</option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('customer_rating'))
