@@ -80,9 +80,8 @@
                                                 @foreach ($customers as $customer)
                                                     <option value="{{ $customer->id }}"
                                                         {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}@if ($customer->area != null)
-                                                            ({{ $customer->area->area }})
-                                                        @endif
+                                                        {{ $customer->company_name }} - {{ $customer->area->area ?? '' }}
+                                                       
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -1142,14 +1141,21 @@
             
             // Determine the paid status based on the due amount
             let paidStatus = 'unpaid'; // Default status
-            
+            const is_condition = $('#condition').is(':checked');
+
             if(dueAmount <= 0 && paidAmount >= netAmount) {
                 paidStatus = 'paid';
             } else if(dueAmount > 0 && paidAmount > 0) {
                 paidStatus = 'due'; // Partially paid
+                if(is_condition) {  
+                    paidStatus = 'condition'; // Condition bill
+                }
+
             } else if(dueAmount > 0 && paidAmount === 0) {
                 paidStatus = 'unpaid';
             }
+
+              
             
             // Update the hidden paid_status field
             $("#paid_status").val(paidStatus);
@@ -1173,7 +1179,7 @@
             updatePaidStatus();
             
             // Watch for changes in payment fields to update paid status
-            $(document).on('input change', '[name="payments_due_amount"], [name="payments_payable_amount"], [name="payments_amount[]"]', function() {
+            $(document).on('input change', '[name="payments_due_amount"], [name="payments_payable_amount"], [name="payments_amount[]"],#condition', function() {
                 updatePaidStatus();
             });
         });

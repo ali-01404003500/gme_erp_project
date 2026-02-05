@@ -118,7 +118,15 @@ class BankAccountController extends Controller
         $request->validate([
             'payment_mode' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card Payment,EMI'
         ]);
-        
+        if(!hasPermission('supper_admin') && $request->input('payment_mode') == 'Cash'){
+           
+            $bankAccounts = BankAccount::query()
+            ->where('payment_mode', $request->payment_mode)
+            ->where('sourceable_type', 'Modules\HRMS\Models\Employee')
+            ->where('sourceable_id', auth()->user()->employee->id)
+            ->get();
+            return response()->json($bankAccounts);
+        } 
         $bankAccounts = BankAccount::query()
             ->where('payment_mode', $request->payment_mode)
             ->get();

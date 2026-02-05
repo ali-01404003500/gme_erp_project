@@ -4634,6 +4634,41 @@ class PermissionTableSeed extends Seeder
                 'key' => 'licenses.reports',
             ],
 
+            // Achievement Based Salary Policy view page
+            [
+                'name' => 'Achievement Based Salary Policy',
+                'description' => 'Permission to view achievement based salary policy',
+                'slug' => 'sales_target.settings.achievement-based-salary-policy.index',
+                'key' => 'sales_target.settings.achievement-based-salary-policy',
+            ],
+            //create
+            [
+                'name' => 'Achievement Based Salary Policy Create',
+                'description' => 'Permission to create achievement based salary policy',
+                'slug' => 'sales_target.settings.achievement-based-salary-policy.create',
+                'key' => 'sales_target.settings.achievement-based-salary-policy',
+            ],
+            //update
+            [
+                'name' => 'Achievement Based Salary Policy Update',
+                'description' => 'Permission to update achievement based salary policy',
+                'slug' => 'sales_target.settings.achievement-based-salary-policy.update',
+                'key' => 'sales_target.settings.achievement-based-salary-policy',       
+            ],
+            //delete
+            [
+                'name' => 'Achievement Based Salary Policy Delete',
+                'description' => 'Permission to delete achievement based salary policy',                
+                'slug' => 'sales_target.settings.achievement-based-salary-policy.destroy',
+                'key' => 'sales_target.settings.achievement-based-salary-policy',
+            ],
+            //details   
+            [
+                'name' => 'Achievement Based Salary Policy Details',
+                'description' => 'Permission to view achievement based salary policy details',
+                'slug' => 'sales_target.settings.achievement-based-salary-policy.show',
+                'key' => 'sales_target.settings.achievement-based-salary-policy',
+            ],
  
         ];
 

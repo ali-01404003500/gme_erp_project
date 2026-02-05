@@ -368,6 +368,8 @@
             // resetInputs();
 
             $('#input-pay-mode').on('change', function () {
+                const isAdmin = "{{ hasPermission('supper_admin') }}";
+                
                 $.ajax({
                     url: '{{ route('account.account-setup.bank-accounts.get-accounts') }}',
                     type: 'GET',
