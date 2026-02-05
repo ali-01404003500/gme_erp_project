@@ -40,7 +40,7 @@
                             <div class="card border-0 d-none" id="login-card" >
                                 <div class="card-header">
                                     <div class="edit-profile__title">
-                                        <h6>Sign in  {{ App\Models\AccessControl\CompanyInfo::first()->company_name??'Opzo Technologies' }}</h6>
+                                        <h6>Sign in  {{ App\Models\AccessControl\CompanyInfo::first()->company_name??'GME' }}</h6>
                                     </div>
                                 </div>
                                 <div class="card-body" id="login-form">

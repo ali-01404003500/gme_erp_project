@@ -70,7 +70,9 @@
 
                                         </div>
                                     @endif
-
+                                    <div class="col-md-12 text-end">
+                                        Balance: <span id="balance"></span>
+                                    </div>
                                     <div class="col-md-6 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
@@ -927,6 +929,23 @@
                             $(".condition_div").hide();
                         }
                     }
+                }
+            });
+            $.ajax({
+                url: `{{ route('account.get-ballance') }}?account_id=${id}&type=customer`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data) {
+                        console.log(data);
+                        const balanceLink = "{{ route('account.report.customer-ledger', ['account_id' => 'AccountId']) }}".replace('AccountId', data.id);
+                        $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+data.balance+'</a>'); 
+                        // Populate additional details based on the response
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to load details. Please check the console for errors.');
+                    console.error(xhr.responseText);
                 }
             });
         }
