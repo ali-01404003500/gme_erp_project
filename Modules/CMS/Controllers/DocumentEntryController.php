@@ -54,7 +54,8 @@ class DocumentEntryController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     */
+    */
+    
     public function create()
     {
         $data['documentTypes'] = DocumentType::all();

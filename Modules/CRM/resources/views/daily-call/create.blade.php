@@ -132,7 +132,29 @@
                                         @endif
                                     </div>
                                 </div>
-
+                                {{-- Sales Complain --}}
+                                <div class="row">
+                                    <div class="col-md-6 mt-25">
+                                        <label for="is_sales_complain" class="text-capitalize">Sales Complain<span class="text-danger">*</span></label>
+                                        <select name="is_sales_complain" id="is_sales_complain" class="form-control tom-select">
+                                            <option value="">Select Type</option>
+                                            <option value="1" {{ old('is_sales_complain') == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ old('is_sales_complain') == 0 ? 'selected' : '' }}>No</option>
+                                        </select>
+                                        @if ($errors->has('is_sales_complain'))
+                                            <p class="text-danger">{{ $errors->first('is_sales_complain') }}</p>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-6 mt-25" id="sales_complain_details_wrapper">
+                                        <label for="sales_complain_details" class="text-capitalize">Sales Complain Details</label>
+                                        <input type="text" name="sales_complain_details" id="sales_complain_details"
+                                               class="form-control" placeholder="Sales Complain Details"
+                                               value="{{ old('sales_complain_details') }}"> 
+                                        @if ($errors->has('sales_complain_details'))
+                                            <p class="text-danger">{{ $errors->first('sales_complain_details') }}</p>
+                                        @endif
+                                    </div>
+                                </div>
                                 {{-- Requirement of Product --}}
                                 <div class="row">
                                     <div class="col-md-6 mt-25">
@@ -190,10 +212,11 @@
                 fieldWrapperElement.find('input').val(''); // Clear field when hidden
             }
         }
-
+ 
         // Initial check on page load
         toggleField("#is_account_complain", "#account_complain_details_wrapper");
         toggleField("#is_service_complain", "#service_complain_details_wrapper");
+        toggleField("#is_sales_complain", "#sales_complain_details_wrapper");
         toggleField("#is_product_required", "#product_required_details_wrapper");
 
         // Event listeners
@@ -202,6 +225,9 @@
         });
         $("#is_service_complain").change(function () {
             toggleField("#is_service_complain", "#service_complain_details_wrapper");
+        });
+        $("#is_sales_complain").change(function () {
+            toggleField("#is_sales_complain", "#sales_complain_details_wrapper");
         });
         $("#is_product_required").change(function () {
             toggleField("#is_product_required", "#product_required_details_wrapper");

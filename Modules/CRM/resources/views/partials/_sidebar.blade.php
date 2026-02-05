@@ -7,27 +7,27 @@
         <span class="toggle-icon"></span>
     </a>
     <ul>
-        @if (hasPermission('crm.customers.index'))
+        @if (hasPermission('crm.customers.create'))
             <li>
-                <a href="{{ route('crm.customers.index') }}"
+                <a href="{{ route('crm.customers.create') }}"
                     class="{{ request()->routeIs('crm.customers.*') ? 'active' : '' }}">
                     <span class="nav-icon uil uil-users-alt" style="margin-right: 20px;"></span>
                     {{ t_('menu.customers') }}
                 </a>
             </li>
         @endif
-        @if (hasPermission('crm.brokers.index'))
+        @if (hasPermission('crm.brokers.create'))
             <li>
-                <a href="{{ route('crm.brokers.index') }}"
+                <a href="{{ route('crm.brokers.create') }}"
                     class="{{ request()->routeIs('crm.brokers.*') ? 'active' : '' }}">
                     <span class="nav-icon uil uil-user" style="margin-right: 20px;"></span>
                     {{ t_('menu.brokers') }}
                 </a>
             </li>
         @endif
-        @if (hasPermission('crm.daily-calls.index'))
+        @if (hasPermission('crm.daily-calls.create'))
             <li>
-                <a href="{{ route('crm.daily-calls.index') }}"
+                <a href="{{ route('crm.daily-calls.create') }}"
                     class="{{ request()->routeIs('crm.daily-calls.*') ? 'active' : '' }}">
                     <span class="nav-icon uil uil-calendar-alt" style="margin-right: 20px;"></span>
                     {{ t_('menu.daily-calls') }}

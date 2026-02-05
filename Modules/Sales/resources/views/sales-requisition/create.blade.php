@@ -821,6 +821,10 @@
                     toastr.warning('This Product is already selected');
                     return false;
                 }
+                else
+                {
+                    $("#add_row").click();
+                }
                 console.log('product changed');
                 $(this).closest('tr').find('#quantity').val(1);
                 await getProductPrice(this);

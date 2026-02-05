@@ -40,7 +40,7 @@ class ServiceController extends Controller
     
     /**
      * Display a listing of the resource.
-     */
+    */
     public function index(Request $request)
     {
         $data ['serviceTypes'] = ServiceType::all();
@@ -68,12 +68,12 @@ class ServiceController extends Controller
         return view("Services::service.index", $data);
     }
 
-
     /**
      * Show the form for creating a new resource.
-     */
+    */ 
     public function create()
     {
+        
         $data['serviceTypes'] = ServiceType::all();
         $data['problemTypes'] = ProblemType::all();
         $data['employees'] = Employee::all();
@@ -88,6 +88,7 @@ class ServiceController extends Controller
         ->get();
         $data['dongleOrSerialEntries'] = DongleOrSerialEntry::all();
         return view('Services::service.create', $data);
+         
     }
 
     /**
