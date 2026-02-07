@@ -971,6 +971,7 @@
                 url: "{{ route('sales.get.customer.setting') }}?id=" + id,
                 success: function(data) {
                     console.log(data);
+                     
 
                     if (data && data.customers && data.customers.customer) {
                         var area = data.customers.customer.area;
@@ -1022,23 +1023,58 @@
                             $(".condition_div").hide();
 
                         }
-
-                        
-
-
+ 
                         // Update the area_id select element with the new options
                         if ($("#area_id")[0].tomselect) {
-                            $("#area_id")[0].tomselect.clearOptions();
+                            /*$("#area_id")[0].tomselect.clearOptions();
                             $("#area_id")[0].tomselect.addOptions(window.shipmentsOptions.map (option => ({
                                 value: option.area,
                                 text: option.area_name
+                            })));*/
+
+                            let select = $("#area_id")[0].tomselect;
+
+                            // previous option clear
+                            select.clearOptions();
+
+                            // new option add
+                            select.addOptions(window.shipmentsOptions.map(option => ({
+                                value: option.area,
+                                text: option.area_name
                             })));
+
+                            // New Address chara first option auto select
+                            let defaultOption = window.shipmentsOptions.find(option => option.area !== 'address');
+
+                            if (defaultOption) {
+                                select.setValue(defaultOption.area);
+                            } else {
+                                select.setValue('address');
+                            }
                         } else {
                             // Fallback if tomselect is not available yet
-                            $("#area_id").empty();
+                            /* 
                             $.each(window.shipmentsOptions, function(index, option) {
                                 $("#area_id").append($('<option></option>').attr('value', option.area).text(option.area_name));
+                            });*/
+
+                              // Fallback যদি TomSelect load না থাকে
+                            $("#area_id").empty();
+
+                            $.each(window.shipmentsOptions, function(index, option) {
+                                $("#area_id").append(
+                                    $('<option></option>')
+                                        .attr('value', option.area)
+                                        .text(option.area_name)
+                                );
                             });
+
+                            //  Auto Select
+                            let defaultOption = window.shipmentsOptions.find(option => option.area !== 'address');
+
+                            $("#area_id").val(defaultOption ? defaultOption.area : 'address');
+
+                            
                         }
                        
                         
@@ -1061,6 +1097,8 @@
                         } else {
                             $('#vat_percentage').val(0);
                         }
+
+ 
                     }
                 }
             });
@@ -1072,7 +1110,8 @@
                 success: function(data) {
                     if (data) {
                         console.log(data);
-                        const balanceLink = "{{ route('account.report.customer-ledger', ['account_id' => 'AccountId']) }}".replace('AccountId', data.id);
+                        let currentDate = new Date().toISOString().slice(0, 10); 
+                        const balanceLink = "{{ route('account.report.customer-ledger', ['account_id' => 'AccountId']) }}".replace('AccountId', data.id) + `&from=2021-10-05&to=${currentDate}`;
                         $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+data.balance+'</a>'); 
                         // Populate additional details based on the response
                     }

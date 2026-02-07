@@ -129,7 +129,7 @@
                                             <th class="text-center" style="width: 8%">Sl</th>
                                             {{-- <th>Shipment ID</th> --}}
                                             <th>Customer Name</th>
-                                            <th>Customer Address</th>
+                                            {{-- <th>Customer Address</th> --}}
                                             <th>Courier</th>
                                             <th>Courier Date</th>
                                             <th>INV Amt</th>
@@ -160,15 +160,17 @@
                                                 <td class="text-center">{{ $key + 1 }}</td>
                                                 {{-- <td>{{ $shipmentVerify->shipment_id }}</td> --}}
                                                 <td>
-                                                    <a href="{{ route('sales.sales-orders.show', $shipmentVerify->source?->source?->id) }}"
-                                                        target="_blank">{{ $shipmentVerify->customer->company_name }}</a>
-                                                </td>
-                                                <td>{{ $shipmentVerify->customer_address }}</td>
+                                                    {{ $shipmentVerify->customer->company_name }}
+                                                    <br>
+                                                    <small class="text-muted">{!! wordwrap($shipmentVerify->customer_address, 60, '<br>', true) !!}</small>
+
+                                                </td>  
+                                                {{-- <td>{{ $shipmentVerify->customer_address }}</td> --}}
                                                 <td>{{ $shipmentVerify->courier?->courier_name }}</td>
-                                                <td>{{ $shipmentVerify->courier_date }}</td>
+                                                <td> {{ $shipmentVerify->courier_date }}  </td>
                                                 {{-- @dd( ) --}}
-                                                <td>{{ numberFormat($shipmentVerify->source?->source?->net_amount ?? 0) }}</td>
-                                                <td>{{ numberFormat(($shipmentVerify->source?->source?->shipment?->additional_amount ?? 0) + ($shipmentVerify->source?->source->due_amount ?? 0)) }}</td>
+                                                <td>  {{ numberFormat($shipmentVerify->source?->source?->net_amount ?? 0) }} </td>
+                                                <td> {{ numberFormat(($shipmentVerify->source?->source?->shipment?->additional_amount ?? 0) + ($shipmentVerify->source?->source->due_amount ?? 0)) }}  </td>
                                                 <td>{{$shipmentVerify->receipt_no}}</td>
                                                 <td>{{ numberFormat($shipmentVerify->service_charge ?? 0, 2) }} (S) | {{ numberFormat($shipmentVerify->delivery_charge ?? 0, 2) }} (D) | {{ $shipmentVerify->other_charge !== null && $shipmentVerify->other_charge !== '' ? numberFormat($shipmentVerify->other_charge, 2) : '-' }} (O)</td>
                                                 {{-- <td>{{ $shipmentVerify->source }}</td> --}}
@@ -206,13 +208,20 @@
                                                             <i class="far fa-edit"></i>
                                                         </button>
                                                         {{-- @endif --}}
+ 
+                                                        <a class="btn btn-outline-primary" href="{{ route('sales.deliveries.show', $shipmentVerify->source?->source?->id) }}?export=pdf" target="_blank">
+                                                            <i class="fa fa-truck"></i>
+                                                        </a> 
+                                                        <a class="btn btn-outline-primary" href="{{ route('sales.sales-orders.show', $shipmentVerify->source?->source?->id) }}" target="_blank">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>   
                                                     </div>
                                                 </td>
                                             </tr>
                                         @endforeach
                                     <tfoot>
                                         <tr class="fw-bold" style="background-color: #f8f9fa;">
-                                            <td colspan="6" class="text-end">Grand Total:</td>
+                                            <td colspan="5" class="text-end">Grand Total:</td>
                                             <td>{{ number_format($grandTotalInvAmt ?? 0) }}</td>
                                             <td>{{ number_format($grandTotalCdlAmt ?? 0) }}</td>
                                             <td colspan="4"></td>

@@ -126,7 +126,7 @@
                         </header>
 
                         <section class="title">
-                            <h4>Delivery Invoice Bill</h4>
+                            <h4>Courier Challan</h4>
                         </section>
 
                           <section class="delivery-info">
@@ -147,16 +147,7 @@
                                         <td style="border: 1px solid white;">:</td>
                                         <th style="border: 1px solid white;">{{ optional($source->customer->area)->area ?? $source->shipment?->address }}</th>
                                     </tr>
-                                    <tr style="border: 1px solid white;">
-                                        <th style="border: 1px solid white; width: 80px;">Phone</th>
-                                        <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $source->shipment?->contact_person_number ?? $source->customer?->phone }}</th>
-                                    </tr>
-                                    <tr style="border: 1px solid white;">
-                                        <th style="border: 1px solid white; width: 80px;">Arranged By</th>
-                                        <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $delivery->arranged_by ?? $delivery->createdBy->name ?? '' }}</th>
-                                    </tr>
+                                     
                                 </table>
                             </div>
                             <div class="right" style="width: 30%; float: right;">
@@ -171,11 +162,7 @@
                                         <td style="border: 1px solid white;">:</td>
                                         <th style="border: 1px solid white;">{{ $delivery->created_at->format('h:i A') ?? '' }}</th>
                                     </tr>
-                                    <tr style="border: 1px solid white;">
-                                        <th style="border: 1px solid white; width: 80px;">Sold By</th>
-                                        <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $source->createdBy->name ?? $source->created_by ?? '' }}</th>
-                                    </tr>
+                                     
                                     <tr style="border: 1px solid white;">
                                         <th style="border: 1px solid white; width: 80px;">Print Date & Time</th>
                                         <td style="border: 1px solid white;">:</td>
@@ -183,51 +170,58 @@
                                             {{ now()->format('h:i A') }}</th>
                                     </tr>
                                     
-                                    <tr style="border: 1px solid white;">
-                                        <th style="border: 1px solid white; width: 80px;">Checked By</th>
-                                        <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $delivery->updated_by ?? '' }}</th>
-                                    </tr>
+                                     
                                 </table>
                             </div>
                             <div style="clear: both;"></div>
                         </section>
 
-                        <section class="delivery-details">
-                            <h4 style="font-size: 14px; margin-bottom: 10px;">Products</h4>
+                        <section class="delivery-details"> 
                             <table>
                                 <thead>
                                         <tr>
-                                            <th>Product Name</th>
-                                            <th>Model</th>
-                                            <th>Sales Quantity</th>
-                                            <th>Remaining Quantity</th>
-                                            <th>Delivered Quantity</th>
+                                            <th>SL</th>
+                                            <th>Cartoon No</th> 
+                                            <th>Product Description</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($source->details as $key => $detail)
-                                            @php
-                                                $deliveredQty = $previousDeliveries
-                                                    ->flatMap(function ($delivery) {
-                                                        return $delivery->deliveryDetails;
-                                                    })
-                                                    ->where('product_id', $detail->product_id)
-                                                    ->sum('quantity');
-
-                                                $remainingQty = $detail->quantity - $deliveredQty;
-                                            @endphp
-                                            <tr>
-                                                <td>{{ $detail->product->name }}</td>
-                                                <td>{{ $detail->product->model }}</td>
-                                                <td>{{ numberFormat($detail->quantity) }}</td>
-                                                <td>{{ numberFormat($remainingQty) }}</td>
-                                                <td>{{ numberFormat($detail->quantity) }}</td>
-                                            </tr>
-                                        @endforeach
+                                        
+                                        <tr>
+                                            <td>1</td>
+                                            <td></td> 
+                                            <td>Cartoon Medical Goods</td>
+                                        </tr>
                                     </tbody>
                             </table>
                         </section>
+                        <table style="width: 100%; border:1px solid #000; border-collapse: collapse;" class="my-5">
+                            <tbody>
+                                <tr>
+                                    <th colspan="3" width="100%" style="font-size: 20px"><u>Shipment Address</u></th> 
+                                </tr>
+                                <tr>
+                                    <th  width="30%">Contact Person</th>
+                                    <th  width="5%">:</th>
+                                    <th  width="65%">{{ $delivery->contact_person ?? '' }}</th> 
+                                </tr>
+                                <tr>
+                                    <th width="30%">Contact Number</th>
+                                    <th width="5%">:</th>
+                                    <th width="65%">{{ $delivery->contact_number ?? '' }}</th> 
+                                </tr>
+                                <tr>
+                                    <th width="30%">Address</th>
+                                    <th width="5%">:</th>
+                                    <th  width="65%">{{ $delivery->address ?? '' }}</th> 
+                                </tr>
+                                    <tr>
+                                    <th width="30%">Courier Name</th>
+                                    <th width="5%">:</th>
+                                    <th width="65%"> </th> 
+                                </tr>
+                            </tbody> 
+                        </table>
                         
                        
                         

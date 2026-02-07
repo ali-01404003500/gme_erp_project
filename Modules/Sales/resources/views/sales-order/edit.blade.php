@@ -938,7 +938,8 @@
                 success: function(data) {
                     if (data) {
                         console.log(data);
-                        const balanceLink = "{{ route('account.report.customer-ledger', ['account_id' => 'AccountId']) }}".replace('AccountId', data.id);
+                        let currentDate = new Date().toISOString().slice(0, 10); 
+                        const balanceLink = "{{ route('account.report.customer-ledger', ['account_id' => 'AccountId']) }}".replace('AccountId', data.id) + `&from=2021-10-05&to=${currentDate}`;
                         $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+data.balance+'</a>'); 
                         // Populate additional details based on the response
                     }

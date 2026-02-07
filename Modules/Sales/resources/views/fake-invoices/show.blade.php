@@ -185,9 +185,11 @@
                                                 <h1>{{ $company_info->company_name }}</h1>
                                                 <p>{{ $company_info->company_bio }}</p>
                                                 <p>Address : 17/2 (1st & 2nd Floor), Topkhana Road, Dhaka-1000</p>
-                                                <p>Hotline : +88 09678 020555 Mobile : +8801404003500</p>
-                                                <p>e-mail : <a href="mailto:info@gmebd.com">info@gmebd.com</a> web: <a
-                                                        href="http://www.gmebd.com">www.gmebd.com</a></p>
+                                                <p>Hotline : +88 09678 020555 Mobile : +8801404003501</p>
+                                                <p>
+                                                    e-mail : <a href="mailto:info@gmebd.com">info@gmebd.com</a> 
+                                                    web: <a href="http://www.gmebd.com">www.gmebd.com</a>
+                                                </p>
                                             </div>
                                         </div>
                                         <div style="width: 10%"></div>

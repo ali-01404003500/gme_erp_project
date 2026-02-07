@@ -271,10 +271,8 @@
                                     <thead>
                                         <tr>
                                             <th>Product Name</th>
-                                            <th>Model</th>
-                                            <th>Sales Quantity</th>
-                                            <th>Remaining Quantity</th>
-                                            <th>Delivered Quantity</th>
+                                            <th>Model</th> 
+                                            <th>Quantity</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -291,17 +289,41 @@
                                             @endphp
                                             <tr>
                                                 <td>{{ $detail->product->name }}</td>
-                                                <td>{{ $detail->product->model }}</td>
-                                                <td>{{ numberFormat($detail->quantity) }}</td>
-                                                <td>{{ numberFormat($remainingQty) }}</td>
+                                                <td>{{ $detail->product->model }}</td> 
                                                 <td>{{ numberFormat($detail->quantity) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
-                                </table>
+                                </table> 
                             </section>
-
-                         
+                            <table style="width: 100%; border:1px solid #000; border-collapse: collapse;" class="my-5">
+                                <tbody>
+                                    <tr>
+                                        <th colspan="3" width="100%" style="font-size: 20px"><u>Shiment Address</u></th> 
+                                    </tr>
+                                    <tr>
+                                        <th  width="30%">Contact Person</th>
+                                        <th  width="5">:</th>
+                                        <th  width="65">{{ $delivery->contact_person ?? '' }}</th> 
+                                    </tr>
+                                    <tr>
+                                        <th width="30%">Contact Number</th>
+                                        <th width="5">:</th>
+                                        <th width="65">{{ $delivery->contact_number ?? '' }}</th> 
+                                    </tr>
+                                    <tr>
+                                        <th width="30%">Address</th>
+                                        <th width="5">:</th>
+                                        <th  width="65%">{{ $delivery->address ?? '' }}</th> 
+                                    </tr>
+                                        <tr>
+                                        <th width="30%">Courier Name</th>
+                                        <th width="5">:</th>
+                                        <th width="65">{{ $delivery->courier_name ?? '' }}</th> 
+                                    </tr>
+                                </tbody> 
+                            </table>
+                        
                             
                             <div class="row">
                                 <p><strong>Description :</strong> {{ $delivery->description ?? '' }}</p>
