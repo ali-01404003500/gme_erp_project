@@ -109,7 +109,7 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="carton_no">Carton No</label>
-                                            <input type="text" name="carton_no" class="form-control" id="carton_no">
+                                            <input type="text" name="carton_no" class="form-control" id="carton_no" value="0">
                                         </div>
                                     </div>
 

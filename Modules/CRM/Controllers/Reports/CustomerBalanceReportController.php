@@ -227,6 +227,13 @@ class CustomerBalanceReportController extends Controller
             ->selectRaw('customer_id, SUM(net_amount) as total')
             ->pluck('total', 'customer_id')
             ->toArray();
+            
+        // Fetch customer opening balances before 05-10-2021 (get data from customer_settings table)
+        $openingBalancesBefore_2021_10_05 = DB::table('customer_settings')
+            ->whereIn('customer_id', $customerIds) 
+            ->pluck('opening_balance', 'customer_id')
+            ->toArray();
+      
 
         // Fetch collections (more complex due to account relationship)
         $openingCollections = $this->fetchBulkCollections($customerIds, null, $beforeStartDate);
@@ -238,8 +245,9 @@ class CustomerBalanceReportController extends Controller
             $sales = $openingSales[$customerId] ?? 0;
             $returns = $openingReturns[$customerId] ?? 0;
             $collections = $openingCollections[$customerId] ?? 0;
-            
-            $openingBalances[$customerId] = $sales - $returns - $collections;
+            $openingBalances_2021_10_05 = $openingBalancesBefore_2021_10_05[$customerId] ?? 0;
+ 
+            $openingBalances[$customerId] = $openingBalances_2021_10_05 + $sales - $returns - $collections;
         }
 
         return [

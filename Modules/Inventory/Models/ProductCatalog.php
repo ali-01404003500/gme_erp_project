@@ -170,15 +170,29 @@ class ProductCatalog extends BaseModel
         return $this;
     }
 
+
+    protected $withoutBrandSuffix = false;
+
+    public function withoutBrandSuffix($value = true)
+    {
+        $this->withoutBrandSuffix = $value;
+        return $this;
+    }
+
     public function getNameAttribute($value)
     {
         $model = $this->attributes['model'] ?? null;
+        $brand = optional($this->brand)->name ?? null;
 
         if ($this->withoutModelSuffix || !$model) {
             return $value;
         }
 
-        return "{$value} Model: {$model}";
+        if ($this->withoutBrandSuffix || !$brand) {
+           return "{$value} Model: {$model}";
+        }
+
+        return "{$value} Model: {$model} Brand: {$brand}";
     }
 
 
