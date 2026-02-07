@@ -113,9 +113,9 @@ class DeliveryController extends Controller
     public function update(Request $request, Delivery $delivery)
     {
         $validate = $request->validate([
-            'arranged_by' => 'nullable|integer|exists:employees,id',
-            'checked_by' => 'nullable|integer|exists:employees,id',
-            'carton_no' => 'nullable|string|max:255',
+            'arranged_by' => 'required|integer|exists:employees,id',
+            'checked_by' => 'required|integer|exists:employees,id',
+            'carton_no' => 'required|string|max:255',
         ]);
       
         $deliveryDetails = $request->validate([
