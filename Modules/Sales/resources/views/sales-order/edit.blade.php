@@ -70,7 +70,9 @@
 
                                         </div>
                                     @endif
-
+                                    <div class="col-md-12 text-end">
+                                        Balance: <span id="balance"></span>
+                                    </div>
                                     <div class="col-md-6 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
@@ -79,10 +81,8 @@
                                                 @foreach ($customers as $customer)
                                                     <option value="{{ $customer->id }}"
                                                         {{ old('customer_id', $salesOrder->customer_id) == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}
-                                                        @if ($customer->area != null)
-                                                            ({{ $customer->area->area }})
-                                                        @endif
+                                                        {{ $customer->company_name }} - {{ $customer->area->area ?? '' }}
+                                                       
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -931,6 +931,23 @@
                     }
                 }
             });
+            $.ajax({
+                url: `{{ route('account.get-ballance') }}?account_id=${id}&type=customer`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data) {
+                        console.log(data);
+                        const balanceLink = "{{ route('account.report.customer-ledger', ['account_id' => 'AccountId']) }}".replace('AccountId', data.id);
+                        $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+data.balance+'</a>'); 
+                        // Populate additional details based on the response
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Failed to load details. Please check the console for errors.');
+                    console.error(xhr.responseText);
+                }
+            });
         }
     }
 
@@ -1028,11 +1045,15 @@
                 
                 // Determine the paid status based on the due amount
                 let paidStatus = 'unpaid'; // Default status
-                
+                const is_condition = $('#condition').is(':checked');
+
                 if(dueAmount <= 0 && paidAmount >= netAmount && netAmount > 0) {
                     paidStatus = 'paid';
                 } else if(dueAmount > 0 && paidAmount > 0) {
                     paidStatus = 'due'; // Partially paid
+                    if(is_condition) {  
+                        paidStatus = 'condition'; // Condition bill
+                    }
                 } else if(dueAmount > 0 && paidAmount <= 0) {
                     paidStatus = 'unpaid';
                 }
@@ -1075,7 +1096,7 @@
             updatePaidStatus();
 
             // Watch for changes in payment fields to update paid status
-            $(document).on('input change', '[name="payments_due_amount"], [name="payments_payable_amount"], [name="payments_amount[]"]', function() {
+            $(document).on('input change', '[name="payments_due_amount"], [name="payments_payable_amount"], [name="payments_amount[]"],#condition', function() {
                 updatePaidStatus();
             });
 
@@ -1091,6 +1112,10 @@
                     clearRow($(this).closest('tr'));
                     toastr.warning('This Product is already selected');
                     return false;
+                }
+                else
+                {
+                    $("#add_row").click();
                 }
                 console.log('product changed');
                 $(this).closest('tr').find('#quantity').val(1);

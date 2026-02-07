@@ -1,6 +1,6 @@
 {{-- Company: Opzo Erp Helth. --}}{{-- Author: Md Shadhin --}}
 {{-- Developer: Md Shadhin --}}
-{{-- Copywrite: 2026 --}}
+{{-- Copywrite: 2024 --}}
 @extends('layout.app')
 
 @section('title', 'Roles List')

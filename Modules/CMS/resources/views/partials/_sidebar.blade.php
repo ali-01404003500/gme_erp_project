@@ -6,21 +6,22 @@
                     <span class="toggle-icon"></span>
                 </a>
                 <ul>
-                @if (hasPermission('cms.document-entries.index'))
+                @if (hasPermission('cms.document-entries.create'))
                     <li>
-                        <a href="{{ route('cms.document-entries.index') }}"
+                        <a href="{{ route('cms.document-entries.create') }}"
                             class="{{ request()->routeIs('cms.document-entries.*') ? 'active' : '' }}">
                             <span class="fas fa-edit" style="margin-right: 20px;"></span>
-                            {{ t_('Document entries') }}
+                            {{ t_('Document Entries') }}
                         </a>
                     </li>
                 @endif
-                @if (hasPermission('cms.application-entries.index'))
+                
+                @if (hasPermission('cms.application-entries.create'))
                     <li>
-                        <a href="{{ route('cms.application-entries.index') }}"
+                        <a href="{{ route('cms.application-entries.create') }}"
                             class="{{ request()->routeIs('cms.application-entries.*') ? 'active' : '' }}">
                             <span class="fas fa-file-alt" style="margin-right: 20px;"></span>
-                            {{ t_('Application entries') }}
+                            {{ t_('Application create') }}
                         </a>
                     </li>
                 @endif

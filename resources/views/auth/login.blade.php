@@ -6,7 +6,7 @@
 
 
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ $title }} - GME ERP</title>
+    <title>{{ $title }} - GMEProject</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/plugin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}">
@@ -29,18 +29,18 @@
                                 <img class="dark" src="{{ s3FileToBase64(App\Models\AccessControl\CompanyInfo::first()->company_logo??'assets/img/logo-dark.png') }}" alt="" style="height:100px!important; width: auto; ">
                                 <img class="light" src="{{ s3FileToBase64(App\Models\AccessControl\CompanyInfo::first()->company_logo??'assets/img/logo-white.png') }}" alt=""  style="height:100px!important; width: auto; ">
                             </div>
-                            <!-- <div id="login-buttons" class="d-flex flex-column gap-1 ">
+                            <div id="login-buttons" class="d-flex flex-column gap-1 d-none">
                                 <a href="https://gmartbd.net"  class="btn btn-white w-100">
                                     Go to Old System
                                 </a>
                                 <button id="show-login-btn" class="btn btn-white w-100">
                                     Go to New System
                                 </button>
-                            </div> -->
+                            </div>
                             <div class="card border-0" id="login-card" >
                                 <div class="card-header">
-                                    <div class="edit-profile__title text-center">
-                                        <h6>Sign in  <br>{{ App\Models\AccessControl\CompanyInfo::first()->company_name??'GME' }}</h6>
+                                    <div class="edit-profile__title">
+                                        <h6>Sign in  {{ App\Models\AccessControl\CompanyInfo::first()->company_name??'GME' }}</h6>
                                     </div>
                                 </div>
                                 <div class="card-body" id="login-form">
@@ -213,12 +213,12 @@
             
         });
 
-       /* $(document).ready(function() {
-            $('#show-login-btn').on('click', function() {
+        $(document).ready(function() {
+            /*$('#show-login-btn').on('click', function() {
                 $('#login-buttons').addClass('d-none');
                 $('#login-card').removeClass('d-none');
-            });
-        });*/
+            });*/
+        });
     </script>
 </body>
 </html>

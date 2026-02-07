@@ -4,6 +4,7 @@ namespace Modules\CRM\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Models\GeoLocation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -58,6 +59,8 @@ class CustomerBalanceReportController extends Controller
                 'recovery_percentage' => $recoveryPercentage,
                 'search' => $search
             ],
+            'divisions' => $filterData['divisions'],
+            'districts' => $filterData['districts'],
             'totals' => $totals
         ]);
     }
@@ -81,7 +84,7 @@ class CustomerBalanceReportController extends Controller
 
         // Get customer basic info
         $customers = Customer::whereIn('id', $customerIds)
-            ->select('id', 'company_name', 'phone')
+            ->select('id', 'company_name', 'phone','address')
             ->get()
             ->keyBy('id');
 
@@ -95,7 +98,9 @@ class CustomerBalanceReportController extends Controller
             
             $customerData = [
                 'customer_id' => $customerId,
+                'account_id' => $customer->getAccount()->id ?? null,
                 'customer_name' => $customer->company_name,
+                'address' => $customer->address,
                 'phone' => $customer->phone,
                 'has_machine_code' => $aggregatedData['machine_codes'][$customerId] ?? false,
                 'opening_balance' => $aggregatedData['opening_balances'][$customerId] ?? 0,
@@ -117,7 +122,8 @@ class CustomerBalanceReportController extends Controller
             $customerData['recovery_percentage'] = $recoveryPerc;
 
             // Skip customers where all values are 0
-            if ($customerData['opening_balance'] == 0 
+            //TODO: This was commented out as per request, but can be re-enabled if needed to filter out zero-activity customers
+            /*if ($customerData['opening_balance'] == 0 
                 && $customerData['sales'] == 0 
                 && $customerData['sales_return'] == 0 
                 && $customerData['collection'] == 0 
@@ -125,6 +131,7 @@ class CustomerBalanceReportController extends Controller
                 && $customerData['closing_balance'] == 0) {
                 continue;
             }
+            */
             
             // Filter by recovery percentage if specified
             if ($recoveryPercentage && !$this->matchesRecoveryPercentage($recoveryPerc, $recoveryPercentage)) {
@@ -147,6 +154,19 @@ class CustomerBalanceReportController extends Controller
         } elseif ($dueType === 'old_due') {
             $query->whereDoesntHave('usgOrOpgLicenseRequisitions');
         }
+
+        if(request()->filled('division_id')){
+            $query->whereHas('area', function($q){
+                $q->where('division_id', request()->division_id);
+            });
+        }
+
+        if(request()->filled('district_id')){
+            $query->whereHas('area', function($q){
+                $q->where('district_id', request()->district_id);
+            });
+        }
+
 
         // Apply search filter
         if ($search) {
@@ -328,7 +348,9 @@ class CustomerBalanceReportController extends Controller
                 ->select('id', 'company_name')
                 ->orderBy('company_name')
                 ->get(),
-            'company_info' => $companyInfo
+            'company_info' => $companyInfo,
+            'divisions' => GeoLocation::where('type', 'Division')->get(),
+            'districts' => GeoLocation::where('type', 'District')->get(),
         ];
     }
 

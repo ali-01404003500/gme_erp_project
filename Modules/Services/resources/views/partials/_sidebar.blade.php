@@ -6,8 +6,8 @@
         <span class="toggle-icon"></span>
     </a>
     <ul>
-        @if (hasPermission('services.service.index'))
-            <li><a href="{{ route('services.service.index') }}"
+        @if (hasPermission('services.service.create'))
+            <li><a href="{{ route('services.service.create') }}"
                     class="{{ request()->routeIs('services.service.*') ? 'active' : '' }}">
                     <span class="nav-icon fas fa-wrench" style="margin-right: 20px;"></span>
                     {{ t_('menu.services-service-menu-title') }}</a>
@@ -43,9 +43,9 @@
                     {{ t_('menu.solution-verification') }}</a>
             </li>
         @endif
-        @if (hasPermission('services.quotations.index'))
+        @if (hasPermission('services.quotations.create'))
             <li>
-                <a href="{{ route('services.quotations.index') }}"
+                <a href="{{ route('services.quotations.create') }}"
                     class="{{ request()->routeIs('services.quotations.*') ? 'active' : '' }}">
                     <span class="nav-icon fas fa-quote-left" style="margin-right: 20px;"></span>
                     {{ t_('menu.quotations') }}</a>

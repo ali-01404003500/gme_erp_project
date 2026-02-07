@@ -79,11 +79,13 @@ class DailyCallController extends Controller
             'complains_details' => 'nullable|string',
             'is_service_complain' => 'nullable|boolean',
             'service_complain_details' => 'nullable|string',
+            'is_sales_complain' => 'nullable|boolean',
+            'sales_complain_details' => 'nullable|string',
             'is_product_required' => 'nullable|boolean',
             'product_required_details' => 'nullable|string',
             'remarks' => 'nullable|string',
         ]);
-
+ 
         try {
             // dd($validate);
             $dailyCall = $this->service->store($validate);
@@ -128,6 +130,8 @@ class DailyCallController extends Controller
             'complains_details' => 'nullable|string',
             'is_service_complain' => 'nullable|boolean',
             'service_complain_details' => 'nullable|string',
+            'is_sales_complain' => 'nullable|boolean',
+            'sales_complain_details' => 'nullable|string',
             'is_product_required' => 'nullable|boolean',
             'product_required_details' => 'nullable|string',
             'remarks' => 'nullable|string',

@@ -8,7 +8,7 @@
                 <ul>
                     @if (hasPermission('legal.legal-entries.*'))
                         <li>
-                            <a href="{{ route('legal.legal-entries.index') }}"
+                            <a href="{{ route('legal.legal-entries.create') }}"
                                 class="{{ request()->routeIs('legal.legal-entries.*') ? 'active' : '' }}">
                                 <span class="nav-icon fas fa-file-alt" style="margin-right: 20px;"></span>
                                 {{ t_('menu.Legal Entries') }}

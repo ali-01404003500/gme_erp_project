@@ -260,7 +260,7 @@ class CollectionController extends Controller
         }
 
         $data = $query ;
-        $data['balance'] = $data;
+        $data['balance'] = $data; 
         return response()->json($data);
     }
 }

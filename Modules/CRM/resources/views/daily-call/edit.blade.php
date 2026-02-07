@@ -143,6 +143,22 @@
                                     </div>
                                 </div>
 
+                                {{-- Sales Complain --}}
+                                <div class="row">
+                                    <div class="col-md-6 mt-25">
+                                        <label for="is_sales_complain" class="text-capitalize">Sales Complain</label>
+                                        <select name="is_sales_complain" id="is_sales_complain" class="form-control">
+                                            <option value="">Select Type</option>
+                                            <option value="1" {{ $dailyCall->is_sales_complain == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ $dailyCall->is_sales_complain == 0 ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mt-25" id="sales_complain_details_wrapper">
+                                        <label for="sales_complain_details" class="text-capitalize">Sales Complain Details</label>
+                                        <input type="text" name="sales_complain_details" value="{{ $dailyCall->sales_complain_details }}" id="sales_complain_details" class="form-control" placeholder="Sales Complain Details">
+                                    </div>
+                                </div>
+
                                 {{-- Requirement of Product --}}
                                 <div class="row">
                                     <div class="col-md-6 mt-25">

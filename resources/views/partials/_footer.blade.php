@@ -8,7 +8,7 @@
 
         <div class="col-md-6">
             <div class="footer-copyright text-end">
-                <p>Developed By: <a href="https://gmebd.com/" target="__blank"> Global Medical Engineering (BD) Ltd.</a></p>
+                <p>Developed By: <a href="https://www.gmebd.com/" target="__blank"> Global Medical Engineering (BD) Ltd.</a></p>
             </div>
         </div>
     </div>

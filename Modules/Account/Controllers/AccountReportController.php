@@ -504,7 +504,7 @@ public function customerLedgerReport(Request $request)
                     })
                     ->orderBy('transaction_date', 'asc');
                 
-                $data['transactions'] = $request->print
+                $data['transactions'] = $request->print??$request->filled('export_type')
                     ? $data['transactions']->get()
                     : $data['transactions']->paginate(30);
             }

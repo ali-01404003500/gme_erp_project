@@ -72,6 +72,14 @@
                                                 <td>{{ $dailyCall->service_complain_details }}</td>
                                             </tr>
                                             <tr>
+                                                <th scope="row">Sales Complain</th>
+                                                <td>{{ $dailyCall->is_sales_complain == 1 ? 'Yes' : 'No' }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row">Sales Complain Details</th>
+                                                <td>{{ $dailyCall->sales_complain_details }}</td>
+                                            </tr>
+                                            <tr>
                                                 <th scope="row">Requirement of Product</th>
                                                 <td>
                                                     {{ $dailyCall->is_product_required == 1 ? 'Yes' : 'No' }}

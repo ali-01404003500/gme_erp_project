@@ -25,9 +25,9 @@
                 </a>
             </li>
         @endif
-        @if (hasPermission('crm.daily-calls.index'))
+        @if (hasPermission('crm.daily-calls.create'))
             <li>
-                <a href="{{ route('crm.daily-calls.index') }}"
+                <a href="{{ route('crm.daily-calls.create') }}"
                     class="{{ request()->routeIs('crm.daily-calls.*') ? 'active' : '' }}">
                     <span class="nav-icon uil uil-calendar-alt" style="margin-right: 20px;"></span>
                     {{ t_('menu.daily-calls') }}
