@@ -460,7 +460,7 @@
                     totalUnitDiscount += parseFloat($(this).find("#unit_discount").val()) || 0;
                 });
                 if (totalAmount > 0 && totalDiscount > 0) {
-                    $("#additional_percentage").val((parseFloat((totalDiscount / totalAmount) * 100).toFixed()) ??
+                    $("#additional_percentage").val((parseFloat((totalDiscount / totalAmount) * 100).toFixed(2)) ??
                         0);
                 } else {
                     $("#additional_percentage").val(0);
@@ -474,7 +474,7 @@
                 const amount = qty * price;
                 const totalDiscount = qty * unitDiscount;
 
-                row.find("#amount").val(amount);
+                row.find("#amount").val(amount-totalDiscount);
                 row.find("#total_discount").val(totalDiscount);
 
                 return {

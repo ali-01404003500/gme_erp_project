@@ -969,9 +969,8 @@
         if (id) {
             $.ajax({
                 url: "{{ route('sales.get.customer.setting') }}?id=" + id,
-                success: function(data) {
+                success: function(data) { 
                     console.log(data);
-                     
 
                     if (data && data.customers && data.customers.customer) {
                         var area = data.customers.customer.area;
@@ -989,29 +988,46 @@
                            
                         ];
 
-                         if (area_id !== 'address') {
-                             window.shipmentsOptions = [...window.shipmentsOptions,
-                                 {
+                        if (area_id !== 'address') {
+                            window.shipmentsOptions = [...window.shipmentsOptions,
+                                {
                                     area: "address",
                                     area_name: "New Address",
                                     address: "",
                                     phone: "",
                                     contact_person_name: "",
                                 },
-                              ];
-                         }
-
-                         if(data.customers.customer && data.customers.customer.customer_shipping_address && data.customers.customer.customer_shipping_address.length > 0){
-                             window.shipmentsOptions = [...window.shipmentsOptions,
-                                 ...data.customers.customer.customer_shipping_address.map(address => ({
-                                    area: address.id,
-                                    area_name: "(Shiping Address) "+address.ship_to,
-                                    address: address.shipping_address,
-                                    phone: address.shipping_phone,
-                                    contact_person_name: address.ship_to
-                                }))
-                             ];
-                         }
+                            ];
+                        }
+                       
+                        if(data.latestShipmentAddress && data.latestShipmentAddress.length > 0){
+                            window.shipmentsOptions = [
+                                ...data.latestShipmentAddress.filter(address => address !== null).map(address => ({
+                                    area: address.area_id??address.area_id,
+                                    area_name: "(Shiping Address) "+address.address,
+                                    address: address.address,
+                                    phone: address.contact_person_number,
+                                    contact_person_name: address.contact_person_name,
+                                    courier_id: address.courier_id
+                                })),
+                                ...window.shipmentsOptions,
+                            ];
+                        }
+                        console.log({shipmentsOptions: window.shipmentsOptions});
+                     
+                        /*
+                        ei address ti customer er shipping address theke asteche.
+                        if(data.customers.customer && data.customers.customer.customer_shipping_address && data.customers.customer.customer_shipping_address.length > 0){
+                            window.shipmentsOptions = [...window.shipmentsOptions,
+                                ...data.customers.customer.customer_shipping_address.map(address => ({
+                                area: address.id,
+                                area_name: "(Shiping Address) "+address.ship_to,
+                                address: address.shipping_address,
+                                phone: address.shipping_phone,
+                                contact_person_name: address.ship_to
+                            }))
+                            ];
+                        }*/
 
                         if(data.customers.is_condition_bill){
                             //show the condition checkbox && codition remarks
@@ -1026,70 +1042,63 @@
  
                         // Update the area_id select element with the new options
                         if ($("#area_id")[0].tomselect) {
-                            /*$("#area_id")[0].tomselect.clearOptions();
-                            $("#area_id")[0].tomselect.addOptions(window.shipmentsOptions.map (option => ({
-                                value: option.area,
-                                text: option.area_name
-                            })));*/
 
-                            let select = $("#area_id")[0].tomselect;
+                            const tom = $("#area_id")[0].tomselect;
 
-                            // previous option clear
-                            select.clearOptions();
+                            tom.clearOptions();
 
-                            // new option add
-                            select.addOptions(window.shipmentsOptions.map(option => ({
-                                value: option.area,
-                                text: option.area_name
-                            })));
+                            tom.addOptions(
+                                window.shipmentsOptions.map(option => ({
+                                    value: option.area,
+                                    text: option.area_name
+                                }))
+                            );
 
-                            // New Address chara first option auto select
-                            let defaultOption = window.shipmentsOptions.find(option => option.area !== 'address');
+                            // Default area select
+                            tom.setValue(String(area_id));
 
-                            if (defaultOption) {
-                                select.setValue(defaultOption.area);
-                            } else {
-                                select.setValue('address');
-                            }
-                        } else {
+                        }
+                        else {
                             // Fallback if tomselect is not available yet
-                            /* 
+                            
+                            $("#area_id").empty();
                             $.each(window.shipmentsOptions, function(index, option) {
                                 $("#area_id").append($('<option></option>').attr('value', option.area).text(option.area_name));
-                            });*/
-
-                              // Fallback যদি TomSelect load না থাকে
-                            $("#area_id").empty();
-
-                            $.each(window.shipmentsOptions, function(index, option) {
-                                $("#area_id").append(
-                                    $('<option></option>')
-                                        .attr('value', option.area)
-                                        .text(option.area_name)
-                                );
-                            });
-
-                            //  Auto Select
-                            let defaultOption = window.shipmentsOptions.find(option => option.area !== 'address');
-
-                            $("#area_id").val(defaultOption ? defaultOption.area : 'address');
-
+                            }); 
                             
                         }
-                       
-                        
+  
                         // Update the fields if the area is not "New Address"
                         if (area_id != 'address') {
-                            const selectedOption = window.shipmentsOptions.find(option => option.area === area_name);
+                            const selectedOption = window.shipmentsOptions.find(option => option.area === area_id);
+ 
                             if (selectedOption) {
                                 $("#address").val(selectedOption.address);
                                 $("#address1").val(selectedOption.address);
                                 $("#contact_person_name").val(selectedOption.contact_person_name);
                                 $("#contact_person_phone").val(selectedOption.phone);
                                 $("#contact_person_phone1").val(selectedOption.phone);
+ 
+                                const tom = $("#courier_id")[0]?.tomselect;
+
+                                if (tom) {
+
+                                    tom.clear();  
+
+                                    if (selectedOption.courier_id && tom.options[selectedOption.courier_id]) {
+                                        tom.setValue(String(selectedOption.courier_id));
+                                    }
+
+                                }
+ 
+                                
+                                
                             }
                         } else {
                             clearFields();
+                            if ($("#courier_id")[0].tomselect) {
+                                $("#courier_id")[0].tomselect.clear();
+                            }
                         }
 
                         if (data.customers.vat_status == 1) {
