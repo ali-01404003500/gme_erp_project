@@ -106,80 +106,82 @@
     </style>
 
     <div class="bg-canvas">
-        <div class="container-fluid px-3">
-            <div class="matrix-card">
-                <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white">
-                    <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-table me-2 text-primary"></i>Target Summary Registry
-                    </h6>
-                    <div class="position-relative" style="width: 300px;">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" id="empSearch" class="form-control search-input"
-                            placeholder="Quick search employee...">
-                    </div>
+        <div class="matrix-card">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-table me-2 text-primary"></i>Target Summary Registry
+                </h6>
+                <div class="position-relative" style="width: 300px;">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" id="empSearch" class="form-control search-input"
+                        placeholder="Quick search employee...">
                 </div>
+            </div>
 
-                <div class="table-responsive-none">
-                    <table class="matrix-table" id="registryTable">
-                        <thead>
-                            <tr>
-                                <th class="col-sl">#</th>
-                                <th class="col-emp">Employee</th>
-                                <th class="col-year">Year</th>
-                                {{-- Abbreviated Months to save space --}}
-                                @foreach(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as $m)
-                                    <th class="col-month">{{ substr($m, 0, 1) }}</th>
-                                @endforeach
-                                <th class="col-total">Total Target</th>
-                                <th class="col-action">Action</th>
+            <div class="table-responsive-none">
+                <table class="matrix-table" id="registryTable">
+                    <thead>
+                        <tr>
+                            <th class="col-sl">#</th>
+                            <th class="col-emp">Employee</th>
+                            <th class="col-year">Year</th>
+                            {{-- Abbreviated Months to save space --}}
+                            @foreach(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as $m)
+                                <th class="col-month">{{ substr($m, 0, 1) }}</th>
+                            @endforeach
+                            <th class="col-total">Total Target</th>
+                            <th class="col-action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        @forelse($targets as $index => $target)
+                            <tr class="row-hover">
+                                <td class="text-center text-muted">{{ $index + 1 }}</td>
+                                <td class="fw-bold px-2">{{ $target->employee->name ?? 'N/A' }}</td>
+                                <td class="text-center">{{ $target->year }}</td>
+
+                                {{-- Compact Month Display --}}
+                                <td class="text-amount">{{ number_format($target->jan_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->feb_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->mar_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->apr_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->may_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->jun_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->jul_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->aug_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->sep_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->oct_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->nov_target, 0) }}</td>
+                                <td class="text-amount">{{ number_format($target->dec_target, 0) }}</td>
+
+                                <td class="text-amount fw-bold text-center" style="color:rgb(255, 1, 1)">
+                                    ৳{{ number_format($target->total_target, 0) }}
+                                </td>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a href="{{ route('sales_target.settings.target.edit', ['target' => $target->id ?? $target->target_id]) }}"
+                                            class="btn text-primary p-0 border-0">
+                                            <i class="bi bi-pencil-fill" style="font-size: 1.1rem;"></i>
+                                        </a>
+                                        <form
+                                            action="{{ route('sales_target.settings.target.destroy', ['target' => $target->id ?? $target->target_id]) }}"
+                                            method="POST" class="m-0" onsubmit="return confirm('Delete this target?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn text-danger p-0 border-0">
+                                                <i class="bi bi-trash3-fill" style="font-size: 1.1rem;"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="text-center">
-                            @forelse($targets as $index => $target)
-                                <tr class="row-hover">
-                                    <td class="text-center text-muted">{{ $index + 1 }}</td>
-                                    <td class="fw-bold px-2">{{ $target->employee->name ?? 'N/A' }}</td>
-                                    <td class="text-center">{{ $target->year }}</td>
-
-                                    {{-- Compact Month Display --}}
-                                    <td class="text-amount">{{ number_format($target->jan_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->feb_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->mar_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->apr_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->may_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->jun_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->jul_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->aug_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->sep_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->oct_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->nov_target, 0) }}</td>
-                                    <td class="text-amount">{{ number_format($target->dec_target, 0) }}</td>
-
-                                    <td class="text-amount fw-bold text-center" style="color:rgb(255, 1, 1)">
-                                        ৳{{ number_format($target->total_target, 0) }}
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
-                                            <form
-                                                action="{{ route('sales_target.settings.target.destroy', $target->target_id) }}"
-                                                method="POST" class="m-0">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn text-danger p-0 border-0"
-                                                    onclick="return confirm('Delete this target?')"
-                                                    style="line-height: 1; display: flex;">
-                                                    <i class="bi bi-trash3-fill" style="font-size: 1.1rem;"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="17" class="text-center py-5 text-muted">No records found.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="17" class="text-center py-5 text-muted">No records found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
