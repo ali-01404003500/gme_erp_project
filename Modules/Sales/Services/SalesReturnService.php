@@ -220,6 +220,7 @@ class SalesReturnService
             }
         }
         $this->makeDummyTransaction($return);
+        // dd ($result, $result['return']->transactions);
         DB::commit();
         return $result;
     }
