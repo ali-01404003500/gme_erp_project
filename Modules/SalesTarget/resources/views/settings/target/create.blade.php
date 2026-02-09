@@ -24,7 +24,7 @@
         }
 
         .header-gradient {
-            background: linear-gradient(90deg, #4f46e5, #6366f1);
+            background: linear-gradient(90deg, #46e5c0, #6366f1);
             color: white;
             padding: 1.25rem 1.5rem;
         }
@@ -231,7 +231,7 @@
 
 
     <script>
-        // ... (The script logic remains similar but ensures row index is handled correctly)
+        
         let rowIndex = 1;
 
         document.getElementById('add-row').addEventListener('click', function () {

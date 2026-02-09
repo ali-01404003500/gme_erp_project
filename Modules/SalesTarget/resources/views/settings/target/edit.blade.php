@@ -22,12 +22,6 @@
             overflow: hidden;
         }
 
-        /* .header-gradient {
-            background: linear-gradient(90deg, #0f172a, #334155);
-            color: white;
-            padding: 1.25rem 1.5rem;
-        } */
-
         .matrix-table {
             width: 100%;
             border-collapse: separate;

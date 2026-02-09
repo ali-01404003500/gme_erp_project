@@ -103,12 +103,18 @@
             top: 10px;
             color: #94a3b8;
         }
+
+        .header-gradient {
+            background: linear-gradient(90deg, #46e5c0, #6366f1);
+            color: white;
+            padding: 1.25rem 1.5rem;
+        }
     </style>
 
     <div class="bg-canvas">
         <div class="matrix-card">
-            <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-white">
-                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-table me-2 text-primary"></i>Target Summary Registry
+            <div class="header-gradient p-3 border-bottom d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-table me-2 text-primary"></i>Target Summary
                 </h6>
                 <div class="position-relative" style="width: 300px;">
                     <i class="bi bi-search search-icon"></i>
@@ -124,7 +130,6 @@
                             <th class="col-sl">#</th>
                             <th class="col-emp">Employee</th>
                             <th class="col-year">Year</th>
-                            {{-- Abbreviated Months to save space --}}
                             @foreach(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] as $m)
                                 <th class="col-month">{{ substr($m, 0, 1) }}</th>
                             @endforeach
