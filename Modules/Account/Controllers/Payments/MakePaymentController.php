@@ -11,6 +11,7 @@ use Modules\Inventory\Services\ExportService;
 use Modules\Purchase\Models\Supplier;
 use Modules\Purchase\Models\Vendor;
 use Modules\CRM\Models\Customer\Broker;
+use Modules\CRM\Models\Customer\Customer;
 use Modules\Account\Models\Account;
 
 class MakePaymentController extends Controller
@@ -191,6 +192,9 @@ class MakePaymentController extends Controller
             case 'supplier':
                 $data['accounts'] = Supplier::where('status', '1')->select('id', 'company_name as name')->get();
                 break;
+            case 'customer':
+                $data['accounts'] = Customer::where('status', '2')->select('id', 'company_name as name')->get();
+                break;
             case 'vendor':
                 $data['accounts'] = Vendor::where('status', '1')->select('id', 'company_name as name')->get();
                 break;
@@ -214,29 +218,31 @@ class MakePaymentController extends Controller
     {
         $validate = $request->validate([
             'type' => 'required',
-            'id' => 'required'
+            'account_id' => 'required'
         ]);
 
         $data = [];
 
         switch ($validate['type']) {
             case 'supplier':
-                $data['account'] = Supplier::where('id', $validate['id'])->first()->getAccount();
+                $data['account'] = Supplier::where('id', $validate['account_id'])->first()->getAccount();
+                break;
+            case 'customer':
+                $data['account'] = Customer::where('id', $validate['account_id'])->first()->getAccount();
                 break;
             case 'vendor':
-                $data['account'] = Vendor::where('id', $validate['id'])->first()->getAccount();
+                $data['account'] = Vendor::where('id', $validate['account_id'])->first()->getAccount();
                 break;
             case 'broker':
-                $data['account'] = Broker::where('id', $validate['id'])->first()->getAccount();
+                $data['account'] = Broker::where('id', $validate['account_id'])->first()->getAccount();
                 break;
             case 'petty_cash_expense':
-                $data['account'] = Account::where('id', $validate['id'])->first();
+                $data['account'] = Account::where('id', $validate['account_id'])->first();
                 break;
             default:
                 break;
         }
-
-
+  
 
         // $data = $this->service->getBalance($validate['type'], $validate['id']);
 

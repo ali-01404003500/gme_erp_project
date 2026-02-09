@@ -48,8 +48,13 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-md-6 text-end ">
+                                    <span>Balance : </span>
+                                    <span id="balance"></span>
+                                </div>
                             </div>
-                        </form>
+                        </form> 
+                            
                     </div>
                 </div>
 
@@ -130,7 +135,7 @@
 
                                 <div class="row mt-4">
                                     <div class="col-md-12">
-                                        <h5 class="text-uppercase">Payment Information</h5>
+                                        <h5 class="text-uppercase">Collection Information</h5>
                                         @include('Services::service-my-task.paymets', ['payments' => null])
                                     </div>
                                 </div>
@@ -200,6 +205,29 @@
                     toastr.error('Total Payment amount must be equal to the Total Paying Amount.');
                 }
             });
+            const customerId = new URLSearchParams(window.location.search).get('customer_id'); 
+            if(customerId)
+            {
+                $.ajax({
+                    url: `{{ route('account.get-ballance') }}?account_id=${customerId}&type=customer`,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data) {
+                            console.log(data);
+                            let currentDate = new Date().toISOString().slice(0, 10); 
+                            const balanceLink = `{{ route('account.report.customer-ledger') }}?account_id=${data.id}&from=2021-10-05&to=${currentDate}`;
+                            $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+data.balance+'</a>'); 
+                            // Populate additional details based on the response
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error('Failed to load details. Please check the console for errors.');
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+           
         });
     </script>
     @stack('script')
