@@ -4,12 +4,24 @@ namespace Modules\Services\Services;
 
 use App\Models\OtpVerification;
 use Illuminate\Support\Facades\DB;
+use Modules\Sales\Services\SalesOrderService;
+use Modules\Sales\Models\SalesOrder;
 use Modules\Services\Models\Service;
 use Modules\Services\Models\ServiceMyTask;
 
 class ServiceMyTaskService
 {
-    
+    /**
+     * it is for sales order service
+     * @var SalesOrderService
+     */
+    private $salesOrderService;
+
+
+    public function __construct(SalesOrderService $salesOrderService)
+    {
+        $this->salesOrderService = $salesOrderService;
+    }
     /**
      * Get all service entries
      *
@@ -113,6 +125,7 @@ class ServiceMyTaskService
 
                 case 'approved':
                     $serviceMyTask->serviceToken->update(['action' => 'Done']);
+                    $this->storeToSalesOrders($serviceMyTask);
                     break;
 
                 case 'rejected':
@@ -183,6 +196,118 @@ class ServiceMyTaskService
         $serviceMyTask->delete();
     }
 
+
+    private function storeToSalesOrders(ServiceMyTask $serviceMyTask)
+    {
+        $bills = $serviceMyTask->bill_type == 'service_return_bill' ? $serviceMyTask->returnBills : $serviceMyTask->bills;
+
+        $data = [
+            'customer_id' => $serviceMyTask->serviceToken->customer_id,
+            'service_id' => $serviceMyTask->serviceToken->service_id,
+            'additional_phone' => $serviceMyTask->handover_info_contact_no ?? $serviceMyTask->serviceToken->contact_person_phone,
+            'invoice_date' => now()->format('Y-m-d'),
+            'total_amount' => $bills->sum(function ($bill) { return $bill->price * $bill->quantity; }),
+            'discount' => $bills->sum('total_discount'),
+            'commission' => 0,
+            'total' => $bills->sum('amount'),
+            'vat' => 0,
+            'net_amount' => $bills->sum('amount'),
+            'remarks' => $serviceMyTask->remarks,
+            'status' => 'approved',
+            'is_shipment' => $serviceMyTask->shipment ? 1 : 0,
+            'is_courier' => $serviceMyTask->shipment ? 1 : 0,
+            'delivery_date' => now()->format('Y-m-d'),
+            'sales_type' => 'service_sales',
+            'reference_id' => null,
+            'source_type' => ServiceMyTask::class,
+            'source_id' => $serviceMyTask->id,
+        ];
+
+        $salesOrderDetails = [
+            'product_ids' => [],
+            'quantity' => [],
+            'price' => [],
+            'unit_discount' => [],
+            'total_discount' => [],
+            'amount' => [],
+            'sales_order_detail_id' => [],
+        ];
+
+        $existingSalesOrder = SalesOrder::where('source_type', ServiceMyTask::class)
+            ->where('source_id', $serviceMyTask->id)
+            ->first();
+
+        if ($existingSalesOrder) {
+            $existingDetails = $existingSalesOrder->salesOrderDetails->keyBy('product_id');
+        } else {
+            $existingDetails = collect();
+        }
+
+        foreach ($bills as $key => $bill) {
+            $salesOrderDetails['product_ids'][$key] = $bill->product_id;
+            $salesOrderDetails['quantity'][$key] = $bill->quantity;
+            $salesOrderDetails['price'][$key] = $bill->price;
+            $salesOrderDetails['unit_discount'][$key] = $bill->unit_discount;
+            $salesOrderDetails['total_discount'][$key] = $bill->total_discount;
+            $salesOrderDetails['amount'][$key] = $bill->amount;
+
+            $existingDetail = $existingDetails->get($bill->product_id);
+            $salesOrderDetails['sales_order_detail_id'][$key] = $existingDetail ? $existingDetail->id : null;
+        }
+
+        $salesOrderShipments = [];
+        if ($serviceMyTask->shipment) {
+            $shipment = $serviceMyTask->shipment;
+            $salesOrderShipments = [
+                'courier_id' => $shipment->courier_id,
+                'area_id' => $shipment->area_id,
+                'address' => $shipment->address,
+                'contact_person_name' => $shipment->contact_person_name,
+                'contact_person_number' => $shipment->contact_person_number,
+                'condition' => $shipment->condition,
+                'additional_amount' => $shipment->additional_amount,
+                'condition_remarks' => $shipment->condition_remarks,
+            ];
+            $data['is_shipment'] = 1;
+        }
+
+        $payments = [];
+        if ($serviceMyTask->payments->count() > 0) {
+            $payments = [
+                'payments_pay_mode' => [],
+                'payments_bank_id' => [],
+                'payments_branch_id' => [],+
+                'payments_transaction_id' => [],
+                'payments_emi_id' => [],
+                'payments_amount' => [],
+                'payments_date' => [],
+                'payments_attachments' => [],
+                'payments_verified' => [],
+                'payments_remark' => [],
+            ];
+            foreach ($serviceMyTask->payments as $key => $payment) {
+                $payments['payments_pay_mode'][$key] = $payment->pay_mode;
+                $payments['payments_bank_id'][$key] = $payment->bank_id ?? null;
+                $payments['payments_branch_id'][$key] = $payment->branch_id ?? null;
+                $payments['payments_transaction_id'][$key] = $payment->transaction_id ?? null;
+                $payments['payments_emi_id'][$key] = $payment->e_m_i_entries_id ?? null;
+                $payments['payments_amount'][$key] = $payment->amount ?? 0;
+                $payments['payments_date'][$key] = $payment->date;
+                $payments['payments_attachments'][$key] = $payment->attachments ?? null;
+                $payments['payments_verified'][$key] = $payment->verified ?? false;
+                $payments['payments_remark'][$key] = $payment->remarks ?? null;
+            }
+        }
+
+        if ($existingSalesOrder) {
+            $salesOrder = $this->salesOrderService->update($existingSalesOrder, $data, $salesOrderDetails, $salesOrderShipments, $payments);
+        } else {
+            $result = $this->salesOrderService->store($data, $salesOrderDetails, $salesOrderShipments, $payments);
+            $salesOrder = $result['salesOrder'];
+        }
+
+        return $salesOrder;
+    }
     public function show($id)
     {
        $serviceMyTask = ServiceMyTask::where('service_token_id', $id)
