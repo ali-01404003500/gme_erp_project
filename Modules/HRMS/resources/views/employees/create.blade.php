@@ -524,10 +524,13 @@
                                                             <div class="form-group">
                                                                 <label for="employment_type" class="color-dark fs-14 fw-500 align-center">Employment Type <span class="text-danger">*</span>:</label>
                                                                 <select class="form-control tom-select" id="employment_type" name="employment_type_id" >
-                                                                    <option value="1" @if(old("employment_type_id") == "1") selected @endif>Type1</option>
-                                                                    <option value="2" @if(old("employment_type_id") == "2") selected @endif>Type2</option>
-                                                                    <option value="3" @if(old("employment_type_id") == "3") selected @endif>Type3</option>
-                                                                    <option value="4" @if(old("employment_type_id") == "4") selected @endif>Type4</option>
+                                                                    <option value="1" @if(old("employment_type_id") == "1") selected @endif>Casual</option>
+                                                                    <option value="2" @if(old("employment_type_id") == "2") selected @endif>Contractual</option>
+                                                                    <option value="3" @if(old("employment_type_id") == "3") selected @endif>Not Defined</option>
+                                                                    <option value="4" @if(old("employment_type_id") == "4") selected @endif>Permanent</option>
+                                                                    <option value="5" @if(old("employment_type_id") == "5") selected @endif>Probationary</option>
+                                                                    <option value="6" @if(old("employment_type_id") == "6") selected @endif>Suspended</option>
+                                                                    <option value="7" @if(old("employment_type_id") == "7") selected @endif>Trainee</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -802,13 +805,13 @@
                                             <ul class="nav nav-tabs vertical-tabs" role="tablist">
                                                 <li class="nav-item">
                                                     <a class="nav-link active" id="tab-v-7-tab" data-bs-toggle="tab"
-                                                        href="#tab-v-7" role="tab" aria-selected="false">IT and
+                                                        href="#tab-v-7" role="tab" aria-selected="true">IT and
                                                         System
                                                         Access</a>
                                                 </li> 
                                                 <li class="nav-item">
                                                     <a class="nav-link" id="tab-v-5-tab" data-bs-toggle="tab"
-                                                        href="#tab-v-5" role="tab" aria-selected="true">Tax and
+                                                        href="#tab-v-5" role="tab" aria-selected="false">Tax and
                                                         Legal
                                                         Information</a>
                                                 </li>

@@ -555,16 +555,25 @@
                                                                 <option value="">Select</option>
                                                                 <option value="1"
                                                                     @if (old('employment_type_id', optional($employee->employementDetail)->employment_type_id) == '1') selected @endif>
-                                                                    Type1</option>
+                                                                    Casual</option>
                                                                 <option value="2"
                                                                     @if (old('employment_type_id', optional($employee->employementDetail)->employment_type_id) == '2') selected @endif>
-                                                                    Type2</option>
+                                                                    Contractual</option>
                                                                 <option value="3"
                                                                     @if (old('employment_type_id', optional($employee->employementDetail)->employment_type_id) == '3') selected @endif>
-                                                                    Type3</option>
+                                                                    Not Defined</option>
                                                                 <option value="4"
                                                                     @if (old('employment_type_id', optional($employee->employementDetail)->employment_type_id) == '4') selected @endif>
-                                                                    Type4</option>
+                                                                    Permanent</option>
+                                                                <option value="5"
+                                                                    @if (old('employment_type_id', optional($employee->employementDetail)->employment_type_id) == '5') selected @endif>
+                                                                    Probationary</option>
+                                                                <option value="6"
+                                                                    @if (old('employment_type_id', optional($employee->employementDetail)->employment_type_id) == '6') selected @endif>
+                                                                    Suspended</option>
+                                                                <option value="7"
+                                                                    @if (old('employment_type_id', optional($employee->employementDetail)->employment_type_id) == '7') selected @endif>
+                                                                    Trainee</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -585,6 +594,26 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-4 mb-4">
+                                                        <div class="form-group">
+                                                            <label for="supervisor"
+                                                                class="color-dark fs-14 fw-500 align-center">Job Status
+                                                                :</label>
+                                                            <select name="status" id="status" class="form-control tom-select">
+                                                                <option value=""></option>
+                                                                <option value="1"
+                                                                    @if (old('status', $employee->status) == '1') selected @endif>
+                                                                    Active
+                                                                </option>
+                                                                <option value="0"
+                                                                    @if (old('status', $employee->status) == '0') selected @endif>
+                                                                    Inactive
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                   
                                                 </div>
 
                                                 {{-- <div class="row mb-4 d-flex justify-content-end">
@@ -806,15 +835,18 @@
 
                                         <div class="dm-tab tab-horizontal">
                                             <ul class="nav nav-tabs vertical-tabs" role="tablist">
-
                                                 <li class="nav-item">
-                                                    <a class="nav-link active" id="tab-v-5-tab" data-bs-toggle="tab"
-                                                        href="#tab-v-5" role="tab" aria-selected="true">Tax and
+                                                    <a class="nav-link active" id="tab-v-7-tab" data-bs-toggle="tab"
+                                                        href="#tab-v-7" role="tab" aria-selected="true">IT and
+                                                        System
+                                                        Access</a>
+                                                </li> 
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="tab-v-5-tab" data-bs-toggle="tab"
+                                                        href="#tab-v-5" role="tab" aria-selected="false">Tax and
                                                         Legal
                                                         Information</a>
                                                 </li>
-
-
                                                 <li class="nav-item">
                                                     <a class="nav-link" id="tab-v-8-tab" data-bs-toggle="tab"
                                                         href="#tab-v-8" role="tab" aria-selected="false">Additional
@@ -823,9 +855,94 @@
                                             </ul>
                                             <div class="tab-content">
 
+                                                <div class="tab-pane fade show active" id="tab-v-7" role="tabpanel"
+                                                    aria-labelledby="tab-v-7-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-3 mb-3">
+                                                            <div class="form-group">
+                                                                <label for="system_username"
+                                                                    class="color-dark fs-14 fw-500 align-center">System
+                                                                    Username :</label>
+                                                                <input type="text"
+                                                                    class="form-control ip-gray radius-xs b-light px-15"
+                                                                    id="system_username" name="system_username"
+                                                                    value="{{ old('system_username', $employee->user->email ?? '') }}"  autocomplete="off" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 mb-3">
+                                                            <div class="form-group">
+                                                                <label for="system_password" class="color-dark fs-14 fw-500 align-center">
+                                                                    System Password <span class="text-danger">*</span>:
+                                                                </label>
+                                                                <div class="password-container" style="position: relative;">
+                                                                    <input type="password"  autocomplete="new-password"  class="form-control ip-gray radius-xs b-light px-15" id="system_password" name="system_password" value="{{ old('system_password') }}">
+                                                                    <span class="toggle-password" style="top: 50%; transform: translateY(-50%); right: 10px; position: absolute; ">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <script>
+                                                            document.querySelector('.toggle-password').addEventListener('click', function () {
+                                                                const passwordInput = document.getElementById('system_password');
+                                                                const passwordIcon = this.querySelector('i');
+                                                        
+                                                                if (passwordInput.type === 'password') {
+                                                                    passwordInput.type = 'text';
+                                                                    passwordIcon.classList.remove('fa-eye');
+                                                                    passwordIcon.classList.add('fa-eye-slash');
+                                                                } else {
+                                                                    passwordInput.type = 'password';
+                                                                    passwordIcon.classList.remove('fa-eye-slash');
+                                                                    passwordIcon.classList.add('fa-eye');
+                                                                }
+                                                            });
+                                                        </script>
+                                                        
+                                                        <div class="col-md-3 mb-3">
+                                                            <div class="form-group">
+                                                                <label for="email_accounts"
+                                                                    class="color-dark fs-14 fw-500 align-center">Email/Communication
+                                                                    Accounts:</label>
+                                                                <input type="text"
+                                                                    class="form-control ip-gray radius-xs b-light px-15"
+                                                                    id="email_accounts" name="email_accounts"
+                                                                    value="{{ old('email_accounts', $employee->email_accounts) }}"  autocomplete="off" >
+                                                       
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 mb-3">
+                                                            <div class="form-group">
+                                                                <label for="user_status"
+                                                                    class="color-dark fs-14 fw-500 align-center">Status</label>
+                                                                    <select name="user_status" id="user_status" class="form-control tom-select">
+                                                                        <option value=""></option>
+                                                                        <option value="1"
+                                                                            @if (old('user_status', $employee->user_status) == '1') selected @endif>
+                                                                            Active
+                                                                        </option>
+                                                                        <option value="0"
+                                                                            @if (old('user_status', $employee->user_status) == '0') selected @endif>
+                                                                            Inactive
+                                                                        </option>
+                                                                    </select>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="col-md-4 mb-4">
+                                                            <div class="form-group">
+                                                                <label for="software_access"
+                                                                    class="color-dark fs-14 fw-500 align-center">Software/Tool
+                                                                    Access:</label>
+                                                                <textarea class="form-control ip-gray radius-xs b-light px-15" id="software_access" name="software_access"
+                                                                    rows="3">{{ old('software_access', $employee->software_access) }}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-
-                                                <div class="tab-pane fade show active" id="tab-v-5" role="tabpanel"
+                                                <div class="tab-pane fade" id="tab-v-5" role="tabpanel"
                                                     aria-labelledby="tab-v-5-tab">
                                                     {{-- <h2>Tax and Legal Information</h2> --}}
                                                     <div class="row">

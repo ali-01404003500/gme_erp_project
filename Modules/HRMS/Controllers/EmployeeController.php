@@ -8,6 +8,7 @@ use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\Settings\Department;
 use Modules\HRMS\Models\Settings\Designation;
 use App\Models\AccessControl\Branch;
+use App\Models\User;
 use Modules\HRMS\Services\EmployeeService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -43,8 +44,13 @@ class EmployeeController extends Controller
      */
     public function index( Request $request)
     {
-        $data['employees'] = $this->service->getAll();
+        $data['employees'] = $this->service->getAll(); 
         $data['employeeSearch'] = Employee::all();
+        $data['departments'] = Department::whereIn('status', [1])->orderBy('code', 'asc')->get();
+        $data['designations'] = Designation::whereIn('status', [1])->orderBy('code', 'asc')->get();
+        $data['branches'] = Branch::whereIn('branch_type_id', [1, 2])->get();
+       
+
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
@@ -298,6 +304,7 @@ class EmployeeController extends Controller
             'email_accounts' => 'nullable|string|max:255',
             'software_access' => 'nullable|string|max:255',
             'additional_notes' => 'nullable|string|max:255',
+            'status' => 'required|in:0,1',
         ]);
        
         $educationsDetails = $request->validate([
@@ -320,7 +327,14 @@ class EmployeeController extends Controller
             'supervisor' => 'nullable|exists:employees,id',
             
         ]);
-        $result = $this->service->update($employee, $validate, $educationsDetails, $employementDetails);
+
+        $user = $request->validate([ 
+            'system_password' => 'nullable|string|max:255',
+            'user_branch_id' => 'nullable|exists:branches,id',
+        ]);
+
+
+        $result = $this->service->update($employee, $validate, $educationsDetails, $employementDetails, $user);
 
         // return redirect()->route('hrm.employees.index')->with('success', 'Employee updated successfully.');
         return redirect()->route('hrm.employees.edit', $employee->id)->with('success', 'Employee updated successfully.');

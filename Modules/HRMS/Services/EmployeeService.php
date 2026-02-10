@@ -19,11 +19,47 @@ class EmployeeService
 
     public function getAll(int $limit = 20)
     {
-        return Employee::query()
-            ->with('employementDetail.department', 'employementDetail.designation', 'employementDetail.supervisorName')
-            ->searchByFields(['full_name', 'personal_mobile'])
-            ->likeSearch('present_address')
-            ->paginate($limit);
+         return Employee::query()
+                ->with(
+                    'employementDetail.department',
+                    'employementDetail.designation',
+                    'employementDetail.supervisorName',
+                    'employementDetail.branch'
+                )
+
+                ->when(request('full_name'), function ($q) {
+                    $q->where('full_name', request('full_name'));
+                })
+
+                ->when(request('personal_mobile'), function ($q) {
+                    $q->where('personal_mobile', request('personal_mobile'));
+                })
+
+                ->when(request('status') !== null, function ($q) {
+                    $q->where('status', request('status'));
+                })
+
+                ->when(request('department'), function ($q) {
+                    $q->whereHas('employementDetail', function ($sub) {
+                        $sub->where('department_id', request('department'));
+                    });
+                })
+
+                ->when(request('designation'), function ($q) {
+                    $q->whereHas('employementDetail', function ($sub) {
+                        $sub->where('designation_id', request('designation'));
+                    });
+                })
+
+                ->when(request('branch'), function ($q) {
+                    $q->whereHas('employementDetail', function ($sub) {
+                        $sub->where('branch_id', request('branch'));
+                    });
+                })
+
+                ->likeSearch('present_address')
+                ->paginate($limit);
+
     }
 
     public function create(array $data, $educationsDetails, $employementDetails, $user)
@@ -72,9 +108,9 @@ class EmployeeService
         return $result;
     }
 
-    public function update(Employee $employee, array $data, array $educationsDetails, array $employementDetails)
+    public function update(Employee $employee, array $data, array $educationsDetails, array $employementDetails, array $user)
     {
-                // dd( $employee);
+        //dd( $user);
 
         $employee->update($data);
 
@@ -126,7 +162,15 @@ class EmployeeService
             $employee->user->update([
                 'branch_id' => $employementDetails['user_branch_id'],
             ]);
+
+            
         }
+       
+        if (!empty($user['system_password'])) {
+            $userData['password'] = bcrypt($user['system_password']);
+            $employee->user->update($userData);
+     
+        } 
 
         return $employee;
     }
