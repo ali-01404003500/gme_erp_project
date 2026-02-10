@@ -113,7 +113,7 @@
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <input name="debit[]" value="{{ old('debit')[$key] }}"
+                                                                        <input name="debit[]" value="{{ old('debit')[$key] }}" 
                                                                             type="text" onclick="enableMe(this)"
                                                                             onkeyup="disabledReverse('input-credit', this)"
                                                                             class="form-control only-number text-right input-debit calculate-total input-sm" />
@@ -365,7 +365,7 @@
     }
     function disabledReverse($class_name, object) {
         let disableItem = $(object).closest('tr').find('.' + $class_name)
-        disableItem.attr('readonly', true).val('0')
+        //disableItem.attr('readonly', true).val('0')
     }
 
     function enableMe(object) {

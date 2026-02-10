@@ -22,6 +22,11 @@
                                     class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
                                         class="fa fa-list"></i> List</a>
                             @endif
+                            @if (hasPermission('sales.sales-orders.create'))
+                            <a href="{{ route('sales.sales-orders.create') }}" class="btn px-20 btn-primary btn-sm" style="margin-left: 5px;">
+                                <i class="las la-plus fs-16"></i>Add New
+                            </a>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -68,10 +68,27 @@
                                 </div>
 
                                 <!-- Amount -->
-                                <div class="col-12">
-                                    <label for="request_amount" class="form-label">Amount <span class="text-danger">*</span></label>
+                                <div class="col-4">
+                                    <label for="request_amount" class="form-label">Request Amount <span class="text-danger">*</span></label>
                                     <input type="number" step="0.01" name="request_amount" id="request_amount" class="form-control" value="{{ old('request_amount') }}" required>
                                 </div>
+
+                                <!-- Verified Amount -->
+                                @if(hasPermission('account.collections.collections.verify'))
+                                <div class="col-4">
+                                    <label for="verify_amount" class="form-label">Verified Amount</label>
+                                    <input type="number" step="0.01" name="verify_amount" id="verify_amount" class="form-control" value="{{ old('verify_amount') }}" >
+                                </div>
+                                @endif
+                                    
+
+                                <!-- Approved Amount -->
+                                @if(hasPermission('account.collections.collections.approve'))
+                                <div class="col-4">
+                                    <label for="approved_amount" class="form-label">Approved Amount</label>
+                                    <input type="number" step="0.01" name="approved_amount" id="approved_amount" class="form-control" value="{{ old('approved_amount') }}" >
+                                </div>
+                                @endif
 
                                 <!-- Remarks -->
                                 <div class="col-12">

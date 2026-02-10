@@ -182,9 +182,9 @@
                     </a>
                     <ul>
                         <!-- Payment Voucher -->
-                        @if (hasPermission('account.voucher-payments.index'))
+                        @if (hasPermission('account.voucher-payments.create'))
                             <li>
-                                <a href="{{ route('account.voucher-payments.index') }}"
+                                <a href="{{ route('account.voucher-payments.create') }}"
                                     class="{{ request()->routeIs('account.voucher-payments.*') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-money-bill-wave"></span>
                                     {{ t_('menu.payment') }}
@@ -193,9 +193,9 @@
                         @endif
 
                         <!-- Receive Voucher -->
-                        @if (hasPermission('account.voucher-receives.index'))
+                        @if (hasPermission('account.voucher-receives.create'))
                             <li>
-                                <a href="{{ route('account.voucher-receives.index') }}"
+                                <a href="{{ route('account.voucher-receives.create') }}"
                                     class="{{ request()->routeIs('account.voucher-receives.*') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-hand-holding-usd"></span>
                                     {{ t_('menu.receive') }}
@@ -204,9 +204,9 @@
                         @endif
 
                         <!-- Contra Voucher -->
-                        @if (hasPermission('account.voucher-contras.index'))
+                        @if (hasPermission('account.voucher-contras.create'))
                             <li>
-                                <a href="{{ route('account.voucher-contras.index') }}"
+                                <a href="{{ route('account.voucher-contras.create') }}"
                                     class="{{ request()->routeIs('account.voucher-contras.*') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-exchange-alt"></span>
                                     {{ t_('menu.contra') }}
@@ -215,9 +215,9 @@
                         @endif
 
                         <!-- Journal Voucher -->
-                        @if (hasPermission('account.voucher-journals.index'))
+                        @if (hasPermission('account.voucher-journals.create'))
                             <li>
-                                <a href="{{ route('account.voucher-journals.index') }}"
+                                <a href="{{ route('account.voucher-journals.create') }}"
                                     class="{{ request()->routeIs('account.voucher-journals.*') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-book"></i>
                                     {{ t_('menu.journal') }}
@@ -237,18 +237,18 @@
                         <span class="toggle-icon"></span>
                     </a>
                     <ul>
-                        @if (hasPermission('account.emi-entries.index'))
+                        @if (hasPermission('account.emi-entries.create'))
                             <li>
-                                <a href="{{ route('account.emi-entries.index') }}"
+                                <a href="{{ route('account.emi-entries.create') }}"
                                     class="{{ request()->routeIs('account.emi-entries.*') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-coins"></span>
                                     {{ t_('EMI Entries') }}
                                 </a>
                             </li>
                         @endif
-                        @if (haspermission('account.advance-cheque-entries.index'))
+                        @if (haspermission('account.advance-cheque-entries.create'))
                             <li>
-                                <a href="{{ route('account.advance-cheque-entries.index') }}"
+                                <a href="{{ route('account.advance-cheque-entries.create') }}"
                                     class="{{ request()->routeIs('account.advance-cheque-entries.index')|| request()->routeIs('account.advance-cheque-entries.create') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-file-invoice-dollar"></span>
                                     {{ t_('advance-cheque-entry') }}
@@ -330,9 +330,9 @@
                         <span class="toggle-icon"></span>
                     </a>
                     <ul>
-                        @if (hasPermission('account.collections.collections.index'))
+                        @if (hasPermission('account.collections.collections.create'))
                             <li>
-                                <a href="{{ route('account.collections.collections.index') }}"
+                                <a href="{{ route('account.collections.collections.create') }}"
                                     class="{{ request()->routeIs('account.collections.collections.index') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-coins"></span>
                                     {{ t_('menu.collection-list-menu-title') }}
@@ -340,9 +340,9 @@
                             </li>
                         @endif
 
-                        @if (hasPermission('account.collections.invoice-wise-collections.index'))
+                        @if (hasPermission('account.collections.invoice-wise-collections.create'))
                             <li>
-                                <a href="{{ route('account.collections.invoice-wise-collections.index') }}"
+                                <a href="{{ route('account.collections.invoice-wise-collections.create') }}"
                                     class="{{ request()->routeIs('account.collections.invoice-wise-collections.*') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-file-invoice"></span>
                                     {{ t_('menu.invoice wise') }}
@@ -365,18 +365,18 @@
                         <span class="toggle-icon"></span>
                     </a>
                     <ul>
-                        @if (hasPermission('account.payments.make-payments.index'))
+                        @if (hasPermission('account.payments.make-payments.create'))
                             <li>
-                                <a href="{{ route('account.payments.make-payments.index') }}"
+                                <a href="{{ route('account.payments.make-payments.create') }}"
                                     class="{{ request()->routeIs('account.payments.make-payments.index') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-list"></span>
                                     {{ t_('menu.payment list') }}
                                 </a>
                             </li>
                         @endif
-                        @if (hasPermission('account.payments.broker-payments.index'))
+                        @if (hasPermission('account.payments.broker-payments.create'))
                             <li>
-                                <a href="{{ route('account.payments.broker-payments.index') }}"
+                                <a href="{{ route('account.payments.broker-payments.create') }}"
                                     class="{{ request()->routeIs('account.payments.broker-payments.index') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-coins"></span>
                                     {{ t_('menu.broker payment') }}
@@ -384,9 +384,9 @@
                             </li>
                         @endif
 
-                        @if (hasPermission('account.payments.invoice-wise-payments.index'))
+                        @if (hasPermission('account.payments.invoice-wise-payments.create'))
                             <li>
-                                <a href="{{ route('account.payments.invoice-wise-payments.index') }}"
+                                <a href="{{ route('account.payments.invoice-wise-payments.create') }}"
                                     class="{{ request()->routeIs('account.payments.invoice-wise-payments.*') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-file-invoice"></span>
                                     {{ t_('menu.invoice-wise-payments') }}
@@ -401,9 +401,7 @@
                                     {{ t_('menu.petty-cash-payments') }}
                                 </a>
                             </li>
-                        @endif
-
-
+                        @endif 
                     </ul>
                 </li>
             @endif

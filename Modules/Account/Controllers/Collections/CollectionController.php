@@ -7,6 +7,7 @@ use App\Models\AccessControl\CompanyInfo;
 use Modules\Account\Models\Collections\Collection;
 use Modules\Account\Services\Collections\CollectionService;
 use Illuminate\Http\Request;
+use Modules\CRM\Models\Customer\Broker;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\HRMS\Models\Employee;
 use Modules\Inventory\Services\ExportService;
@@ -219,6 +220,10 @@ class CollectionController extends Controller
                 // Assuming Supplier model from Purchase module and 'company_name' field
                 $query = Supplier::select('id', 'company_name as name');
                 break;
+            case 'broker':
+                // Assuming Broker model
+                $query = Broker::select('id', 'broker_name as name');
+                break;
             case 'employee':
                 // Adjust the model and field name as per your application structure
                 $query = Employee::select('id', 'full_name as name');
@@ -252,6 +257,10 @@ class CollectionController extends Controller
             case 'supplier':
                 // Assuming Supplier model from Purchase module and 'company_name' field
                 $query = Supplier::find($request->query('account_id'))->getAccount();
+                break;
+            case 'broker':
+                // Assuming Broker model from CRM module and 'broker_name' field
+                $query = Broker::find($request->query('account_id'))->getAccount();
                 break;
             case 'employee':
                 // Adjust the model and field name as per your application structure
