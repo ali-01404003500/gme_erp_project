@@ -242,14 +242,40 @@ class SalesReturnService
 
         // Credit Customer (We owe them now, or reduce what they owe)
         $customerAccount = $salesReturn->customer->getAccount();
-        // $salesReturn->transactions()->create([
-        //     'account_id' => $customerAccount->id,
-        //     'balance_type' => 'credit',
-        //     'invoice_no' => $salesReturn->id,
-        //     'debit_amount' => 0,
-        //     'credit_amount' => $totalSellingPrice,
-        //     'description' => 'Sales Return Credit to Customer #' . $salesReturn->invoice_no,
-        // ]);
+     
+        $salesReturnAccount = Account::where('name', 'Sales Return')->first();
+        $customerAccount = $salesReturn->customer->getAccount();
+        /**
+         *  Revenue Layer (based on selling price):
+         *   Account	Debit	Credit
+         *   Sales Return (Expense / Contra-Revenue)
+         *   Income	Sales Income	Sales Returns & Allowances	Contra Revenue
+         *   700	
+         *   Customer Account	
+         *   700
+         */
+        foreach ($salesReturn->salesReturnDetails as $detail) {
+            $salesReturnAccount = $detail->product->getAccountForSalesReturnsAndAllowances();
+            // Debit Sales Return   
+            $salesReturn->transactions()->create([
+                'account_id' => $salesReturnAccount->id,
+                'balance_type' => 'debit',
+                'invoice_no' => $salesReturn->invoice_no,
+                'debit_amount' => $detail->amount,
+                'credit_amount' => 0,
+                'description' => 'Sales Return #' . $salesReturn->invoice_no,
+                'transaction_date' => $salesReturn->return_date,
+            ]);
+        }
+        $salesReturn->transactions()->create([
+            'account_id' => $customerAccount->id,
+            'balance_type' => 'credit',
+            'invoice_no' => $salesReturn->invoice_no,
+            'debit_amount' => 0,
+            'credit_amount' => $salesReturn->total_amount,
+            'description' => 'Sales Return #' . $salesReturn->invoice_no,
+            'transaction_date' => $salesReturn->return_date,
+        ]);
 
 
         // --- Refund/Payment Layer ---
@@ -286,49 +312,11 @@ class SalesReturnService
                     ]);
                 }
             }
-        } else {
-
-            //without payments
-            $salesReturnAccount = Account::where('name', 'Sales Return')->first();
-            $customerAccount = $salesReturn->customer->getAccount();
-
-            /**
-             *  Revenue Layer (based on selling price):
-             *   Account	Debit	Credit
-             *   Sales Return (Expense / Contra-Revenue)
-             *   Income	Sales Income	Sales Returns & Allowances	Contra Revenue
-             *   700	
-             *   Customer Account	
-             *   700
-             */
-            foreach ($salesReturn->salesReturnDetails as $detail) {
-                $inventoryAccount = $detail->product->getAccountForSalesReturnsAndAllowances();
-                // Debit Sales Return   
-                $salesReturn->transactions()->create([
-                    'account_id' => $inventoryAccount->id,
-                    'balance_type' => 'debit',
-                    'invoice_no' => $salesReturn->invoice_no,
-                    'debit_amount' => $detail->amount,
-                    'credit_amount' => 0,
-                    'description' => 'Sales Return #' . $salesReturn->invoice_no,
-                    'transaction_date' => $salesReturn->return_date,
-                ]);
-            }
-            $salesReturn->transactions()->create([
-                'account_id' => $customerAccount->id,
-                'balance_type' => 'credit',
-                'invoice_no' => $salesReturn->invoice_no,
-                'debit_amount' => 0,
-                'credit_amount' => $salesReturn->total_amount,
-                'description' => 'Sales Return #' . $salesReturn->invoice_no,
-                'transaction_date' => $salesReturn->return_date,
-            ]);
         }
 
         // --- Inventory Layer (Restocking at Cost) ---
         // Debit Inventory (Asset Increase)
         // Credit COGS (Expense Decrease)
-
         $cogsAccount = Account::where('account_number', 5300)->first();
 
         $totalCost = 0;
