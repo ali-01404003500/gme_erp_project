@@ -91,8 +91,9 @@
                                             <td width="16%">
                                                 <select name="status" id="status" class="form-control tom-select">
                                                     <option value="" {{ request('status') == 0 ? 'selected' : '' }}></option> 
-                                                    <option value="0" {{ request('status') == 0 ? 'selected' : '' }}>Inactive</option>
                                                     <option value="1" {{ request('status') == 1 ? 'selected' : '' }}>Active</option>
+                                                    <option value="0" {{ request('status') == 0 ? 'selected' : '' }}>Inactive</option>
+                                                    
                                                 </select>
                                             </td> 
 
@@ -137,7 +138,7 @@
                                 @foreach ($employees as $employee)
                                     <tr>
                                         <td>{{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration  }}</td>
-                                        <td>{{ $employee->employee_code }}</td>
+                                        <td>{{ $employee->employementDetail->card_no }}</td>
                                         <td>
                                             <a class="text-dark fw-500" href="{{ route('hrm.employees.show', $employee->id) }}">
                                                 {{ $employee->full_name }}

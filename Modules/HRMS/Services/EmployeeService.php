@@ -5,6 +5,8 @@ namespace Modules\HRMS\Services;
 use App\Models\AccessControl\Branch;
 use App\Models\User;
 use Modules\HRMS\Models\Employee;
+use Modules\HRMS\Models\EmployeeExperience;
+use Modules\HRMS\Models\EmployeeFamilyContact;
 use App\Traits\S3FileHandler;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -62,115 +64,202 @@ class EmployeeService
 
     }
 
-    public function create(array $data, $educationsDetails, $employementDetails, $user)
+    public function create($type, array $data, $employementDetails, $user)
     {
 
         $result = [];
         DB::beginTransaction();
-
-        $user = User::create([
-            'name' => $data['full_name'],
-            'email' => $user['system_username'],
-            'password' => bcrypt($user['system_password']),
-            'branch_id' => $user['user_branch_id'],
-        ]);
-        $result['user'] = $user;
-
-        $data['user_id'] = $user->id;
-        $result['employee'] = Employee::create($data);
-
-        foreach ($educationsDetails['degree_title'] as $key => $degree_title) {
-            $result['employee']->educationDetails()->create([
-                'degree_title' => $degree_title,
-                'institute_name' => $educationsDetails['institute_name'][$key],
-                'group' => $educationsDetails['group'][$key],
-                'duration' => $educationsDetails['duration'][$key],
-                'passing_year' => $educationsDetails['passing_year'][$key],
-                'result' => $educationsDetails['result'][$key],
-                'certificate_upload' => request()->input('certificate_upload_' . $key) ?? null,
+  
+        if( $type == 'employee_information')
+        {
+            
+            $user = User::create([
+                'name' => $data['full_name'],
+                'email' => $user['system_username'],
+                'password' => bcrypt($user['system_password']),
+                'branch_id' => $user['user_branch_id'],
+                'user_status' => $user['user_status'],
             ]);
+            $result['user'] = $user;
+            $data['user_id'] = $user->id;
+
+
+            $result['employee'] = Employee::create($data);
+            $result['employee']->createBankAccount();
+
+            
+            $result['employee']->employementDetails()->create([
+                'employee_id' => $result['employee']->id,
+                'card_no' => $employementDetails['card_no'], 
+                'branch_id' => $employementDetails['user_branch_id'],
+            ]); 
         }
-
-        $result['employee']->employementDetails()->create([
-            'employee_id' => $result['employee']->id,
-            'card_no' => $employementDetails['card_no'],
-            'date_of_joining' => $employementDetails['date_of_joining'],
-            'employment_type_id' => $employementDetails['employment_type_id'],
-            'department_id' => $employementDetails['department_id'],
-            'designation_id' => $employementDetails['designation_id'],
-            'branch_id' => $employementDetails['user_branch_id'],
-            'supervisor' => $employementDetails['supervisor'],
-        ]);
-
-        $result['employee']->createBankAccount();
+ 
         // dd($result);
         DB::commit();
         return $result;
     }
 
-    public function update(Employee $employee, array $data, array $educationsDetails, array $employementDetails, array $user)
-    {
+    public function update($type, Employee $employee, array $data, array $contact, array $educationsDetails, array $employementDetails, array $bank, array $tax, array $employeement_experience, array $employeeFamilyContact, array $user)
+    {  
         //dd( $user);
 
-        $employee->update($data);
 
-        // Reset and save education details
-        $employee->educationDetails()->delete();
-        // dd($educationsDetails);
-        if (!empty($educationsDetails['degree_title'])) {
-            foreach ($educationsDetails['degree_title'] as $key => $degree_title) {
-                if (
-                    empty($degree_title) &&
-                    empty($educationsDetails['institute_name'][$key]) &&
-                    empty($educationsDetails['group'][$key]) &&
-                    empty($educationsDetails['duration'][$key]) &&
-                    empty($educationsDetails['passing_year'][$key]) &&
-                    empty($educationsDetails['result'][$key]) &&
-                    empty(request()->input('certificate_upload_' . $key))
-                ) {
-                    continue; // skip blank rows
-                }
-
-                EducationDetail::create([
-                    'employee_id' => $employee->id,
-                    'degree_title' => $degree_title,
-                    'institute_name' => $educationsDetails['institute_name'][$key],
-                    'group' => $educationsDetails['group'][$key],
-                    'duration' => $educationsDetails['duration'][$key],
-                    'passing_year' => $educationsDetails['passing_year'][$key],
-                    'result' => $educationsDetails['result'][$key],
-                    'certificate_upload' => request()->input('certificate_upload_' . $key) ?? null,
+        if( $type == 'employee_information')
+        {
+            $employee->update($data);
+             
+            // Update the user's branch to match the employee's branch
+            if ($employee->user) {
+                $employee->user->update([
+                    'branch_id' => $employementDetails['user_branch_id'], 
                 ]);
+    
             }
         }
 
-        // Reset and save employment detailsBill
-        $employee->employementDetails()->delete();
-        EmployementDetail::create([
-            'employee_id' => $employee->id,
-            'card_no' => $employementDetails['card_no'],
-            'date_of_joining' => $employementDetails['date_of_joining'],
-            'employment_type_id' => $employementDetails['employment_type_id'],
-            'department_id' => $employementDetails['department_id'],
-            'designation_id' => $employementDetails['designation_id'],
-            'supervisor' => $employementDetails['supervisor'],
-            'branch_id' => $employementDetails['user_branch_id'],
-        ]);
-
-        // Update the user's branch to match the employee's branch
-        if ($employee->user) {
-            $employee->user->update([
+        if( $type == 'contact')
+        {
+            $employee->update($contact);
+        }
+        if( $type == 'documents')
+        {
+             
+        }
+        if( $type == 'job_status')
+        {
+            // Reset and save employment detailsBill
+            $employee->employementDetails()->delete();
+            EmployementDetail::create([
+                'employee_id' => $employee->id, 
+                'date_of_joining' => $employementDetails['date_of_joining'],
+                'employment_type_id' => $employementDetails['employment_type_id'],
+                'department_id' => $employementDetails['department_id'],
+                'designation_id' => $employementDetails['designation_id'],
+                'supervisor' => $employementDetails['supervisor'],
                 'branch_id' => $employementDetails['user_branch_id'],
             ]);
-
-            
         }
-       
-        if (!empty($user['system_password'])) {
-            $userData['password'] = bcrypt($user['system_password']);
-            $employee->user->update($userData);
-     
+        if( $type == 'educational')
+        {
+            // Reset and save education details
+            $employee->educationDetails()->delete();
+            // dd($educationsDetails);
+            if (!empty($educationsDetails['degree_title'])) {
+                foreach ($educationsDetails['degree_title'] as $key => $degree_title) {
+                    if (
+                        empty($degree_title) &&
+                        empty($educationsDetails['institute_name'][$key]) &&
+                        empty($educationsDetails['group'][$key]) &&
+                        empty($educationsDetails['duration'][$key]) &&
+                        empty($educationsDetails['passing_year'][$key]) &&
+                        empty($educationsDetails['result'][$key]) &&
+                        empty(request()->input('certificate_upload_' . $key))
+                    ) {
+                        continue; // skip blank rows
+                    }
+
+                    EducationDetail::create([
+                        'employee_id' => $employee->id,
+                        'degree_title' => $degree_title,
+                        'institute_name' => $educationsDetails['institute_name'][$key],
+                        'group' => $educationsDetails['group'][$key],
+                        'duration' => $educationsDetails['duration'][$key],
+                        'passing_year' => $educationsDetails['passing_year'][$key],
+                        'result' => $educationsDetails['result'][$key],
+                        'certificate_upload' => request()->input('certificate_upload_' . $key) ?? null,
+                    ]);
+                }
+            }
+        }
+        if( $type == 'bank')
+        {
+            $employee->update($bank);
+        }
+        if( $type == 'tax')
+        {
+            $employee->update($tax);
+        }
+        //dd( $employeement_experience);
+        if( $type == 'employeement_experience')
+        {
+            // Reset and save employeement experience details
+            $employee->employeementExperience()->delete();
+           
+            if (!empty($employeement_experience['company_name'])) {
+                foreach ($employeement_experience['company_name'] as $key => $company_name) {
+                    if (
+                        empty($company_name) && 
+                        empty($employeement_experience['address'][$key]) &&
+                        empty($employeement_experience['designation'][$key]) &&
+                        empty($employeement_experience['start_date'][$key]) &&
+                        empty($employeement_experience['end_date'][$key]) &&
+                        empty($employeement_experience['salary'][$key]) &&
+                        empty($employeement_experience['remarks'][$key])
+                    ) {
+                        continue; // skip blank rows
+                    }
+ 
+                    EmployeeExperience::create([
+                        'employee_id' => $employee->id,
+                        'company_name' => $company_name,
+                        'address' => $employeement_experience['address'][$key],
+                        'designation' => $employeement_experience['designation'][$key],
+                        'start_date' => $employeement_experience['start_date'][$key],
+                        'end_date' => $employeement_experience['end_date'][$key],
+                        'salary' => $employeement_experience['salary'][$key],
+                        'remarks' => $employeement_experience['remarks'][$key], 
+                    ]);
+                }
+            }
+        }
+        //dd( $employeeFamilyContact);
+        if( $type == 'family_contact')
+        {
+           // Reset and save employee family contact details
+            $employee->employeeFamilyContact()->delete();
+          
+            if (!empty($employeeFamilyContact['name'])) {
+                foreach ($employeeFamilyContact['name'] as $key => $name) {
+                    if (
+                        empty($name) && 
+                        empty($employeeFamilyContact['relationship'][$key]) &&
+                        empty($employeeFamilyContact['gender'][$key]) &&
+                        empty($employeeFamilyContact['nid'][$key]) &&
+                        empty($employeeFamilyContact['profession'][$key]) &&
+                        empty($employeeFamilyContact['contact_no'][$key])
+                    ) {
+                        continue; // skip blank rows
+                    }
+ 
+                    EmployeeFamilyContact::create([
+                        'employee_id' => $employee->id,
+                        'name' => $name,
+                        'relationship' => $employeeFamilyContact['relationship'][$key],
+                        'gender' => $employeeFamilyContact['gender'][$key],
+                        'nid' => $employeeFamilyContact['nid'][$key],
+                        'profession' => $employeeFamilyContact['profession'][$key],
+                        'contact_no' => $employeeFamilyContact['contact_no'][$key],
+                    ]);
+                }
+            }
         } 
+        if( $type == 'system')
+        {
+           //dd( $user);
+            $userData['user_status'] = $user['user_status'];
+            $employee->user->update($userData);
+            
+            // Update the user's password if a new password is provided
+            if (!empty($user['system_password'])) {
+                $userData['password'] = bcrypt($user['system_password']);
+                $employee->user->update($userData);
+        
+            } 
+        }
+ 
+
+        
 
         return $employee;
     }
@@ -355,7 +444,7 @@ class EmployeeService
             ];
 
             // Call the creator (transaction inside)
-            $this->create($employeeData, $educationDetails, $employmentDetails, $userData);
+            $this->create($type='', $employeeData, $educationDetails, $employmentDetails, $userData);
         }
 
         fclose($file);

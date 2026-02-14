@@ -12,14 +12,14 @@ return new class extends Migration {
     {
         Schema::create('sales_order_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sales_order_id')->constrained('sales_orders')->onDelete('set null');
-            $table->foreignId('product_id')->constrained('product_catalogs');
+            $table->bigInteger('sales_order_id')->constrained('sales_orders')->onDelete('set null');
+            $table->bigInteger('product_id')->constrained('product_catalogs');
             $table->decimal('quantity', 20, 5);
             $table->decimal('price', 20, 5);
             $table->decimal('unit_discount', 20, 5)->default(0);
             $table->decimal('total_discount', 20, 5)->default(0);
             $table->decimal('amount', 20, 5);
-            $table->timestamps();
+            $table->timestamps(); 
         });
     }
 
