@@ -1321,7 +1321,7 @@
                                                         <div class="col-md-3 mb-3">
                                                             <div class="form-group">
                                                                 <label for="system_username"
-                                                                    class="color-dark fs-14 fw-500 align-center">System
+                                                                    class="color-dark fs-14 fw-500 align-center">ERP Login
                                                                     Username </label>
                                                                 <input type="text"
                                                                     class="form-control ip-gray radius-xs b-light px-15"
@@ -1332,7 +1332,7 @@
                                                         <div class="col-md-3 mb-3">
                                                             <div class="form-group">
                                                                 <label for="system_password" class="color-dark fs-14 fw-500 align-center">
-                                                                    System Password <span class="text-danger">*</span>
+                                                                    ERP Login Password <span class="text-danger">*</span>
                                                                 </label>
                                                                 <div class="password-container" style="position: relative;">
                                                                     <input type="password"  autocomplete="new-password"  class="form-control ip-gray radius-xs b-light px-15" id="system_password" name="system_password" value="{{ old('system_password') }}">

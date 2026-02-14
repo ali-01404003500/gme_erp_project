@@ -116,47 +116,47 @@
 
                                     <div class="dm-tab tab-horizontal">
                                         <ul class="nav nav-tabs vertical-tabs" role="tablist">
+                                            <!-- First tab active -->
                                             <li class="nav-item">
                                                 <a class="nav-link active" id="tab-v-4-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-4" role="tab" aria-selected="true">Employee Information </a>
+                                                href="#tab-v-4" role="tab" aria-selected="true">Employee Information</a>
+                                            </li>
+
+                                            <!-- All other tabs disabled -->
+                                            <li class="nav-item">
+                                                <a class="nav-link disabled" id="tab-v-2-tab" href="#tab-v-2" 
+                                                role="tab" tabindex="-1" aria-disabled="true">Job Status</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link " id="tab-v-2-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-2" role="tab" aria-selected="false">Job Status</a>
+                                                <a class="nav-link disabled" id="tab-v-9-tab" href="#tab-v-9"
+                                                role="tab" tabindex="-1" aria-disabled="true">Contact</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" id="tab-v-9-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-9" role="tab" aria-selected="false">Contact</a>
+                                                <a class="nav-link disabled" id="tab-v-3-tab" href="#tab-v-3"
+                                                role="tab" tabindex="-1" aria-disabled="true">Document</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" id="tab-v-3-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-3" role="tab" aria-selected="false">Document</a>
+                                                <a class="nav-link disabled" id="tab-v-1-tab" href="#tab-v-1"
+                                                role="tab" tabindex="-1" aria-disabled="true">Education</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" id="tab-v-1-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-1" role="tab" aria-selected="false">Education</a>
+                                                <a class="nav-link disabled" id="tab-v-10-tab" href="#tab-v-10"
+                                                role="tab" tabindex="-1" aria-disabled="true">Employment</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link " id="tab-v-10-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-10" role="tab" aria-selected="false">Employeement</a>
+                                                <a class="nav-link disabled" id="tab-v-11-tab" href="#tab-v-11"
+                                                role="tab" tabindex="-1" aria-disabled="true">Family Contact</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link " id="tab-v-11-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-11" role="tab" aria-selected="false">Family Details</a>
-                                            </li>
-                                              
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="tab-v-6-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-6" role="tab" aria-selected="false">Bank</a>
+                                                <a class="nav-link disabled" id="tab-v-6-tab" href="#tab-v-6"
+                                                role="tab" tabindex="-1" aria-disabled="true">Bank</a>
                                             </li> 
                                             <li class="nav-item">
-                                                <a class="nav-link" id="tab-v-5-tab" data-bs-toggle="tab"
-                                                    href="#tab-v-5" role="tab" aria-selected="false">Tax and
-                                                    Legal</a>
+                                                <a class="nav-link disabled" id="tab-v-5-tab" href="#tab-v-5"
+                                                role="tab" tabindex="-1" aria-disabled="true">Tax and Legal</a>
                                             </li>
-                                   
-
                                         </ul>
+
                                         <div class="tab-content">
 
 
@@ -408,7 +408,7 @@
                                                         <div class="col-md-4 mb-4">
                                                             <div class="form-group">
                                                                 <label for="system_username"
-                                                                    class="color-dark fs-14 fw-500 align-center">System
+                                                                    class="color-dark fs-14 fw-500 align-center">ERP Login
                                                                     Username <span class="text-danger">*</span></label>
                                                                 <input type="text"
                                                                     class="form-control ip-gray radius-xs b-light px-15"
@@ -419,7 +419,7 @@
                                                         <div class="col-md-4 mb-4">
                                                             <div class="form-group">
                                                                 <label for="system_password" class="color-dark fs-14 fw-500 align-center">
-                                                                    System Password <span class="text-danger">*</span>
+                                                                    ERP Login Password <span class="text-danger">*</span>
                                                                 </label>
                                                                 <div class="password-container" style="position: relative;">
                                                                     <input type="password"  autocomplete="new-password"  class="form-control ip-gray radius-xs b-light px-15" id="system_password" name="system_password" value="{{ old('system_password') }}">
