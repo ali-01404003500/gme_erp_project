@@ -115,7 +115,7 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <h2 class="card-title mt-4 mb-4">Personal Information</h2> 
+                            <h2 class="card-title mt-4 mb-4">Employee Information</h2> 
                                 <div class="row"> 
                                     {{-- start  --}}
 
