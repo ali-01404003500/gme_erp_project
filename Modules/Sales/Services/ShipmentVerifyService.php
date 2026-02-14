@@ -112,6 +112,7 @@ class ShipmentVerifyService
             'challan_no' => $data['challan_no'],
             'courier_id' => $data['courier_id'],
             'courier_date' => $data['courier_date'],
+            'cartoon_no' => $data['cartoon_no'],
             'source_id' => $data['source_id'],
             'source_type' => $data['source_type'],
         ]);
@@ -159,7 +160,7 @@ class ShipmentVerifyService
 
     public function show($id)
     {
-        return ShipmentVerify::with(['customer', 'courier', 'source', 'files'])->findOrFail($id);
+        return ShipmentVerify::with(['customer', 'courier', 'source'])->findOrFail($id);
     }
 
     public function makeDummyTransaction(ShipmentVerify $shipmentVerify)

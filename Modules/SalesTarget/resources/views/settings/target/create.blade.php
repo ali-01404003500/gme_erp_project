@@ -222,7 +222,7 @@
                             <i class="bi bi-info-circle me-1"></i> Data is automatically summed in the Annual Total column.
                         </span>
                         <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow">
-                            <i class="bi bi-check2-circle me-2"></i> Save All Target Configurations
+                            <i class="bi bi-check2-circle me-2"></i> Save All Targets
                         </button>
                     </div>
                 </form>

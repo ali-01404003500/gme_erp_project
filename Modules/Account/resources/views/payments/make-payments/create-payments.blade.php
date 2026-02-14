@@ -52,13 +52,11 @@
                                             <select name="payment_to_type" id="payment_type" class="form-control tom-select"
                                                 required>
                                                 <option value="">--{{ trans('Select Payment Type') }}--</option>
-                                                {{-- <option value="customer" {{ old('payment_to_type')=='customer'
-                                                    ? 'selected' : '' }}>{{ trans('Customer Payment') }}</option> --}}
+                                                <option value="customer" {{ old('payment_to_type')=='customer' ? 'selected' : '' }}>{{ trans('Customer Payment') }}</option>
                                                 <option value="supplier" {{ old('payment_to_type') == 'supplier' ? 'selected' : '' }}>{{ trans('Supplier Payment') }}</option>
                                                 <option value="vendor" {{ old('payment_to_type') == 'vendor' ? 'selected' : '' }}>{{ trans('Vendor Payment') }}</option>
-                                                <option value="broker" {{ old('payment_to_type') == 'broker' ? 'selected' : '' }}>{{ trans('Broker') }}</option>
-                                                <option value="petty_cash_expense" {{ old('payment_to_type') == 'petty_cash_expense' ? 'selected' : '' }}>
-                                                    {{ trans('Petty Cash Expense') }}</option>
+                                                <option value="broker" {{ old('payment_to_type') == 'broker' ? 'selected' : '' }}>{{ trans('Broker Payment') }}</option>
+                                                <option value="petty_cash_expense" {{ old('payment_to_type') == 'petty_cash_expense' ? 'selected' : '' }}>{{ trans('Petty Cash Expense') }}</option>  
                                             </select>
                                         </div>
                                     </div>
@@ -74,15 +72,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group text-end">
-                                            <label for="balance">{{ trans('Total Balance') }}</label>
-                                            <span id="balance" class="form-control form-control-plaintext"></span>
-                                        </div>
+                                    <div class="col-sm-4 my-1 text-end ">
+                                        <span>Balance : </span>
+                                        <span id="balance"></span>
                                     </div>
 
                                     <div class="col-md-12 my-2">
-                                        <h4>Make Payment Information:</h4>
+                                        <h4>Payment Information</h4>
                                     </div>
                                     <div class="col-md-12">
 
@@ -192,13 +188,32 @@
             // on select payment to load ballaces
             $('#payment_to').change(function () {
                 var payment_to = $(this).val();
+                var paymentType = $('#payment_type').val();
                 if (payment_to) {
                     $.ajax({
                         url: '{{ route('account.payments.make-payments.get-ballance') }}',
                         type: 'GET',
-                        data: { type: $('#payment_type').val(), id: payment_to },
+                        data: { type: $('#payment_type').val(), account_id: payment_to },
                         success: function (response) {
-                            $('#balance').text(response.account?.balance);
+
+                            let currentDate = new Date().toISOString().slice(0, 10); 
+
+                            if(paymentType=="customer"){ 
+                                const balanceLink = `{{ route('account.report.customer-ledger') }}?account_id=${response.account?.id}&from=2021-10-05&to=${currentDate}`;
+                                $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+response.account?.balance+'</a>')
+                            }
+                            else if(paymentType=="vendor"){ 
+                                const balanceLink = `{{ route('account.report.vendor-ledger') }}?account_id=${response.account?.id}&from=2021-10-05&to=${currentDate}`;
+                                $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+response.account?.balance+'</a>')
+                            }
+                            else if(paymentType=="supplier"){ 
+                                const balanceLink = `{{ route('account.report.supplier-ledger') }}?account_id=${response.account?.id}&from=2021-10-05&to=${currentDate}`;
+                                $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+response.account?.balance+'</a>')
+                            }  
+                            else{       
+                                $('#balance').text(response.account?.balance || 0);
+                            }
+                             
                             updatePayable(response.account?.balance);
                         }
                     });

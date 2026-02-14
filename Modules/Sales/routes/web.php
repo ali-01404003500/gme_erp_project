@@ -21,6 +21,7 @@ use Modules\Sales\Controllers\SalesRequisitionController;
 use Modules\Sales\Controllers\SalesReturnController;
 use Modules\Sales\Controllers\ShipmentExplorerReportController;
 use Modules\Sales\Controllers\ShipmentVerifyController;
+ 
 
 Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], function () {
 
@@ -119,5 +120,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::get('condition-amount-collects/{id}/claim-pdf', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'claimPdf'])->name('condition-amount-collects.claim-pdf');
     Route::post('condition-amount-collects/send-bulk-message', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'sendBulkMessage'])->name('condition-amount-collects.send-bulk-message');
     Route::post('condition-amount-collects/bulk-receive', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'bulkReceive'])->name('condition-amount-collects.bulk-receive');
+
+ 
 
 });

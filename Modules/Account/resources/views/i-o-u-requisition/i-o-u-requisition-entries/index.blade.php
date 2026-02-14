@@ -198,7 +198,7 @@
                                                             class="btn btn-outline-success pay-button"
                                                             data-id="{{ $entry->id }}"
                                                             data-employee-name="{{ $entry->employee->full_name }}"
-                                                            data-amount="{{ $entry->request_amount }}"
+                                                            data-amount="{{ $entry->approved_amount }}"
                                                             data-employee-id="{{ $entry->employee_id }}"
                                                             data-bs-toggle="tooltip" title="Pay">
                                                         <i class="fa fa-money-bill-wave"></i>
@@ -210,7 +210,7 @@
                                                             class="btn btn-outline-danger return-button"
                                                             data-id="{{ $entry->id }}"
                                                             data-employee-name="{{ $entry->employee->full_name }}"
-                                                            data-amount="{{ $entry->request_amount }}"
+                                                            data-amount="{{ $entry->approved_amount }}"
                                                             data-employee-id="{{ $entry->employee_id }}"
                                                             data-bs-toggle="tooltip" title="Return">
                                                         <i class="fa fa-undo"></i>

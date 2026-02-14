@@ -129,23 +129,23 @@
                             <h4>Courier Challan</h4>
                         </section>
 
-                          <section class="delivery-info">
+                        <section class="delivery-info">
                             <div class="left" style="width: 70%; float: left;">
                                 <table style="border: 1px solid white;">
                                     <tr style="border: 1px solid white;">
                                         <th style="border: 1px solid white; width: 80px;">Invoice No</th>
                                         <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $source->invoice_id ?? $source->id }}</th>
+                                        <th style="border: 1px solid white;">{{ $shipmentVerify->source?->invoice_id ?? $shipmentVerify->source?->id }}</th>
                                     </tr>
                                     <tr style="border: 1px solid white;">
                                         <th style="border: 1px solid white; width: 80px;">Name</th>
                                         <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $source->customer->company_name }}</th>
+                                        <th style="border: 1px solid white;">{{ $shipmentVerify->customer->company_name }}</th>
                                     </tr>
                                     <tr style="border: 1px solid white;">
                                         <th style="border: 1px solid white; width: 80px;">Address</th>
                                         <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ optional($source->customer->area)->area ?? $source->shipment?->address }}</th>
+                                        <th style="border: 1px solid white;">{{ optional($shipmentVerify->customer->area)->area ?? $shipmentVerify->customer->address }}</th>
                                     </tr>
                                      
                                 </table>
@@ -155,12 +155,12 @@
                                     <tr style="border: 1px solid white;">
                                         <th style="border: 1px solid white; width: 80px;">Date</th>
                                         <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $source->invoice_date }}</th>
+                                        <th style="border: 1px solid white;">{{ $shipmentVerify->source->source->invoice_date }}</th>
                                     </tr>
                                     <tr style="border: 1px solid white;">
                                         <th style="border: 1px solid white; width: 80px;">Time</th>
                                         <td style="border: 1px solid white;">:</td>
-                                        <th style="border: 1px solid white;">{{ $delivery->created_at->format('h:i A') ?? '' }}</th>
+                                        <th style="border: 1px solid white;">{{ $shipmentVerify->created_at->format('h:i A') ?? '' }}</th>
                                     </tr>
                                      
                                     <tr style="border: 1px solid white;">
@@ -189,7 +189,7 @@
                                         
                                         <tr>
                                             <td>1</td>
-                                            <td></td> 
+                                            <td>{{ $shipmentVerify->cartoon_no ?? '' }}</td> 
                                             <td>Cartoon Medical Goods</td>
                                         </tr>
                                     </tbody>
@@ -203,22 +203,22 @@
                                 <tr>
                                     <th  width="30%">Contact Person</th>
                                     <th  width="5%">:</th>
-                                    <th  width="65%">{{ $delivery->contact_person ?? '' }}</th> 
+                                    <th  width="65%">{{ $shipmentVerify->source->source->shipment->contact_person_name ?? '' }}</th> 
                                 </tr>
                                 <tr>
                                     <th width="30%">Contact Number</th>
                                     <th width="5%">:</th>
-                                    <th width="65%">{{ $delivery->contact_number ?? '' }}</th> 
+                                    <th width="65%">{{ $shipmentVerify->source->source->shipment->contact_person_number ?? '' }}</th> 
                                 </tr>
                                 <tr>
                                     <th width="30%">Address</th>
                                     <th width="5%">:</th>
-                                    <th  width="65%">{{ $delivery->address ?? '' }}</th> 
+                                    <th  width="65%">{{ $shipmentVerify->source->source->shipment->address ?? '' }}</th> 
                                 </tr>
                                     <tr>
                                     <th width="30%">Courier Name</th>
                                     <th width="5%">:</th>
-                                    <th width="65%"> </th> 
+                                    <th width="65%">{{ $shipmentVerify->source->source->shipment->courier->courier_name ?? '' }}</th> 
                                 </tr>
                             </tbody> 
                         </table>
@@ -226,10 +226,10 @@
                        
                         
                         <div class="row" style="margin-top: 50px;">
-                            <p><strong>Description :</strong> {{ $delivery->description ?? '' }}</p>
-                            @if($delivery->file_uploads)
+                            <p><strong>Description :</strong> {{ $shipmentVerify->description ?? '' }}</p>
+                            @if($shipmentVerify->file_uploads)
                                 <p><strong>Files :</strong>
-                                    @foreach(json_decode($delivery->file_uploads) as $file)
+                                    @foreach(json_decode($shipmentVerify->file_uploads) as $file)
                                         <a href="{{ asset('storage/' . $file) }}" target="_blank">{{ basename($file) }}</a>
                                         @if(!$loop->last), @endif
                                     @endforeach

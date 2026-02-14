@@ -54,16 +54,26 @@
                                 <td>{{ $iOURequisitionEntry->date->format('d M, Y') }}</td>
                             </tr>
                             <tr>
-                                <td><strong>Employee Name</strong></td>
-                                <td>{{ $iOURequisitionEntry->employee->full_name }}</td>
-                            </tr>
-                            <tr>
                                 <td><strong>Type</strong></td>
                                 <td><span class="badge badge-round bg-primary">{{ $iOURequisitionEntry->type }}</span></td>
                             </tr>
                             <tr>
-                                <td><strong>Amount</strong></td>
+                                <td><strong>Employee Name</strong></td>
+                                <td>{{ $iOURequisitionEntry->employee->full_name }}</td>
+                            </tr> 
+                            <tr>
+                                <td><strong>Request Amount</strong></td>
                                 <td>৳{{ number_format($iOURequisitionEntry->request_amount) }}</td>
+                            </tr>
+                             
+                            <tr>
+                                <td><strong>Verify Amount</strong></td>
+                                <td>৳{{ number_format($iOURequisitionEntry->verify_amount) }}</td>
+                            </tr>
+                             
+                            <tr>
+                                <td><strong>Approved Amount</strong></td>
+                                <td>৳{{ number_format($iOURequisitionEntry->approved_amount) }}</td>
                             </tr>
                             <tr>
                                 <td><strong>Remarks</strong></td>

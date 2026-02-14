@@ -109,7 +109,11 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="carton_no">Carton No</label>
+<<<<<<< HEAD
                                             <input type="text" name="carton_no" class="form-control" id="carton_no" value="0">
+=======
+                                            <input type="text" name="carton_no" class="form-control" id="carton_no" value="0" required>
+>>>>>>> ea926f05046d758f473a189015485d5aba9b52dc
                                         </div>
                                     </div>
 

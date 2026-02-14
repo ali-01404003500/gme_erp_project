@@ -144,11 +144,11 @@
                 <div class="d-flex justify-content-between align-items-center user-member__title mb-30">
                     <h3 class="text-capitalize">{{ trans('menu.sales-order-delivery-view-menu-title') }}</h3>
                     <div class="row">
-                        <a href="{{ route('sales.deliveries.index') }}"
+                        <a href="{{ route('sales.shipment-verifies.index') }}"
                             class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"
                             style="margin-right: 5px;">
                             <i class="fa fa-list"></i> List</a>
-                        <a href="{{ route('sales.deliveries.show', $delivery->id) }}?export=pdf" target="_blank"
+                        <a href="{{ route('sales.shipment-verifies.show', $shipmentVerify->id) }}?export=pdf" target="_blank"
                             class="btn btn-primary ml-auto btn-sm">PDF</a>
                     </div>
                 </div>
@@ -186,161 +186,108 @@
                             </div>
 
                             <section class="title">
-                                <h2>Delivery Invoice Bill</h2>
+                                <h4>Courier Challan</h4>
                             </section>
 
                             <section class="delivery-info">
-                                <div class="left">
-                                    <table>
-                                        <tr>
-                                            <th style="width:150px;">Invoice No</th>
-                                            <td>:</td>
-                                            <th>{{ $source->invoice_id ?? $source->id }}</th>
+                                <div class="left" style="width: 70%; float: left;">
+                                    <table style="border: 1px solid white;">
+                                        <tr style="border: 1px solid white;">
+                                            <th style="border: 1px solid white; width: 80px;">Invoice No</th>
+                                            <td style="border: 1px solid white;">:</td>
+                                            <th style="border: 1px solid white;">{{ $shipmentVerify->source?->invoice_id ?? $shipmentVerify->source?->id }}</th>
                                         </tr>
-                                        <tr>
-                                            <th style="width:150px;">Name</th>
-                                            <td>:</td>
-                                            <th>{{ $source->customer->company_name }}</th>
+                                        <tr style="border: 1px solid white;">
+                                            <th style="border: 1px solid white; width: 80px;">Name</th>
+                                            <td style="border: 1px solid white;">:</td>
+                                            <th style="border: 1px solid white;">{{ $shipmentVerify->customer->company_name }}</th>
                                         </tr>
-                                        <tr>
-                                            <th style="width:150px;">Address</th>
-                                            <td>:</td>
-                                            <th>{{ optional($source->customer->area)->area ?? $source->shipment?->address }}</th>
+                                        <tr style="border: 1px solid white;">
+                                            <th style="border: 1px solid white; width: 80px;">Address</th>
+                                            <td style="border: 1px solid white;">:</td>
+                                            <th style="border: 1px solid white;">{{ optional($shipmentVerify->customer->area)->area ?? $shipmentVerify->customer->address }}</th>
                                         </tr>
-                                        <tr>
-                                            <th style="width:150px;">Phone</th>
-                                            <td>:</td>
-                                            <th>{{ $source->shipment?->contact_person_number ?? $source->customer?->phone }}</th>
-                                        </tr>
-                                         <tr>
-                                             <th>Arranged By</th>
-                                             <td>:</td>
-                                             <td>
-                                                 @if($delivery->arranged_by)
-                                                     {{ $delivery->arrangedBy->full_name ?? '' }}
-                                                 @else
-                                                     {{ $delivery->createdBy->name ?? '' }}
-                                                 @endif
-                                             </td>
-                                         </tr>
+                                        
                                     </table>
                                 </div>
-                                <div class="right">
-                                    <table>
-                                        <tr>
-                                            <th>Date</th>
-                                            <td>:</td>
-                                            <td>{{ $source->invoice_date }}</td>
+                                <div class="right" style="width: 30%; float: right;">
+                                    <table style="border: 1px solid white;">
+                                        <tr style="border: 1px solid white;">
+                                            <th style="border: 1px solid white; width: 80px;">Date</th>
+                                            <td style="border: 1px solid white;">:</td>
+                                            <th style="border: 1px solid white;">{{ $shipmentVerify->source->source->invoice_date }}</th>
                                         </tr>
-                                        <tr>
-                                            <th>Time</th>
-                                            <td>:</td>
-                                            <td>{{ $delivery->created_at->format('h:i A') ?? '' }}</td>
+                                        <tr style="border: 1px solid white;">
+                                            <th style="border: 1px solid white; width: 80px;">Time</th>
+                                            <td style="border: 1px solid white;">:</td>
+                                            <th style="border: 1px solid white;">{{ $shipmentVerify->created_at->format('h:i A') ?? '' }}</th>
                                         </tr>
-                                        <tr>
-                                            <th>Sold By</th>
-                                            <td>:</td>
-                                            <td>{{ $source->createdBy->name ?? $source->created_by ?? '' }}</td>
+                                        
+                                        <tr style="border: 1px solid white;">
+                                            <th style="border: 1px solid white; width: 80px;">Print Date & Time</th>
+                                            <td style="border: 1px solid white;">:</td>
+                                            <th style="border: 1px solid white;">{{ now()->format('d-M-Y') }}
+                                                {{ now()->format('h:i A') }}</th>
                                         </tr>
-                                        <tr>
-                                            <th>Delivery No</th>
-                                            <td>:</td>
-                                            <td>{{ $delivery->delivery_no ?? '' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Carton No</th>
-                                            <td>:</td>
-                                            <td>{{ $delivery->carton_no ?? '' }}</td>
-                                        </tr>
-                                       
-                                        <tr>
-                                            <th>Checked By</th>
-                                            <td>:</td>
-                                            <td>
-                                                @if($delivery->checked_by)
-                                                    {{ $delivery->checkedBy->full_name ?? '' }}
-                                                @endif
-                                            </td>
-                                        </tr>
+                                        
+                                        
                                     </table>
                                 </div>
+                                <div style="clear: both;"></div>
                             </section>
 
-                            <section class="delivery-details">
+                            <section class="delivery-details"> 
                                 <table>
                                     <thead>
-                                        <tr>
-                                            <th>Product Name</th>
-                                            <th>Model</th> 
-                                            <th>Quantity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($source->details as $key => $detail)
-                                            @php
-                                                $deliveredQty = $previousDeliveries
-                                                    ->flatMap(function ($delivery) {
-                                                        return $delivery->deliveryDetails;
-                                                    })
-                                                    ->where('product_id', $detail->product_id)
-                                                    ->sum('quantity');
-
-                                                $remainingQty = $detail->quantity - $deliveredQty;
-                                            @endphp
                                             <tr>
-                                                <td>{{ $detail->product->name }}</td>
-                                                <td>{{ $detail->product->model }}</td> 
-                                                <td>{{ numberFormat($detail->quantity) }}</td>
+                                                <th>SL</th>
+                                                <th>Cartoon No</th> 
+                                                <th>Product Description</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table> 
+                                        </thead>
+                                        <tbody>
+                                            
+                                            <tr>
+                                                <td>1</td>
+                                                <td>{{ $shipmentVerify->cartoon_no ?? '' }}</td> 
+                                                <td>Cartoon Medical Goods</td>
+                                            </tr>
+                                        </tbody>
+                                </table>
                             </section>
                             <table style="width: 100%; border:1px solid #000; border-collapse: collapse;" class="my-5">
                                 <tbody>
                                     <tr>
-                                        <th colspan="3" width="100%" style="font-size: 20px"><u>Shiment Address</u></th> 
+                                        <th colspan="3" width="100%" style="font-size: 20px"><u>Shipment Address</u></th> 
                                     </tr>
                                     <tr>
                                         <th  width="30%">Contact Person</th>
-                                        <th  width="5">:</th>
-                                        <th  width="65">{{ $delivery->contact_person ?? '' }}</th> 
+                                        <th  width="5%">:</th>
+                                        <th  width="65%">{{ $shipmentVerify->source->source->shipment->contact_person_name ?? '' }}</th> 
                                     </tr>
                                     <tr>
                                         <th width="30%">Contact Number</th>
-                                        <th width="5">:</th>
-                                        <th width="65">{{ $delivery->contact_number ?? '' }}</th> 
+                                        <th width="5%">:</th>
+                                        <th width="65%">{{ $shipmentVerify->source->source->shipment->contact_person_number ?? '' }}</th> 
                                     </tr>
                                     <tr>
                                         <th width="30%">Address</th>
-                                        <th width="5">:</th>
-                                        <th  width="65%">{{ $delivery->address ?? '' }}</th> 
+                                        <th width="5%">:</th>
+                                        <th  width="65%">{{ $shipmentVerify->source->source->shipment->address ?? '' }}</th> 
                                     </tr>
                                         <tr>
                                         <th width="30%">Courier Name</th>
-                                        <th width="5">:</th>
-                                        <th width="65">{{ $delivery->courier_name ?? '' }}</th> 
+                                        <th width="5%">:</th>
+                                        <th width="65%">{{ $shipmentVerify->source->source->shipment->courier->courier_name ?? '' }}</th> 
                                     </tr>
                                 </tbody> 
                             </table>
                         
                             
-                            <div class="row">
-                                <p><strong>Description :</strong> {{ $delivery->description ?? '' }}</p>
-                                @if($delivery->file_uploads)
-                                    <p><strong>Files :</strong>
-                                        @foreach(json_decode($delivery->file_uploads) as $file)
-                                            <a href="{{ asset('storage/' . $file) }}" target="_blank">{{ basename($file) }}</a>
-                                            @if(!$loop->last), @endif
-                                        @endforeach
-                                    </p>
-                                @endif
-                            </div>
-
                             <footer style="margin-top: 100px">
                                 <div style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 320px;">
                                     @include('partials._seek_sign', [
-                                        'model' => $delivery,
+                                        'model' => $shipmentVerify,
                                         'field' => 'signature',
                                     ])
                                     <p class="text-center mt-2 mb-0 font-weight-bold">Receiver Signature</p>
