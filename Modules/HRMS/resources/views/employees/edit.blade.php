@@ -31,23 +31,7 @@
             color: #ffffff;
             /* Text color */
         }
-
-        .nav-tabs.vertical-tabs .nav-item .nav-link {
-            background-color: #f7ecfd;
-            /* Background color */
-            color: #3d3d3d;
-            /* Text color */
-            border-radius: 5px 5px 0 0;
-            /* 5px radius for top-left and top-right corners */
-        }
-
-        /* Style for active tab */
-        .nav-tabs.vertical-tabs .nav-item .nav-link.active {
-            background-color: var(--color-primary);
-            /* Background color */
-            color: #ffffff;
-            /* Text color */
-        }
+ 
 
         /* .ts-control {
                 height: 48px !important;
@@ -117,13 +101,12 @@
                         <div class="card-body">
                             <h2 class="card-title mt-4 mb-4">Employee Information</h2> 
                                 <div class="row"> 
-                                    {{-- start  --}}
-
-                                    <div class="dm-tab tab-horizontal">
+                                    {{-- start  --}}  
+                                    <div class="dm-tab tab-horizontal" >
                                         <ul class="nav nav-tabs vertical-tabs" role="tablist">
                                             <li class="nav-item">
                                                 <a class="nav-link active" id="employee_information-tab" data-bs-toggle="tab"
-                                                    href="#employee_information" role="tab" aria-selected="true">Employee Information </a>
+                                                    href="#employee_information" role="tab" aria-selected="true">Employee Info </a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link " id="job_status-tab" data-bs-toggle="tab"
@@ -162,11 +145,9 @@
                                             <li class="nav-item">
                                                 <a class="nav-link" id="system-tab" data-bs-toggle="tab"
                                                     href="#system" role="tab" aria-selected="false">System</a>
-                                            </li>
-                                   
-
+                                            </li>  
                                         </ul>
-                                        <div class="tab-content">
+                                        <div class="tab-content pt-2">
 
                                             <div class="tab-pane fade show active" id="employee_information" role="tabpanel" aria-labelledby="employee_information-tab">
                                                 <form method="POST" action="{{ route('hrm.employees.update', $employee->id) }}" enctype="multipart/form-data">
@@ -502,10 +483,70 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    <div class="row">
+                                                        <div>
+                                                            <h4>Multiple Documents Entry</h4>
+                                                        </div>
+                                                        <div id="documents-container">
+                                                            <div class="row documents-details mb-4"
+                                                                style="border-bottom: 1px solid #dee2e6">
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label>Title</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="title">
+                                                                    </div>
+                                                                </div>  
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label>Remarks</label>
+                                                                        <input type="text" class="form-control"
+                                                                            name="remarks">
+                                                                    </div>
+                                                                </div> 
+                                                                <div class="col-md-3">
+                                                                    <div class="form-group">
+                                                                        <label>Upload Documents</label><br> 
+                                                                        <x-file-uploader   name="document_upload" />
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>  
+                                                    </div>
                                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start" style="padding: 40px;">
                                                         <button type="submit" class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">Submit</button>
                                                     </div>
                                                 </form>
+
+                                                <div class="row bg-primary text-white  shadow-sm py-2 fw-semibold rounded">
+                                                    <div class="col">Title</div>
+                                                    <div class="col">Remarks</div>
+                                                    <div class="col">Attachment</div>
+                                                    <div class="col">Action</div>
+                                                </div> 
+
+                                                @forelse ($employee->documentsDetails as $key => $documentsDetails)
+                                                    <div class="row">
+                                                        <div class="col">{{ $documentsDetails->title }}</div>
+                                                        <div class="col">{{ $documentsDetails->remarks }}</div>
+                                                        
+                                                        <div class="col">
+                                                            <a href="{{ $documentsDetails->document_upload }}" target="_blank"
+                                                                class="btn btn-outline-primary"
+                                                                data-bs-toggle="tooltip"
+                                                                title="View Documents">
+                                                                <i class="las la-eye"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col"></div>
+                                                    </div> 
+
+                                                @empty
+                                                    {{-- If no education exists, we’ll add one via JS --}}
+                                                @endforelse
+                                                
                                             </div>
                                             <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
                                                 <form method="POST" action="{{ route('hrm.employees.update', $employee->id) }}" enctype="multipart/form-data">
@@ -1462,7 +1503,7 @@
                 const $template = $(template.content.cloneNode(true));
                 const counter = educationCounter++;
 
-                // Update file uploader id/name
+                // Update file uploader id/name 
                 const newUploaderId = `certificate_upload_${counter}`;
                 $template.find("#certificate_upload_0")
                     .attr("id", newUploaderId)
@@ -1548,8 +1589,7 @@
             $(document).on("click", ".remove-employee-family-contact-details", function() {
                 $(this).closest(".employee-family-contact-details").remove();
             });
-
-            
+ 
         });
 
 

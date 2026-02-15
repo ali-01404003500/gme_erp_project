@@ -49,6 +49,18 @@
             <span class="toggle-icon"></span>
         </a>
         <ul>
+            {{-- Achievement List - High Priority --}}
+            @if (hasPermission('sales_target.perfomence.achievement'))
+                <li>
+                    <a href="{{ route('sales_target.perfomence.achievement') }}"
+                        class="{{ request()->routeIs('sales_target.perfomence.achievement') ? 'active' : '' }}">
+                        <span class="fas fa-trophy" style="margin-right: 20px;"></span>
+                        {{ t_('menu.Achievement List') }}
+                    </a>
+                </li>
+            @endif
+
+            <hr style="border-top: 1px solid #444; margin: 5px 20px;">
 
             @if (hasPermission('sales_target.settings.target.index'))
                 <li>
@@ -72,7 +84,6 @@
 
             <hr style="border-top: 1px solid #444; margin: 5px 20px;">
 
-
             @if (hasPermission('sales_target.settings.incentives.index'))
                 <li>
                     <a href="{{ route('sales_target.settings.incentives.index') }}"
@@ -82,7 +93,6 @@
                     </a>
                 </li>
             @endif
-
 
             @if (hasPermission('sales_target.settings.incentives.create'))
                 <li>

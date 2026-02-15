@@ -18,8 +18,8 @@
                             </nav>
                         </div>
                         <div class="action-btn mt-sm-0 mt-15 row">
-                            @if (hasPermission('account.voucher-receives.index'))
-                                <a href="{{ route('account.voucher-receives.index') }}"
+                            @if (hasPermission('account.collections.collections.index'))
+                                <a href="{{ route('account.collections.collections.index') }}"
                                     class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm">
                                     <i class="fa fa-list"></i> List
                                 </a>

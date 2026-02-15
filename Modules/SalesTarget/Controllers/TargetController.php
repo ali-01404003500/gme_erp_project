@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\SalesTarget\Services\TargetService;
 use Modules\SalesTarget\Models\Target;
-
+use Illuminate\Support\Facades\DB;
 
 
 class TargetController extends Controller
@@ -84,5 +84,23 @@ class TargetController extends Controller
     {
         $this->targetService->deleteTarget($id);
         return redirect()->back()->with('success', 'Target record deleted successfully!');
+    }
+
+    public function achievement(Request $request)
+    {
+        // সকল এমপ্লয়ি সংগ্রহ (সার্ভিস থেকে)
+        $employees = $this->targetService->getAllEmployees();
+
+        $selectedEmployeeId = $request->get('user_ref_id');
+        $selectedYear = $request->get('year', date('Y'));
+
+        $results = [];
+
+        if ($selectedEmployeeId) {
+            // সার্ভিসের মেথড কল করে ক্যালকুলেশন রেজাল্ট আনা
+            $results = $this->targetService->getEmployeeAchievement($selectedEmployeeId, $selectedYear);
+        }
+
+        return view('SalesTarget::perfomence.achievement', compact('employees', 'results', 'selectedEmployeeId'));
     }
 }

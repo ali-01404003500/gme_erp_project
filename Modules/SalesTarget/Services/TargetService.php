@@ -22,7 +22,7 @@ class TargetService
         return Target::with('employee')->orderBy('year', 'desc')->get();
     }
 
-    
+
     // Store multiple targets
     public function storeMultipleTargets(array $targetsData)
     {
@@ -66,5 +66,77 @@ class TargetService
     {
         $target = Target::findOrFail($id);
         return $target->delete();
+    }
+
+    public function getEmployeeAchievement($employeeId, $year)
+    {
+        $results = [];
+        $machineTags = ['IC', 'BC', 'CC', 'Machine', 'I-Chroma Machine'];
+
+        // টার্গেট ডেটা আনা
+        $target = Target::where('employee_id', $employeeId)
+            ->where('year', $year)
+            ->first();
+
+        if (!$target) {
+            return [];
+        }
+
+        $months = [
+            'Jan' => 'jan_target',
+            'Feb' => 'feb_target',
+            'Mar' => 'mar_target',
+            'Apr' => 'apr_target',
+            'May' => 'may_target',
+            'Jun' => 'jun_target',
+            'Jul' => 'jul_target',
+            'Aug' => 'aug_target',
+            'Sep' => 'sep_target',
+            'Oct' => 'oct_target',
+            'Nov' => 'nov_target',
+            'Dec' => 'dec_target'
+        ];
+
+        foreach ($months as $label => $column) {
+            $monthNumber = date('m', strtotime($label));
+
+            // সেলস কোয়েরি ফিল্টার (মেশিন ট্যাগ অনুযায়ী)
+            $salesQuery = \Modules\Sales\Models\SalesOrder::where('created_by', $employeeId)
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNumber)
+                ->whereHas('salesOrderDetails.product.tag', function ($query) use ($machineTags) {
+                    $query->whereIn('name', $machineTags);
+                });
+
+            $actualSales = (float)$salesQuery->sum('net_amount');
+            $dealsClosed = $salesQuery->count();
+
+            // কাস্টমার ব্রেকডাউন
+            $customerBreakdown = \Modules\Sales\Models\SalesOrder::with('customer')
+                ->where('created_by', $employeeId)
+                ->whereYear('created_at', $year)
+                ->whereMonth('created_at', $monthNumber)
+                ->whereHas('salesOrderDetails.product.tag', function ($query) use ($machineTags) {
+                    $query->whereIn('name', $machineTags);
+                })
+                ->select('customer_id', DB::raw('SUM(net_amount) as total_customer_sales'))
+                ->groupBy('customer_id')
+                ->get();
+
+            $targetAmount = $target->$column;
+            $achievementPercent = $targetAmount > 0 ? ($actualSales / $targetAmount) * 100 : 0;
+
+            $results[] = [
+                'month'            => $label,
+                'target'           => $targetAmount,
+                'achieved'         => $actualSales,
+                'percent'          => $achievementPercent,
+                'deals'            => $dealsClosed,
+                'status'           => $achievementPercent >= 100 ? 'Met' : 'Below',
+                'customer_details' => $customerBreakdown
+            ];
+        }
+
+        return $results;
     }
 }
