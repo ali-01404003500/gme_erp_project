@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('sales_order_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sales_order_id')->constrained('sales_orders')->onDelete('set null');
+            $table->foreignId('sales_order_id')->nullable()->constrained('sales_orders')->onDelete('set null');
             $table->foreignId('product_id')->constrained('product_catalogs');
             $table->decimal('quantity', 20, 5);
             $table->decimal('price', 20, 5);

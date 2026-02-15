@@ -7,7 +7,7 @@ use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Modules\HRMS\Models\Settings\Holiday;
 class Department extends BaseModel
 {
     use HasFactory;
@@ -16,4 +16,13 @@ class Department extends BaseModel
     protected $guarded = [];
 
     public $deletePrevent = ['departments'];
+
+   
+
+public function holidays() {
+    return $this->hasMany(Holiday::class, 'department'); 
 }
+
+}
+
+      

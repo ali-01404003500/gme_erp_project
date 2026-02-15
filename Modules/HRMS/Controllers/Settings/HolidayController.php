@@ -37,7 +37,9 @@ class HolidayController extends Controller
     public function create()
     {
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        return view('HRMS::settings.holidays.create', compact('days'));
+         $departments = \Modules\HRMS\Models\Settings\Department::all();
+        //  $holiday = \Modules\HRMS\Models\Settings\Holiday::all();
+        return view('HRMS::settings.holidays.create', compact('days','departments'));
     }
 
     /**
@@ -48,6 +50,7 @@ class HolidayController extends Controller
         // dd($request->all());
         $validate = $request->validate([
             'name' => 'required',
+            'department' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'every_year' => 'nullable|boolean',
@@ -74,8 +77,10 @@ class HolidayController extends Controller
     public function edit(Holiday $holiday)
     {
         $data['holiday'] = $holiday;
+         
         $data['days'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        return view("HRMS::settings.holidays.edit", $data);
+         $departments = \Modules\HRMS\Models\Settings\Department::all();
+        return view("HRMS::settings.holidays.edit", $data, compact("departments",'holiday'));
     }
 
     /**
@@ -85,6 +90,7 @@ class HolidayController extends Controller
     {
         $validate = $request->validate([
             'name' => 'required',
+            'department' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'every_year' => 'nullable|boolean',
