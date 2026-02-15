@@ -1,5 +1,5 @@
-@section('title', 'Edit Petty Cash ')
-@section('description', 'Edit Petty Cash ')
+@section('title', 'Edit TA/DA ')
+@section('description', 'Edit TA/DA ')
 @extends('layout.app')
 
 @section('page-header')
@@ -119,6 +119,12 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <h2 class="card-title mt-4 mb-4">Personal Information</h2>
+                            <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                <a href="{{ route('hrm.bills.index') }}"
+                                    class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
+                                        class="fa fa-list"></i> List
+                                </a> 
+                            </div>
                             <form method="POST" action="{{ route('hrm.bills.update', $billsAndAllowance->id) }}"
                                 enctype="multipart/form-data">
                                 @method('PUT')
@@ -168,443 +174,233 @@
                                             <div class="tab-pane fade {{ old('tab', 'transport') === 'transport' ? 'show active' : '' }}"
                                                 id="transport-tab">
 
-                                                <div id="transport-container">
-                                                    @foreach ($billsAndAllowance->transportExpenses as $key => $transportExpense)
-                                                        <div class="form-group">
-                                                            <div class="transport-items">
-                                                                <h3>Transport Expense</h3>
-                                                                <button type="button"
-                                                                    class="btn btn-danger btn-sm remove-form-group"
-                                                                    style="float: right;">-</button>
-                                                                <div class="row">
-                                                                    <input type="hidden" name="transport_expense_id[]"
-                                                                        value="{{ $transportExpense->id }}">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="date_of_expense"
-                                                                                class="form-label">Date of Expense:</label>
-                                                                            <input type="text"
-                                                                                class="form-control flatdate"
-                                                                                id="date_of_expense"
-                                                                                name="date_of_expense[]"
-                                                                                value="{{ $transportExpense->date_of_expense }}">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="from_location"
-                                                                                class="form-label">From location:</label>
-                                                                            <input type="text" class="form-control"
-                                                                                id="from_location" name="from_location[]"
-                                                                                value="{{ $transportExpense->from_location }}">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="to_location" class="form-label">To
-                                                                                location:</label>
-                                                                            <input type="text" class="form-control"
-                                                                                id="to_location" name="to_location[]"
-                                                                                value="{{ $transportExpense->to_location }}">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="transport_by"
-                                                                                class="form-label">Transport by:</label>
-                                                                            <select class="form-select" id="transport_by"
-                                                                                name="transport_by[]">
-                                                                                <option value="">Select Transport
-                                                                                </option>
-                                                                                @foreach ($transport_types as $type)
-                                                                                    <option value="{{ $type->id }}"
-                                                                                        {{ $type->id == $transportExpense->transport_by ? 'selected' : '' }}>
-                                                                                        {{ $type->name }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="distance"
-                                                                                class="form-label">Distance(KM):</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="distance" name="distance[]"
-                                                                                value="{{ $transportExpense->distance }}">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-8">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_description"
-                                                                                class="form-label">Expense
-                                                                                Description:</label>
-                                                                            <textarea class="form-control" id="expense_description" name="expense_description[]">{{ $transportExpense->expense_description }}</textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="amount"
-                                                                                class="form-label">Transport
-                                                                                Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="amount" name="transport_amount[]"
-                                                                                value="{{ $transportExpense->amount }}">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="settlement_amount"
-                                                                                class="form-label">Settlement
-                                                                                Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="settlement_amount"
-                                                                                name="transport_settlement_amount[]"
-                                                                                value="{{ $transportExpense->settlement_amount }}">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label
-                                                                                for="receipts_invoices_{{ $key }}"
-                                                                                class="form-label">Receipts/Invoices:</label>
-                                                                            <x-file-uploader loadLater
-                                                                                class="receipts_invoices_{{ $key }}"
-                                                                                name="receipts_invoices_{{ $key }}"
-                                                                                :value="$transportExpense->receipts_invoices"
-                                                                                id="receipts_invoices_{{ $key }}" />
-                                                                        </div>
-                                                                    </div>
-                                                               
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label for="supporting_documents"
-                                                                                class="form-label">Supporting
-                                                                                Documents:</label>
-                                                                            <x-file-uploader loadLater
-                                                                                class="supporting_documents_{{ $key }}"
-                                                                                name="supporting_documents_{{ $key }}"
-                                                                                :value="$transportExpense->supporting_documents"
-                                                                                id="supporting_documents_{{ $key }}" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                <div id="transport-container"> 
+                                                    <div class="form-group border p-3 mb-3">
+                                                        <h5>Transport Expense</h5> 
+                                                        <div class="row expense-item">
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>Date</label>
+                                                                <input type="text" id="date_of_expense" name="date_of_expense[]" class="form-control flatdate clearInputField" value="">
                                                             </div>
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>From Location</label>
+                                                                <input type="text" id="from_location" name="from_location[]" class="form-control clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>To Location</label>
+                                                                <input type="text" id="to_location"  name="to_location[]" class="form-control clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-2 mb-2"> 
+                                                                <label>Transport By</label>
+                                                                {{-- <select  id="transport_by" name="transport_by[]" class="form-control clearInputField">
+                                                                    @foreach ($transport_types as $type)
+                                                                        <option value="{{ $type->id }}">
+                                                                            {{ $type->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>--}}
+                                                                <input type="text" id="transport_by"  name="transport_by[]" class="form-control clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>Distance (KM)</label>
+                                                                <input type="number"  id="distance" name="distance[]" class="form-control clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>Amount</label>
+                                                                <input type="number"  id="transport_amount" name="transport_amount[]" class="form-control ta_amt clearInputField" value="">
+                                                            </div>
+                                                            
+                                                            <div class="col-md-12 mb-2">
+                                                                <label>Description</label>
+                                                                <input type="text"  id="expense_description" name="expense_description[]" class="form-control clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-6 mb-2">
+                                                                <label>Receipts/Invoices</label>
+                                                                <x-file-uploader loadLater name="receipts_invoices_0" id="receipts_invoices" />
+                                                                {{-- <input type="file" name="receipts_invoices[]" class="form-control"> --}}
+                                                            </div>
+                                                            <div class="col-md-6 mb-2">
+                                                                <label>Supporting Documents</label>
+                                                                <x-file-uploader loadLater name="supporting_documents_0" id="supporting_documents" />
+                                                                {{-- <input type="file" name="supporting_documents[]" class="form-control" multiple> --}}
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                
+                                                </div>
+                                                <button type="button" id="add-transport" class="btn btn-primary">Add More</button> 
+                                        
+                                                <div class=" bg-primary text-white shadow-sm py-2 my-2 fw-semibold rounded text-center">
+                                                    <div class="row col-sm-12">
+                                                        <div class="col-sm-1">SL</div>
+                                                        <div class="col-sm-2">Date</div>
+                                                        <div class="col-sm-2">From Location</div>
+                                                        <div class="col-sm-2">To Location</div>
+                                                        <div class="col-sm-1">Transport By</div>
+                                                        <div class="col-sm-1">Distance (KM)</div> 
+                                                        <div class="col-sm-2">Amount</div> 
+                                                        <div class="col-sm-1">Attach</div> 
+                                                    </div>
+                                                </div>
+                                                <div id="transport-details-container">
+                                                     @php
+                                                        $totalTransportAmount = 0;
+                                                    @endphp  
+                                                    @foreach ($billsAndAllowance->transportExpenses as $key => $transportExpense) 
+                                                        @php
+                                                            $totalTransportAmount += $transportExpense->amount;
+                                                        @endphp
+                                                        <div class="row col-sm-12">
+                                                            <div class="col-sm-1">
+                                                                <button class="btn btn-danger btn-sm" type="button" onclick="removeTaRow(this)"><span class="ta-data">{{++$key}}</span> 
+                                                                <i class="fa fa-trash" aria-hidden="true"></i></button> 
+                                                            </div>
+                                                            <input type="text" name="date_of_expense[]" class="form-control col-sm-2" value="{{ $transportExpense->date_of_expense }}">
+                                                            <input type="text" name="from_location[]" class="form-control col-sm-2" value="{{ $transportExpense->from_location }}">
+                                                            <input type="text" name="to_location[]" class="form-control col-sm-2" value="{{ $transportExpense->to_location }}">
+                                                            <input type="text" name="transport_by[]" class="form-control col-sm-1" value="{{ $transportExpense->transport_by }}">
+                                                            <input type="text" name="distance[]" class="form-control col-sm-1" value="{{ $transportExpense->distance }}">
+                                                            <input type="text" name="transport_amount[]" class="form-control col-sm-2" value="{{ $transportExpense->amount }}">
+                                                            <div class="col-sm-1 d-flex gap-1 justify-content-start">
+                                                                @if(!empty($transportExpense->receipts_invoices))
+                                                                <a href="{{ $transportExpense->receipts_invoices }}" target="_blank"
+                                                                    class="btn btn-outline-primary"
+                                                                    data-bs-toggle="tooltip" 
+                                                                    title="View Attachment">
+                                                                    <i class="las la-eye"></i>
+                                                                </a>
+                                                                @endif
+                                                                @if(!empty($transportExpense->supporting_documents))
+                                                                <a href="{{ $transportExpense->supporting_documents }}" target="_blank"
+                                                                    class="btn btn-outline-primary"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="View Attachment">
+                                                                    <i class="las la-eye"></i>
+                                                                </a>
+                                                                @endif
+                                                            </div>
+                                                            <input type="text" name="expense_description[]" class="form-control col-sm-11" value="{{ $transportExpense->expense_description }}"> 
+                                                            
                                                         </div>
                                                     @endforeach
-                                                    @if ($billsAndAllowance->transportExpenses->isEmpty())
-                                                        <div class="form-group">
-                                                            <div class="transport-items">
-                                                                <h3>Transport Expense</h3>
-                                                                <button type="button"
-                                                                    class="btn btn-danger btn-sm remove-form-group"
-                                                                    style="float: right;">-</button>
-                                                                <div class="row">
-                                                                    <input type="hidden" name="transport_expense_id[]">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="date_of_expense"
-                                                                                class="form-label">Date of Expense:</label>
-                                                                            <input type="text"
-                                                                                class="form-control flatdate"
-                                                                                id="date_of_expense"
-                                                                                name="date_of_expense[]">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="from_location"
-                                                                                class="form-label">From location:</label>
-                                                                            <input type="text" class="form-control"
-                                                                                id="from_location" name="from_location[]">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="to_location" class="form-label">To
-                                                                                location:</label>
-                                                                            <input type="text" class="form-control"
-                                                                                id="to_location" name="to_location[]">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="transport_by"
-                                                                                class="form-label">Transport by:</label>
-                                                                            <select class="form-select" id="transport_by"
-                                                                                name="transport_by[]">
-                                                                                <option value="">Select Transport
-                                                                                </option>
-                                                                                @foreach ($transport_types as $type)
-                                                                                    <option value="{{ $type->id }}">
-                                                                                        {{ $type->name }}</option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="distance"
-                                                                                class="form-label">Distance(KM):</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="distance" name="distance[]">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-8">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_description"
-                                                                                class="form-label">Expense
-                                                                                Description:</label>
-                                                                            <textarea class="form-control" id="expense_description" name="expense_description[]"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="amount"
-                                                                                class="form-label">Transport
-                                                                                Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="amount" name="transport_amount[]">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="settlement_amount"
-                                                                                class="form-label">Settlement
-                                                                                Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="settlement_amount"
-                                                                                name="transport_settlement_amount[]">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label for="receipts_invoices_0"
-                                                                                class="form-label">Receipts/Invoices:</label>
-                                                                            <x-file-uploader loadLater class="receipts_invoices_0" name="receipts_invoices_0" id="receipts_invoices_0" />
-                                                                        </div>
-                                                                    </div>
-                                                               
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label for="supporting_documents"
-                                                                                class="form-label">Supporting
-                                                                                Documents:</label>
-                                                                            <x-file-uploader loadLater
-                                                                                class="supporting_documents_0"
-                                                                                name="supporting_documents_0"
-                                                                                id="supporting_documents_0" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
                                                 </div>
-
-                                                <button type="button" id="add-transport" class="btn btn-primary">Add
-                                                    More</button>
-
+                                                
+                                                <div class="col-sm-11 px-0 justify-content-sm-center"> 
+                                                    <div class="row col-sm-12 justify-content-sm-end"> 
+                                                        <label class="col-sm-2 col-form-label col-form-label-sm">Total Amount</label>                   
+                                                        <input type="text" class="form-control form-control-sm clr_field col-sm-2 text-right " readonly id="ta_total" name="ta_total" value="{{$totalTransportAmount}}"> 
+                                                    </div>
+                                                </div>   
+                                    
                                             </div>
 
 
                                             <div class="tab-pane fade {{ old('tab') === 'general' ? 'show active' : '' }}"
                                                 id="general-tab">
-                                                <div id="general-container">
-                                                    @foreach ($billsAndAllowance->generalExpenses as $keygri => $generalExpense)
-                                                        <div class="form-group-2">
-                                                            <div class="general-items">
-                                                                <h3>Expense Details</h3>
-                                                                <button type="button"
-                                                                    class="btn btn-danger btn-sm remove-form-group-2"
-                                                                    style="float: right;">-</button>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_date"
-                                                                                class="form-label">Date of Expense:</label>
-                                                                            <input type="text"
-                                                                                class="form-control flatdate"
-                                                                                id="expense_date" name="expense_date[]"
-                                                                                value="{{ $generalExpense->expense_date }}">
-                                                                        </div>
-                                                                    </div>
-                                                                    <input type="hidden" name="general_expense_id[]"
-                                                                        value="{{ $generalExpense->id }}">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_type"
-                                                                                class="form-label">Expense Type:</label>
-                                                                            <select class="form-select" id="expense_type"
-                                                                                name="expense_type[]">
-                                                                                <option value="">Select Expense Type
-                                                                                </option>
-                                                                                @foreach ($expense_types as $key => $type)
-                                                                                    <option value="{{ $type->id }}"
-                                                                                        {{ $type->id == $generalExpense->expense_type ? 'selected' : '' }}>
-                                                                                        {{ $type->name }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_description"
-                                                                                class="form-label">Expense
-                                                                                Description:</label>
-                                                                            <textarea class="form-control" id="expense_description" name="general_expense_description[]">{{ $generalExpense->expense_description }}</textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="amount"
-                                                                                class="form-label">General Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="amount" name="general_amount[]"
-                                                                                value="{{ $generalExpense->amount }}">
-                                                                        </div>
-                                                                    </div>
-                                                                
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="settlement_amount"
-                                                                                class="form-label">Settlement
-                                                                                Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="settlement_amount"
-                                                                                name="general_settlement_amount[]"
-                                                                                value="{{ $generalExpense->settlement_amount }}">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label for="receipts_invoices"
-                                                                                class="form-label">Receipts/Invoices:</label>
-                                                                            <x-file-uploader loadLater
-                                                                                class="general_receipts_invoices_{{ $keygri }}"
-                                                                                name="general_receipts_invoices_{{ $keygri }}"
-                                                                                :value="$generalExpense->receipts_invoices"
-                                                                                id="general_receipts_invoices_{{ $keygri }}" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label for="supporting_documents"
-                                                                                class="form-label">Supporting
-                                                                                Documents:</label>
-                                                                            <x-file-uploader loadLater
-                                                                                class="general_supporting_documents_{{ $keygri }}"
-                                                                                name="general_supporting_documents_{{ $keygri }}"
-                                                                                :value="$generalExpense->supporting_documents"
-                                                                                id="general_supporting_documents_{{ $keygri }}" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                <div id="general-container"> 
+                                                    <div class="form-group border p-3 mb-3">
+                                                        <h5>General Expense</h5>
+                                                        <div class="row">
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>Date</label>
+                                                                <input type="text" id="expense_date" name="expense_date[]" class="form-control flatdate clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>Expense Type</label>
+                                                                {{-- <select id="expense_type" name="expense_type[]" class="form-control clearInputField">
+                                                                    @foreach ($expense_types as $type)
+                                                                        <option value="{{ $type->id }}">
+                                                                            {{ $type->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>--}}
+                                                                <input type="text" id="expense_type" name="expense_type[]" class="form-control clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-2 mb-2">
+                                                                <label>Amount</label>
+                                                                <input type="number" id="general_amount" name="general_amount[]" class="form-control da_amt clearInputField" value="">
+                                                            </div>
+                                                        
+                                                            <div class="col-md-6 mb-2">
+                                                                <label>Description</label>
+                                                                <input type="text" id="general_expense_description" name="general_expense_description[]" class="form-control clearInputField" value="">
+                                                            </div>
+                                                            <div class="col-md-6 mb-2">
+                                                                <label>Receipts/Invoices</label>
+                                                                <x-file-uploader loadLater name="general_receipts_invoices_0" id="general_receipts_invoices" />
+                                                                {{-- <input type="file" name="receipts_invoices[]" class="form-control"> --}}
+                                                                {{-- <input type="file" name="receipts_invoices[]" class="form-control"> --}}
+                                                            </div>
+                                                            <div class="col-md-6 mb-2">
+                                                                <label>Supporting Documents</label>
+                                                                <x-file-uploader loadLater name="general_supporting_documents_0" id="general_supporting_documents" />
+                                                                {{-- <input type="file" name="supporting_documents[]" class="form-control" multiple> --}}
                                                             </div>
                                                         </div>
-                                                    @endforeach
-
-                                                    @if ($billsAndAllowance->generalExpenses->isEmpty())
-                                                        <div class="form-group-2">
-                                                            <div class="general-items">
-                                                                <h3>Expense Details</h3>
-                                                                <button type="button"
-                                                                    class="btn btn-danger btn-sm remove-form-group-2"
-                                                                    style="float: right;">-</button>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_date"
-                                                                                class="form-label">Date of Expense:</label>
-                                                                            <input type="text"
-                                                                                class="form-control flatdate"
-                                                                                id="expense_date" name="expense_date[]">
-                                                                        </div>
-                                                                    </div>
-                                                                    <input type="hidden" name="general_expense_id[]">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_type"
-                                                                                class="form-label">Expense Type:</label>
-                                                                            <select class="form-select" id="expense_type"
-                                                                                name="expense_type[]">
-                                                                                <option value="">Select Expense Type
-                                                                                </option>
-                                                                                @foreach ($expense_types as $type)
-                                                                                    <option value="{{ $type->name }}">
-                                                                                        {{ $type->name }}</option>
-                                                                                @endforeach
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="expense_description"
-                                                                                class="form-label">Expense
-                                                                                Description:</label>
-                                                                            <textarea class="form-control" id="expense_description" name="general_expense_description[]"></textarea>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="amount"
-                                                                                class="form-label">General Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="amount" name="general_amount[]">
-                                                                        </div>
-                                                                    </div>
-                                                                
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-3">
-                                                                            <label for="settlement_amount"
-                                                                                class="form-label">Settlement
-                                                                                Amount:</label>
-                                                                            <input type="number" class="form-control"
-                                                                                id="settlement_amount"
-                                                                                name="general_settlement_amount[]">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label for="receipts_invoices"
-                                                                                class="form-label">Receipts/Invoices:</label>
-                                                                            <x-file-uploader loadLater
-                                                                                class="general_receipts_invoices_0"
-                                                                                name="general_receipts_invoices_0"
-                                                                                id="general_receipts_invoices_0" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="mb-3">
-                                                                            <label for="supporting_documents"
-                                                                                class="form-label">Supporting
-                                                                                Documents:</label>
-                                                                            <x-file-uploader loadLater
-                                                                                class="general_supporting_documents_0"
-                                                                                name="general_supporting_documents_0"
-                                                                                id="general_supporting_documents_0" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
+                                                    </div>
                                                 </div>
-                                                <button type="button" id="add-general" class="btn btn-primary">Add
-                                                    More</button>
+                                                <button type="button" id="add-general" class="btn btn-primary">
+                                                    Add More
+                                                </button>
+                                                  
+                                                <div class=" bg-primary text-white shadow-sm py-2 my-2 fw-semibold rounded text-center">
+                                                    <div class="row col-sm-12">
+                                                        <div class="col-sm-1">SL</div>
+                                                        <div class="col-sm-2">Date</div>
+                                                        <div class="col-sm-2">Expense Type</div>
+                                                        <div class="col-sm-3">Description</div> 
+                                                        <div class="col-sm-2">Amount</div>
+                                                        <div class="col-sm-2">Attach</div>
+                                                    </div>
+                                                </div> 
+
+
+                                                <div id="general-expense-container">
+                                                    @php
+                                                        $totalGeneralAmount = 0;
+                                                    @endphp
+                                                    @foreach ($billsAndAllowance->generalExpenses as $keygri => $generalExpense)
+                                                        @php
+                                                            $totalGeneralAmount += $generalExpense->amount;
+                                                        @endphp
+                                                        <div class="row col-sm-12">
+                                                            <div class="col-sm-1">
+                                                                <button class="btn btn-danger btn-sm" type="button" onclick="removeDaRow(this)"><span class="da-data">{{++$keygri}}</span> 
+                                                                <i class="fa fa-trash" aria-hidden="true"></i></button> 
+                                                            </div>
+                                                            <input type="text" name="expense_date[]" class="form-control col-sm-2" value="{{ $generalExpense->expense_date }}">
+                                                            <input type="text" name="expense_type[]" class="form-control col-sm-2" value="{{ $generalExpense->expense_type }}">
+                                                            <input type="text" name="general_expense_description[]" class="form-control col-sm-3" value="{{ $generalExpense->expense_description }}">
+                                                            <input type="text" name="general_amount[]" class="form-control col-sm-2" value="{{ $generalExpense->amount }}"> 
+                                                            <div class="col-sm-1 d-flex gap-1 justify-content-start">
+                                                                @if(!empty($generalExpense->receipts_invoices))
+                                                                <a href="{{ $generalExpense->receipts_invoices }}" target="_blank"
+                                                                    class="btn btn-outline-primary"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="View Attachment">
+                                                                    <i class="las la-eye"></i>
+                                                                </a>
+                                                                @endif
+                                                                @if(!empty($generalExpense->supporting_documents))
+                                                                <a href="{{ $generalExpense->supporting_documents }}" target="_blank"
+                                                                    class="btn btn-outline-primary"
+                                                                    data-bs-toggle="tooltip"
+                                                                    title="View Attachment">
+                                                                    <i class="las la-eye"></i>
+                                                                </a>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endforeach  
+                                                </div>
+                                                
+                                                <div class="col-sm-10 px-0 justify-content-sm-center"> 
+                                                    <div class="row col-sm-12 justify-content-sm-end"> 
+                                                        <label class="col-sm-2 col-form-label col-form-label-sm">Total Amount</label>                   
+                                                        <input type="text" class="form-control form-control-sm clr_field col-sm-2 text-right " readonly id="da_total" name="da_total" value="{{$totalGeneralAmount}}"> 
+                                                    </div>
+                                                </div> 
                                             </div>
                                         </div>
                                     </div>
@@ -621,10 +417,7 @@
                                             </button>
                                         </div> --}}
 
-                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
-                                        <a href="{{ route('hrm.bills.index') }}"
-                                            class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
-                                                class="fa fa-list"></i> List</a>
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start"> 
                                         <button type="submit"
                                             class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">
                                             Update
@@ -660,7 +453,8 @@
     const transportFormGroup = $('#transport-container .form-group').first().clone().prop('outerHTML');
     const generalFormGroup = $('#general-container .form-group-2').first().clone().prop('outerHTML');
 
-    @foreach ($billsAndAllowance->transportExpenses as $key => $transportExpense)
+   
+    /*@foreach ($billsAndAllowance->transportExpenses as $key => $transportExpense)
         initializeFileUploader_receipts_invoices_{{ $key }}_receipts_invoices_{{ $key }}();
         initializeFileUploader_supporting_documents_{{ $key }}_supporting_documents_{{ $key }}();
         transportCounter++;
@@ -680,102 +474,308 @@
     @if ($billsAndAllowance->generalExpenses->isEmpty())
         initializeFileUploader_general_receipts_invoices_0_general_receipts_invoices_0();
         initializeFileUploader_general_supporting_documents_0_general_supporting_documents_0();
-    @endif
+    @endif*/
 
     // Add/Remove logic
     function handleClone(btnId, containerId) {
         $('#' + btnId).on('click', function() {
-            const $clone = containerId === 'transport-container' ? $(transportFormGroup) : $(generalFormGroup);
-            const $container = $('#' + containerId);
-            let counter = 0;
+                const $clone = containerId === 'transport-container' ? $(transportFormGroup) : $(generalFormGroup);
+                const $container = $('#' + containerId);
+                let counter = 0;
 
-            // Reset values
-            $clone.find('input, textarea, select').each(function() {
-                $(this).val($(this).attr('type') === 'file' ? '' : '');
-            });
-
-            $container.append($clone);
-
-            // Determine which counter to use
-            if (containerId === 'transport-container') {
-                counter = transportCounter;
-                transportCounter++;
-            } else {
-                counter = generalCounter;
-                generalCounter++;
-            }
-
-            // Handle file uploaders based on tab
-            if (containerId === 'transport-container') {
-                // Transport tab elements
-                const receiptClass = `receipts_invoices_${counter}`;
-                $clone.find("#receipts_invoices_0")
-                    .addClass(receiptClass);
-                $clone.find("#hidden-input-receipts_invoices_0")
-                    .attr('name', `receipts_invoices_${counter}`);
-
-                initializeFileUploader_receipts_invoices_0_receipts_invoices_0(receiptClass);
-
-                const supportingClass = `supporting_documents_${counter}`;
-                $clone.find("#supporting_documents_0")
-                    .addClass(supportingClass);
-                $clone.find("#hidden-input-supporting_documents_0")
-                    .attr('name', `supporting_documents_${counter}`);
-                initializeFileUploader_supporting_documents_0_supporting_documents_0(supportingClass);
-            } else {
-                // General tab elements
-                const generalReceiptClass = `general_receipts_invoices_${counter}`;
-                $clone.find("#general_receipts_invoices_0")
-                    .addClass(generalReceiptClass);
-                $clone.find("#hidden-input-general_receipts_invoices_0")
-                    .attr('name', `general_receipts_invoices_${counter}`);
-                initializeFileUploader_general_receipts_invoices_0_general_receipts_invoices_0(generalReceiptClass);
-
-                const generalSupportingClass = `general_supporting_documents_${counter}`;
-                $clone.find("#general_supporting_documents_0")
-                    .addClass(generalSupportingClass);
-                $clone.find("[name='general_supporting_documents_0']")
-                    .attr('name', `general_supporting_documents_${counter}`);
-                initializeFileUploader_general_supporting_documents_0_general_supporting_documents_0(generalSupportingClass);
-            }
-
-            $clone.find('.flatdate').each(function() {
-                flatpickr(this, {
-                    altInput: true,
-                    altFormat: "Y-m-d",
-                    dateFormat: "Y-m-d",
+                // Reset values
+                $clone.find('input, textarea, select').each(function() {
+                    $(this).val($(this).attr('type') === 'file' ? '' : '');
                 });
+
+                $container.append($clone);
+
+                // Determine which counter to use
+                if (containerId === 'transport-container') {
+                    counter = transportCounter;
+                    transportCounter++;
+                } else {
+                    counter = generalCounter;
+                    generalCounter++;
+                }
+
+                // Handle file uploaders based on tab
+                if (containerId === 'transport-container') {
+                    // Transport tab elements
+                    const receiptClass = `receipts_invoices_${counter}`;
+                    $clone.find("#receipts_invoices_0")
+                        .addClass(receiptClass);
+                    $clone.find("#hidden-input-receipts_invoices_0")
+                        .attr('name', `receipts_invoices_${counter}`);
+
+                    initializeFileUploader_receipts_invoices_0_receipts_invoices_0(receiptClass);
+
+                    const supportingClass = `supporting_documents_${counter}`;
+                    $clone.find("#supporting_documents_0")
+                        .addClass(supportingClass);
+                    $clone.find("#hidden-input-supporting_documents_0")
+                        .attr('name', `supporting_documents_${counter}`);
+                    initializeFileUploader_supporting_documents_0_supporting_documents_0(supportingClass);
+                } else {
+                    // General tab elements
+                    const generalReceiptClass = `general_receipts_invoices_${counter}`;
+                    $clone.find("#general_receipts_invoices_0")
+                        .addClass(generalReceiptClass);
+                    $clone.find("#hidden-input-general_receipts_invoices_0")
+                        .attr('name', `general_receipts_invoices_${counter}`);
+                    initializeFileUploader_general_receipts_invoices_0_general_receipts_invoices_0(generalReceiptClass);
+
+                    const generalSupportingClass = `general_supporting_documents_${counter}`;
+                    $clone.find("#general_supporting_documents_0")
+                        .addClass(generalSupportingClass);
+                    $clone.find("[name='general_supporting_documents_0']")
+                        .attr('name', `general_supporting_documents_${counter}`);
+                    initializeFileUploader_general_supporting_documents_0_general_supporting_documents_0(generalSupportingClass);
+                }
+
+                $clone.find('.flatdate').each(function() {
+                    flatpickr(this, {
+                        altInput: true,
+                        altFormat: "Y-m-d",
+                        dateFormat: "Y-m-d",
+                    });
+                });
+
+                // Update remove button text
+                $clone.find('.remove-form-group, .remove-form-group-2').text('Remove');
+                
+                bindRemove($clone.find('.remove-form-group'));
+                bindRemove($clone.find('.remove-form-group-2'));
             });
+        }
 
-            // Update remove button text
-            $clone.find('.remove-form-group, .remove-form-group-2').text('Remove');
+        function bindRemove($btn) {
+            $btn.on('click', function() {
+                $(this).closest('.form-group').remove();
+                $(this).closest('.form-group-2').remove();
+            });
+        }
+
+        // Set initial text for existing remove buttons
+        $('.remove-form-group, .remove-form-group-2').text('Remove');
+        
+        $('.remove-form-group').each(function() {
+            bindRemove($(this));
+        });
+
+        $('.remove-form-group-2').each(function() {
+            bindRemove($(this));
+        });
+
+        //handleClone('add-transport', 'transport-container');
+        //handleClone('add-general', 'general-container');
+
+                initializeFileUploader_receipts_invoices_receipts_invoices_0();
+        initializeFileUploader_supporting_documents_supporting_documents_0();
+
+        initializeFileUploader_general_receipts_invoices_general_receipts_invoices_0();
+        initializeFileUploader_general_supporting_documents_general_supporting_documents_0();
+
+        addTransportExpense('add-transport', 'transport-container'); 
+        addGeneralExpense('add-general', 'general-container');
+        
+        let srNo = 0;
+        function addTransportExpense(btnId, containerId)
+        {
+
             
-            bindRemove($clone.find('.remove-form-group'));
-            bindRemove($clone.find('.remove-form-group-2'));
-        });
-    }
+            $('#' + btnId).on('click', function () {
 
-    function bindRemove($btn) {
-        $btn.on('click', function() {
-            $(this).closest('.form-group').remove();
-            $(this).closest('.form-group-2').remove();
-        });
-    }
+                let valid = true;
 
-    // Set initial text for existing remove buttons
-    $('.remove-form-group, .remove-form-group-2').text('Remove');
-    
-    $('.remove-form-group').each(function() {
-        bindRemove($(this));
+                if($('#date_of_expense').val() === '') {
+                    alert('Please enter Date of Expense!'); 
+                    valid = false;
+                    return false; 
+                }
+
+                if($('#from_location').val() === '') {
+                    alert('Please enter From Location!'); 
+                    valid = false;
+                    return false;
+                }
+
+                if($('#to_location').val() === '') {
+                    alert('Please enter To Location!'); 
+                    valid = false;
+                    return false;
+                }
+                if($('#transport_by').val() === '') {
+                    alert('Please enter Transport By!'); 
+                    valid = false;
+                    return false;
+                }
+                if($('#transport_amount').val() === '') {
+                    alert('Please enter Transport Amount!'); 
+                    valid = false;
+                    return false;
+                }
+
+                
+                srNo++;
+				let div = $('<div></div>').addClass('row col-sm-12');
+				$('#date_of_expense').clone().removeAttr('id').removeClass('clearInputField').attr('type', 'text').addClass('col-sm-2').appendTo(div); 
+				$('#from_location').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
+                $('#to_location').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
+                $('#transport_by').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div); 
+				$('#distance').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div);
+                $('#transport_amount').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div);
+                 
+                $('#expense_description').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-12').appendTo(div);
+				  
+				$('<div class="col-sm-1 px-0"><button class="btn btn-danger btn-sm" type="button" onClick="removeTaRow(this)"><span class="ta-data">'+srNo+'</span> <i class="fa fa-trash" aria-hidden="true"></i></button></div>').prependTo(div);
+				$(div).appendTo($('#transport-details-container')); 
+
+                $('.clearInputField').val('');
+                serialAndTotalTa(); 
+                
+                // Transport tab elements
+                const receiptClass = `receipts_invoices_${srNo}`;
+                $("#receipts_invoices")
+                    .addClass(receiptClass);
+                $("#hidden-input-receipts_invoices_0")
+                    .attr('name', `receipts_invoices_${srNo}`);
+                    
+                initializeFileUploader_receipts_invoices_receipts_invoices_0(receiptClass);
+
+                const supportingClass = `supporting_documents_${srNo}`;
+                $("#supporting_documents")
+                    .addClass(supportingClass);
+                $("#hidden-input-supporting_documents_0")
+                    .attr('name', `supporting_documents_${srNo}`);
+                initializeFileUploader_supporting_documents_supporting_documents_0(supportingClass);
+ 
+                
+            });
+            
+        }
+
+
+        let slNo = 0;
+        function addGeneralExpense(btnId, containerId)
+        {
+  
+            $('#' + btnId).on('click', function () {
+
+                let valid = true;
+
+                if($('#expense_date').val() === '') {
+                    alert('Please enter Date of Expense!'); 
+                    valid = false;
+                    return false; 
+                }
+
+                if($('#expense_type').val() === '') {
+                    alert('Please enter From Location!'); 
+                    valid = false;
+                    return false;
+                }
+               
+                if($('#general_amount').val() === '') {
+                    alert('Please enter Transport Amount!'); 
+                    valid = false;
+                    return false;
+                }
+
+            
+                slNo++;
+				let div = $('<div></div>').addClass('row col-sm-12');
+				$('#expense_date').clone().removeAttr('id').removeClass('clearInputField').attr('type', 'text').addClass('col-sm-2').appendTo(div); 
+				$('#expense_type').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
+                $('#general_expense_description').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-3').appendTo(div); 
+                $('#general_amount').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
+				 
+				$('<div class="col-sm-1 px-0"><button class="btn btn-danger btn-sm" type="button" onClick="removeDaRow(this)"><span class="da-data">'+slNo+'</span> <i class="fa fa-trash" aria-hidden="true"></i></button></div>').prependTo(div);
+				$(div).appendTo($('#general-expense-container')); 
+
+                $('.clearInputField').val('');
+                serialAndTotalDa(); 
+
+                // General tab elements
+                const $clone = containerId === 'transport-container' ? $(transportFormGroup) : $(generalFormGroup); 
+                const generalReceiptClass = `general_receipts_invoices_${slNo}`;
+                $("#general_receipts_invoices")
+                    .addClass(generalReceiptClass);
+                $("#hidden-input-general_receipts_invoices_0")
+                    .attr('name', `general_receipts_invoices_${slNo}`);
+                initializeFileUploader_general_receipts_invoices_general_receipts_invoices_0(generalReceiptClass);
+
+                const generalSupportingClass = `general_supporting_documents_${slNo}`;
+                $("#general_supporting_documents")
+                    .addClass(generalSupportingClass);
+                $("[name='general_supporting_documents_0']")
+                    .attr('name', `general_supporting_documents_${slNo}`);
+                initializeFileUploader_general_supporting_documents_general_supporting_documents_0(generalSupportingClass);
+                
+                
+            });
+            
+        }
+
+
     });
 
-    $('.remove-form-group-2').each(function() {
-        bindRemove($(this));
-    });
+    function totalTa() {   
+        let taTotal = 0; 
 
-    handleClone('add-transport', 'transport-container');
-    handleClone('add-general', 'general-container');
-});
+        $('.ta_amt').each(function() { 
+            let val = $(this).val().replace(/,/g, '').trim();
+
+            if(val !== '' && !isNaN(val)){
+                taTotal += parseFloat(val);
+            }
+        });
+  
+        $('#ta_total').val(taTotal.toFixed(2));
+    }
+
+    function serialAndTotalTa() 
+    { 
+        let sl=0; 
+        $('.ta-data').each(function(index, element) { 
+            $(this).html(++sl); 
+        }); 
+        totalTa(); 
+    }
+    function removeTaRow(delId) 
+    { 
+        $(delId).parent().parent().remove(); 
+        serialAndTotalTa(); 
+    }
+
+
+    function totalDa() {   
+        let daTotal = 0; 
+
+        $('.da_amt').each(function() { 
+            let val = $(this).val().replace(/,/g, '').trim();
+
+            if(val !== '' && !isNaN(val)){
+                daTotal += parseFloat(val);
+            }
+        });
+  
+        $('#da_total').val(daTotal.toFixed(2));
+    }
+
+    function serialAndTotalDa() 
+    { 
+        let sl=0; 
+        $('.da-data').each(function(index, element) { 
+            $(this).html(++sl); 
+        }); 
+        totalDa(); 
+    }
+    function removeDaRow(delId) 
+    { 
+        $(delId).parent().parent().remove(); 
+        serialAndTotalDa(); 
+    }
     </script>
 
 

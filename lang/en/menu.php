@@ -264,11 +264,11 @@
         'employee-menu-title'=>'Employees',
         'employee-view-menu-title'=>'View Employee',
 
-        'create-bills-menu-title'=>'Create Petty Cash',
-        'bills-list-menu-title'=>'Petty Cash List',
-        'edit-bills-menu-title'=> 'Edit Petty Cash',
-        'bills-menu-title'=>'Petty Cash',
-        'bills-view-menu-title'=>'View Petty Cash',
+        'create-bills-menu-title'=>'Create TA/DA',
+        'bills-list-menu-title'=>'TA/DA List',
+        'edit-bills-menu-title'=> 'Edit TA/DA',
+        'bills-menu-title'=>'TA/DA',
+        'bills-view-menu-title'=>'View TA/DA',
 
         'create-daily-attendances-menu-title' => 'Daily Attendance Entry',
         'daily-attendances-list-menu-title' => 'Daily Attendance List',

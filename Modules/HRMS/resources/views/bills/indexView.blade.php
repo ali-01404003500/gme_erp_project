@@ -78,7 +78,7 @@
                 </header>
 
                 <section class="title">
-                    <h2>Petty Cash List</h2>
+                    <h2>TA/DA List</h2>
                 </section>
 
                 <table class="table table-bordered" style="width:100%">
