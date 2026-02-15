@@ -7,7 +7,10 @@ use App\Models\AccessControl\CompanyInfo;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\Settings\Department;
 use Modules\HRMS\Models\Settings\Designation;
+use Modules\HRMS\Models\EmployeeExperience;
+use Modules\HRMS\Models\EmployeeFamilyContact;
 use App\Models\AccessControl\Branch;
+use App\Models\User;
 use Modules\HRMS\Services\EmployeeService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -43,8 +46,13 @@ class EmployeeController extends Controller
      */
     public function index( Request $request)
     {
-        $data['employees'] = $this->service->getAll();
+        $data['employees'] = $this->service->getAll(); 
         $data['employeeSearch'] = Employee::all();
+        $data['departments'] = Department::whereIn('status', [1])->orderBy('code', 'asc')->get();
+        $data['designations'] = Designation::whereIn('status', [1])->orderBy('code', 'asc')->get();
+        $data['branches'] = Branch::whereIn('branch_type_id', [1, 2])->get();
+       
+
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
@@ -96,74 +104,44 @@ class EmployeeController extends Controller
          * "other_documents" => Illuminate\Http\UploadedFile {#1597 ▶}
         */
         // is it string
-        $validate = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'father_name' => 'required|string|max:255',
-            'mother_name' => 'required|string|max:255',
-            'gender' => 'required|in:male,female,other',
-            'date_of_birth' => 'nullable|date',
-            'office_phone' =>  ['nullable', 'regex:/^(?:\+?88|00)?01[3-9]\d{8}$/'],
-            'personal_mobile' => 'required|string|max:255',
-            'alternate_phone' => 'nullable|string|max:255',
-            'email_address' => 'required|email|max:255',
-            'country' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'present_address' => 'required|string|max:255',
-            'permanent_address' => 'required|string|max:255',
-            'blood_group' => 'required|string|max:255',
-            'religion' => 'required|string|max:255',
-            'marital_status' => 'nullable|string|max:255',
-            'photograph' => 'required',
-            'resume' => 'nullable',
-            'national_id' => 'required|string|max:255',
-            'front_image' => 'required',
-            'back_image' => 'required',
-            'signature' => 'required',
-            'address_proof' => 'nullable',
-            'other_documents' => 'nullable',
-            'bank_name' => 'nullable|string|max:255',
-            'bank_branch' => 'nullable|string|max:255',
-            'account_holder_name' => 'nullable|string|max:255',
-            'account_number' => 'nullable|string|max:255',
-            'routing_number' => 'nullable|string|max:255',
-            'etin_number' => 'nullable|string|max:255',
-            'epf_number' => 'nullable|string|max:255',
-        
-            'email_accounts' => 'nullable|string|max:255',
-            'software_access' => 'nullable|string|max:255',
-            'additional_notes' => 'nullable|string|max:255',
-        ]);
-       
-        $educationsDetails = $request->validate([
-            'degree_title.*' => 'nullable|string|max:255',
-            'institute_name.*' => 'nullable|string|max:255',
-            'group.*' => 'nullable|string|max:255',
-            'duration.*' => 'nullable|string|max:255',
-            'passing_year.*' => 'nullable|string|max:255',
-            'result.*' => 'nullable|string|max:255',
-            'certificate_upload_*' => 'nullable',
-        ]);
 
+        if($request->tab_type == 'employee_information'){
+
+            $validate = $request->validate([
+                'full_name' => 'required|string|max:255',
+                'father_name' => 'required|string|max:255',
+                'mother_name' => 'required|string|max:255',
+                'gender' => 'required|in:male,female,other',
+                'date_of_birth' => 'nullable|date', 
+                'email_address' => 'required|email|max:255',
+                'country' => 'required|string|max:255',
+                'city' => 'required|string|max:255', 
+                'blood_group' => 'required|string|max:255',
+                'religion' => 'required|string|max:255',
+                'marital_status' => 'nullable|string|max:255',
+                'photograph' => 'required', 
+                'national_id' => 'required|string|max:255',  
+                'software_access' => 'nullable|string|max:255',
+                'additional_notes' => 'nullable|string|max:255',
+            ]);
+            $user = $request->validate([
+                'system_username' => 'required|string|unique:users,email',
+                'system_password' => 'nullable|string|max:255',
+                'user_branch_id' => 'nullable|exists:branches,id',
+                'user_status' => 'required|in:active,inactive',
+            ]);
+
+            $employementDetails = $request->validate([
+                'card_no' => 'required|string|max:255',
+                
+            ]);
+            
+        } 
         // dd($request->certificate_upload_0);
-        $employementDetails = $request->validate([
-            'card_no' => 'required|string|max:255',
-            'date_of_joining' => 'required|date',
-            'employment_type_id' => 'nullable',
-            'department_id' => 'required|exists:departments,id',
-            'designation_id' => 'required|exists:designations,id',
-            'user_branch_id' => 'required|exists:branches,id',
-            'supervisor' => 'nullable|exists:employees,id',
-            
-        ]);
-
-        $user = $request->validate([
-            'system_username' => 'required|string|unique:users,email',
-            'system_password' => 'nullable|string|max:255',
-            'user_branch_id' => 'nullable|exists:branches,id',
-        ]);
        
-        $result = $this->service->create($validate,  $educationsDetails, $employementDetails, $user);
+        $result = $this->service->create($request->tab_type, $validate, $employementDetails, $user);
             
+
         return redirect()->route('hrm.employees.edit', $result['employee']->id)->with('success', 'Employee created successfully.');
         
     }
@@ -262,68 +240,172 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, Employee $employee)
     {
-        // dd($request->all());
-        $validate = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'father_name' => 'required|string|max:255',
-            'mother_name' => 'required|string|max:255',
-            'gender' => 'required|in:male,female,other',
-            'date_of_birth' => 'nullable|date',
-            'office_phone' =>  ['nullable', 'regex:/^(?:\+?88|00)?01[3-9]\d{8}$/'],
-            'personal_mobile' => 'required|string|max:255',
-            'alternate_phone' => 'nullable|string|max:255',
-            'email_address' => 'required|email|max:255',
-            'country' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'present_address' => 'required|string|max:255',
-            'permanent_address' => 'required|string|max:255',
-            'blood_group' => 'required|string|max:255',
-            'religion' => 'required|string|max:255',
-            'marital_status' => 'nullable|string|max:255',
-            'photograph' => 'required',
-            'resume' => 'nullable',
-            'national_id' => 'required|string|max:255',
-            'front_image' => 'required',
-            'back_image' => 'required',
-            'signature' => 'required',
-            'address_proof' => 'nullable',
-            'other_documents' => 'nullable',
-            'bank_name' => 'nullable|string|max:255',
-            'bank_branch' => 'nullable|string|max:255',
-            'account_holder_name' => 'nullable|string|max:255',
-            'account_number' => 'nullable|string|max:255',
-            'routing_number' => 'nullable|string|max:255',
-            'etin_number' => 'nullable|string|max:255',
-            'epf_number' => 'nullable|string|max:255',
-            'email_accounts' => 'nullable|string|max:255',
-            'software_access' => 'nullable|string|max:255',
-            'additional_notes' => 'nullable|string|max:255',
-        ]);
-       
-        $educationsDetails = $request->validate([
-            'degree_title.*' => 'nullable|string|max:255',
-            'institute_name.*' => 'nullable|string|max:255',
-            'group.*' => 'nullable|string|max:255',
-            'duration.*' => 'nullable|string|max:255',
-            'passing_year.*' => 'nullable|string|max:255',
-            'result.*' => 'nullable|string|max:255',
-        ]);
+        //dd($request->all());
+
+        $validate =  $contact = $educationsDetails = $employementDetails = $bank = $tax = $employeement_experience = $familyContact = $user = [];
+
+        if($request->tab_type == 'employee_information'){
+
+            $validate = $request->validate([
+                'full_name' => 'required|string|max:255',
+                'father_name' => 'required|string|max:255',
+                'mother_name' => 'required|string|max:255',
+                'gender' => 'required|in:male,female,other',
+                'date_of_birth' => 'nullable|date', 
+                'email_address' => 'required|email|max:255',
+                'country' => 'required|string|max:255',
+                'city' => 'required|string|max:255', 
+                'blood_group' => 'required|string|max:255',
+                'religion' => 'required|string|max:255',
+                'marital_status' => 'nullable|string|max:255',
+                'photograph' => 'required', 
+                'national_id' => 'required|string|max:255',  
+                'software_access' => 'nullable|string|max:255',
+                'additional_notes' => 'nullable|string|max:255', 
+            ]);
+             
+            $employementDetails = $request->validate([
+                'card_no' => 'required|string|max:255',
+                
+            ]);
+            
+        }
+        if($request->tab_type == 'contact'){
+
+            $contact = $request->validate([
+                'office_phone' =>  ['nullable', 'regex:/^(?:\+?88|00)?01[3-9]\d{8}$/'],
+                'personal_mobile' => 'required|string|max:255',
+                'alternate_phone' => 'nullable|string|max:255', 
+                'present_address' => 'required|string|max:255',
+                'permanent_address' => 'required|string|max:255',
+                'email_accounts' => 'nullable|string|max:255',
+            ]);
+            
+        }
+        if($request->tab_type == 'documents'){
+            $documents = $request->validate([
+                'resume' => 'nullable',
+                'front_image' => 'required',
+                'back_image' => 'required',
+                'signature' => 'required',
+                'address_proof' => 'nullable',
+                'other_documents' => 'nullable',
+            ]);
+            
+        }
+        
+        if($request->tab_type == 'educational'){
+            $educationsDetails = $request->validate([
+                'degree_title.*' => 'nullable|string|max:255',
+                'institute_name.*' => 'nullable|string|max:255',
+                'group.*' => 'nullable|string|max:255',
+                'duration.*' => 'nullable|string|max:255',
+                'passing_year.*' => 'nullable|string|max:255',
+                'result.*' => 'nullable|string|max:255',
+                'certificate_upload_*' => 'nullable',
+            ]); 
+            
+        }
+        if($request->tab_type == 'job_status'){
+            $employementDetails = $request->validate([ 
+                'date_of_joining' => 'required|date',
+                'employment_type_id' => 'nullable',
+                'department_id' => 'required|exists:departments,id',
+                'designation_id' => 'required|exists:designations,id',
+                'user_branch_id' => 'required|exists:branches,id',
+                'supervisor' => 'nullable|exists:employees,id',
+                'status' => 'required|in:0,1',
+                
+            ]); 
+            
+        }
+        if($request->tab_type == 'bank'){
+            $bank = $request->validate([
+                'bank_name' => 'nullable|string|max:255',
+                'bank_branch' => 'nullable|string|max:255',
+                'account_holder_name' => 'nullable|string|max:255',
+                'account_number' => 'nullable|string|max:255',
+                'routing_number' => 'nullable|string|max:255',
+            ]);
+            
+        }
+        if($request->tab_type == 'tax'){
+            $tax = $request->validate([
+                'etin_number' => 'nullable|string|max:255',
+                'epf_number' => 'nullable|string|max:255',
+            ]);
+            
+        }
+        if($request->tab_type == 'employeement_experience'){
+            $employeement_experience = $request->validate([  
+                'company_name'   => 'required|array',
+                'company_name.*' => 'required|string|max:255',
+
+                'address'        => 'nullable|array',
+                'address.*'      => 'nullable|string|max:255',
+
+                'designation'   => 'required|array',
+                'designation.*' => 'required|string|max:255',
+
+                'start_date'    => 'nullable|array',
+                'start_date.*'  => 'nullable|date',
+
+                'end_date'      => 'nullable|array',
+                'end_date.*'    => 'nullable|date',
+
+                'salary'        => 'nullable|array',
+                'salary.*'      => 'nullable|string|max:255',
+
+                'remarks'       => 'nullable|array',
+                'remarks.*'     => 'nullable|string|max:255',
+         
+            ]);  
+ 
+           
+        }
+ 
+        if($request->tab_type == 'family_contact'){ 
+            $familyContact = $request->validate([  
+                'name'   => 'required|array',
+                'name.*' => 'required|string|max:255',
+
+                'relationship'        => 'nullable|array',
+                'relationship.*'      => 'nullable|string|max:255',
+
+                'gender'   => 'required|array',
+                'gender.*' => 'required|string|max:255',
+
+                'nid'    => 'nullable|array',
+                'nid.*'  => 'nullable|string|max:255',
+
+                'profession'      => 'nullable|array',
+                'profession.*'    => 'nullable|string|max:255',
+
+                'contact_no'        => 'nullable|array',
+                'contact_no.*'      => 'nullable|string|max:255', 
+         
+            ]);  
+            
+        }
+
+        if($request->tab_type == 'system'){
+            $user = $request->validate([ 
+                'system_password' => 'nullable|string|max:255',
+                'user_branch_id' => 'nullable|exists:branches,id',
+                'user_status' => 'required|in:active,inactive',
+                
+            ]);
+        }
+          
+        //dd($employeement_experience);
 
         // dd($request->all());
-        $employementDetails = $request->validate([
-            'card_no' => 'nullable|string|max:255',
-            'date_of_joining' => 'nullable|date',
-            'employment_type_id' => 'nullable',
-            'department_id' => 'required|exists:departments,id',
-            'designation_id' => 'nullable|exists:designations,id',
-            'user_branch_id' => 'nullable|exists:branches,id',
-            'supervisor' => 'nullable|exists:employees,id',
-            
-        ]);
-        $result = $this->service->update($employee, $validate, $educationsDetails, $employementDetails);
+  
+
+        $result = $this->service->update($request->tab_type, $employee, $validate, $contact, $educationsDetails, $employementDetails, $bank, $tax, $employeement_experience, $familyContact, $user);
 
         // return redirect()->route('hrm.employees.index')->with('success', 'Employee updated successfully.');
-        return redirect()->route('hrm.employees.edit', $employee->id)->with('success', 'Employee updated successfully.');
+        return redirect()->route('hrm.employees.edit', $employee->id)->with('success', 'Employee updated successfully.')->with('tab', $request->tab_type);
 
     }
 
