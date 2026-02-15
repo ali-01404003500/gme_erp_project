@@ -9,6 +9,7 @@ use Modules\HRMS\Models\Settings\Department;
 use Modules\HRMS\Models\Settings\Designation;
 use Modules\HRMS\Models\EmployeeExperience;
 use Modules\HRMS\Models\EmployeeFamilyContact;
+use Modules\HRMS\Models\EmployeeDocuments;
 use App\Models\AccessControl\Branch;
 use App\Models\User;
 use Modules\HRMS\Services\EmployeeService;
@@ -280,16 +281,22 @@ class EmployeeController extends Controller
                 'permanent_address' => 'required|string|max:255',
                 'email_accounts' => 'nullable|string|max:255',
             ]);
-            
+              
         }
         if($request->tab_type == 'documents'){
-            $documents = $request->validate([
+            $documents1 = $request->validate([
                 'resume' => 'nullable',
                 'front_image' => 'required',
                 'back_image' => 'required',
                 'signature' => 'required',
                 'address_proof' => 'nullable',
                 'other_documents' => 'nullable',
+            ]);
+
+            $documents2 = $request->validate([ 
+                'title' => 'required',
+                'remarks' => 'nullable',
+                'document_upload' => 'required',
             ]);
             
         }
@@ -402,7 +409,7 @@ class EmployeeController extends Controller
         // dd($request->all());
   
 
-        $result = $this->service->update($request->tab_type, $employee, $validate, $contact, $educationsDetails, $employementDetails, $bank, $tax, $employeement_experience, $familyContact, $user);
+        $result = $this->service->update($request->tab_type, $employee, $validate, $contact, $educationsDetails, $employementDetails, $documents1, $documents2, $bank, $tax, $employeement_experience, $familyContact, $user);
 
         // return redirect()->route('hrm.employees.index')->with('success', 'Employee updated successfully.');
         return redirect()->route('hrm.employees.edit', $employee->id)->with('success', 'Employee updated successfully.')->with('tab', $request->tab_type);

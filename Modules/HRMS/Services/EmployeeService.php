@@ -7,6 +7,7 @@ use App\Models\User;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\EmployeeExperience;
 use Modules\HRMS\Models\EmployeeFamilyContact;
+use Modules\HRMS\Models\EmployeeDocuments;
 use App\Traits\S3FileHandler;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -100,7 +101,7 @@ class EmployeeService
         return $result;
     }
 
-    public function update($type, Employee $employee, array $data, array $contact, array $educationsDetails, array $employementDetails, array $bank, array $tax, array $employeement_experience, array $employeeFamilyContact, array $user)
+    public function update($type, Employee $employee, array $data, array $contact, array $educationsDetails, array $employementDetails, array $documents1, array $documents2, array $bank, array $tax, array $employeement_experience, array $employeeFamilyContact, array $user)
     {  
         //dd( $user);
 
@@ -124,7 +125,14 @@ class EmployeeService
         }
         if( $type == 'documents')
         {
-             
+            $employee->update($documents1);
+
+            EmployeeDocuments::create([
+                'employee_id' => $employee->id, 
+                'title' => $documents2['title'],
+                'remarks' => $documents2['remarks'],
+                'document_upload' => $documents2['document_upload'],
+            ]);
         }
         if( $type == 'job_status')
         {

@@ -41,6 +41,11 @@ class Employee extends BaseModel
         return $this->hasMany(EmployeeExperience::class, 'employee_id');
     }
 
+    public function documentsDetails()
+    {
+        return $this->hasMany(EmployeeDocuments::class, 'employee_id');
+    }
+    
     public function employeeFamilyContact()
     {
         return $this->hasMany(EmployeeFamilyContact::class, 'employee_id');
