@@ -1,5 +1,5 @@
-@section('title', 'Petty Cash Detail')
-@section('description', 'Petty Cash Detail')
+@section('title', 'TA/DA Detail')
+@section('description', 'TA/DA Detail')
 @extends('layout.app')
 
 @section('content')
@@ -11,7 +11,7 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
-                                <li class="breadcrumb-item active">Petty Cash Detail</li>
+                                <li class="breadcrumb-item active">TA/DA Detail</li>
                             </ol>
                         </nav>
                     </div>
@@ -36,7 +36,7 @@
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Petty Cash Detail</h4>
+                        <h4 class="mb-0">TA/DA Detail</h4>
                     </div>
                     <div class="card-body">
                         {{-- Basic Information --}}
