@@ -21,14 +21,28 @@ class BillsAndAllowanceService
         // $generalTotal = $this->generalExpenses->sum('final_approved_amount');
     
     public function getAll(int $limit = 20) {
-        return BillsAndAllowance::query()
+       return BillsAndAllowance::query()
         ->with(['transportExpenses', 'generalExpenses', 'employee'])
         ->searchByFields(['employee_id', 'date_of_bill_claim'])
         
         ->when(request()->filled('from') && request()->filled('to'), function ($qr) {
             $qr->whereBetween('date_of_bill_claim', [request('from'), request('to')]);
         }) 
-        ->paginate($limit);
+        ->paginate($limit); 
+
+        
+    }
+    public function verify() { 
+        return BillsAndAllowance::query() 
+        ->with(['transportExpenses', 'generalExpenses', 'employee'])
+        ->searchByFields(['employee_id', 'date_of_bill_claim'])
+        ->when(request()->filled('from') && request()->filled('to'), function ($qr) {
+            $qr->whereBetween('date_of_bill_claim', [request('from'), request('to')]);
+        }) 
+        ->get()
+        ->groupBy(['employee_id','status']); 
+
+        
     }
 
     public function create($request)
@@ -266,6 +280,16 @@ class BillsAndAllowanceService
     public function show($id)
     {
         return BillsAndAllowance::with('transportExpenses', 'generalExpenses', 'employee')->findOrFail($id);
+       
+
+    }
+    public function multipleShow($ids)
+    {   
+        //dd($ids);
+        return BillsAndAllowance::with('transportExpenses.transportType', 'generalExpenses.expenseType', 'employee',)
+            ->whereIn('id', $ids)
+            ->get();
+
     }
 
     /**

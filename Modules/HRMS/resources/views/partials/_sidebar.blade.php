@@ -51,19 +51,48 @@
                   </ul>
               </li>
           @endif
-          @if (hasPermission('hrm.bills.*'))
-              <li>
-                  <a href="{{ route('hrm.bills.index') }}"
-                      class="{{ request()->routeIs('hrm.bills.*') ? 'active' : '' }}">
-                      <span class="nav-icon fas fa-money-check-alt"></span>
-                      <span class="menu-text">{{ t_('menu.TA/DA') }}</span>
-                  </a>
-                  <ul>
 
-                  </ul>
-              </li>
-          @endif
+          @if(hasPermission('hrm.bills.*'))
+                <li class="has-subchild {{ request()->routeIs('hrm.bills.*') ? 'open' : '' }}">
+                    <a href="#"
+                        class="{{ request()->routeIs('hrm.bills.*') ? 'active' : '' }}">
+                        <span class="nav-icon uil uil-chart-bar"></span>
+                        <span class="menu-text">{{ t_('menu.bills') }}</span>
+                        <span class="toggle-icon"></span>
+                    </a>
+                    <ul>
+                        @if (hasPermission('hrm.bills.*'))
+                            <li>
+                                <a href="{{ route('hrm.bills.index') }}"
+                                    class="{{ request()->routeIs('hrm.bills.index') ? 'active' : '' }}">
+                                    <span class="nav-icon fas fa-money-check-alt"></span>
+                                    <span class="menu-text">{{ t_('menu.TA/DA Entry') }}</span>
+                                </a>
+                                <ul>
 
+                                </ul>
+                            </li>
+                        @endif
+
+                        @if (hasPermission('hrm.bills.verify'))
+                                <li>
+                                    <a href="{{ route('hrm.bills.verify') }}"
+                                        class="{{ request()->routeIs('hrm.bills.verify') ? 'active' : '' }}">
+                                        <span class="nav-icon fas fa-money-check-alt"></span>
+                                        <span class="menu-text">{{ t_('menu.TA/DA Verify') }}</span>
+                                    </a>
+                                    <ul>
+
+                                    </ul>
+                                </li>
+                        @endif
+    
+                    </ul>
+                </li>
+            @endif
+
+            
+          
           @if (hasPermission('hrm.salary-generates.*'))
               <li>
                   <a href="{{ route('hrm.payrolls') }}" 
