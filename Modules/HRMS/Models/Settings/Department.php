@@ -19,8 +19,8 @@ class Department extends BaseModel
 
    
 
-public function holidays() {
-    return $this->hasMany(Holiday::class, 'department'); 
+public function holiday() {
+    return $this->belongsTo(Holiday::class, 'holiday_id'); 
 }
 
 }

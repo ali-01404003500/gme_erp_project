@@ -19,6 +19,7 @@ use Modules\HRMS\Controllers\Kpi\KpiTemplateController;
 use Modules\HRMS\Controllers\Kpi\MonthlyKpiAppraisalController;
 use Modules\HRMS\Controllers\Kpi\ResponsibilityEntryController;
 use Modules\HRMS\Controllers\Kpi\ScoreWiseSuggestionController;
+use Modules\HRMS\Controllers\LeaveAdjustmentController;
 use Modules\HRMS\Controllers\LeaveApplicationController;
 use Modules\HRMS\Controllers\LoanController;
 use Modules\HRMS\Controllers\NoticeBoardController;
@@ -33,6 +34,7 @@ use Modules\HRMS\Controllers\Settings\NoticeTypeController;
 use Modules\HRMS\Controllers\Settings\SalarySetupController;
 use Modules\HRMS\Controllers\Settings\ShiftController;
 use Modules\HRMS\Controllers\Settings\TransportTypeController;
+
 use Modules\HRMS\Models\Loan;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], function () {
@@ -60,6 +62,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::resource('attendances', AttendanceController::class);
 
     Route::resource('leaves', LeaveApplicationController::class);
+
+
+
+
     Route::resource('noticeboards', NoticeBoardController::class);
 
     Route::get('get-leave-response', [LeaveApplicationController::class, 'getLeaveResponse'])->name('get.leave.response');
@@ -89,6 +95,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('designations', DesignationController::class)->except(['show', 'edit', 'create']);
         Route::resource('salary-setups', SalarySetupController::class);
         Route::resource('appraisal-policies', AppraisalPolicyController::class)->except(['show', 'edit', 'create']);
+            // Leave Adjustment route
+         Route::resource('leaveAdjustment', LeaveAdjustmentController::class);
     });
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {
         Route::resource('kpi-setups', KpiSetupController::class);

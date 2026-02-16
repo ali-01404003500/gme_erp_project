@@ -27,7 +27,7 @@ class Holiday extends BaseModel
     }
    
         public function department() {
-            return $this->belongsTo(Department::class, 'department_id');
+            return $this->hasMany(Department::class, 'holiday_id');
         }
 
 

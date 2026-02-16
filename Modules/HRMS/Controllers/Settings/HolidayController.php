@@ -77,10 +77,9 @@ class HolidayController extends Controller
     public function edit(Holiday $holiday)
     {
         $data['holiday'] = $holiday;
-         
         $data['days'] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-         $departments = \Modules\HRMS\Models\Settings\Department::all();
-        return view("HRMS::settings.holidays.edit", $data, compact("departments",'holiday'));
+        $data['departments'] = \Modules\HRMS\Models\Settings\Department::pluck('name', 'id')->toArray();
+        return view("HRMS::settings.holidays.edit", $data);
     }
 
     /**
