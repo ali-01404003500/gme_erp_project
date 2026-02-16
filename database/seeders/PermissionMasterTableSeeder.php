@@ -129,10 +129,10 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'hrm.noticeboards',
                 'parent_key' => 'hrm',
             ],
-            //Petty Cash
+            //TA/DA
             [
-                'title' => 'Petty Cash',
-                'description' => "Permission of Add, Remove, Update, Delete Petty Cash",
+                'title' => 'TA/DA',
+                'description' => "Permission of Add, Remove, Update, Delete TA/DA",
                 'key' => 'hrm.bills',
                 'parent_key' => 'hrm',
             ],

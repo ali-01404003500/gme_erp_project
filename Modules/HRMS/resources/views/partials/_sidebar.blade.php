@@ -56,7 +56,7 @@
                   <a href="{{ route('hrm.bills.index') }}"
                       class="{{ request()->routeIs('hrm.bills.*') ? 'active' : '' }}">
                       <span class="nav-icon fas fa-money-check-alt"></span>
-                      <span class="menu-text">{{ t_('menu.Petty Cash') }}</span>
+                      <span class="menu-text">{{ t_('menu.TA/DA') }}</span>
                   </a>
                   <ul>
 

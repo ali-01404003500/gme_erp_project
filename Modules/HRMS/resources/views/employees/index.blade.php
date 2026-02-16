@@ -16,20 +16,20 @@
                         </nav>
                     </div>
                     <div class="breadcrumb-main__wrapper">
-                        <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
-                            @if (hasPermission('hrm.employees.create'))
-                            <a href="{{ route('hrm.employees.create') }}" class="btn px-20 btn-primary btn-sm">
-                                <i class="las la-plus fs-16"></i>Add New
-                            </a>
-                            @endif
-                            <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
-                                class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
-                                <i class="las la-file-pdf fs-16"></i> PDF
-                            </a>
+                        <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center"> 
                             <button type="button" class="btn btn-xs btn-success btn-sm me-2 ml-5" data-bs-toggle="modal" style="margin-left: 5px;"
                                 data-bs-target="#importEmployeeModal">
                                 <i class="las la-file-import fs-16"></i> Import CSV
                             </button>
+                            <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
+                                class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
+                                <i class="las la-file-pdf fs-16"></i> PDF
+                            </a> 
+                            @if (hasPermission('hrm.employees.create'))
+                            <a href="{{ route('hrm.employees.create') }}" class="btn px-20 btn-primary btn-sm mr-5" style="margin-left: 5px;">
+                                <i class="las la-plus fs-16"></i>Add New
+                            </a>
+                            @endif
                         </div>
                     </div>
                     
@@ -48,7 +48,7 @@
                                 <div class="col-sm-12">
                                     <table class="table table-bordered">
                                         <tr>
-                                            <td width="30%">
+                                            <td width="20%">
                                                 <select name="full_name" id="full_name" class="form-control tom-select"
                                                     data-placeholder="Select Employee Name">
                                                     <option value=""></option>
@@ -59,20 +59,47 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-                                            <td class="text-center" width="20%">
-                                                <input type="text" class="form-control" name="present_address"
-                                                    value="{{ request('present_address') }}" autocomplete="off"
-                                                    placeholder="Search by Address">
+                                            <td width="16%">
+                                                <select name="department" id="department"  class="form-control tom-select"  data-placeholder="Select Department">
+                                                    <option value=""></option>
+                                                    @foreach ($departments as $department)
+                                                        <option value="{{ $department->id }}" {{ request('department') == $department->id ? 'selected' : '' }}>
+                                                            {{ $department->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </td>
-                                            <td class="text-center" width="20%">
-                                                <input type="text" class="form-control" name="personal_mobile"
-                                                    value="{{ request('personal_mobile') }}" autocomplete="off"
-                                                    placeholder="Search by Mobile">
+                                            <td width="16%">
+                                                <select name="designation" id="designation" class="form-control tom-select"
+                                                    data-placeholder="Select Designation">
+                                                    <option value=""></option>
+                                                    @foreach ($designations as $designation)
+                                                        <option value="{{ $designation->id }}" {{ request('designation') == $designation->id ? 'selected' : '' }}>
+                                                            {{ $designation->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </td>
-                                            <td colspan="5" class="text-right" width="30%">
+                                            <td width="16%">
+                                                <select name="branch" id="branch" class="form-control tom-select"
+                                                    data-placeholder="Select Branch">
+                                                    <option value=""></option>
+                                                    @foreach ($branches as $branch)
+                                                        <option value="{{ $branch->id }}" {{ request('branch') == $branch->id ? 'selected' : '' }}>
+                                                            {{ $branch->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td> 
+                                            <td width="16%">
+                                                <select name="status" id="status" class="form-control tom-select">
+                                                    <option value="" {{ request('status') == 0 ? 'selected' : '' }}></option> 
+                                                    <option value="1" {{ request('status') == 1 ? 'selected' : '' }}>Active</option>
+                                                    <option value="0" {{ request('status') == 0 ? 'selected' : '' }}>Inactive</option>
+                                                    
+                                                </select>
+                                            </td> 
+
+                                            <td colspan="5" class="text-right" width="16%">
                                                 <div class="btn-group btn-corner">
-                                                    <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
-                                                        Search</button>
+                                                    <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>Search</button>
                                                     <a href="{{ request()->url() }}" class="btn btn-xs btn-warning"><i
                                                             class="fa fa-refresh"></i> Refresh</a>
                                                 </div>
@@ -90,9 +117,15 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Full Name</th>
-                                    <th>Address</th>
-                                    <th>Personal Mobile</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Designation</th>
+                                    <th>Date of Birth</th>
+                                    <th>Joining Date</th>
+                                    <th>Email</th>
+                                    <th>Mobile</th>
+                                    <th>Status</th>
                                     <th class="no-content">Action</th>
                                 </tr>
                             </thead>
@@ -105,33 +138,43 @@
                                 @foreach ($employees as $employee)
                                     <tr>
                                         <td>{{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration  }}</td>
+                                        <td>{{ $employee->employementDetail->card_no }}</td>
                                         <td>
-                                            <a class="text-dark fw-500"
-                                                href="{{ route('hrm.employees.show', $employee->id) }}">
-                                                {{ $employee->full_name }}</i>
+                                            <a class="text-dark fw-500" href="{{ route('hrm.employees.show', $employee->id) }}">
+                                                {{ $employee->full_name }}
                                             </a>
                                         </td>
                                         {{-- <td>{{ $employee->full_name }}</td> --}}
-                                        <td>{{ $employee->present_address }}</td>
+                                        <td>{{ $employee->employementDetail->department->name ?? 'N/A' }}</td>
+                                        <td>{{ $employee->employementDetail->designation->name ?? 'N/A' }}</td>
+                                        
+                                        <td>{{ $employee->date_of_birth }}</td>
+                                        <td>{{ $employee->employementDetail->date_of_joining }}</td>
+                                        <td>{{ $employee->email_address }}</td>
                                         <td>{{ $employee->personal_mobile }}</td>
+                                        <td>{{ $employee->status == 1 ? 'Active' : 'Inactive' }}</td>
+ 
+
+
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                                 @if (hasPermission('hrm.employees.update'))
-                                                    <a class="btn btn-outline-warning" href="{{ route('hrm.employees.edit', $employee->id) }}"><i
-                                                            class="far fa-edit"></i></a>
+                                                    <a class="btn btn-outline-warning" href="{{ route('hrm.employees.edit', $employee->id) }}">
+                                                        <i class="far fa-edit"></i>
+                                                    </a>
                                                 @endif
             
                                                 {{-- @if (hasPermission('users.update'))
                                                     <a href="{{ route('hrm.employees.edit_password', $employee->id) }}"
                                                         class="btn btn-outline-info">
-                                                        <i class="fas fa-key"></i>
+                                                        <i class="fas fa-key"> </i>
                                                     </a>
                                                 @endif --}}
             
                                                 @if (hasPermission('hrm.employees.destroy'))
                                                     <button type="button" data-action="{{ route('hrm.employees.destroy', $employee->id) }}"
-                                                        class="btn btn-outline-danger delete-confirm"><i
-                                                            class="far fa-trash-alt"></i></button>
+                                                        class="btn btn-outline-danger delete-confirm">
+                                                        <i class="far fa-trash-alt"></i></button>
                                                 @endif
             
                                                 @if (hasPermission('hrm.employees.show'))
