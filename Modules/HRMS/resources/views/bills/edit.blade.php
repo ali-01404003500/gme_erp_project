@@ -192,14 +192,17 @@
                                                             </div>
                                                             <div class="col-md-2 mb-2"> 
                                                                 <label>Transport By</label>
-                                                                {{-- <select  id="transport_by" name="transport_by[]" class="form-control clearInputField">
+                                                                <select  id="transport_by_name" name="transport_by_name[]" class="form-control clearInputField">
                                                                     @foreach ($transport_types as $type)
                                                                         <option value="{{ $type->id }}">
                                                                             {{ $type->name }}
                                                                         </option>
                                                                     @endforeach
-                                                                </select>--}}
-                                                                <input type="text" id="transport_by"  name="transport_by[]" class="form-control clearInputField" value="">
+                                                                </select>
+                                                                <input type="hidden" id="transport_by"  name="transport_by[]" class="form-control clearInputField" value="">
+                                                                <input type="hidden" id="transport_by_label"  name="transport_by_label[]" class="form-control clearInputField" value="">
+                                                            
+
                                                             </div>
                                                             <div class="col-md-2 mb-2">
                                                                 <label>Distance (KM)</label>
@@ -259,7 +262,8 @@
                                                             <input type="text" name="date_of_expense[]" class="form-control col-sm-2" value="{{ $transportExpense->date_of_expense }}">
                                                             <input type="text" name="from_location[]" class="form-control col-sm-2" value="{{ $transportExpense->from_location }}">
                                                             <input type="text" name="to_location[]" class="form-control col-sm-2" value="{{ $transportExpense->to_location }}">
-                                                            <input type="text" name="transport_by[]" class="form-control col-sm-1" value="{{ $transportExpense->transport_by }}">
+                                                            <input type="text" name="transport_by_label[]" class="form-control col-sm-1" value="{{ $transportExpense->transportType->name  }}">
+                                                            <input type="hidden" name="transport_by[]" class="form-control col-sm-1" value="{{ $transportExpense->transport_by }}"> 
                                                             <input type="text" name="distance[]" class="form-control col-sm-1" value="{{ $transportExpense->distance }}">
                                                             <input type="text" name="transport_amount[]" class="form-control col-sm-2" value="{{ $transportExpense->amount }}">
                                                             <div class="col-sm-1 d-flex gap-1 justify-content-start">
@@ -308,14 +312,16 @@
                                                             </div>
                                                             <div class="col-md-2 mb-2">
                                                                 <label>Expense Type</label>
-                                                                {{-- <select id="expense_type" name="expense_type[]" class="form-control clearInputField">
+                                                                <select id="expense_type_name" name="expense_type_name[]" class="form-control clearInputField">
                                                                     @foreach ($expense_types as $type)
                                                                         <option value="{{ $type->id }}">
                                                                             {{ $type->name }}
                                                                         </option>
                                                                     @endforeach
-                                                                </select>--}}
-                                                                <input type="text" id="expense_type" name="expense_type[]" class="form-control clearInputField" value="">
+                                                                </select>
+
+                                                                <input type="hidden" id="expense_type"  name="expense_type[]" class="form-control clearInputField" value="">
+                                                                <input type="hidden" id="expense_type_label"  name="expense_type_label[]" class="form-control clearInputField" value=""> 
                                                             </div>
                                                             <div class="col-md-2 mb-2">
                                                                 <label>Amount</label>
@@ -348,7 +354,7 @@
                                                     <div class="row col-sm-12">
                                                         <div class="col-sm-1">SL</div>
                                                         <div class="col-sm-2">Date</div>
-                                                        <div class="col-sm-2">Expense Type</div>
+                                                        <div class="col-sm-1">Expense Type</div>
                                                         <div class="col-sm-3">Description</div> 
                                                         <div class="col-sm-2">Amount</div>
                                                         <div class="col-sm-2">Attach</div>
@@ -370,10 +376,11 @@
                                                                 <i class="fa fa-trash" aria-hidden="true"></i></button> 
                                                             </div>
                                                             <input type="text" name="expense_date[]" class="form-control col-sm-2" value="{{ $generalExpense->expense_date }}">
-                                                            <input type="text" name="expense_type[]" class="form-control col-sm-2" value="{{ $generalExpense->expense_type }}">
+                                                            <input type="text" name="expense_type_label[]" class="form-control col-sm-1" value="{{ $generalExpense->expenseType->name  }}">
+                                                            <input type="hidden" name="expense_type[]" class="form-control col-sm-1" value="{{ $generalExpense->expense_type }}">  
                                                             <input type="text" name="general_expense_description[]" class="form-control col-sm-3" value="{{ $generalExpense->expense_description }}">
                                                             <input type="text" name="general_amount[]" class="form-control col-sm-2" value="{{ $generalExpense->amount }}"> 
-                                                            <div class="col-sm-1 d-flex gap-1 justify-content-start">
+                                                            <div class="col-sm-2 d-flex gap-1 justify-content-start">
                                                                 @if(!empty($generalExpense->receipts_invoices))
                                                                 <a href="{{ $generalExpense->receipts_invoices }}" target="_blank"
                                                                     class="btn btn-outline-primary"
@@ -570,7 +577,7 @@
         //handleClone('add-transport', 'transport-container');
         //handleClone('add-general', 'general-container');
 
-                initializeFileUploader_receipts_invoices_receipts_invoices_0();
+        initializeFileUploader_receipts_invoices_receipts_invoices_0();
         initializeFileUploader_supporting_documents_supporting_documents_0();
 
         initializeFileUploader_general_receipts_invoices_general_receipts_invoices_0();
@@ -605,7 +612,7 @@
                     valid = false;
                     return false;
                 }
-                if($('#transport_by').val() === '') {
+                if($('#transport_by_name').val() === '') {
                     alert('Please enter Transport By!'); 
                     valid = false;
                     return false;
@@ -616,13 +623,14 @@
                     return false;
                 }
 
-                
+                let selectedText = $('#transport_by_name option:selected').text().trim();
                 srNo++;
 				let div = $('<div></div>').addClass('row col-sm-12');
 				$('#date_of_expense').clone().removeAttr('id').removeClass('clearInputField').attr('type', 'text').addClass('col-sm-2').appendTo(div); 
 				$('#from_location').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
-                $('#to_location').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
-                $('#transport_by').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div); 
+                $('#to_location').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div);  
+                $('#transport_by_label').clone().removeAttr('id').removeClass('clearInputField').attr('type', 'text').addClass('col-sm-1').val(selectedText).appendTo(div);  
+                $('#transport_by').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').val($('#transport_by_name').val()).appendTo(div);  
 				$('#distance').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div);
                 $('#transport_amount').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div);
                  
@@ -682,11 +690,13 @@
                     return false;
                 }
 
-            
+                let selectedText = $('#expense_type_name option:selected').text().trim();
                 slNo++;
 				let div = $('<div></div>').addClass('row col-sm-12');
 				$('#expense_date').clone().removeAttr('id').removeClass('clearInputField').attr('type', 'text').addClass('col-sm-2').appendTo(div); 
 				$('#expense_type').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
+                $('#expense_type_label').clone().removeAttr('id').removeClass('clearInputField').attr('type', 'text').addClass('col-sm-1').val(selectedText).appendTo(div);  
+                $('#expense_type').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').val($('#expense_type_name').val()).appendTo(div);    
                 $('#general_expense_description').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-3').appendTo(div); 
                 $('#general_amount').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
 				 
