@@ -38,21 +38,7 @@ RUN { \
     echo "opcache.fast_shutdown=1"; \
 } > /usr/local/etc/php/conf.d/custom.ini
 
-# PHP-FPM pool override (better defaults for production)
-RUN { \
-    echo "[www]"; \
-    echo "pm = dynamic"; \
-    echo "pm.max_children = 30"; \
-    echo "pm.start_servers = 6"; \
-    echo "pm.min_spare_servers = 3"; \
-    echo "pm.max_spare_servers = 12"; \
-    echo "pm.max_requests = 500"; \
-    echo "request_terminate_timeout = 90s"; \
-    echo "listen = /run/php-fpm.sock"; \
-    echo "listen.owner = www-data"; \
-    echo "listen.group = www-data"; \
-    echo "listen.mode = 0660"; \
-} > /usr/local/etc/php-fpm.d/zz-performance.conf
+
 
 
 RUN { \
