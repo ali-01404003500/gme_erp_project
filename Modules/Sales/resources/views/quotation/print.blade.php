@@ -419,10 +419,17 @@
                                         <div class="signature" style="margin-top: 40px;">
                                             <p>Thanks & Regards,</p>
                                            
-                                            <p>Authorized<br>
-                                                Mohammad Ali<br>
-                                                Administrative Manager(Admin)<br>
-                                                Cell: 01404003500</p>
+                                            @if ($quotation->status == 1)
+                                                {{ @$quotation->approvedBy->name }}<br>
+                                                {{ @$quotation->approvedBy->employee->employementDetail->designation->name }}<br>
+                                                Cell: {{ @$quotation->approvedBy->employee->office_phone }}
+                                            @else
+                                                {{ @$quotation->createdBy->name }}<br>
+                                                {{ @$quotation->createdBy->employee->employementDetail->designation->name }}<br>
+                                                Cell: {{ @$quotation->createdBy->employee->office_phone }}
+                                            @endif
+
+
                                         </div>
                                     </div>
                                 </div>

@@ -871,17 +871,20 @@
                             ];
                         }
 
-                        if(data.customers.customer && data.customers.customer.customer_shipping_address && data.customers.customer.customer_shipping_address.length > 0){
-                            window.shipmentsOptions = [...window.shipmentsOptions,
-                                ...data.customers.customer.customer_shipping_address.map(address => ({
-                                    area: address.id,
-                                    area_name: "(Shiping Address) "+address.ship_to,
-                                    address: address.shipping_address,
-                                    phone: address.shipping_phone,
-                                    contact_person_name: address.ship_to
-                                }))
+                         if(data.latestShipmentAddress && data.latestShipmentAddress.length > 0){
+                            window.shipmentsOptions = [
+                                ...data.latestShipmentAddress.filter(address => address !== null).map(address => ({
+                                    area: address.area_id??address.area_id,
+                                    area_name: "(Shiping Address) "+address.address,
+                                    address: address.address,
+                                    phone: address.contact_person_number,
+                                    contact_person_name: address.contact_person_name,
+                                    courier_id: address.courier_id
+                                })),
+                                ...window.shipmentsOptions,
                             ];
                         }
+                        console.log({shipmentsOptions: window.shipmentsOptions});
 
 
                         const areaVal =  "{{ $salesOrder->shipment->area_id ?? 'address' }}";
@@ -902,7 +905,7 @@
                             $("#contact_person_phone").val("{{ $salesOrder->shipment->contact_person_number??'' }}");
                             $("#contact_person_phone1").val("{{ $salesOrder->shipment->contact_person_number??'' }}");
                         } else if (area_id != 'address') {
-                            const selectedOption = window.shipmentsOptions.find(option => option.area === area_name);
+                            const selectedOption = window.shipmentsOptions.find(option => option.area === area_id);
                             if (selectedOption) {
                                 $("#address").val(selectedOption.address);
                                 $("#address1").val(selectedOption.address);

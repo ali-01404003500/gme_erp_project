@@ -59,6 +59,14 @@ class BillsAndAllowanceController extends Controller
         return view("HRMS::bills.index", $data);
     }
 
+    public function verify(Request $request)
+    {
+        $data['billsAndAllowances'] = $this->service->verify();
+        $data['employees'] = Employee::all();
+        $data['company_info'] = CompanyInfo::first();
+ 
+        return view("HRMS::bills.verify", $data);
+    }
     public function create()
     {
         $data['employees'] = Employee::all();
@@ -80,47 +88,53 @@ class BillsAndAllowanceController extends Controller
         return redirect()->route('hrm.bills.index')->with('success', 'Bills And Allowance created successfully.');
     }
 
-    public function verifyDetails($id)
+    public function verifyDetails(Request $request)
     {
-        $data['billsAndAllowance'] = $this->service->show($id);
+        
+        $data['billsAndAllowance'] = $this->service->multipleShow(json_decode($request->ids));
         return response()->json([
             'success' => true,
             'data' => $data['billsAndAllowance']
         ]);
     }
 
-    public function teamLeaderVerify(Request $request, $id)
+    public function teamLeaderVerify(Request $request)
     {
         DB::beginTransaction();
         try {
-            $bill = BillsAndAllowance::findOrFail($id);
+            //dd($request->all()); 
             
-            // Update bill status
-            $bill->update([
-                'checked_by_team_leader' => auth()->user()->id,
-                'checked_by_team_leader_date' => now(),
-                'checked_by_team_leader_comments' => $request->comments,
-                'status' => 'team_leader_check',
-            ]);
+            $ids = json_decode($request->id);
+            foreach($ids as $id)
+            {
+                $bill = BillsAndAllowance::findOrFail($id);
+            
+                // Update bill status
+                $bill->update([
+                    'checked_by_team_leader' => auth()->user()->id,
+                    'checked_by_team_leader_date' => now(),
+                    'checked_by_team_leader_comments' => $request->comments,
+                    'status' => 'team_leader_check',
+                ]);
 
-            // Update approved amounts for transport expenses
-            if ($request->has('transport_approved')) {
-                foreach ($request->transport_approved as $expenseId => $amount) {
-                    $bill->transportExpenses()->where('id', $expenseId)->update([
-                        'team_leader_approved_amount' => $amount
-                    ]);
+                // Update approved amounts for transport expenses
+                if ($request->has('transport_approved')) {
+                    foreach ($request->transport_approved as $expenseId => $amount) {
+                        $bill->transportExpenses()->where('id', $expenseId)->update([
+                            'team_leader_approved_amount' => $amount
+                        ]);
+                    }
                 }
-            }
 
-            // Update approved amounts for general expenses
-            if ($request->has('general_approved')) {
-                foreach ($request->general_approved as $expenseId => $amount) {
-                    $bill->generalExpenses()->where('id', $expenseId)->update([
-                        'team_leader_approved_amount' => $amount
-                    ]);
-                }
-            }
-
+                // Update approved amounts for general expenses
+                if ($request->has('general_approved')) {
+                    foreach ($request->general_approved as $expenseId => $amount) {
+                        $bill->generalExpenses()->where('id', $expenseId)->update([
+                            'team_leader_approved_amount' => $amount
+                        ]);
+                    }
+                }    
+            } 
             DB::commit();
 
             // Notify HR/Accounts
@@ -130,46 +144,51 @@ class BillsAndAllowanceController extends Controller
                 'action' => $this->generalNotificationService->actionBuilder(BillsAndAllowanceController::class, 'verifyDetails', [$bill->id]),
             ], $this->generalNotificationService->getPermittedUsers('hrm.bills.accounts_verify'));
 
-            return redirect()->route('hrm.bills.index')->with('success', 'Bills & Allowance verified by team leader successfully.');
+            return redirect()->route('hrm.bills.verify')->with('success', 'Bills & Allowance verified by team leader successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Verification failed: ' . $e->getMessage());
         }
     }
 
-    public function accountsVerify(Request $request, $id)
+    public function accountsVerify(Request $request)
     {
         DB::beginTransaction();
         try {
-            $bill = BillsAndAllowance::findOrFail($id);
             
-            $bill->update([
-                'checked_by_accounts' => auth()->user()->id,
-                'checked_by_accounts_date' => now(),
-                'checked_by_accounts_comments' => $request->comments,
-                'status' => 'accounts_check',
-            ]);
+            $ids = json_decode($request->id);
+            foreach($ids as $id)
+            {
+                $bill = BillsAndAllowance::findOrFail($id);
+                
+                $bill->update([
+                    'checked_by_accounts' => auth()->user()->id,
+                    'checked_by_accounts_date' => now(),
+                    'checked_by_accounts_comments' => $request->comments,
+                    'status' => 'accounts_check',
+                ]);
 
-            // Update approved amounts for transport expenses
-            if ($request->has('transport_approved')) {
-                foreach ($request->transport_approved as $expenseId => $amount) {
-                    $bill->transportExpenses()->where('id', $expenseId)->update([
-                        'accounts_approved_amount' => $amount
-                    ]);
+                // Update approved amounts for transport expenses
+                if ($request->has('transport_approved')) {
+                    foreach ($request->transport_approved as $expenseId => $amount) {
+                        $bill->transportExpenses()->where('id', $expenseId)->update([
+                            'accounts_approved_amount' => $amount
+                        ]);
+                    }
                 }
-            }
 
-            // Update approved amounts for general expenses
-            if ($request->has('general_approved')) {
-                foreach ($request->general_approved as $expenseId => $amount) {
-                    $bill->generalExpenses()->where('id', $expenseId)->update([
-                        'accounts_approved_amount' => $amount
-                    ]);
+                // Update approved amounts for general expenses
+                if ($request->has('general_approved')) {
+                    foreach ($request->general_approved as $expenseId => $amount) {
+                        $bill->generalExpenses()->where('id', $expenseId)->update([
+                            'accounts_approved_amount' => $amount
+                        ]);
+                    }
                 }
-            }
 
+                
+            }
             DB::commit();
-
             // Notify final approver
             $this->generalNotificationService->store([
                 'title' => 'Bills & Allowance - Accounts Verified',
@@ -177,48 +196,51 @@ class BillsAndAllowanceController extends Controller
                 'action' => $this->generalNotificationService->actionBuilder(BillsAndAllowanceController::class, 'verifyDetails', [$bill->id]),
             ], $this->generalNotificationService->getPermittedUsers('hrm.bills.final_approve'));
 
-            return redirect()->route('hrm.bills.index')->with('success', 'Bills & Allowance verified by accounts successfully.');
+            return redirect()->route('hrm.bills.verify')->with('success', 'Bills & Allowance verified by accounts successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Verification failed: ' . $e->getMessage());
         }
     }
 
-    public function finalApprove(Request $request, $id)
+    public function finalApprove(Request $request)
     {
         DB::beginTransaction();
         try {
-            $bill = BillsAndAllowance::findOrFail($id);
-            
-            $bill->update([
-                'final_approved_by' => auth()->user()->id,
-                'final_approved_date' => now(),
-                'final_approved_comments' => $request->comments,
-                'status' => 'approved',
-            ]);
-
-            // Update final approved amounts for transport expenses
-            if ($request->has('transport_approved')) {
-                foreach ($request->transport_approved as $expenseId => $amount) {
-                    $bill->transportExpenses()->where('id', $expenseId)->update([
-                        'final_approved_amount' => $amount
-                    ]);
-                }
-            }
-
-            // Update final approved amounts for general expenses
-            if ($request->has('general_approved')) {
-                foreach ($request->general_approved as $expenseId => $amount) {
-                    $bill->generalExpenses()->where('id', $expenseId)->update([
-                        'final_approved_amount' => $amount
-                    ]);
-                }
-            }
-
-            $journalResult = $this->pettyCashPaymentService->createStep1JournalEntry($bill->id);
+            $ids = json_decode($request->id);
+            foreach($ids as $id)
+            {
+                $bill = BillsAndAllowance::findOrFail($id);
                 
-        //    dd($journalResult);
+                $bill->update([
+                    'final_approved_by' => auth()->user()->id,
+                    'final_approved_date' => now(),
+                    'final_approved_comments' => $request->comments,
+                    'status' => 'approved',
+                ]);
 
+                // Update final approved amounts for transport expenses
+                if ($request->has('transport_approved')) {
+                    foreach ($request->transport_approved as $expenseId => $amount) {
+                        $bill->transportExpenses()->where('id', $expenseId)->update([
+                            'final_approved_amount' => $amount
+                        ]);
+                    }
+                }
+
+                // Update final approved amounts for general expenses
+                if ($request->has('general_approved')) {
+                    foreach ($request->general_approved as $expenseId => $amount) {
+                        $bill->generalExpenses()->where('id', $expenseId)->update([
+                            'final_approved_amount' => $amount
+                        ]);
+                    }
+                }
+
+                $journalResult = $this->pettyCashPaymentService->createStep1JournalEntry($bill->id);
+                    
+                //    dd($journalResult);
+            }
             DB::commit();
 
             // Notify accounts team for payment
@@ -232,7 +254,7 @@ class BillsAndAllowanceController extends Controller
                 ),
             ], $this->generalNotificationService->getPermittedUsers('account.payments.petty_cash.pay'));
 
-            return redirect()->route('hrm.bills.index')
+            return redirect()->route('hrm.bills.verify')
                 ->with('success', 'Bills & Allowance finally approved successfully. Step 1 journal entry created.');
         } catch (\Exception $e) {
             DB::rollBack();

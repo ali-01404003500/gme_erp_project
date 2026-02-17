@@ -275,7 +275,7 @@
             <div style="height: 800px;">
                 <div class="contact-info">
                     <p>Ref: GMEL/Equip/Quotation/{{ date('Y') }}-{{ str_pad(date('m'), 2, '0', STR_PAD_LEFT) }}</p>
-                    <p>Date: 25 June, 2024</p>
+                    <p>Date: {{ \Carbon\Carbon::parse($quotation->date)->format('d F, Y') }}</p>
                     <p><strong>To,</strong><br>
                         {!! $editedCustomerInfo !!}
                     </p>

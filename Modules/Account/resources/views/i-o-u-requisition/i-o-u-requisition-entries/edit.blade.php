@@ -64,10 +64,28 @@
                                     <p class="form-control-plaintext"><strong>{{ $iOURequisitionEntry->employee->full_name }}</strong></p>
                                 </div>
 
-                                <div class="col-12">
+                                <!--Request Amount -->
+                                <div class="col-4">
                                     <label for="request_amount" class="form-label">Request Amount</label>
                                     <input type="number" step="0.01" name="request_amount" class="form-control" value="{{ old('request_amount', $iOURequisitionEntry->request_amount) }}" required>
                                 </div>
+
+                                <!-- Verified Amount -->
+                                @if(hasPermission('account.collections.collections.verify'))
+                                <div class="col-4">
+                                    <label for="verify_amount" class="form-label">Verified Amount</label>
+                                    <input type="number" step="0.01" name="verify_amount" id="verify_amount" class="form-control" value="{{ old('verify_amount', $iOURequisitionEntry->verify_amount) }}" >
+                                </div>
+                                @endif
+                                    
+
+                                <!-- Approved Amount -->
+                                @if(hasPermission('account.collections.collections.approve'))
+                                <div class="col-4">
+                                    <label for="approved_amount" class="form-label">Approved Amount</label>
+                                    <input type="number" step="0.01" name="approved_amount" id="approved_amount" class="form-control" value="{{ old('approved_amount', $iOURequisitionEntry->approved_amount) }}" >
+                                </div>
+                                @endif
 
                                 <div class="col-12">
                                     <label for="remarks" class="form-label">Remarks</label>

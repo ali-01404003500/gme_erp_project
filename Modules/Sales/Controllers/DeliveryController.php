@@ -115,7 +115,7 @@ class DeliveryController extends Controller
         $validate = $request->validate([
             'arranged_by' => 'required|integer|exists:employees,id',
             'checked_by' => 'required|integer|exists:employees,id',
-            'carton_no' => 'required|string|max:255',
+            'carton_no' => 'required|integer|min:1',
         ]);
       
         $deliveryDetails = $request->validate([

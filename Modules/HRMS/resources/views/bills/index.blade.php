@@ -1,5 +1,5 @@
-@section('title',"Petty Cash List")
-@section('description',"Petty Cash List")
+@section('title',"TA/DA List")
+@section('description',"TA/DA List")
 @extends('layout.app')
 @section('content')
 <div class="container-fluid">
@@ -97,11 +97,13 @@
                                         $grandTotal = 0;
                                     @endphp
                                     @foreach ($billsAndAllowances as $key => $bill)
-                                        @php
+                                    
+                                        @php  
                                             $grandTotal += $bill->total_requested_amount;
                                         @endphp
                                         <tr>
                                             <td class="text-center">{{ ($billsAndAllowances->currentPage() - 1) * $billsAndAllowances->perPage() + $loop->iteration  }}</td>
+                                            
                                             <td>
                                                 <ul style="list-style: disc; padding-left: 20px; margin: 0;">
                                                     <li>
@@ -215,40 +217,7 @@
                                                     <a class="btn btn-outline-warning" href="{{ route('hrm.bills.edit', $bill->id) }}">
                                                         <i class="far fa-edit"></i>
                                                     </a>
-                                                @endif
-
-                                                @if (hasPermission('hrm.bills.team_leader_verify') && $bill->status == 'pending')
-                                                    <button type="button" 
-                                                        class="btn btn-outline-info btn-verify" 
-                                                        data-id="{{ $bill->id }}"
-                                                        data-status="team_leader"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#verifyModal" title="Team Leader Verify">
-                                                        <i class="fas fa-check-circle"></i> 
-                                                    </button>
-                                                @endif
-
-                                                @if (hasPermission('hrm.bills.accounts_verify') && $bill->status == 'team_leader_check')
-                                                    <button type="button" 
-                                                        class="btn btn-outline-primary btn-verify" 
-                                                        data-id="{{ $bill->id }}"
-                                                        data-status="accounts"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#verifyModal" title="HR/Accounts Verify">
-                                                        <i class="fas fa-check-circle"></i> 
-                                                    </button>
-                                                @endif
-
-                                                @if (hasPermission('hrm.bills.final_approve') && $bill->status == 'accounts_check')
-                                                    <button type="button" 
-                                                        class="btn btn-outline-success btn-verify" 
-                                                        data-id="{{ $bill->id }}"
-                                                        data-status="final"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#verifyModal" title="Final Approval">
-                                                        <i class="fas fa-check-double"></i> 
-                                                    </button>
-                                                @endif
+                                                @endif 
 
                                                 @if (hasPermission('hrm.bills.destroy') && $bill->status == 'pending')
                                                     <button type="button" 
@@ -285,7 +254,7 @@
 
 {{-- Verification Modal --}}
 <div class="modal fade" id="verifyModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl modal-custom" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="verifyModalTitle">Verification Details</h5>
@@ -320,6 +289,10 @@
     }
     .table td ul li {
         margin-bottom: 3px;
+    }
+    .modal-custom {
+        max-width: 70%;  /* width percentage, 70% of screen */
+        width: 90%;
     }
 </style>
 
@@ -398,130 +371,144 @@
                                 <th>Remarks</th>
                                 <th>Request Amt</th>`;
             
-            if (status === 'accounts' || status === 'final') {
-                html += `<th>Chk. Amt (Team Leader)</th>`;
-            }
-            if (status === 'final') {
-                html += `<th>Chk. Amt (HR/Accounts)</th>`;
-            }
+                                if (status === 'accounts' || status === 'final') {
+                                    html += `<th>Chk. Amt <br>(Team Leader)</th>`;
+                                }
+                                if (status === 'final') {
+                                    html += `<th>Chk. Amt <br>(HR/Accounts)</th>`;
+                                }
             
-            html += `<th>Approved Amount</th>
+                                html += `<th>Approved Amount</th>
                                 <th>Documents</th>
                             </tr>
                         </thead>
                         <tbody>`;
             
-            if (bill.transport_expenses && bill.transport_expenses.length > 0) {
-                bill.transport_expenses.forEach((expense, index) => {
-                    transportTotal += parseFloat(expense.amount);
-                    html += `<tr>
-                        <td>${index + 1}</td>
-                        <td>${new Date(expense.date_of_expense).toLocaleDateString()}</td>
-                        <td>${expense.from_location}</td>
-                        <td>${expense.to_location}</td>
-                        <td>${expense.expense_description}</td>
-                        <td>${parseFloat(expense.amount).toFixed()}</td>`;
-                    
-                    if (status === 'accounts' || status === 'final') {
-                        html += `<td>${expense.team_leader_approved_amount ? parseFloat(expense.team_leader_approved_amount).toFixed() : '-'}</td>`;
-                    }
-                    if (status === 'final') {
-                        html += `<td>${expense.accounts_approved_amount ? parseFloat(expense.accounts_approved_amount).toFixed() : '-'}</td>`;
-                    }
-                    
-                    html += `<td>
-                        <input type="number" step="0.01" class="form-control form-control-sm" 
-                            name="transport_approved[${expense.id}]" 
-                            value="${expense.amount}" required>
-                    </td>
-                    <td class="text-center">
-                        ${expense.receipts_invoices ? `<a href="${expense.receipts_invoices}" target="_blank" title="Receipt/Invoice"><i class="fa fa-file text-primary"></i></a>` : ''}
-                        ${expense.supporting_documents ? `<a href="${expense.supporting_documents}" target="_blank" title="Supporting Document" class="ms-2"><i class="fa fa-file-alt text-success"></i></a>` : ''}
-                    </td>
-                    </tr>`;
-                });
-            } else {
-                html += `<tr><td colspan="9" class="text-center">No transport expenses</td></tr>`;
-            }
-            
-            html += `</tbody></table></div>
-                
-                <h5 class="mt-4">General Expenses</h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-sm">
-                        <thead>
-                            <tr>
-                                <th>SL</th>
-                                <th>Date</th>
-                                <th>Expense Type</th>
-                                <th>Remarks</th>
-                                <th>Request Amt</th>`;
-            
-            if (status === 'accounts' || status === 'final') {
-                html += `<th>Chk. Amt (Team Leader)</th>`;
-            }
-            if (status === 'final') {
-                html += `<th>Chk. Amt (HR/Accounts)</th>`;
-            }
-            
-            html += `<th>Approved Amount</th>
-                                <th>Documents</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-            
-            if (bill.general_expenses && bill.general_expenses.length > 0) {
-                bill.general_expenses.forEach((expense, index) => {
-                    generalTotal += parseFloat(expense.amount);
-                    html += `<tr>
-                        <td>${index + 1}</td>
-                        <td>${new Date(expense.expense_date).toLocaleDateString()}</td>
-                        <td>${expense.expense_type_name || (expense.expense_type ? expense.expense_type.name : '')}</td>
-                        <td>${expense.expense_description}</td>
-                        <td>${parseFloat(expense.amount).toFixed()}</td>`;
-                    
-                    if (status === 'accounts' || status === 'final') {
-                        html += `<td>${expense.team_leader_approved_amount ? parseFloat(expense.team_leader_approved_amount).toFixed() : '-'}</td>`;
-                    }
-                    if (status === 'final') {
-                        html += `<td>${expense.accounts_approved_amount ? parseFloat(expense.accounts_approved_amount).toFixed() : '-'}</td>`;
-                    }
-                    
-                    html += `<td>
-                        <input type="number" step="0.01" class="form-control form-control-sm" 
-                            name="general_approved[${expense.id}]" 
-                            value="${expense.amount}" required>
-                    </td>
-                    <td class="text-center">
-                        ${expense.receipts_invoices ? `<a href="${expense.receipts_invoices}" target="_blank" title="Receipt/Invoice"><i class="fa fa-file text-primary"></i></a>` : ''}
-                        ${expense.supporting_documents ? `<a href="${expense.supporting_documents}" target="_blank" title="Supporting Document" class="ms-2"><i class="fa fa-file-alt text-success"></i></a>` : ''}
-                    </td>
-                    </tr>`;
-                });
-            } else {
-                html += `<tr><td colspan="9" class="text-center">No general expenses</td></tr>`;
-            }
-            
-            let grandTotal = transportTotal + generalTotal;
-            
-            html += `</tbody></table></div>
+                        if (bill.transport_expenses && bill.transport_expenses.length > 0) {
+                            bill.transport_expenses.forEach((expense, index) => {
+                                transportTotal += parseFloat(expense.amount);
+                                html += `<tr>
+                                    <td>${index + 1}</td>
+                                    <td>${new Date(expense.date_of_expense).toLocaleDateString()}</td>
+                                    <td>${expense.from_location}</td>
+                                    <td>${expense.to_location}</td>
+                                    <td>${expense.expense_description}</td>
+                                    <td>${parseFloat(expense.amount).toFixed()}</td>`;
+                                let amt = expense.amount; 
+                                if (status === 'accounts' || status === 'final') {
+                                    html += `<td>${expense.team_leader_approved_amount ? parseFloat(expense.team_leader_approved_amount).toFixed() : '-'}</td>`;
+                                    amt = expense.team_leader_approved_amount;
+                                 
+                                }
+                                if (status === 'final') {
+                                    html += `<td>${expense.accounts_approved_amount ? parseFloat(expense.accounts_approved_amount).toFixed() : '-'}</td>`;
+                                    amt = expense.accounts_approved_amount; 
+                                }
+                                
+                               
 
-                <div class="mt-4 p-3">
-                    <div class="row">
-                        <div class="col-md-12 text-end">
-                            <h5><strong>Grand Total Amount: ${grandTotal.toFixed()}</strong></h5>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <label class="form-label">Remarks</label>
-                        <textarea name="comments" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>`;
+                                
+
+
+                                html += `<td>
+                                    <input type="number" step="0.01" class="form-control form-control-sm" 
+                                        name="transport_approved[${expense.id}]" 
+                                        value="${amt}" required>
+                                </td>
+                                <td class="text-center">
+                                    ${expense.receipts_invoices ? `<a href="${expense.receipts_invoices}" target="_blank" title="Receipt/Invoice"><i class="fa fa-file text-primary"></i></a>` : ''}
+                                    ${expense.supporting_documents ? `<a href="${expense.supporting_documents}" target="_blank" title="Supporting Document" class="ms-2"><i class="fa fa-file-alt text-success"></i></a>` : ''}
+                                </td>
+                                </tr>`;
+                            });
+                            html += `<tr><td colspan="5" class="text-end">Total</td><td colspan="">${transportTotal}</td></tr>`;
+
+                        } else {
+                            html += `<tr><td colspan="9" class="text-center">No transport expenses</td></tr>`;
+                        }
+                        
+                        html += `</tbody></table></div>
+                            
+                            <h5 class="mt-4">General Expenses</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Date</th>
+                                            <th>Expense Type</th>
+                                            <th>Remarks</th>
+                                            <th>Request Amt</th>`;
+                        
+                                            if (status === 'accounts' || status === 'final') {
+                                                html += `<th>Chk. Amt <br>(Team Leader)</th>`;
+                                            }
+                                            if (status === 'final') {
+                                                html += `<th>Chk. Amt <br>(HR/Accounts)</th>`;
+                                            }
+                                            
+                                            html += `<th>Approved Amount</th>
+                                            <th>Documents</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>`;
             
-            $('#verifyModalBody').html(html);
+                                    if (bill.general_expenses && bill.general_expenses.length > 0) {
+                                        bill.general_expenses.forEach((expense, index) => {
+                                            generalTotal += parseFloat(expense.amount);
+                                            html += `<tr>
+                                                <td>${index + 1}</td>
+                                                <td>${new Date(expense.expense_date).toLocaleDateString()}</td>
+                                                <td>${expense.expense_type_name || (expense.expense_type ? expense.expense_type.name : '')}</td>
+                                                <td>${expense.expense_description}</td>
+                                                <td>${parseFloat(expense.amount).toFixed()}</td>`;
+
+                                            let amt = expense.amount; 
+                                            if (status === 'accounts' || status === 'final') {
+                                                html += `<td>${expense.team_leader_approved_amount ? parseFloat(expense.team_leader_approved_amount).toFixed() : '-'}</td>`;
+                                                amt = expense.team_leader_approved_amount;
+                                            }
+                                            if (status === 'final') {
+                                                html += `<td>${expense.accounts_approved_amount ? parseFloat(expense.accounts_approved_amount).toFixed() : '-'}</td>`;
+                                                amt = expense.accounts_approved_amount;
+                                            }
+                                            
+                                            html += `<td>
+                                                <input type="number" step="0.01" class="form-control form-control-sm" 
+                                                    name="general_approved[${expense.id}]" 
+                                                    value="${amt}" required>
+                                            </td>
+                                            <td class="text-center">
+                                                ${expense.receipts_invoices ? `<a href="${expense.receipts_invoices}" target="_blank" title="Receipt/Invoice"><i class="fa fa-file text-primary"></i></a>` : ''}
+                                                ${expense.supporting_documents ? `<a href="${expense.supporting_documents}" target="_blank" title="Supporting Document" class="ms-2"><i class="fa fa-file-alt text-success"></i></a>` : ''}
+                                            </td>
+                                            </tr>`;
+                                        });
+                                        html += `<tr><td colspan="4" class="text-end">Total</td><td colspan="">${generalTotal}</td></tr>`;
+                                    } else {
+                                        html += `<tr><td colspan="9" class="text-center">No general expenses</td></tr>`;
+                                    }
+            
+                                    let grandTotal = transportTotal + generalTotal;
+                                    
+                                    html += `</tbody></table></div>
+
+                                        <div class="mt-4 p-3">
+                                            <div class="row">
+                                                <div class="col-md-12 text-end">
+                                                    <h5><strong>Grand Total Amount: ${grandTotal.toFixed()}</strong></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mt-4">
+                                            <div class="col-md-12">
+                                                <label class="form-label">Remarks</label>
+                                                <textarea name="comments" class="form-control" rows="3"></textarea>
+                                            </div>
+                                        </div>`;
+                                    
+                                    $('#verifyModalBody').html(html);
         }
     });
 </script>

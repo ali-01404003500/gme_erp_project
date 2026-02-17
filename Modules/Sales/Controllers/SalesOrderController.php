@@ -210,6 +210,11 @@ class SalesOrderController extends Controller
 
         $data['customers'] = CustomerSetting::where('customer_id', $request->id)
             ->with('customer', 'customer.area', 'customer.customerShippingAddress', 'customerSettingBrokers', 'customerSettingDiscounts', 'customerSettingFixedDiscounts', 'customerSettingSelfCommissions', 'customerSettingSelfCommissions', 'customer.customerType')->first();
+        
+        $data['latestShipmentAddress'] = SalesOrder::query()->where('customer_id', $request->id)->with(['shipment'=>function($query){
+            $query->latest()->limit(3);
+        }])->get()->pluck('shipment');
+ 
         return response()->json($data);
     }
 

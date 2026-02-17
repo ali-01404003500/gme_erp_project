@@ -112,6 +112,7 @@ class DeliveryService
             'challan_no'=> $delivery->source->challan_no,
             'courier_id'=> $delivery->source->shipment->courier_id,
             'courier_date'=> $delivery->delivery_date,
+            'cartoon_no'=> $delivery->carton_no,
             'source_id'=> $delivery->id,
             'source_type'=> Delivery::class
         ]);

@@ -21,14 +21,28 @@ class BillsAndAllowanceService
         // $generalTotal = $this->generalExpenses->sum('final_approved_amount');
     
     public function getAll(int $limit = 20) {
-        return BillsAndAllowance::query()
+       return BillsAndAllowance::query()
         ->with(['transportExpenses', 'generalExpenses', 'employee'])
         ->searchByFields(['employee_id', 'date_of_bill_claim'])
         
         ->when(request()->filled('from') && request()->filled('to'), function ($qr) {
             $qr->whereBetween('date_of_bill_claim', [request('from'), request('to')]);
-        })
-        ->paginate($limit);
+        }) 
+        ->paginate($limit); 
+
+        
+    }
+    public function verify() { 
+        return BillsAndAllowance::query() 
+        ->with(['transportExpenses', 'generalExpenses', 'employee'])
+        ->searchByFields(['employee_id', 'date_of_bill_claim'])
+        ->when(request()->filled('from') && request()->filled('to'), function ($qr) {
+            $qr->whereBetween('date_of_bill_claim', [request('from'), request('to')]);
+        }) 
+        ->get()
+        ->groupBy(['employee_id','status']); 
+
+        
     }
 
     public function create($request)
@@ -44,13 +58,23 @@ class BillsAndAllowanceService
         $result['generalExpense'] = [];
     
         // Transport Expenses
+        
         $transportCount = count($request->input('date_of_expense', []));
         for ($i = 0; $i < $transportCount; $i++) {
             $date = $request->input("date_of_expense.$i");
             $from = $request->input("from_location.$i");
             $to = $request->input("to_location.$i");
+            $transport_by = $request->input("transport_by.$i");
+            $distance = $request->input("distance.$i");
             $amount = $request->input("transport_amount.$i");
-    
+            $expense_description = $request->input("expense_description.$i");
+
+            // field null hoile skip korbe
+            if(empty($date) && empty($from) && empty($to) && empty($amount) && empty($transport_by) && empty($distance) && empty($expense_description)){
+                continue;
+            }
+
+
             if ($date || $from || $to || $amount) {
                 $data = Validator::make($request->all(), [
                     "date_of_expense.$i" => 'required|date',
@@ -59,12 +83,11 @@ class BillsAndAllowanceService
                     "transport_by.$i" => 'required|string',
                     "distance.$i" => 'required|integer',
                     "expense_description.$i" => 'required|string',
-                    "transport_amount.$i" => 'required|numeric|min:1',
-                    "transport_settlement_amount.$i" => 'required|numeric|min:1',
+                    "transport_amount.$i" => 'required|numeric|min:1', 
                     "receipts_invoices_$i" => 'nullable|string',
                     "supporting_documents_$i" => 'nullable|string',
                 ])->validate();
-    
+                 
                 $result['transportExpense'][] = TransportExpense::create([
                     'bills_and_allowance_id' => $result['bills']->id,
                     'date_of_expense' => $request->input("date_of_expense.$i"),
@@ -73,8 +96,7 @@ class BillsAndAllowanceService
                     'transport_by' => $request->input("transport_by.$i"),
                     'distance' => $request->input("distance.$i"),
                     'expense_description' => $request->input("expense_description.$i"),
-                    'amount' => $request->input("transport_amount.$i"),
-                    'settlement_amount' => $request->input("transport_settlement_amount.$i"),
+                    'amount' => $request->input("transport_amount.$i"), 
                     'receipts_invoices' => $request->input("receipts_invoices_$i"),
                     'supporting_documents' => $request->input("supporting_documents_$i"),
                 ]);
@@ -94,7 +116,6 @@ class BillsAndAllowanceService
                     "expense_type.$i" => 'required|string',
                     "general_expense_description.$i" => 'required|string',
                     "general_amount.$i" => 'required|numeric|min:0.01',
-                    "general_settlement_amount.$i" => 'required|numeric|min:0.01',
                     "receipts_invoices.$i" => 'nullable|string',
                     "supporting_documents.$i" => 'nullable|string',
                 ])->validate();
@@ -104,8 +125,7 @@ class BillsAndAllowanceService
                     'expense_date' => $request->input("expense_date.$i"),
                     'expense_type' => $request->input("expense_type.$i"),
                     'expense_description' => $request->input("general_expense_description.$i"),
-                    'amount' => $request->input("general_amount.$i"),
-                    'settlement_amount' => $request->input("general_settlement_amount.$i"),
+                    'amount' => $request->input("general_amount.$i"), 
                     'receipts_invoices' => $request->input("general_receipts_invoices_$i"),
                     'supporting_documents' => $request->input("general_supporting_documents_$i"),
                 ]);
@@ -168,7 +188,6 @@ class BillsAndAllowanceService
                     "distance.$i" => 'required|integer',
                     "expense_description.$i" => 'required|string',
                     "transport_amount.$i" => 'required|numeric|min:1',
-                    "transport_settlement_amount.$i" => 'required|numeric|min:1',
                     "receipts_invoices_$i" => 'nullable|string',
                     "supporting_documents_$i" => 'nullable|string',
                 ])->validate();
@@ -181,8 +200,7 @@ class BillsAndAllowanceService
                     'transport_by' => $request->input("transport_by.$i"),
                     'distance' => $request->input("distance.$i"),
                     'expense_description' => $request->input("expense_description.$i"),
-                    'amount' => $request->input("transport_amount.$i"),
-                    'settlement_amount' => $request->input("transport_settlement_amount.$i"),
+                    'amount' => $request->input("transport_amount.$i"), 
                     'receipts_invoices' => $request->input("receipts_invoices_$i"),
                     'supporting_documents' => $request->input("supporting_documents_$i"),
                 ]);
@@ -202,7 +220,6 @@ class BillsAndAllowanceService
                     "expense_type.$i" => 'required|string',
                     "general_expense_description.$i" => 'required|string',
                     "general_amount.$i" => 'required|numeric|min:0.01',
-                    "general_settlement_amount.$i" => 'required|numeric|min:0.01',
                     "receipts_invoices.$i" => 'nullable|string',
                     "supporting_documents.$i" => 'nullable|string',
                 ])->validate();
@@ -213,7 +230,6 @@ class BillsAndAllowanceService
                     'expense_type' => $request->input("expense_type.$i"),
                     'expense_description' => $request->input("general_expense_description.$i"),
                     'amount' => $request->input("general_amount.$i"),
-                    'settlement_amount' => $request->input("general_settlement_amount.$i"),
                     'receipts_invoices' => $request->input("general_receipts_invoices_$i"),
                     'supporting_documents' => $request->input("general_supporting_documents_$i"),
                 ]);
@@ -264,6 +280,16 @@ class BillsAndAllowanceService
     public function show($id)
     {
         return BillsAndAllowance::with('transportExpenses', 'generalExpenses', 'employee')->findOrFail($id);
+       
+
+    }
+    public function multipleShow($ids)
+    {   
+        //dd($ids);
+        return BillsAndAllowance::with('transportExpenses.transportType', 'generalExpenses.expenseType', 'employee',)
+            ->whereIn('id', $ids)
+            ->get();
+
     }
 
     /**
@@ -302,8 +328,7 @@ class BillsAndAllowanceService
                     'transport_by' => $transportType->id,
                     'distance' => $expense['distance'] ?? 0,
                     'expense_description' => $expense['expense_description'] ?? '',
-                    'amount' => $expense['amount'],
-                    'settlement_amount' => $expense['settlement_amount'] ?? $expense['amount'],
+                    'amount' => $expense['amount'], 
                     'receipts_invoices' => $expense['receipts_invoices'] ?? null,
                     'supporting_documents' => $expense['supporting_documents'] ?? null,
                     // 'account_head_name' => $expense['account_head'] ?? null,
@@ -324,8 +349,7 @@ class BillsAndAllowanceService
                     'expense_date' => $expense['expense_date'],
                     'expense_type' => $expenseType->id,
                     'expense_description' => $expense['expense_description'] ?? '',
-                    'amount' => $expense['amount'],
-                    'settlement_amount' => $expense['settlement_amount'] ?? $expense['amount'],
+                    'amount' => $expense['amount'], 
                     'receipts_invoices' => $expense['receipts_invoices'] ?? null,
                     'supporting_documents' => $expense['supporting_documents'] ?? null,
                     // 'account_head_name' => $expense['account_head'] ?? null,

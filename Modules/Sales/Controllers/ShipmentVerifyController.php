@@ -92,11 +92,26 @@ class ShipmentVerifyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $data['shipmentVerify'] = $this->service->show($id);
 
-        return view("shipmentVerifys.show", $data);
+        if ($request->has('export') && $request->get('export') === 'pdf') {
+            $html = view('Sales::shipment-verifies.pdf', $data)->render();
+
+            // Set Dompdf options
+            $options = new \Dompdf\Options();
+            $options->setIsHtml5ParserEnabled(true);
+            $options->setIsRemoteEnabled(true);
+
+            $dompdf = new \Dompdf\Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+
+            return $dompdf->stream('courier_challan_' . $data['shipmentVerify']->id . '.pdf', ['Attachment' => false]);
+        } 
+        return view("Sales::shipment-verifies.show", $data);
     }
 
     /**
@@ -115,15 +130,15 @@ class ShipmentVerifyController extends Controller
     public function update(Request $request, ShipmentVerify $shipmentVerify)
     {
         $validate = $request->validate([
-            'service_charge' => 'required|numeric',
+            'service_charge' => 'required|numeric|min:0',
             'courier_id' => 'required|exists:couriers,id',
             'service_type' => 'nullable|string|max:20',
-            'delivery_charge' => 'required|numeric',
+            'delivery_charge' => 'required|numeric|min:1',
             'delivery_type' => 'nullable|string|max:20',
-            'other_charge' => 'nullable|numeric',
+            'other_charge' => 'nullable|numeric|min:0',
             'other_type' => 'nullable|string|max:20',
             'receipt_no' => 'required|string|max:50',
-            'cartoon_no' => 'required|string|max:50',
+            'cartoon_no' => 'required|numeric|min:1',
             'courier_date' => 'required|date',
             'receive_date' => 'nullable|date', // Receipt date should not be in the future
         ]);

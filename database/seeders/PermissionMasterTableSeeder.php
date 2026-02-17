@@ -36,15 +36,15 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'verification',
             ],
 
-             //branchs
-             [
+            //branchs
+            [
                 'title' => 'Branches',
                 'description' => 'Permission of Add, Remove, Update, Delete Branches',
                 'key' => 'access_control.branchs',
                 'parent_key' => 'access_control',
             ],
-             //Branch Types
-             [
+            //Branch Types
+            [
                 'title' => 'Branch Types',
                 'description' => 'Permission of Add, Remove, Update, Delete Branch Types',
                 'key' => 'access_control.branch-types',
@@ -129,15 +129,15 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'hrm.noticeboards',
                 'parent_key' => 'hrm',
             ],
-            //Petty Cash
+            //TA/DA
             [
-                'title' => 'Petty Cash',
-                'description' => "Permission of Add, Remove, Update, Delete Petty Cash",
+                'title' => 'TA/DA',
+                'description' => "Permission of Add, Remove, Update, Delete TA/DA",
                 'key' => 'hrm.bills',
                 'parent_key' => 'hrm',
             ],
             // PermissionMasterTableSeeder additions
-            
+
             [
                 'title' => 'Daily Visit Plans',
                 'description' => 'Permission of Add, Remove, Update, Delete Daily Visit Plans',
@@ -319,9 +319,9 @@ class PermissionMasterTableSeeder extends Seeder
             ],
             //customer-types
             [
-                'title'=> 'Customer Types',
+                'title' => 'Customer Types',
                 'description' => "Permission of Add, Remove, Update, Delete Customer Types",
-                "key"=> "crm.customer-types",
+                "key" => "crm.customer-types",
                 'parent_key' => 'crm',
             ],
             //daily-calls
@@ -344,7 +344,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'description' => 'Permission of Add, Remove, Update, Delete Inventory',
                 'key' => 'inv',
             ],
-          
+
             // //issue-products
             // [
             //     'title' => 'Issue Products',
@@ -359,7 +359,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'inv.product-catalogs',
                 'parent_key' => 'inv',
             ],
-            
+
             //product-transfers
             [
                 'title' => 'Product Transfers',
@@ -400,7 +400,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'inv',
             ],
 
-            
+
             //inventory settings
             [
                 'title' => 'Inventory Settings',
@@ -484,7 +484,7 @@ class PermissionMasterTableSeeder extends Seeder
             //     'parent_key' => 'inv.settings',
             // ],
 
-        
+
 
             //location-manager
             [
@@ -583,7 +583,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'purchase.suppliers',
                 'parent_key' => 'purchase',
             ],
-            
+
             //vendors
             [
                 'title' => 'Vendors',
@@ -600,7 +600,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'purchase',
             ],
 
-            
+
 
             //sales
             [
@@ -608,7 +608,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'description' => 'Permission of Add, Remove, Update, Delete Sales',
                 'key' => 'sales',
             ],
-            
+
             //sales orders
             [
                 'title' => 'Sales Orders',
@@ -617,7 +617,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'sales',
             ],
 
-            
+
             //sales order deliveries
             [
                 'title' => 'Sales Order Deliveries',
@@ -648,8 +648,8 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'sales.condition-amount-collects',
                 'parent_key' => 'sales',
             ],
-            
-            
+
+
             //sales requisitions
             [
                 'title' => 'Sales Requisitions',
@@ -680,7 +680,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'sales.fake-invoices',
                 'parent_key' => 'sales',
             ],
-            
+
             //backup challans
             [
                 'title' => 'Backup Challans',
@@ -688,7 +688,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'sales.backup-challans',
                 'parent_key' => 'sales',
             ],
-            
+
             //quotations
             [
                 'title' => 'Quotations',
@@ -697,7 +697,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'sales',
             ],
 
-            
+
             //couriers
             [
                 'title' => 'Setting Couriers',
@@ -712,7 +712,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'sales.reports',
                 'parent_key' => 'sales',
             ],
-            
+
 
             //Accounts
             [
@@ -801,7 +801,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'account.emi-entries',
                 'parent_key' => 'accounts',
             ],
-             [
+            [
                 'title' => 'EMI Reports',
                 'description' => 'Permission of Add, Remove, Update, Delete EMI Reports',
                 'key' => 'account.emi-reports',
@@ -868,7 +868,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'account.payments.invoice-wise-payments',
                 'parent_key' => 'account.payments',
             ],
-            
+
 
             //Broker Payments
             [
@@ -969,6 +969,14 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'accounts',
             ],
 
+            // cash transafer 
+            [
+                'title' => 'Cash Transfer',
+                'description' => 'Permission of Add, Remove, Update, Delete Cash Transfer',
+                'key' => 'account.cash-transfers',
+                'parent_key' => 'accounts',
+            ],
+
             // Licenses
             [
                 'title' => 'Licenses',
@@ -982,7 +990,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'licenses.dongle-or-serial-entries',
                 'parent_key' => 'licenses',
             ],
-            
+
             //usg-opg-license-requisitions
             [
                 'title' => 'USG OPG License Requisitions',
@@ -1126,7 +1134,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'sales_target.settings',
             ],
         ];
-        
+
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
         DB::table('permissions')->truncate();
         PermissionMaster::truncate();
@@ -1135,7 +1143,7 @@ class PermissionMasterTableSeeder extends Seeder
         foreach ($data as $value) {
             if (isset($value['parent_key'])) {
                 $parent = PermissionMaster::where('key', $value['parent_key'])->first();
-                if($parent == null) {
+                if ($parent == null) {
                     dd($value['parent_key']);
                 }
                 PermissionMaster::updateOrCreate(

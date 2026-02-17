@@ -225,6 +225,7 @@
                                                         class="text-danger">*</span>:</label>
                                                 <select name="work_type" id="work_type" class="form-control">
                                                     <option value="">{{ __('Select Work Type') }}</option>
+                                                    <option value="Service">Service</option>
                                                     <option value="Maintenance">Maintenance</option>
                                                     <option value="Software Update">Software Update</option>
                                                     <option value="New Installation">New Installation</option>

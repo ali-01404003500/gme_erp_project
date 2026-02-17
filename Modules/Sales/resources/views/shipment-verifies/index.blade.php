@@ -209,7 +209,7 @@
                                                         </button>
                                                         {{-- @endif --}}
  
-                                                        <a class="btn btn-outline-primary" href="{{ route('sales.deliveries.show', $shipmentVerify->source?->source?->id) }}?export=pdf" target="_blank">
+                                                        <a class="btn btn-outline-primary" href="{{ route('sales.shipment-verifies.show', $shipmentVerify->id) }}" target="_blank">
                                                             <i class="fa fa-truck"></i>
                                                         </a> 
                                                         <a class="btn btn-outline-primary" href="{{ route('sales.sales-orders.show', $shipmentVerify->source?->source?->id) }}" target="_blank">
@@ -389,7 +389,7 @@
                                 <div class="col-sm-4">
                                     <div class="input-group">
                                         <span class="input-group-text">Other Charge</span>
-                                        <input type="number" class="form-control" name="other_charge" value="">
+                                        <input type="number" class="form-control" name="other_charge" value="0">
                                     </div>
                                 </div>
                                 <div class="col-sm-8">
@@ -434,19 +434,24 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="cartoon_no" placeholder="Cartoon No"
+                                    <input type="text" class="form-control" name="cartoon_no" placeholder="Cartoon No" value=""
                                         required>
                                     <span class="input-group-text">Carton No *</span>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control flatdate" name="courier_date"
+                            <div class="col-sm-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control flatdate" name="courier_date"
                                     placeholder="Courier Date">
+                                    <span class="input-group-text">Courier Date</span>
+                                </div>
+
+                             
                             </div>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control flatdate" name="receive_date"
+                            <div class="col-sm-4 d-none">
+                                <input type="text" class="form-control flatdate" name="receive_date" value=""
                                     placeholder="Receipt Date">
                             </div>
                         </div>
@@ -572,7 +577,7 @@
             // Edit button click
             $(document).on('click', '.btn-edit', function () {
                 const data = $(this).data('data');
-
+ 
                 console.log(data);
 
                 // Clear previous previews
@@ -630,11 +635,11 @@
 
                     // Handle other_charge specifically to allow empty values
                     if (key === 'other_charge' && (value === null || value === '')) {
-                        $('#editModal input[name="other_charge"]').val('');
+                        $('#editModal input[name="other_charge"]').val('0');
                     } else {
                         $('#editModal input[name="' + key + '"]').not('[type="file"],[type="radio"],[type="checkbox"]').val(value);
-                    }
-
+                    } 
+ 
                     $('#editModal textarea[name="' + key + '"]').val(value);
                     $('#editModal select[name="' + key + '"] option[value="' + value + '"]').prop('selected', true);
                     $('#editModal input[type="radio"][name="' + key + '"][value="' + value + '"]').prop('checked', true);
@@ -643,7 +648,23 @@
 
                 });
 
+                const fields = [
+                    'cartoon_no',
+                    'receipt_no',
+                    'delivery_charge',
+                    'service_charge'
+                ];
 
+                fields.forEach(function(name){
+
+                    let $field = $(`#editModal input[name="${name}"]`);
+
+                    if (!$field.val()) {
+                        $field.val(0);
+                    }
+
+                });
+                  
 
                 $("#editFrom").attr("action", $(this).data('action'));
 
@@ -764,12 +785,12 @@
                 const $fileInput = $('input[name="files[]"]');
                 const files = $fileInput[0].files;
                 const existingFilesCount = $('#imagePreviewContainer .preview-item').length;
-
-                if ((files.length === 0 && existingFilesCount === 0) || $fileInput.val() === '') {
+               
+                if ((files.length === 0 && existingFilesCount === 0)) {
                     isValid = false;
 
                     // Add error message below the file input
-                    if (!$fileInput.next('.invalid-feedback').length) {
+                    if (!$fileInput.next('.invalid-feedback').length ) {
                         $fileInput.after('<div class="invalid-feedback">At least one attachment is required</div>');
                     }
 

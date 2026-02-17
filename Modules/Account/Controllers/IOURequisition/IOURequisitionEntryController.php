@@ -62,8 +62,10 @@ class IOURequisitionEntryController extends Controller
             'type' => 'required|in:Expense,Advance',
             'employee_id' => 'required|exists:employees,id',
             'request_amount' => 'required|numeric|min:1',
+            'verify_amount' => 'nullable|numeric|min:0',
+            'approved_amount' => 'nullable|numeric|min:0',
             'remarks' => 'required|string|max:255',
-            'status' => 'required|string',
+            'status' => 'required|string', 
         ]);
         $this->service->store($validate);
         return redirect()->route('account.i-o-u-requisition.i-o-u-requisition-entries.index')->with('success', 'IOURequisitionEntry created successfully.');
@@ -101,6 +103,8 @@ class IOURequisitionEntryController extends Controller
             'type' => 'required|in:Expense,Advance',
             // 'employee_id' => 'required|exists:employees,id',
             'request_amount' => 'required|numeric|min:1',
+            'verify_amount' => 'nullable|numeric|min:0',
+            'approved_amount' => 'nullable|numeric|min:0',
             'remarks' => 'required|string|max:255',
             'status' => 'required|string',
         ]);
