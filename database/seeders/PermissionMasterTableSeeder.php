@@ -878,10 +878,10 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'account.payments',
             ],
 
-            //Petty Cash Payments
+            //TA/DA Payments
             [
-                'title' => 'Petty Cash Payments',
-                'description' => 'Permission of Add, Remove, Update, Delete Petty Cash Payments',
+                'title' => 'TA/DA Payments',
+                'description' => 'Permission of Add, Remove, Update, Delete TA/DA Payments',
                 'key' => 'account.payments.petty-cash-payments',
                 'parent_key' => 'account.payments',
             ],

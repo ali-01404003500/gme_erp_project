@@ -93,6 +93,7 @@ Route::group(['middleware'=>'auth', 'prefix' => 'account', 'as' => 'account.'],f
         Route::get('broker-payments-deny/{id}', [BrokerPaymentController::class, 'deny'])->name('broker-payments.deny');
 
         Route::resource('invoice-wise-payments', InvoiceWisePaymentController::class);
+        
     
         Route::post('invoice-wise-payments/{invoiceWisePayment}/approve', [InvoiceWisePaymentController::class, 'approve'])
         ->name('invoice-wise-payments.approve');
@@ -104,17 +105,19 @@ Route::group(['middleware'=>'auth', 'prefix' => 'account', 'as' => 'account.'],f
                 ->name('index');
             
             // View details of a petty cash for payment
-            Route::get('/details/{id}', [PettyCashPaymentController::class, 'details'])
+            Route::get('details', [PettyCashPaymentController::class, 'details'])
                 ->name('details');
             
             // Process payment
-            Route::post('/process/{id}', [PettyCashPaymentController::class, 'processPayment'])
+            Route::post('/process', [PettyCashPaymentController::class, 'processPayment'])
                 ->name('process');
             
             // Show payment receipt
             Route::get('/receipt/{id}', [PettyCashPaymentController::class, 'showReceipt'])
                 ->name('receipt');
         });
+
+        
     });
 
     Route::get('/get-accounts-by-type', [CollectionController::class, 'getAccountsByType'])->name('get-accounts-by-type');
