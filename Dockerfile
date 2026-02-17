@@ -61,10 +61,6 @@ RUN { \
     echo "    root /app/public;"; \
     echo "    index index.php;"; \
     echo ""; \
-    echo "    add_header X-Content-Type-Options nosniff;"; \
-    echo "    add_header X-Frame-Options SAMEORIGIN;"; \
-    echo "    add_header X-XSS-Protection \"1; mode=block\";"; \
-    echo ""; \
     echo "    location / {"; \
     echo "        try_files \$uri \$uri/ /index.php?\$query_string;"; \
     echo "    }"; \
