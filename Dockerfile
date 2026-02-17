@@ -1,39 +1,26 @@
 FROM php:8.2-fpm
 
-# Install dependencies (minimal set for production)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    git curl zip unzip nginx supervisor \
-    libzip-dev libpng-dev libjpeg-dev libfreetype6-dev \
+RUN apt-get update && apt-get install -y \
+    git curl zip unzip nginx \        
+    libzip-dev libpng-dev \
     libmagickwand-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql zip gd ftp exif \
+    supervisor \
+    && docker-php-ext-install pdo pdo_mysql zip gd ftp \
     && pecl install redis imagick \
     && docker-php-ext-enable redis imagick \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
-# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 WORKDIR /app
 
-# Copy only dependency files first → better layer caching
 COPY composer.* ./
-RUN composer install --optimize-autoloader --prefer-dist --no-scripts --no-interaction
+RUN composer install --optimize-autoloader --no-scripts
 
-# Copy full application
 COPY . .
 
-# Optimize autoload + Laravel production caches
-RUN composer dump-autoload --optimize --classmap-authoritative \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    # Optional: if you use events or other cached things
-    # && php artisan event:cache
-
-# Permissions (very important in production)
+RUN composer dump-autoload --optimize
 RUN chown -R www-data:www-data /app \
-    && chmod -R 755 /app/storage /app/bootstrap/cache
+    && chmod -R 755 /app/storage
 
 # Custom PHP settings
 RUN { \
@@ -67,11 +54,10 @@ RUN { \
     echo "listen.mode = 0660"; \
 } > /usr/local/etc/php-fpm.d/zz-performance.conf
 
-# Optimized Nginx config (Unix socket + production headers)
+
 RUN { \
     echo "server {"; \
     echo "    listen 8000;"; \
-    echo "    server_name _;"; \
     echo "    root /app/public;"; \
     echo "    index index.php;"; \
     echo ""; \
@@ -84,13 +70,10 @@ RUN { \
     echo "    }"; \
     echo ""; \
     echo "    location ~ \.php$ {"; \
-    echo "        fastcgi_pass unix:/run/php-fpm.sock;"; \
+    echo "        fastcgi_pass 127.0.0.1:9000;"; \
     echo "        fastcgi_index index.php;"; \
     echo "        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;"; \
     echo "        include fastcgi_params;"; \
-    echo "        fastcgi_buffer_size 128k;"; \
-    echo "        fastcgi_buffers 4 256k;"; \
-    echo "        fastcgi_busy_buffers_size 256k;"; \
     echo "    }"; \
     echo ""; \
     echo "    location ~ /\.ht {"; \
@@ -99,16 +82,8 @@ RUN { \
     echo "}"; \
 } > /etc/nginx/sites-available/default
 
-# Supervisor config stays mostly the same, but ensure correct paths
+# Copy configs
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Create socket directory with correct permissions
-RUN mkdir -p /run && chown www-data:www-data /run
-
-EXPOSE 8000
-
-# Production entrypoint: ensure .env exists + warm caches (already done) + start supervisor
-CMD ["/bin/sh", "-c", "if [ -f .env.$env_postfix ]; then mv .env.$env_postfix .env; else echo 'No custom env file'; fi && \
-    php artisan optimize:clear && \
-    php artisan optimize && \
-    supervisord -n"]
+EXPOSE 8000    
+CMD ["/bin/sh", "-c", "if [ -f .env.$env_postfix ]; then mv .env.$env_postfix .env; else echo 'No env postfix file found'; fi && supervisord -n"]
