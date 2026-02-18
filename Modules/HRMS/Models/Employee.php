@@ -3,6 +3,7 @@
 namespace Modules\HRMS\Models;
 
 use App\Models\BaseModel;
+use App\Models\Supervisor as ModelsSupervisor;
 use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
 use Modules\HRMS\Models\Kpi\Assessment;
+use Modules\HRMS\Models\Settings\Supervisor;
 
 class Employee extends BaseModel
 {
@@ -25,6 +27,11 @@ class Employee extends BaseModel
         'attendances',
         'leaves'
     ];
+
+        public function supervisors()
+        {
+            return $this->hasMany(Supervisor::class, 'created_by');
+        }
 
     public function user()
     {
@@ -357,4 +364,7 @@ class Employee extends BaseModel
         }
 
     }
+
+  
+
 }

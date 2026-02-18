@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\SupervisorController;
 use Illuminate\Support\Facades\Route;
 use Modules\HRMS\Controllers\AttendanceController;
 use Modules\HRMS\Controllers\AttendanceReportController;
@@ -33,9 +34,13 @@ use Modules\HRMS\Controllers\Settings\LeaveTypeController;
 use Modules\HRMS\Controllers\Settings\NoticeTypeController;
 use Modules\HRMS\Controllers\Settings\SalarySetupController;
 use Modules\HRMS\Controllers\Settings\ShiftController;
+use Modules\HRMS\Controllers\Settings\SupervisorController as SettingsSupervisorController;
 use Modules\HRMS\Controllers\Settings\TransportTypeController;
 
+
+
 use Modules\HRMS\Models\Loan;
+use Modules\HRMS\Services\Settings\SupervisorService;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], function () {
     /* Employee */
@@ -98,6 +103,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('appraisal-policies', AppraisalPolicyController::class)->except(['show', 'edit', 'create']);
             // Leave Adjustment route
          Route::resource('leaveAdjustment', LeaveAdjustmentController::class);
+
+         //approver route
+         
     });
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {
         Route::resource('kpi-setups', KpiSetupController::class);
@@ -128,6 +136,18 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::get('daily-attendance-report', [AttendanceReportController::class, 'dailyReport'])->name('daily-attendance-report');
         Route::get('monthly-attendance-report', [AttendanceReportController::class, 'monthlyReport'])->name('monthly-attendance-report');
     });
+
+Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
+    Route::middleware(['auth'])->group(function () {
+        // Resource route for supervisors
+        Route::resource('supervisors', SettingsSupervisorController::class);
+        
+        // Additional routes for search functionality
+        Route::get('supervisors/search/employees', [SettingsSupervisorController::class, 'searchEmployees'])
+            ->name('supervisors.search.employees');
+    });
+});
+
 });
 
 Route::group(['prefix' => 'carrier', 'as' => 'carrier.'], function () {
@@ -136,3 +156,8 @@ Route::group(['prefix' => 'carrier', 'as' => 'carrier.'], function () {
     Route::get('{id}/apply', [CareerController::class, 'jobApply'])->name('apply');
     Route::post('{id}/apply', [CareerController::class, 'jobApplicationStore'])->name('apply.store');
 });
+
+
+// Supervisor
+
+

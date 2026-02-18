@@ -306,6 +306,15 @@
                           </li>
                       @endif
 
+                        @if (hasPermission('hrm.settings.supervisors.index'))
+                          <li><a href="{{ route('hrm.settings.supervisors.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.supervisors.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-user"
+                                      style="margin-right: 21px;"></span>
+                                  {{ t_('menu.Approver-Setup') }}</a>
+                          </li>
+                      @endif
+
                    
 
                       @if (hasPermission('hrm.settings.shifts.index'))
