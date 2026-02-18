@@ -128,12 +128,13 @@ class EmployeeController extends Controller
             $user = $request->validate([
                 'system_username' => 'required|string|unique:users,email',
                 'system_password' => 'nullable|string|max:255',
-                'user_branch_id' => 'nullable|exists:branches,id',
+                'permanent_address' => 'nullable|exists:branches,id',
                 'user_status' => 'required|in:active,inactive',
             ]);
 
             $employementDetails = $request->validate([
                 'card_no' => 'required|string|max:255',
+                'permanent_address' => 'nullable|exists:branches,id',
                 
             ]);
             
@@ -243,7 +244,8 @@ class EmployeeController extends Controller
     {
         //dd($request->all());
 
-        $validate =  $contact = $educationsDetails = $employementDetails = $bank = $tax = $employeement_experience = $familyContact = $user = [];
+        $validate =  $contact = $educationsDetails = $employementDetails = $bank = $tax = $employeement_experience = $familyContact = $user =  $documents1 =  $documents2 = [];
+ 
 
         if($request->tab_type == 'employee_information'){
 
@@ -267,7 +269,7 @@ class EmployeeController extends Controller
              
             $employementDetails = $request->validate([
                 'card_no' => 'required|string|max:255',
-                
+                'user_branch_id' => 'nullable|exists:branches,id',
             ]);
             
         }
@@ -398,7 +400,7 @@ class EmployeeController extends Controller
         if($request->tab_type == 'system'){
             $user = $request->validate([ 
                 'system_password' => 'nullable|string|max:255',
-                'user_branch_id' => 'nullable|exists:branches,id',
+                'permanent_address' => 'nullable|exists:branches,id',
                 'user_status' => 'required|in:active,inactive',
                 
             ]);
