@@ -72,7 +72,7 @@
                 </li>
             @endif
 
-            @if (hasPermission('sales_target.settings.target.create'))
+            {{-- @if (hasPermission('sales_target.settings.target.create'))
                 <li>
                     <a href="{{ route('sales_target.settings.target.create') }}"
                         class="{{ request()->routeIs('sales_target.settings.target.create') ? 'active' : '' }}">
@@ -80,7 +80,7 @@
                         {{ t_('menu.Create Target') }}
                     </a>
                 </li>
-            @endif
+            @endif --}}
 
             <hr style="border-top: 1px solid #444; margin: 5px 20px;">
 
@@ -94,7 +94,7 @@
                 </li>
             @endif
 
-            @if (hasPermission('sales_target.settings.incentives.create'))
+            {{-- @if (hasPermission('sales_target.settings.incentives.create'))
                 <li>
                     <a href="{{ route('sales_target.settings.incentives.create') }}"
                         class="{{ request()->routeIs('sales_target.settings.incentives.create') ? 'active' : '' }}">
@@ -102,7 +102,7 @@
                         {{ t_('menu.Incentive Setup') }}
                     </a>
                 </li>
-            @endif
+            @endif --}}
         </ul>
     </li>
 @endif

@@ -29,14 +29,16 @@ class PettyCashPaymentController extends Controller
         $data['employees'] = Employee::all();
         
         return view("Account::payments.petty-cash-payments.index", $data);
+
+        
     }
 
     /**
      * Show petty cash details for payment
      */
-    public function details(Request $request, $id)
+    public function details(Request $request)
     {
-        $data['billsAndAllowance'] = $this->service->getDetailsForPayment($id);
+        $data['billsAndAllowance'] = $this->service->getDetailsForPayment(json_decode($request->ids)); 
         $data['company_info'] = CompanyInfo::first();
         
         // If it's an AJAX request, return JSON
@@ -47,22 +49,23 @@ class PettyCashPaymentController extends Controller
                 'html' => view('Account::payments.petty-cash-payments.details-modal', $data)->render()
             ]);
         }
-        
+         
         return view("Account::payments.petty-cash-payments.details-modal", $data);
     }
 
     /**
      * Process payment for petty cash
      */
-    public function processPayment(Request $request, $id)
+    public function processPayment(Request $request)
     {
+         
         $validate = $request->validate([
             'account_heads' => 'nullable|array',
             'account_heads.*' => 'nullable|exists:accounts,id',
             'remarks' => 'nullable|string',
         ]);
 
-            $this->service->processPayment($id, $validate);
+            $this->service->processPayment(json_decode($request->ids), $validate);
             
             return redirect()->route('account.payments.petty-cash-payments.index')
                 ->with('success', 'Payment processed successfully.');

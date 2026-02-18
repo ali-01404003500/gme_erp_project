@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('sales_target', function (Blueprint $table) {
             $table->id('target_id');
-            $table->foreignId('employee_id')->constrained('users')->onDelete('cascade');
-            // Monthly columns
+
+       
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
+
             $table->decimal('jan_target', 15, 2)->default(0);
             $table->decimal('feb_target', 15, 2)->default(0);
             $table->decimal('mar_target', 15, 2)->default(0);
@@ -27,7 +29,6 @@ return new class extends Migration
             $table->decimal('oct_target', 15, 2)->default(0);
             $table->decimal('nov_target', 15, 2)->default(0);
             $table->decimal('dec_target', 15, 2)->default(0);
-
             $table->decimal('total_target', 15, 2)->default(0);
             $table->year('year')->default(date('Y'));
             $table->timestamps();

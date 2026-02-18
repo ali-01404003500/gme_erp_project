@@ -2,85 +2,135 @@
 @extends('layout.app')
 
 @section('content')
-    <div class="container-fluid mt-4">
+    <style>
+        .table-container {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #333;
+
+        }
+
+
+        .table-bordered-custom {
+            border-collapse: collapse !important;
+        }
+
+        .table-bordered-custom th,
+        .table-bordered-custom td {
+            border: 1px solid #dee2e6 !important;
+
+            padding: 12px 15px !important;
+        }
+
+
+        .table-bordered-custom thead th {
+            background-color: #f8f9fa;
+            color: #212529;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            border-bottom: 2px solid #333 !important;
+
+        }
+
+
+        .btn-action {
+            height: 30px;
+            width: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+    </style>
+
+    <div class="container-fluid py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h4">Sales Incentive Configurations</h2>
+            <div>
+                <h2 class="h4 mb-0 fw-bold">Incentive Configurations</h2>
+                <small class="text-muted">Structured grid of sales performance policies</small>
+            </div>
             <a href="{{ route('sales_target.settings.incentives.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Create New Setup
+                <i class="fas fa-plus me-1"></i> New Configuration
             </a>
         </div>
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        <div class="card shadow-sm">
-            {{-- <div class="card-header bg-white font-weight-bold">Active Incentive Policies</div> --}}
+        <div class="card shadow-sm table-container">
             <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="bg-light">
-                        <tr class="text-center">
-                            <th>Incentive Title</th>
-                            <th>Year</th>
-                            <th>Slab Summary</th>
-                            <th>Status</th>
-                            <th>Last Updated</th>
-                            <th class="px-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($incentives as $item)
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered-custom mb-0">
+                        <thead>
                             <tr class="text-center">
-                                <td class="align-middle"><strong>{{ $item->title }}</strong></td>
-                                <td class="align-middle">{{ $item->year }}</td>
-                                <td class="align-middle">
-                                    <span class="badge bg-info text-dark">
-                                        {{-- {{ $item->slabs_count ?? 0 }}  --}}
-                                        Slabs Defined
-                                    </span>
-                                    <small class="text-muted d-block">
-                                        Range: {{ $item->min_reach ?? 0 }}% - {{ $item->max_reach ?? 0 }}%
-                                    </small>
-                                </td>
-                                <td class="text-center align-middle">
-                                    <span class="badge {{ $item->status == 'Active' ? 'bg-success' : 'bg-danger' }}">
-                                        {{ $item->status }}
-                                    </span>
-                                </td>
-                                <td class="align-middle text-muted">{{ date('d M, Y', strtotime($item->updated_at)) }}</td>
-                                <td class="align-middle px-4 text-center">
-                                    <a href="{{ route('sales_target.settings.incentives.show', $item->id) }}"
-                                        class="btn btn-sm btn-outline-primary me-1" title="View Details">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-
-                                    <a href="{{ route('sales_target.settings.incentives.edit', $item->id) }}"
-                                        class="btn btn-sm btn-info text-white me-1" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-
-                                    <form action="{{ route('sales_target.settings.incentives.destroy', $item->id) }}"
-                                        method="POST" class="d-inline">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this setup?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                <th width="25%">Incentive Name</th>
+                                <th width="10%">Year</th>
+                                <th width="25%">Slab Range (%)</th>
+                                <th width="15%">Status</th>
+                                <th width="15%">Last Updated</th>
+                                <th width="10%">Actions</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="py-5 text-center text-muted">
-                                    <i class="fas fa-folder-open fa-3x mb-3 d-block"></i>
-                                    No incentive setups found. Click "Create New Setup" to begin.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($incentives as $item)
+                                <tr class="text-center">
+                                    <td class="text-center fw-bold text-dark">
+                                        {{ $item->title }}
+                                    </td>
+                                    <td class="fw-bold">{{ $item->year }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <span class="badge text-dark border me-2">
+                                                {{ $item->min_reach ?? 0 }}% - {{ $item->max_reach ?? 0 }}%
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if($item->status == 'Active')
+                                            <span class="badge bg-success status-badge">ACTIVE</span>
+                                        @else
+                                            <span class="badge bg-danger status-badge">INACTIVE</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-muted">
+                                        {{ date('d-m-Y', strtotime($item->updated_at)) }}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <a href="{{ route('sales_target.settings.incentives.show', $item->id) }}"
+                                                class="btn btn-action btn-outline-primary" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ route('sales_target.settings.incentives.edit', $item->id) }}"
+                                                class="btn btn-action btn-outline-info" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('sales_target.settings.incentives.destroy', $item->id) }}"
+                                                method="POST" class="m-0">
+                                                @csrf @method('DELETE')
+                                                <button class="btn btn-action btn-outline-danger"
+                                                    onclick="return confirm('Confirm deletion?')" title="Delete">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-5 text-muted">
+                                        No records found in the database.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

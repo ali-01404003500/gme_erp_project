@@ -2,6 +2,8 @@
 
 namespace Modules\SalesTarget\Models;
 
+use Modules\HRMS\Models\Employee;
+
 use App\Models\User;
 
 use Illuminate\Database\Eloquent\Model;
@@ -31,6 +33,6 @@ class Target extends Model
 
     public function employee()
     {
-        return $this->belongsTo(User::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_id', 'id');
     }
 }

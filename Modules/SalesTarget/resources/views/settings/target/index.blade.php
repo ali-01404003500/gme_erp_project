@@ -90,7 +90,7 @@
             border-color: #868e96;
         }
 
-        /* Table - NO SCROLL */
+       
         .matrix-table {
             width: 100%;
             border-collapse: collapse;
@@ -98,7 +98,7 @@
             table-layout: fixed;
         }
 
-        /* Table borders */
+       
         .matrix-table th,
         .matrix-table td {
             border: 1px solid var(--border-color);
@@ -126,7 +126,7 @@
             background: var(--bg-hover);
         }
 
-        /* Ultra Compact Column Widths - Fits without scroll */
+       
         .col-sl {
             width: 25px;
         }
@@ -142,7 +142,7 @@
 
         .col-month {
             width: 45px;
-            /* Compact but readable */
+           
         }
 
         .col-total {
@@ -153,7 +153,7 @@
             width: 50px;
         }
 
-        /* Employee cell - Minimal */
+       
         .employee-info {
             display: flex;
             flex-direction: column;
@@ -178,10 +178,10 @@
 
         .employee-dept {
             display: none;
-            /* Hide department to save space */
+          
         }
 
-        /* Month values - Compact */
+      
         .month-cell {
             display: flex;
             flex-direction: column;
@@ -200,10 +200,9 @@
 
         .month-label {
             display: none;
-            /* Hide month labels to save space */
+            
         }
 
-        /* Total cell - Compact */
         .total-cell {
             display: flex;
             flex-direction: column;
@@ -227,7 +226,7 @@
             letter-spacing: 0.2px;
         }
 
-        /* Actions - Minimal */
+      
         .action-group {
             display: flex;
             gap: 0.25rem;
@@ -265,7 +264,7 @@
             border-color: #dc3545;
         }
 
-        /* Empty state */
+     
         .empty-state {
             padding: 2rem;
             text-align: center;
@@ -279,7 +278,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Table footer - Minimal */
         .table-footer {
             padding: 0.5rem 1rem;
             border-top: 1px solid var(--border-color);
@@ -296,7 +294,7 @@
             margin-right: 0.25rem;
         }
 
-        /* Amount formatting */
+ 
         .amount-positive {
             color: #0b5e42;
         }
@@ -305,27 +303,70 @@
             color: #a61e4d;
         }
 
-        /* Remove overflow */
+
         div[style*="overflow-x: auto"] {
             overflow-x: visible !important;
+        }
+
+        .btn-create-matrix {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: #4f46e5;
+
+            color: white;
+            padding: 0.45rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .btn-create-matrix:hover {
+            background-color: #4338ca;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.15);
+        }
+
+        .btn-create-matrix i {
+            font-size: 0.9rem;
+        }
+
+
+        .matrix-header .d-flex {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
     </style>
 
     <div class="matrix-wrapper">
         <div class="matrix-container">
-            <!-- Header -->
+
             <div class="matrix-header">
                 <div class="matrix-title">
                     <i class="bi bi-grid-3x3-gap-fill"></i>
                     Target Matrix
                 </div>
-                <div class="search-wrapper">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="text" id="empSearch" class="search-input" placeholder="Search...">
+
+                <div class="d-flex align-items-center gap-2">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" id="empSearch" class="search-input" placeholder="Search...">
+                    </div>
+
+                    <a href="{{ route('sales_target.settings.target.create') }}" class="btn-create-matrix">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Create Targets</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Table - NO SCROLL -->
+
             <div style="overflow: visible;">
                 <table class="matrix-table">
                     <thead>
@@ -346,7 +387,7 @@
                             <th class="col-month">Nov</th>
                             <th class="col-month">Dec</th>
                             <th class="col-total">Total</th>
-                            <th class="col-action"></th>
+                            <th class="col-action">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -355,17 +396,15 @@
                                 <td class="col-sl">{{ $index + 1 }}</td>
                                 <td class="col-employee">
                                     <div class="employee-info">
-                                        <span class="employee-name" title="{{ $target->employee->name ?? 'N/A' }}">
-                                            {{ Str::limit($target->employee->name ?? 'N/A', 15) }}
+                                        <span class="employee-name" title="{{ $target->employee->full_name ?? 'N/A' }}">
+
+                                            {{ Str::limit($target->employee->full_name ?? 'N/A', 20) }}
                                         </span>
-                                        @if(isset($target->employee->id))
-                                            {{-- <span class="employee-id">#{{ $target->employee->id }}</span> --}}
-                                        @endif
                                     </div>
                                 </td>
                                 <td class="col-year">{{ substr($target->year, -2) }}</td>
 
-                                <!-- 12 Months - All visible -->
+
                                 <td class="col-month">
                                     <span
                                         class="month-value @if($target->jan_target > 0) amount-positive @else amount-negative @endif">

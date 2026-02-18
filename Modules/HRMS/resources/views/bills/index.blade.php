@@ -217,40 +217,7 @@
                                                     <a class="btn btn-outline-warning" href="{{ route('hrm.bills.edit', $bill->id) }}">
                                                         <i class="far fa-edit"></i>
                                                     </a>
-                                                @endif
-
-                                                @if (hasPermission('hrm.bills.team_leader_verify') && $bill->status == 'pending')
-                                                    <button type="button" 
-                                                        class="btn btn-outline-info btn-verify" 
-                                                        data-id="{{ $bill->id }}"
-                                                        data-status="team_leader"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#verifyModal" title="Team Leader Verify">
-                                                        <i class="fas fa-check-circle"></i> 
-                                                    </button>
-                                                @endif
-
-                                                @if (hasPermission('hrm.bills.accounts_verify') && $bill->status == 'team_leader_check')
-                                                    <button type="button" 
-                                                        class="btn btn-outline-primary btn-verify" 
-                                                        data-id="{{ $bill->id }}"
-                                                        data-status="accounts"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#verifyModal" title="HR/Accounts Verify">
-                                                        <i class="fas fa-check-circle"></i> 
-                                                    </button>
-                                                @endif
-
-                                                @if (hasPermission('hrm.bills.final_approve') && $bill->status == 'accounts_check')
-                                                    <button type="button" 
-                                                        class="btn btn-outline-success btn-verify" 
-                                                        data-id="{{ $bill->id }}"
-                                                        data-status="final"
-                                                        data-bs-toggle="modal" 
-                                                        data-bs-target="#verifyModal" title="Final Approval">
-                                                        <i class="fas fa-check-double"></i> 
-                                                    </button>
-                                                @endif
+                                                @endif 
 
                                                 @if (hasPermission('hrm.bills.destroy') && $bill->status == 'pending')
                                                     <button type="button" 

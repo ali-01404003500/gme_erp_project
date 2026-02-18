@@ -45,7 +45,7 @@ class Employee extends BaseModel
     {
         return $this->hasMany(EmployeeDocuments::class, 'employee_id');
     }
-    
+
     public function employeeFamilyContact()
     {
         return $this->hasMany(EmployeeFamilyContact::class, 'employee_id');
@@ -355,6 +355,11 @@ class Employee extends BaseModel
         if ($employee) {
             return $employee->getAccount();
         }
+    }
 
+
+    public function designation()
+    {
+        return $this->belongsTo(\Modules\HRMS\Models\Settings\Designation::class, 'designation_id');
     }
 }

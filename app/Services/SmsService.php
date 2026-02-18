@@ -30,7 +30,7 @@ class SmsService
                 'message' => $message
             ]);
             Log::info("SMS sent to {$destination}", [
-                 'username' => $this->username,
+                'username' => $this->username,
                 'password' => $this->password,
                 'source' => $this->source,
                 'destination' => $destination,

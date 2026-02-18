@@ -68,10 +68,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
     Route::resource('bills', BillsAndAllowanceController::class);
 
-    Route::get('bills/{id}/verify-details', [BillsAndAllowanceController::class, 'verifyDetails'])->name('bills.verify-details');
-    Route::put('bills/{id}/team-leader-verify', [BillsAndAllowanceController::class, 'teamLeaderVerify'])->name('bills.team-leader-verify');
-    Route::put('bills/{id}/accounts-verify', [BillsAndAllowanceController::class, 'accountsVerify'])->name('bills.accounts-verify');
-    Route::put('bills/{id}/final-approve', [BillsAndAllowanceController::class, 'finalApprove'])->name('bills.final-approve');
+    Route::get('bills-verify', [BillsAndAllowanceController::class, 'verify'])->name('bills.verify');
+    Route::get('bills-verify-details', [BillsAndAllowanceController::class, 'verifyDetails'])->name('bills.verify-details');
+    Route::put('bills-team-leader-verify', [BillsAndAllowanceController::class, 'teamLeaderVerify'])->name('bills.team-leader-verify');
+    Route::put('bills-accounts-verify', [BillsAndAllowanceController::class, 'accountsVerify'])->name('bills.accounts-verify');
+    Route::put('bills-final-approve', [BillsAndAllowanceController::class, 'finalApprove'])->name('bills.final-approve');
    
 
     Route::get('get-bill-response', [BillsAndAllowanceController::class, 'getLeaveResponse'])->name('get.bill.response');

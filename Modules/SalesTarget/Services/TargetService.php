@@ -4,42 +4,113 @@ namespace Modules\SalesTarget\Services;
 
 use Modules\SalesTarget\Models\Target;
 use App\Models\User;
+use Modules\HRMS\Models\Employee;
 use Illuminate\Support\Facades\DB;
+use Modules\Sales\Models\SalesOrder;
 
 class TargetService
 {
+    // public function getAllEmployees()
+    // {
 
-    // Get all employees
+    //     $hasTargetIds = Target::distinct()->pluck('employee_id');
+    //     return Employee::whereIn('id', $hasTargetIds)
+    //         ->select('id', 'full_name as display_name')
+    //         ->get();
+    // }
+
     public function getAllEmployees()
     {
-        return User::all();
+
+        return Employee::select('id', 'full_name as display_name')
+            ->orderBy('full_name', 'asc')
+            ->get();
     }
 
 
-    // Get all targets
+
+    public function getYearlyPerformanceSummary($year, $selectedUserId = null)
+    {
+        $machineTags = ['IC', 'BC', 'CC', 'Machine', 'I-Chroma Machine'];
+
+
+        $targetQuery = Target::where('year', $year);
+        if ($selectedUserId) {
+            $targetQuery->where('employee_id', $selectedUserId);
+        }
+
+        $activeTargets = $targetQuery->get();
+        $targetEmployeeIds = $activeTargets->pluck('employee_id')->toArray();
+
+        $employees = Employee::with(['user.roles', 'employementDetail.designation'])
+            ->whereIn('id', $targetEmployeeIds)
+            ->get();
+
+        $results = [];
+
+        foreach ($employees as $employee) {
+            $user = $employee->user;
+            if (!$user) continue;
+
+
+            $targetRecord = $activeTargets->where('employee_id', $employee->id)->first();
+            $annualTarget = $targetRecord ? (float)$targetRecord->total_target : 0;
+
+
+            $salesOrders = SalesOrder::where('created_by', $user->id)
+                ->whereYear('created_at', $year)
+                ->whereHas('salesOrderDetails.product.tag', function ($q) use ($machineTags) {
+                    $q->whereIn('name', $machineTags);
+                })->get();
+
+            $achieved = (float)$salesOrders->sum('net_amount');
+            $salaryExpense = (float)($employee->salary ?? 0);
+
+
+            $results[] = [
+                'name' => $employee->full_name,
+                'designation' => $employee->employementDetail->designation->name ?? 'N/A',
+                'target' => $annualTarget,
+                'achieved' => $achieved,
+                'costing' => 0,
+                'collection' => (float)$salesOrders->sum('paid_amount'),
+                'due' => (float)$salesOrders->sum('due_amount'),
+                'percent' => $annualTarget > 0 ? ($achieved / $annualTarget) * 100 : 0,
+                'salary_expense' => $salaryExpense,
+                'ta_expense' => 0,
+                'da_expense' => 0,
+                'commission' => 0,
+                'entertainment' => 0,
+                'total_excl_salary' => 0,
+                'total_incl_salary' => $salaryExpense,
+                'deals' => $salesOrders->count()
+            ];
+        }
+
+        return $results;
+    }
+
+
+
     public function getAllTargets()
     {
         return Target::with('employee')->orderBy('year', 'desc')->get();
     }
 
 
-    // Store multiple targets
+
     public function storeMultipleTargets(array $targetsData)
     {
         return DB::transaction(function () use ($targetsData) {
             foreach ($targetsData as $data) {
                 if (empty($data['employee_id'])) continue;
 
-                // Search by target_id column instead of id
-                $targetId = $data['target_id'] ?? ($data['id'] ?? null);
-
                 Target::updateOrCreate(
                     [
-                        'target_id' => $targetId,
+                        'employee_id' => $data['employee_id'],
+                        'year'        => $data['year'] ?? date('Y'),
                     ],
                     [
-                        'employee_id'  => $data['employee_id'],
-                        'year'         => $data['year'] ?? date('Y'),
                         'jan_target'   => $data['jan_target'] ?? 0,
                         'feb_target'   => $data['feb_target'] ?? 0,
                         'mar_target'   => $data['mar_target'] ?? 0,
@@ -60,83 +131,9 @@ class TargetService
     }
 
 
-    // Delete target
 
     public function deleteTarget($id)
     {
-        $target = Target::findOrFail($id);
-        return $target->delete();
-    }
-
-    public function getEmployeeAchievement($employeeId, $year)
-    {
-        $results = [];
-        $machineTags = ['IC', 'BC', 'CC', 'Machine', 'I-Chroma Machine'];
-
-        // টার্গেট ডেটা আনা
-        $target = Target::where('employee_id', $employeeId)
-            ->where('year', $year)
-            ->first();
-
-        if (!$target) {
-            return [];
-        }
-
-        $months = [
-            'Jan' => 'jan_target',
-            'Feb' => 'feb_target',
-            'Mar' => 'mar_target',
-            'Apr' => 'apr_target',
-            'May' => 'may_target',
-            'Jun' => 'jun_target',
-            'Jul' => 'jul_target',
-            'Aug' => 'aug_target',
-            'Sep' => 'sep_target',
-            'Oct' => 'oct_target',
-            'Nov' => 'nov_target',
-            'Dec' => 'dec_target'
-        ];
-
-        foreach ($months as $label => $column) {
-            $monthNumber = date('m', strtotime($label));
-
-            // সেলস কোয়েরি ফিল্টার (মেশিন ট্যাগ অনুযায়ী)
-            $salesQuery = \Modules\Sales\Models\SalesOrder::where('created_by', $employeeId)
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $monthNumber)
-                ->whereHas('salesOrderDetails.product.tag', function ($query) use ($machineTags) {
-                    $query->whereIn('name', $machineTags);
-                });
-
-            $actualSales = (float)$salesQuery->sum('net_amount');
-            $dealsClosed = $salesQuery->count();
-
-            // কাস্টমার ব্রেকডাউন
-            $customerBreakdown = \Modules\Sales\Models\SalesOrder::with('customer')
-                ->where('created_by', $employeeId)
-                ->whereYear('created_at', $year)
-                ->whereMonth('created_at', $monthNumber)
-                ->whereHas('salesOrderDetails.product.tag', function ($query) use ($machineTags) {
-                    $query->whereIn('name', $machineTags);
-                })
-                ->select('customer_id', DB::raw('SUM(net_amount) as total_customer_sales'))
-                ->groupBy('customer_id')
-                ->get();
-
-            $targetAmount = $target->$column;
-            $achievementPercent = $targetAmount > 0 ? ($actualSales / $targetAmount) * 100 : 0;
-
-            $results[] = [
-                'month'            => $label,
-                'target'           => $targetAmount,
-                'achieved'         => $actualSales,
-                'percent'          => $achievementPercent,
-                'deals'            => $dealsClosed,
-                'status'           => $achievementPercent >= 100 ? 'Met' : 'Below',
-                'customer_details' => $customerBreakdown
-            ];
-        }
-
-        return $results;
+        return Target::findOrFail($id)->delete();
     }
 }

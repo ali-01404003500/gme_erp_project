@@ -147,7 +147,6 @@
                                         {{-- <td>{{ $employee->full_name }}</td> --}}
                                         <td>{{ $employee->employementDetail->department->name ?? 'N/A' }}</td>
                                         <td>{{ $employee->employementDetail->designation->name ?? 'N/A' }}</td>
-                                        
                                         <td>{{ $employee->date_of_birth }}</td>
                                         <td>{{ $employee->employementDetail->date_of_joining }}</td>
                                         <td>{{ $employee->email_address }}</td>

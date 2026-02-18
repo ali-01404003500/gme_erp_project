@@ -41,6 +41,10 @@ class LoanController extends Controller
         $data['employees'] = Employee::all();
         return view('HRMS::loans.create', $data);
     }
+    public function loanPayment()
+    {
+        
+    }
 
     /**
      * Store a newly created resource in storage.

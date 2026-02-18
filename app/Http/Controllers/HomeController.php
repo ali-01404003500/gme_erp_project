@@ -26,7 +26,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // Get all employees for the target achievement filter
+        $employees = Employee::all();
+
+        return view('home', compact('employees'));
     }
 
     public function myProfile()
