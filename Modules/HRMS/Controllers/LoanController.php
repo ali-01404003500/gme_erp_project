@@ -32,7 +32,7 @@ class LoanController extends Controller
 
         return view('HRMS::loans.index', $data);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
