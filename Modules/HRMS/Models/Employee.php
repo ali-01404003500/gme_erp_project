@@ -208,6 +208,7 @@ class Employee extends BaseModel
     // LOAN ACCOUNTS (1015)
     // ============================================
 
+    
     public function getLoanReceivableAccount()
     {
         $account = $this->accounts()->where('account_subsidiary_id', 1015)->first();
@@ -256,12 +257,43 @@ class Employee extends BaseModel
         }
         $this->accounts()->create([
             "name" => "Staff Advance - " . $this->full_name,
-            "account_number" => '2008' . $this->id,
-            "account_group_id" => 2,
-            "account_control_id" => 2000,
-            "account_subsidiary_id" => 2008,
+            "account_number" => '1022' . $this->id,
+            "account_group_id" => 1,
+            "account_control_id" => 1000,
+            "account_subsidiary_id" => 1022,
             "opening_balance" => "0.00",
-            "remarks" => "A Staff Advance account is created for " . $this->full_name,
+            "remarks" => "A Staff IOU account is created for " . $this->full_name,
+            "is_deletable" => 0,
+        ]);
+    }
+ 
+    // ============================================
+    // STAFF LOAN ACCOUNTS (2008)
+    // ============================================
+
+    public function getStaffLoanAccount()
+    {
+        $account = $this->accounts()->where('account_subsidiary_id', 2008)->first();
+        if ($account == null) {
+            $this->createStaffLoanAccount();
+            $this->load('accounts');
+        }
+        return $this->accounts()->where('account_subsidiary_id', 2008)->first();
+    }
+
+    public function createStaffLoanAccount()
+    {
+        if ($this->accounts->where('account_subsidiary_id', 2008)->first() != null) {
+            return;
+        }
+        $this->accounts()->create([
+            "name" => "Staff Loan - " . $this->full_name,
+            "account_number" => '1021' . $this->id,
+            "account_group_id" => 1,
+            "account_control_id" => 1000,
+            "account_subsidiary_id" => 1021,
+            "opening_balance" => "0.00",
+            "remarks" => "A Staff Loan account is created for " . $this->full_name,
             "is_deletable" => 0,
         ]);
     }

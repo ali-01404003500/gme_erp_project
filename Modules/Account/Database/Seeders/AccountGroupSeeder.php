@@ -642,6 +642,28 @@ class AccountGroupSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1
             ],
+            [
+                'id' => 1021,
+                'name' => 'Staff Loan',
+                'account_group_id' => 1,
+                'account_control_id' => 1000,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 1,
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
+            [
+                'id' => 1022,
+                'name' => 'Staff IOU',
+                'account_group_id' => 1,
+                'account_control_id' => 1000,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 1,
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
 
 
             //Fixed Asset
@@ -755,18 +777,7 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'created_by' => 1,
                 'updated_by' => 1
-            ],
-            [
-                'id' => 2008,
-                'name' => 'Staff Advance',
-                'account_group_id' => 2,
-                'account_control_id' => 2000,
-                'branch_id' => 1,
-                'status' => 1,
-                'is_deletable' => 0,
-                'created_by' => 1,
-                'updated_by' => 1
-            ],
+            ], 
             [
                 'id' => 2009,
                 'name' => 'Employee Cash',

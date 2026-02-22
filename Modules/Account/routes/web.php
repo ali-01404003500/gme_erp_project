@@ -44,6 +44,7 @@ use Modules\Account\Controllers\UnitController;
 use Modules\Account\Controllers\VendorBill\GeneratedVendorBillController;
 use Modules\Account\Controllers\VendorBill\VendorBillSettingController;
 use Modules\Account\Models\Payments\CustomerPayment;
+use Modules\Account\Controllers\Payments\LoanPaymentController;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.'], function () {
 
@@ -117,8 +118,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
                 ->name('receipt');
         });
 
-        
+        Route::get('loan-payment/index', [LoanPaymentController::class, 'index'])->name('loan-payment.index'); 
+        Route::get('loan-payment/{id}/payment', [LoanPaymentController::class, 'payment']) ->name('loan-payment.payment');
     });
+
 
     Route::get('/get-accounts-by-type', [CollectionController::class, 'getAccountsByType'])->name('get-accounts-by-type');
     Route::get('/get-ballance', [CollectionController::class, 'getBallance'])->name('get-ballance');

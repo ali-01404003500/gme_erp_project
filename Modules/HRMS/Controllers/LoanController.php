@@ -59,6 +59,7 @@ class LoanController extends Controller
             'monthly_reduction' => 'required',
             'duration' => 'required|integer|min:1',
             'remaining_balance' => 'required',
+            'remarks' => 'required', 
         ]);
 
         // Check if employee already has a loan that overlaps with this start month
@@ -120,6 +121,7 @@ class LoanController extends Controller
             'monthly_reduction' => 'required',
             'duration' => 'required|integer|min:1',
             'remaining_balance' => 'required',
+            'remarks' => 'required', 
         ]);
         $this->service->update($loan, $validate);
 
@@ -158,7 +160,7 @@ class LoanController extends Controller
     public function ajaxDetails($id)
     {
         $loan = Loan::with(['employee.employementDetail.designation', 'details'])->findOrFail($id);
-        // dd($loan);
+        //= dd($loan);
         return view('HRMS::loans.partials.modal-details', compact('loan'));
     }
 }
