@@ -352,57 +352,64 @@ class PermissionTableSeed extends Seeder
 
             //TA/DA
             [
-                'name'=> 'Petty Cash List',
+                'name'=> 'TA/DA List',
                 'slug'=> 'hrm.bills.index',
-                'description'=> 'Petty Cash list permission',
+                'description'=> 'TA/DA list permission',
                 'key'=> 'hrm.bills'
             ],
 
             [
-                'name'=> 'Create Petty Cash',
+                'name'=> 'Create TA/DA',
                 'slug'=> 'hrm.bills.create',
-                'description'=> 'Petty Cash create permission',
+                'description'=> 'TA/DA create permission',
                 'key'=> 'hrm.bills'
             ],
 
             [
-                'name'=> 'Petty Cash Update',
+                'name'=> 'TA/DA Update',
                 'slug'=> 'hrm.bills.update',
-                'description'=> 'Petty Cash update permission',
+                'description'=> 'TA/DA update permission',
                 'key'=> 'hrm.bills'
             ],
 
             [
-                'name'=> 'Petty Cash View',
+                'name'=> 'TA/DA View',
                 'slug'=> 'hrm.bills.show',
-                'description'=> 'Petty Cash show permission',
+                'description'=> 'TA/DA show permission',
                 'key'=> 'hrm.bills'
             ],
 
             [
-                'name'=> 'Petty Cash Delete',
+                'name'=> 'TA/DA Delete',
                 'slug'=> 'hrm.bills.destroy',
-                'description'=> 'Petty Cash delete permission',
+                'description'=> 'TA/DA delete permission',
                 'key'=> 'hrm.bills'
             ],
             [
-                'name'=> 'Petty Cash Team Leader Verify',
+                'name'=> 'TA/DA Team Leader Verify',
                 'slug'=> 'hrm.bills.team_leader_verify',
-                'description'=> 'Petty Cash team leader verify permission',
+                'description'=> 'TA/DA team leader verify permission',
                 'key'=> 'hrm.bills'
             ],
 
             [
-                'name'=> 'Petty Cash HR/Accounts Verify',
+                'name'=> 'TA/DA HR/Accounts Verify',
                 'slug'=> 'hrm.bills.accounts_verify',
-                'description'=> 'Petty Cash HR/accounts verify permission',
+                'description'=> 'TA/DA HR/accounts verify permission',
                 'key'=> 'hrm.bills'
             ],
 
             [
-                'name'=> 'Petty Cash Final Approve',
+                'name'=> 'TA/DA Final Approve',
                 'slug'=> 'hrm.bills.final_approve',
-                'description'=> 'Petty Cash final approve permission',
+                'description'=> 'TA/DA final approve permission',
+                'key'=> 'hrm.bills'
+            ],
+
+            [
+                'name'=> 'TA/DA Verify',
+                'slug'=> 'hrm.bills.verify',
+                'description'=> 'TA/DA Verification List',
                 'key'=> 'hrm.bills'
             ],
 
@@ -3566,17 +3573,32 @@ class PermissionTableSeed extends Seeder
             ],
             //TA/DA Payments   
             [
-                'name'=> 'Petty Cash Payments List',
+                'name'=> 'TA/DA Payments List',
                 'slug'=> 'account.payments.petty-cash-payments.index',
-                'description'=> 'Petty Cash payments list permission',
+                'description'=> 'TA/DA payments list permission',
                 'key'=> 'account.payments.petty-cash-payments'
              ],
              [
-                'name'=> 'Create Petty Cash Payments',
+                'name'=> 'Create TA/DA Payments',
                 'slug'=> 'account.payments.petty-cash-payments.create',
-                'description'=> 'Petty Cash payments create permission',
+                'description'=> 'TA/DA payments create permission',
                 'key'=> 'account.payments.petty-cash-payments'
              ],
+
+
+            //Loan Payments   
+            [
+                'name'=> 'Loan Payments List',
+                'slug'=> 'account.payments.loan-payment.index',
+                'description'=> 'Loan payments list permission',
+                'key'=> 'account.payments.loan-payment'
+            ],
+            [
+                'name'=> 'Loan Payments',
+                'slug'=> 'account.payments.loan-payment.payment',
+                'description'=> 'Loan payments create permission',
+                'key'=> 'account.payments.loan-payment'
+            ],
 
             //Vender bill settings account.vendor-bills.settings
 
