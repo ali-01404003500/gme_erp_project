@@ -1,29 +1,14 @@
 <?php
 
-
 namespace Modules\Account\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\BaseModel;
 
-use App\Traits\AutoCreateUpdateAndHistory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-
-class FundTransfer extends Model
+class FundTransfer extends BaseModel
 {
-    use AutoCreateUpdateAndHistory;
-
-    public function fromAccount(): BelongsTo
-    {
-        return $this->belongsTo(Account::class, 'from_account_id');
-    }
-
-    public function toAccount(): BelongsTo
-    {
-        return $this->belongsTo(Account::class, 'to_account_id');
-    }
-
-    public function transactions(): MorphMany
-    {
-        return $this->morphMany(Transaction::class, 'transactionable');
-    }
+    use HasFactory;
+    
+    protected $guarded = [];
 }
+

@@ -153,12 +153,21 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     //     Route::resource('customer-payments', CustomerPaymentController::class);
     //     Route::resource('supplier-payments', SupplierPaymentController::class);
     // });
+<<<<<<< HEAD
 
     Route::resource('fund-transfers', FundTransferController::class);
     Route::post('fund-transfers/{fundTransfer}/approve', [FundTransferController::class, 'approveFundTransfer'])->name('fund-transfers.approve.update');
 
 
 
+=======
+    
+ 
+    Route::resource('fund-tranfers', FundTransferController ::class);
+    
+     
+    
+>>>>>>> ali-work
     Route::group(['prefix' => 'reports'], function () {
 
 
