@@ -153,18 +153,12 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     //     Route::resource('customer-payments', CustomerPaymentController::class);
     //     Route::resource('supplier-payments', SupplierPaymentController::class);
     // });
-<<<<<<< HEAD
- 
-
-
-=======
     
  
     Route::resource('fund-tranfers', FundTransferController ::class);
     
      
     
->>>>>>> ali-work
     Route::group(['prefix' => 'reports'], function () {
 
 
