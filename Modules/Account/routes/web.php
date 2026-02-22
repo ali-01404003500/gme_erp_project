@@ -152,10 +152,10 @@ Route::group(['middleware'=>'auth', 'prefix' => 'account', 'as' => 'account.'],f
     //     Route::resource('supplier-payments', SupplierPaymentController::class);
     // });
     
-    Route::resource('fund-transfers', FundTransferController::class);
-    Route::post('fund-transfers/{fundTransfer}/approve', [FundTransferController::class, 'approveFundTransfer'])->name('fund-transfers.approve.update');
+ 
+    Route::resource('fund-tranfers', FundTransferController ::class);
     
-    
+     
     
     Route::group(['prefix' => 'reports'], function () {
     
