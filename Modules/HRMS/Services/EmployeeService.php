@@ -78,7 +78,7 @@ class EmployeeService
                 'name' => $data['full_name'],
                 'email' => $user['system_username'],
                 'password' => bcrypt($user['system_password']),
-                'branch_id' => $user['user_branch_id'],
+                'branch_id' => $employementDetails['user_branch_id'],
                 'user_status' => $user['user_status'],
             ]);
             $result['user'] = $user;
@@ -109,14 +109,20 @@ class EmployeeService
         if( $type == 'employee_information')
         {
             $employee->update($data);
-             
+            $employee->employementDetail->update([
+                'card_no' => $employementDetails['card_no']
+            ]);
+
             // Update the user's branch to match the employee's branch
             if ($employee->user) {
                 $employee->user->update([
                     'branch_id' => $employementDetails['user_branch_id'], 
                 ]);
     
-            }
+            } 
+
+            
+            
         }
 
         if( $type == 'contact')

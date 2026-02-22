@@ -135,7 +135,7 @@ class EmployeeController extends Controller
             $employementDetails = $request->validate([
                 'card_no' => 'required|string|max:255',
                 'permanent_address' => 'nullable|exists:branches,id',
-                
+                'user_branch_id' => 'required|exists:branches,id',
             ]);
             
         } 
