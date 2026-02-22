@@ -103,7 +103,7 @@ class EmployeeService
 
     public function update($type, Employee $employee, array $data, array $contact, array $educationsDetails, array $employementDetails, array $documents1, array $documents2, array $bank, array $tax, array $employeement_experience, array $employeeFamilyContact, array $user)
     {  
-        //dd( $user);
+        //dd( $employementDetails);
 
 
         if( $type == 'employee_information')
@@ -142,6 +142,10 @@ class EmployeeService
         }
         if( $type == 'job_status')
         {
+            $employee->update([
+                  'status' => $employementDetails['status'],
+            ]);
+
             // Reset and save employment detailsBill
             $employee->employementDetails()->delete();
             EmployementDetail::create([
@@ -152,6 +156,8 @@ class EmployeeService
                 'designation_id' => $employementDetails['designation_id'],
                 'supervisor' => $employementDetails['supervisor'],
                 'branch_id' => $employementDetails['user_branch_id'],
+              
+                
             ]);
         }
         if( $type == 'educational')
