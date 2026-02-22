@@ -264,7 +264,7 @@ class EmployeeController extends Controller
                 'photograph' => 'required', 
                 'national_id' => 'required|string|max:255',  
                 'software_access' => 'nullable|string|max:255',
-                'additional_notes' => 'nullable|string|max:255', 
+                'additional_notes' => 'nullable|string|max:255',  
             ]);
              
             $employementDetails = $request->validate([
