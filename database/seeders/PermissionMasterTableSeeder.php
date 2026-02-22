@@ -886,6 +886,14 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'account.payments',
             ],
 
+            //Loan Payments
+            [
+                'title' => 'Loan Payments',
+                'description' => 'Permission of Add, Remove, Update, Delete Loan Payments',
+                'key' => 'account.payments.loan-payment',
+                'parent_key' => 'account.payments',
+            ],
+ 
             //Vendor Bills
             [
                 'title' => 'Vendor Bills',
