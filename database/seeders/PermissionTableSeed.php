@@ -350,60 +350,60 @@ class PermissionTableSeed extends Seeder
                 'key' => 'hrm.noticeboards'
             ],
 
-            //Petty Cash
+            //TA/DA
             [
-                'name' => 'Petty Cash List',
-                'slug' => 'hrm.bills.index',
-                'description' => 'Petty Cash list permission',
-                'key' => 'hrm.bills'
+                'name'=> 'Petty Cash List',
+                'slug'=> 'hrm.bills.index',
+                'description'=> 'Petty Cash list permission',
+                'key'=> 'hrm.bills'
             ],
 
             [
-                'name' => 'Create Petty Cash',
-                'slug' => 'hrm.bills.create',
-                'description' => 'Petty Cash create permission',
-                'key' => 'hrm.bills'
+                'name'=> 'Create Petty Cash',
+                'slug'=> 'hrm.bills.create',
+                'description'=> 'Petty Cash create permission',
+                'key'=> 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash Update',
-                'slug' => 'hrm.bills.update',
-                'description' => 'Petty Cash update permission',
-                'key' => 'hrm.bills'
+                'name'=> 'Petty Cash Update',
+                'slug'=> 'hrm.bills.update',
+                'description'=> 'Petty Cash update permission',
+                'key'=> 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash View',
-                'slug' => 'hrm.bills.show',
-                'description' => 'Petty Cash show permission',
-                'key' => 'hrm.bills'
+                'name'=> 'Petty Cash View',
+                'slug'=> 'hrm.bills.show',
+                'description'=> 'Petty Cash show permission',
+                'key'=> 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash Delete',
-                'slug' => 'hrm.bills.destroy',
-                'description' => 'Petty Cash delete permission',
-                'key' => 'hrm.bills'
+                'name'=> 'Petty Cash Delete',
+                'slug'=> 'hrm.bills.destroy',
+                'description'=> 'Petty Cash delete permission',
+                'key'=> 'hrm.bills'
             ],
             [
-                'name' => 'Petty Cash Team Leader Verify',
-                'slug' => 'hrm.bills.team_leader_verify',
-                'description' => 'Petty Cash team leader verify permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'Petty Cash HR/Accounts Verify',
-                'slug' => 'hrm.bills.accounts_verify',
-                'description' => 'Petty Cash HR/accounts verify permission',
-                'key' => 'hrm.bills'
+                'name'=> 'Petty Cash Team Leader Verify',
+                'slug'=> 'hrm.bills.team_leader_verify',
+                'description'=> 'Petty Cash team leader verify permission',
+                'key'=> 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash Final Approve',
-                'slug' => 'hrm.bills.final_approve',
-                'description' => 'Petty Cash final approve permission',
-                'key' => 'hrm.bills'
+                'name'=> 'Petty Cash HR/Accounts Verify',
+                'slug'=> 'hrm.bills.accounts_verify',
+                'description'=> 'Petty Cash HR/accounts verify permission',
+                'key'=> 'hrm.bills'
+            ],
+
+            [
+                'name'=> 'Petty Cash Final Approve',
+                'slug'=> 'hrm.bills.final_approve',
+                'description'=> 'Petty Cash final approve permission',
+                'key'=> 'hrm.bills'
             ],
 
 
@@ -3564,19 +3564,19 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Broker payments verify permission',
                 'key' => 'account.payments.broker-payments'
             ],
-            //Petty Cash Payments   
+            //TA/DA Payments   
             [
-                'name' => 'Petty Cash Payments List',
-                'slug' => 'account.payments.petty-cash-payments.index',
-                'description' => 'Petty Cash payments list permission',
-                'key' => 'account.payments.petty-cash-payments'
-            ],
-            [
-                'name' => 'Create Petty Cash Payments',
-                'slug' => 'account.payments.petty-cash-payments.create',
-                'description' => 'Petty Cash payments create permission',
-                'key' => 'account.payments.petty-cash-payments'
-            ],
+                'name'=> 'Petty Cash Payments List',
+                'slug'=> 'account.payments.petty-cash-payments.index',
+                'description'=> 'Petty Cash payments list permission',
+                'key'=> 'account.payments.petty-cash-payments'
+             ],
+             [
+                'name'=> 'Create Petty Cash Payments',
+                'slug'=> 'account.payments.petty-cash-payments.create',
+                'description'=> 'Petty Cash payments create permission',
+                'key'=> 'account.payments.petty-cash-payments'
+             ],
 
             //Vender bill settings account.vendor-bills.settings
 
