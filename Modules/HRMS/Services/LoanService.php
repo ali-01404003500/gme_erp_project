@@ -14,10 +14,19 @@ class LoanService
             ])
         ->paginate($limit);
     }
-    
+
+    public function getOnlyApproved(int $limit = 20) {
+        return Loan::query()
+        ->searchByFields([
+                'employee_id' => 'employee_id',
+            ])
+        ->whereIn('status',['approved','paid'])
+        ->paginate($limit);
+    }
+
     public function store(array $data)
     {
-        return Loan::create($data);
+        return Loan::create($data); 
     }
 
     public function update(Loan $loan, array $data)
@@ -35,4 +44,33 @@ class LoanService
     {
         return Loan::findOrFail($id);
     }
+ 
+    public function makeDummyTransaction(Loan $loan)
+    {
+        $loan->transactions()->delete();
+
+        $cashAccount = auth()->user()->employee->getAccount();
+
+        $loan->transactions()->create([
+            'account_id' => $cashAccount->id,
+            'balance_type' => 'credit',
+            'invoice_no' => $loan->id,
+            'amount' => $loan->amount,
+            'debit_amount' => 0,
+            'credit_amount' => $loan->amount,
+            'description' => 'Employee Salary Advance',
+        ]);
+
+        $loan->transactions()->create([
+            'account_id' => $loan->employee->getStaffLoanAccount()->id,
+            'balance_type' => 'debit',
+            'invoice_no' => $loan->id,
+            'amount' => -$loan->amount,
+            'debit_amount' => $loan->amount,
+            'credit_amount' => 0,
+            'description' => 'Employee Salary Advance',
+        ]);
+    }
+
+    
 }

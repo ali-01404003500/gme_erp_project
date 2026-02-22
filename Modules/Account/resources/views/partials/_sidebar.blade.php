@@ -402,6 +402,16 @@
                                 </a>
                             </li>
                         @endif 
+
+                        @if (hasPermission('account.payments.loan-payment.index'))
+                            <li>
+                                <a href="{{ route('account.payments.loan-payment.index') }}"
+                                    class="{{ request()->routeIs('account.payments.loan-payment.*') ? 'active' : '' }}">
+                                    <span class="nav-icon fas fa-coins"></span>
+                                    {{ t_('menu.loan-payment') }}
+                                </a>
+                            </li>
+                        @endif 
                         
                     </ul>
                 </li>

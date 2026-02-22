@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('title', 'Loan/Advance List')
+@section('title', 'Loan Payment List')
 @section('description', 'List of Employee Loans or Advances')
 
 @section('content')
@@ -83,7 +83,6 @@
                                         <th>Remaining Balance</th>
                                         <th>Start From</th>
                                         <th>Payment Date</th>
-                                        <th>Remarks</th>
                                         <th>Status</th>
                                         <th class="no-content">Actions</th>
                                     </tr>
@@ -100,7 +99,6 @@
                                             <td>{{ $loan->start_month }}</td>
                                             <td>{{ $loan->payment_date ? \Carbon\Carbon::parse($loan->payment_date)->format('d M Y') : '-' }}
                                             </td>
-                                            <td>{{ $loan->remarks }}</td>
                                             <td>
                                                 @if ($loan->status == 'pending')
                                                     <span class="badge badge-round  badge-warning">Pending</span>
@@ -116,44 +114,19 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    @if (hasPermission('hrm.loans.approve') && $loan->status == 'pending')
-                                                        <a href="{{ route('hrm.loans.approve', $loan->id) }}"
+                                                    @if (hasPermission('account.payments.loan-payment.payment') && $loan->status == 'approved')
+                                                        <a href="{{ route('account.payments.loan-payment.payment', $loan->id) }}"
                                                             class="btn btn-xs btn-outline-success approval-confirm-loan"
-                                                            data-action="{{ route('hrm.loans.approve', $loan->id) }}"
-                                                            data-confirm-title="Approve Loan?"
-                                                            data-confirm-message="Are you sure you want to approve this Loan?"
+                                                            data-action="{{ route('account.payments.loan-payment.payment', $loan->id) }}"
+                                                            data-confirm-title="Payment Loan?"
+                                                            data-confirm-message="Are you sure you want to payment this Loan?"
                                                             data-confirm-icon="success"
-                                                            data-confirm-text="Yes, Approve it!">
+                                                            data-confirm-text="Yes, Payment it!">
                                                             <i class="fas fa-check"></i>
                                                         </a>
                                                     @endif
-                                                    @if (hasPermission('hrm.loans.deny') && $loan->status == 'pending')
-
-                                                        <a href="{{ route('hrm.loans.deny', $loan->id) }}"
-                                                            class="btn btn-xs btn-outline-danger reject-confirm-loan"
-                                                            data-action="{{ route('hrm.loans.deny', $loan->id) }}"
-                                                            data-confirm-title="Reject Loan?"
-                                                            data-confirm-message="Are you sure you want to reject this Loan?"
-                                                            data-confirm-icon="warning" data-confirm-text="Yes, Reject it!">
-                                                            <i class="fas fa-times"></i>
-                                                        </a>
-                                                    @endif
-                                                    @if ($loan->status == 'pending')
-                                                        @if (hasPermission('hrm.loans.update'))
-                                                            <a href="{{ route('hrm.loans.edit', $loan->id) }}"
-                                                                class="btn btn-outline-warning" title="Edit">
-                                                                <i class="far fa-edit"></i>
-                                                            </a>
-                                                        @endif
-                                                        @if (hasPermission('hrm.loans.destroy'))
-                                                            <button type="button"
-                                                                class="btn btn-outline-danger delete-confirm"
-                                                                data-action="{{ route('hrm.loans.destroy', $loan->id) }}"
-                                                                title="Delete">
-                                                                <i class="far fa-trash-alt"></i>
-                                                            </button>
-                                                        @endif
-                                                    @endif
+                                                
+                                                
                                                     @if (hasPermission('hrm.loans.show'))
                                                         <a href="javascript:void(0);"
                                                             class="btn btn-outline-primary view-loan-details"

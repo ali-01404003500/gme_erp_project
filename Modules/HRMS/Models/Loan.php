@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Account\Models\Transaction;
 
 class Loan extends BaseModel
 {
@@ -26,5 +27,11 @@ class Loan extends BaseModel
     public function details()
     {
         return $this->hasMany(LoanDetail::class);
+    }
+
+    // Relationship: Transactions
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transactionable');
     }
 }
