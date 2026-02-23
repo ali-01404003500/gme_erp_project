@@ -11,16 +11,20 @@ use Modules\Sales\Models\Delivery;
 use Modules\HRMS\Models\BillsAndAllowance;
 use Modules\Account\Models\Collections\Collection;
 use Modules\Account\Models\Transaction;
-use Modules\Sales\Models\SalesCommission; // কমিশন মডেল যুক্ত করা হলো
+use Modules\Sales\Models\SalesCommission;
 
 class TargetService
 {
+
+
     public function getAllEmployees()
     {
         return Employee::select('id', 'full_name as display_name')
             ->orderBy('full_name', 'asc')
             ->get();
     }
+
+
 
     public function getYearlyPerformanceSummary($startDate, $endDate, $selectedUserId = null)
     {
@@ -135,7 +139,7 @@ class TargetService
                 'salary_expense' => $salaryExpense,
                 'ta_expense' => (float)$totalTA,
                 'da_expense' => (float)$totalDA,
-                'commission' => (float)$totalCommission, 
+                'commission' => (float)$totalCommission,
                 'entertainment' => 0,
                 'total_excl_salary' => $totalOperationalExpense,
                 'total_incl_salary' => $salaryExpense + $totalOperationalExpense,
@@ -146,10 +150,14 @@ class TargetService
         return $results;
     }
 
+
+
     public function getAllTargets()
     {
         return Target::with('employee')->orderBy('year', 'desc')->get();
     }
+
+
 
     public function storeMultipleTargets(array $targetsData)
     {
@@ -181,6 +189,8 @@ class TargetService
             }
         });
     }
+
+
 
     public function deleteTarget($id)
     {
