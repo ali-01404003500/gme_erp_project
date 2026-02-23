@@ -79,20 +79,17 @@ class CashTransferService
 
     public function confirm(CashTransfer $cashTransfer, array $data)
     {
-        if ($cashTransfer->status != 'pending') {
-            throw \Illuminate\Validation\ValidationException::withMessages(['status' => 'Transfer is already processed.']);
-        }
 
-        $cashTransfer->received_amount = $data['received_amount'];
-        $cashTransfer->is_cash_count_matched = $data['is_cash_count_matched'];
 
-        if ($cashTransfer->is_cash_count_matched == 1 || $cashTransfer->is_cash_count_matched == 'true') {
-            $cashTransfer->status = 'confirmed';
-            $cashTransfer->save();
+        if ($data['status'] == 'confirmed') {
+            $cashTransfer->update([
+                'status' => 'confirmed',
+            ]);
             $this->postJournalEntry($cashTransfer);
         } else {
-            $cashTransfer->status = 'pending'; // Remain pending if mismatch
-            $cashTransfer->save();
+            $cashTransfer->update([
+                'status' => 'pending',
+            ]);
         }
 
         return $cashTransfer;
@@ -103,28 +100,27 @@ class CashTransferService
         $fromAccount = $cashTransfer->fromEmployee->getAccount();
         $toAccount = $cashTransfer->toEmployee->getAccount();
 
-        // Credit Sender (Asset decreases)
-        $fromAccount->transactions()->create([
-            'debit_amount' => 0,
-            'credit_amount' => $cashTransfer->amount,
-            'balance_type' => 'credit',
-            'transaction_date' => $cashTransfer->transfer_date,
-            'description' => 'Cash Transfer to ' . $cashTransfer->toEmployee->full_name,
-            'transactionable_type' => CashTransfer::class,
-            'transactionable_id' => $cashTransfer->id,
-            'company_id' => auth()->user()->company_id ?? 1,
-        ]);
+        $cashTransfer->transactions()->delete();
 
-        // Debit Receiver (Asset increases)
-        $toAccount->transactions()->create([
+        // Credit Sender (Asset decreases)
+        $cashTransfer->transactions()->create([
+            'account_id' => $fromAccount->id,
             'debit_amount' => $cashTransfer->amount,
             'credit_amount' => 0,
             'balance_type' => 'debit',
             'transaction_date' => $cashTransfer->transfer_date,
-            'description' => 'Cash Transfer from ' . $cashTransfer->fromEmployee->full_name,
-            'transactionable_type' => CashTransfer::class,
-            'transactionable_id' => $cashTransfer->id,
-            'company_id' => auth()->user()->company_id ?? 1,
+            'description' => 'Cash Transfer from ' . $cashTransfer->fromEmployee->full_name . " to " . $cashTransfer->toEmployee->full_name,
+        ]);
+
+
+        // Debit Receiver (Asset increases)
+        $cashTransfer->transactions()->create([
+            'account_id' => $toAccount->id,
+            'debit_amount' => 0,
+            'credit_amount' => $cashTransfer->amount,
+            'balance_type' => 'credit',
+            'transaction_date' => $cashTransfer->transfer_date,
+            'description' => 'Cash Transfer from ' . $cashTransfer->fromEmployee->full_name . " to " . $cashTransfer->toEmployee->full_name,
         ]);
     }
 

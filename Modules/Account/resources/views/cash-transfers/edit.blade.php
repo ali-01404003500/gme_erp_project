@@ -27,6 +27,12 @@
 
         <div class="row">
             <div class="col-md-12">
+                <x-error-alart />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-body">
                         <form action="{{ route('account.cash-transfers.update', $cashTransfer->id) }}" method="POST">
@@ -84,6 +90,7 @@
                                 @if(request()->get('for') == 'confirm')
                                     <button type="button" id="confirm_save_btn" class="btn btn-success">Confirm and
                                         Save</button>
+                                    <button type="button" id="reject_btn" class="btn btn-danger">Reject</button>
                                 @endif
                             </div>
                         </form>
@@ -124,6 +131,25 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $('#transfer_status').val('confirmed');
+                        form.submit();
+                    }
+                });
+            });
+
+            // Reject button logic
+            $('#reject_btn').on('click', function () {
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to reject this transfer!",
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, reject it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#transfer_status').val('rejected');
                         form.submit();
                     }
                 });

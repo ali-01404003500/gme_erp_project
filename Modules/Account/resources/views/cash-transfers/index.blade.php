@@ -59,11 +59,11 @@
                                         <td class="text-center">{{ number_format($transfer->amount, 2) }}</td>
                                         <td class="text-center">
                                             @if($transfer->status == 'pending')
-                                                <span class="badge badge-warning">Pending</span>
+                                                <span class="badge  badge-round badge-warning">Pending</span>
                                             @elseif($transfer->status == 'confirmed')
-                                                <span class="badge badge-success">Confirmed</span>
+                                                <span class="badge  badge-round badge-success">Confirmed</span>
                                             @else
-                                                <span class="badge badge-danger">{{ ucfirst($transfer->status) }}</span>
+                                                <span class="badge  badge-round badge-danger">{{ ucfirst($transfer->status) }}</span>
                                             @endif
                                         </td>
                                         <td class="text-center">

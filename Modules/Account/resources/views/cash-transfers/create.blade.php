@@ -52,9 +52,9 @@
                                     @else
                                         <input type="hidden" name="from_employee_id" id="from_employee_id" value="{{ $currentEmployee->id ?? '' }}">
                                         <input type="text" class="form-control" value="{{ $currentEmployee->full_name ?? Auth::user()->name }} (Current User)" readonly>
-                                        @if(isset($currentEmployee) && $currentEmployee->getAccount())
+                                        <!-- @if(isset($currentEmployee) && $currentEmployee->getAccount())
                                             <small class="text-info">Current Balance: {{ number_format($currentEmployee->getAccount()->balance, 2) }}</small>
-                                        @endif
+                                        @endif -->
                                     @endif
                                     @error('from_employee_id')
                                         <span class="text-danger">{{ $message }}</span>
