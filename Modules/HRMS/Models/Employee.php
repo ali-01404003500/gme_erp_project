@@ -11,8 +11,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
+use Modules\HRMS\Models\Approver as ModelsApprover;
 use Modules\HRMS\Models\Kpi\Assessment;
 use Modules\HRMS\Models\Settings\Supervisor;
+use Modules\Inventory\Models\Settings\Approver;
 
 class Employee extends BaseModel
 {
@@ -28,11 +30,27 @@ class Employee extends BaseModel
         'leaves'
     ];
 
-        public function supervisors()
-        {
-            return $this->hasMany(Supervisor::class, 'created_by');
-        }
 
+    public function subordinates()
+    {
+        return $this->belongsToMany(Employee::class, 'approvers', 'approver_id', 'employee_id')
+                    ->withPivot('hierarchy_level')
+                    ->withTimestamps();
+    }
+
+    // Relationship: Approvers for this employee
+    public function approvers()
+    {
+        return $this->belongsToMany(Employee::class, 'approvers', 'employee_id', 'approver_id')
+                    ->withPivot('hierarchy_level')
+                    ->withTimestamps();
+    }
+
+    // Relationship: Approver records for this employee
+    public function approverRecords()
+    {
+        return $this->hasMany(ModelsApprover::class, 'employee_id');
+    }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

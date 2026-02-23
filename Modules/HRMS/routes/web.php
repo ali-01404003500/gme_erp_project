@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\Settings\SupervisorController;
 use Illuminate\Support\Facades\Route;
+use Modules\HRMS\Controllers\ApproverSetupController;
 use Modules\HRMS\Controllers\AttendanceController;
 use Modules\HRMS\Controllers\AttendanceReportController;
 use Modules\HRMS\Controllers\BillsAndAllowanceController;
 use Modules\HRMS\Controllers\CareerController;
 use Modules\HRMS\Controllers\DailyVisitPlanController;
+use Modules\HRMS\Controllers\EmployeeApproverController;
 use Modules\HRMS\Controllers\EmployeeController;
 use Modules\HRMS\Controllers\EmployeeSalaryController;
 use Modules\HRMS\Controllers\JobApplicationController;
@@ -137,14 +139,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::get('monthly-attendance-report', [AttendanceReportController::class, 'monthlyReport'])->name('monthly-attendance-report');
     });
 
-Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
-    Route::middleware(['auth'])->group(function () {
-        // Resource route for supervisors
-        Route::resource('supervisors', SettingsSupervisorController::class);
-        
-        // Additional routes for search functionality
-        Route::get('supervisors/search/employees', [SettingsSupervisorController::class, 'searchEmployees'])
-            ->name('supervisors.search.employees');
+// routes/web.php
+
+Route::group(['prefix' => 'settings', 'as' => 'settings.', 'middleware' => ['web', 'auth']], function () {
+    
+    Route::prefix('employee-approvers')->name('employee-approvers.')->group(function () {
+        Route::get('/', [EmployeeApproverController::class, 'index'])->name('index');
+        Route::post('/search', [EmployeeApproverController::class, 'searchApprovers'])->name('search');
+        Route::post('/store', [EmployeeApproverController::class, 'store'])->name('store');
+        Route::delete('/destroy', [EmployeeApproverController::class, 'destroy'])->name('destroy');
+        Route::get('/current/{employeeId}', [EmployeeApproverController::class, 'getCurrentApprovers'])->name('current');
     });
 });
 
