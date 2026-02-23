@@ -45,7 +45,7 @@
                                             <option value="">Select Sender</option>
                                             @foreach($employees as $employee)
                                                 <option value="{{ $employee->id }}" {{ (old('from_employee_id') ?? ($currentEmployee->id ?? '')) == $employee->id ? 'selected' : '' }}>
-                                                    {{ $employee->full_name }} ({{ $employee->employee_id }})
+                                                    {{ $employee->full_name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -68,7 +68,7 @@
                                         @foreach($employees as $employee)
                                             @if(isset($currentEmployee) && $employee->id == $currentEmployee->id) @continue @endif
                                             <option value="{{ $employee->id }}" {{ old('to_employee_id') == $employee->id ? 'selected' : '' }}>
-                                                {{ $employee->full_name }} ({{ $employee->employee_id }})
+                                                {{ $employee->full_name }}
                                             </option>
                                         @endforeach
                                     </select>
