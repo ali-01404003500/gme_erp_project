@@ -2,6 +2,7 @@
 
 namespace Modules\Account\Services;
 
+use DB;
 use Modules\Account\Models\CashTransfer;
 
 class CashTransferService
@@ -9,7 +10,21 @@ class CashTransferService
 
     public function getAll(int $limit = 20)
     {
-        return CashTransfer::with(['fromEmployee.bankAccount', 'toEmployee.bankAccount'])->paginate($limit);
+        $query = CashTransfer::with(['fromEmployee.bankAccount', 'toEmployee.bankAccount'])->orderBy('id', 'desc');
+
+        if (!hasPermission('supper_admin')) {
+            $currentEmployee = \Modules\HRMS\Models\Employee::where('user_id', auth()->id())->first();
+            if ($currentEmployee) {
+                $query->where(function ($q) use ($currentEmployee) {
+                    $q->where('from_employee_id', $currentEmployee->id)
+                        ->orWhere('to_employee_id', $currentEmployee->id);
+                });
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        return $query->paginate($limit);
     }
 
     public function store(array $data)
@@ -31,24 +46,35 @@ class CashTransferService
 
     public function update(CashTransfer $cashTransfer, array $data)
     {
-        if ($cashTransfer->status != 'pending') {
-            throw \Illuminate\Validation\ValidationException::withMessages(['status' => 'Cannot update non-pending transfer.']);
-        }
-
-        if (isset($data['amount']) && $data['amount'] != $cashTransfer->amount) {
-            $fromEmployee = $cashTransfer->fromEmployee;
-            $balance = $fromEmployee->getAccount()->balance; // Check current balance again? Or balance + old_amount?
-            // Ideally: available = current_balance + old_transfer_amount (since it's not deducted yet, wait, it's pending so not deducted).
-            // Pending transfer doesn't deduct balance in journal yet.
-            // But if there are multiple pending transfers, we might overshoot?
-            // For now, simple check against current balance.
-            if ($data['amount'] > $balance) {
-                throw \Illuminate\Validation\ValidationException::withMessages(['amount' => 'Insufficient balance. Available: ' . $balance]);
+        DB::beginTransaction();
+        try {
+            if ($cashTransfer->status != 'pending') {
+                throw \Illuminate\Validation\ValidationException::withMessages(['status' => 'Cannot update non-pending transfer.']);
             }
-        }
 
-        $cashTransfer->update($data);
-        return $cashTransfer;
+            if (isset($data['amount']) && $data['amount'] != $cashTransfer->amount) {
+                $fromEmployee = $cashTransfer->fromEmployee;
+                $balance = $fromEmployee->getAccount()->balance; // Check current balance again? Or balance + old_amount?
+                // Ideally: available = current_balance + old_transfer_amount (since it's not deducted yet, wait, it's pending so not deducted).
+                // Pending transfer doesn't deduct balance in journal yet.
+                // But if there are multiple pending transfers, we might overshoot?
+                // For now, simple check against current balance.
+                if ($data['amount'] > $balance) {
+                    throw \Illuminate\Validation\ValidationException::withMessages(['amount' => 'Insufficient balance. Available: ' . $balance]);
+                }
+            }
+
+            if (isset($data['status']) && $data['status'] == 'confirmed') {
+                $this->confirm($cashTransfer, $data);
+            }
+
+            $cashTransfer->update($data);
+            DB::commit();
+            return $cashTransfer;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     public function confirm(CashTransfer $cashTransfer, array $data)
@@ -112,6 +138,15 @@ class CashTransferService
 
     public function show($id)
     {
-        return CashTransfer::with(['fromEmployee', 'toEmployee'])->findOrFail($id);
+        $cashTransfer = CashTransfer::with(['fromEmployee', 'toEmployee'])->findOrFail($id);
+
+        if (!hasPermission('supper_admin')) {
+            $currentEmployee = \Modules\HRMS\Models\Employee::where('user_id', auth()->id())->first();
+            if (!$currentEmployee || ($cashTransfer->from_employee_id != $currentEmployee->id && $cashTransfer->to_employee_id != $currentEmployee->id)) {
+                abort(403, 'Unauthorized access.');
+            }
+        }
+
+        return $cashTransfer;
     }
 }

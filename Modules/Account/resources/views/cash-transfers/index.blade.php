@@ -69,7 +69,7 @@
                                         <td class="text-center">
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                                 <!-- Confirm Button -->
-                                                @if ($transfer->status == 'pending' && hasPermission('account.cash-transfers.confirm'))
+                                                @if ($transfer->status == 'pending' && hasPermission('account.cash-transfers.confirm') && (hasPermission('supper_admin') || (isset($currentEmployee) && $transfer->to_employee_id == $currentEmployee->id)))
                                                     <a href="{{ route('account.cash-transfers.edit', $transfer->id) }}?for=confirm"
                                                         class="btn btn-outline-info"
                                                         data-bs-toggle="tooltip"
