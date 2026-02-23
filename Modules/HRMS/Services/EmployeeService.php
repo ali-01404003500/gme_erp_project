@@ -76,7 +76,7 @@ class EmployeeService
                 'name' => $data['full_name'],
                 'email' => $user['system_username'],
                 'password' => bcrypt($user['system_password']),
-                'branch_id' => $user['user_branch_id'],
+                'branch_id' => $employementDetails['user_branch_id'],
                 'user_status' => $user['user_status'],
             ]);
             $result['user'] = $user;
@@ -100,18 +100,39 @@ class EmployeeService
     }
 
     public function update($type, Employee $employee, array $data, array $contact, array $educationsDetails, array $employementDetails, array $documents1, array $documents2, array $bank, array $tax, array $employeement_experience, array $employeeFamilyContact, array $user)
+<<<<<<< HEAD
     {
         //dd( $user);
+=======
+    {  
+        //dd( $employementDetails);
+>>>>>>> bdaa64cb808514debfae481f6fd1273820d30279
 
 
         if ($type == 'employee_information') {
             $employee->update($data);
+<<<<<<< HEAD
 
+=======
+            $employee->employementDetail->update([
+                'card_no' => $employementDetails['card_no']
+            ]);
+
+            // Update the user's branch to match the employee's branch
+>>>>>>> bdaa64cb808514debfae481f6fd1273820d30279
             if ($employee->user) {
                 $employee->user->update([
                     'branch_id' => $employementDetails['user_branch_id'],
                 ]);
+<<<<<<< HEAD
             }
+=======
+    
+            } 
+
+            
+            
+>>>>>>> bdaa64cb808514debfae481f6fd1273820d30279
         }
 
         if ($type == 'contact') {
@@ -127,7 +148,16 @@ class EmployeeService
                 'document_upload' => $documents2['document_upload'],
             ]);
         }
+<<<<<<< HEAD
         if ($type == 'job_status') {
+=======
+        if( $type == 'job_status')
+        {
+            $employee->update([
+                  'status' => $employementDetails['status'],
+            ]);
+
+>>>>>>> bdaa64cb808514debfae481f6fd1273820d30279
             // Reset and save employment detailsBill
             $employee->employementDetails()->delete();
             EmployementDetail::create([
@@ -138,6 +168,8 @@ class EmployeeService
                 'designation_id' => $employementDetails['designation_id'],
                 'supervisor' => $employementDetails['supervisor'],
                 'branch_id' => $employementDetails['user_branch_id'],
+              
+                
             ]);
         }
         if ($type == 'educational') {

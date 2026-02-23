@@ -135,7 +135,7 @@ class EmployeeController extends Controller
             $employementDetails = $request->validate([
                 'card_no' => 'required|string|max:255',
                 'permanent_address' => 'nullable|exists:branches,id',
-                
+                'user_branch_id' => 'required|exists:branches,id',
             ]);
             
         } 
@@ -264,7 +264,7 @@ class EmployeeController extends Controller
                 'photograph' => 'required', 
                 'national_id' => 'required|string|max:255',  
                 'software_access' => 'nullable|string|max:255',
-                'additional_notes' => 'nullable|string|max:255', 
+                'additional_notes' => 'nullable|string|max:255',  
             ]);
              
             $employementDetails = $request->validate([

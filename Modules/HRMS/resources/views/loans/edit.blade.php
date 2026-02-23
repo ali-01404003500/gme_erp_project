@@ -145,6 +145,17 @@
                                         </div>
                                     </div>
 
+                                    <!-- Remarks -->
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-25">
+                                            <label class="color-dark fs-14 fw-500 align-center">
+                                                Remarks
+                                            </label> 
+                                            <textarea name="remarks" id="remarks" class="form-control"
+                                                placeholder="Remarks">{{ old('remaining_balance', $loan->remarks) }}</textarea>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">

@@ -312,7 +312,7 @@
                     action: action
                 },
                 success: function (response) {
-                    // Optionally, update UI or reload
+                    // Optionally, update UI or reload 
                     location.reload();
                 },
                 error: function (xhr) {
