@@ -95,10 +95,7 @@ class TargetController extends Controller
 
         $results = $this->targetService->getYearlyPerformanceSummary($startDate, $endDate, $selectedEmployeeId);
 
-        // --- টেস্ট করার জন্য নিচের লাইনটি যোগ করুন ---
         // dd($results); 
-        // ------------------------------------------
-
         return view('SalesTarget::perfomence.achievement', compact(
             'employees',
             'results',

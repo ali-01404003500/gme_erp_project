@@ -9,6 +9,9 @@ use Modules\HRMS\Models\Employee;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\Delivery;
 use Modules\HRMS\Models\BillsAndAllowance;
+use Modules\Account\Models\Collections\Collection;
+use Modules\Account\Models\Transaction;
+use Modules\Sales\Models\SalesCommission; // কমিশন মডেল যুক্ত করা হলো
 
 class TargetService
 {
@@ -28,7 +31,6 @@ class TargetService
         $startYear = $startDateTime->format('Y');
         $endYear = $endDateTime->format('Y');
 
-
         $targetQuery = Target::whereBetween('year', [$startYear, $endYear]);
         if ($selectedUserId) {
             $targetQuery->where('employee_id', $selectedUserId);
@@ -37,8 +39,6 @@ class TargetService
         $activeTargets = $targetQuery->get();
         $targetEmployeeIds = $activeTargets->pluck('employee_id')->unique()->toArray();
 
-
-        // get employees
         $employees = Employee::with(['user.roles', 'employementDetail.designation'])
             ->whereIn('id', $targetEmployeeIds)
             ->get();
@@ -49,8 +49,7 @@ class TargetService
             $user = $employee->user;
             if (!$user) continue;
 
-
-            // target data and total range target
+            // 1. Target calculation
             $totalRangeTarget = 0;
             $tempDate = clone $startDateTime;
             while ($tempDate <= $endDateTime) {
@@ -66,8 +65,7 @@ class TargetService
                 if ($tempDate->format('Y-m') > $endDateTime->format('Y-m')) break;
             }
 
-
-            // users sales order data 
+            // 2. Fetch Sales Orders (Based on machine tags)
             $salesOrders = SalesOrder::where('created_by', $user->id)
                 ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
                 ->whereHas('salesOrderDetails.product.tag', function ($q) use ($machineTags) {
@@ -76,36 +74,30 @@ class TargetService
 
             $salesOrderIds = $salesOrders->pluck('id')->toArray();
 
-
-            // costing logic included 
+            // 3. Costing Logic (Using Transaction Model - Account 5300)
             $totalCosting = 0;
             if (!empty($salesOrderIds)) {
-                $totalCosting = DB::table('transactions')
-                    ->join('deliveries', function ($join) {
-                        $join->on('transactions.transactionable_id', '=', 'deliveries.id')
-                            ->where('transactions.transactionable_type', '=', 'Modules\Sales\Models\Delivery');
+                $totalCosting = Transaction::where('transactionable_type', Delivery::class)
+                    ->whereHasMorph('transactionable', [Delivery::class], function ($query) use ($salesOrderIds) {
+                        $query->whereIn('source_id', $salesOrderIds);
                     })
-                    ->whereIn('deliveries.source_id', $salesOrderIds)
-                    ->where('transactions.account_id', function ($query) {
-                        $query->select('id')->from('accounts')->where('account_number', 5300)->limit(1);
+                    ->where('balance_type', 'debit')
+                    ->whereHas('account', function ($query) {
+                        $query->where('account_number', 5300);
                     })
-                    ->where('transactions.balance_type', 'debit')
-                    ->sum('transactions.debit_amount');
+                    ->sum('debit_amount');
             }
 
-
-            // collection logic included
+            // 4. Collection Logic (Status must be Approved)
             $totalCollection = 0;
             if (!empty($salesOrderIds)) {
-                $totalCollection = DB::table('collections')
-                    ->whereIn('source_id', $salesOrderIds)
+                $totalCollection = Collection::whereIn('source_id', $salesOrderIds)
                     ->where('source_type', SalesOrder::class)
                     ->where('status', 'approved')
                     ->sum('total_amount');
             }
 
-
-            // TA & DA calculation included
+            // 5. TA & DA calculation (Approved or Paid status)
             $bills = BillsAndAllowance::where('employee_id', $employee->id)
                 ->whereBetween('date_of_bill_claim', [$startDate, $endDate])
                 ->whereIn('status', ['approved', 'paid'])
@@ -114,25 +106,22 @@ class TargetService
 
             $totalTA = 0;
             $totalDA = 0;
-
             foreach ($bills as $bill) {
-                // TA = Transport Expenses (Final Approved Amount)
-                $totalTA += $bill->transportExpenses->sum(function ($exp) {
-                    return $exp->final_approved_amount ?? 0;
-                });
+                $totalTA += $bill->transportExpenses->sum('final_approved_amount') ?: $bill->transportExpenses->sum('amount');
+                $totalDA += $bill->generalExpenses->sum('final_approved_amount') ?: $bill->generalExpenses->sum('amount');
+            }
 
-                // DA = General Expenses (Final Approved Amount)
-                $totalDA += $bill->generalExpenses->sum(function ($exp) {
-                    return $exp->final_approved_amount ?? 0;
-                });
+            // commission calculation
+            $totalCommission = 0;
+            if (!empty($salesOrderIds)) {
+                $totalCommission = SalesCommission::whereIn('sales_order_id', $salesOrderIds)
+                    ->whereIn('status', ['verify', 'approved', 'paid'])
+                    ->sum('amount');
             }
 
             $achieved = (float)$salesOrders->sum('net_amount');
             $salaryExpense = (float)($employee->salary ?? 0);
-
-
-            //  (TA + DA)
-            $totalOperationalExpense = $totalTA + $totalDA;
+            $totalOperationalExpense = $totalTA + $totalDA + $totalCommission;
 
             $results[] = [
                 'name' => $employee->full_name,
@@ -146,7 +135,7 @@ class TargetService
                 'salary_expense' => $salaryExpense,
                 'ta_expense' => (float)$totalTA,
                 'da_expense' => (float)$totalDA,
-                'commission' => 0,
+                'commission' => (float)$totalCommission, 
                 'entertainment' => 0,
                 'total_excl_salary' => $totalOperationalExpense,
                 'total_incl_salary' => $salaryExpense + $totalOperationalExpense,
@@ -157,18 +146,14 @@ class TargetService
         return $results;
     }
 
-
-
     public function getAllTargets()
     {
         return Target::with('employee')->orderBy('year', 'desc')->get();
     }
 
-
-
     public function storeMultipleTargets(array $targetsData)
     {
-        return DB::transaction(function ($targetsData) {
+        return DB::transaction(function () use ($targetsData) {
             foreach ($targetsData as $data) {
                 if (empty($data['employee_id'])) continue;
 
@@ -196,7 +181,6 @@ class TargetService
             }
         });
     }
-
 
     public function deleteTarget($id)
     {
