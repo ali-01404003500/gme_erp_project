@@ -4,6 +4,7 @@ namespace Modules\Account\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
+use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Account\Models\AccountSetup\BankAccount;
@@ -39,6 +40,21 @@ class FundTransfer extends BaseModel
     {
         return $this->morphMany(Transaction::class, 'transactionable');
     }
+
+    // Relationship: approve by
+    public function approveBy()
+    {
+        return $this->belongsTo(User::class,'approve_by');
+
+    }
+
+    // Relationship: approve by
+    public function verifyBy()
+    {
+        return $this->belongsTo(User::class,'verify_by');
+
+    }
+
 
 }
 

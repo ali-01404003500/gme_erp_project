@@ -77,7 +77,7 @@
                                             <input type="text" name="from_to" class="form-control flatdaterange" value="{{ request('from_to') }}" placeholder="Date Range">
                                         </td>
                                         <td width="20%">
-                                            <select name="type" class="form-control tom-select" data-placeholder="Type">
+                                            <select name="transfer_type" class="form-control tom-select" data-placeholder="Transfer Type">
                                                 <option value=""></option>
                                                 <option value="bank_to_bank" {{ request('transfer_type') == 'bank_to_bank' ? 'selected' : '' }}>Bank to Bank</option>
                                                 <option value="bank_to_cash" {{ request('transfer_type') == 'bank_to_cash' ? 'selected' : '' }}>Bank to Cash</option>
@@ -130,12 +130,44 @@
                             </thead>
                             <tbody>
                                 @foreach ($fundTransfers as $fund)
+                                
                                     <tr>
                                         <td>{{ ($fundTransfers->currentPage() - 1) * $fundTransfers->perPage() + $loop->iteration }}</td> 
-                                        <td>{{ $fund->transfer_type }}</td>
+                                        <td> 
+                                            @php
+                                                if($fund->transfer_type=="bank_to_bank")
+                                                    $transferType = "Bank to Bank";
+                                                else if($fund->transfer_type=="bank_to_cash")
+                                                    $transferType = "Bank to Cash";
+                                                else if($fund->transfer_type=="cash_to_bank")
+                                                    $transferType = "Cash to Bank";
+                                                else if($fund->transfer_type=="bkash_to_bank")
+                                                    $transferType = "Bkash to Bank";
+                                                else
+                                                    $transferType = "";
+                                            @endphp
+                                            {{ $transferType }}
+
+                                        </td>
                                         <td>{{ $fund->transfer_date }}</td>
-                                        <td>{{ $fund->transferFromBankAccount->account_name }}</td>
-                                        <td>{{ $fund->transferToBankAccount->account_name }}</td> 
+                                        <td>
+                                            @php
+                                                $fromAc = $fund->transferFromBankAccount->account_name;
+                                                $fromAc = str_replace('#', "\n", $fund->transferFromBankAccount->account_name );
+                                                $fromAc = str_replace('.(', ".\n(", $fromAc );
+                                            @endphp
+                                            
+                                            {!!  nl2br($fromAc)  !!}
+                                        </td> 
+                                        <td>
+                                            @php
+                                                $toAc = $fund->transferToBankAccount->account_name;
+                                                $toAc = str_replace('#', "\n", $fund->transferToBankAccount->account_name );
+                                                $toAc = str_replace('.(', ".\n(", $toAc );
+                                            @endphp
+                                            
+                                            {!!  nl2br($toAc)  !!}
+                                        </td>
                                         <td>৳{{ number_format($fund->amount) }}</td>
                                         <td>{{ Str::limit($fund->remarks, 50) }}</td>
                                         <td>

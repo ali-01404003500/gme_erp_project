@@ -23,6 +23,13 @@ class FundTransferService
     public function update(FundTransfer $fundTransfer, array $data)
     {
         $fundTransfer->update($data);
+        if($data['status']=='approved'){
+            $fundTransfer->update(['approve_by'=>auth()->user()->id,'approve_date'=>now()]);
+            $this->postJournalEntry($fundTransfer);
+        } 
+        // if($data['status']=='verified'){
+        //     $fundTransfer->update(['verify_by'=>auth()->user()->id,'verify_date'=>now()]);
+        // }  
         return $fundTransfer;
     }
 
@@ -34,5 +41,34 @@ class FundTransferService
     public function show($id)
     {
         return FundTransfer::findOrFail($id);
+    }
+
+    private function postJournalEntry(FundTransfer $fundTransfer)
+    {
+        $fromAccount = $fundTransfer->transferFromBankAccount->getAccount();
+        $toAccount = $fundTransfer->transferToBankAccount->getAccount();
+
+        $fundTransfer->transactions()->delete();
+
+        // Credit Sender (Asset decreases)
+        $fundTransfer->transactions()->create([
+            'account_id' => $fromAccount->id,
+            'debit_amount' => $fundTransfer->amount,
+            'credit_amount' => 0,
+            'balance_type' => 'debit',
+            'transaction_date' => $fundTransfer->transfer_date,
+            'description' => 'Fund Transfer from ' . $fundTransfer->transferFromBankAccount->account_name . " to " . $fundTransfer->transferFromBankAccount->account_name,
+        ]);
+
+
+        // Debit Receiver (Asset increases)
+        $fundTransfer->transactions()->create([
+            'account_id' => $toAccount->id,
+            'debit_amount' => 0,
+            'credit_amount' => $fundTransfer->amount,
+            'balance_type' => 'credit',
+            'transaction_date' => $fundTransfer->transfer_date,
+            'description' => 'Fund Transfer from ' . $fundTransfer->transferFromBankAccount->account_name . " to " . $fundTransfer->transferFromBankAccount->account_name,
+        ]);
     }
 }
