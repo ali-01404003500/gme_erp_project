@@ -3161,7 +3161,7 @@ class PermissionTableSeed extends Seeder
              ],
 
 
-             //account.cheque-verifications.check
+                //account.cheque-verifications.check
                 [
                     'name'=> 'Cheque Verifications List',
                     'slug'=> 'account.cheque-verifications.index',
@@ -3187,6 +3187,52 @@ class PermissionTableSeed extends Seeder
                     'description'=> 'Cheque check Verifications  permission',
                     'key'=> 'account.cheque-verifications'
                 ],
+
+                //account.fund transfer
+                [
+                    'name'=> 'Fund Transfer List',
+                    'slug'=> 'account.fund-tranfers.index',
+                    'description'=> 'Fund Transfer list permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Create',
+                    'slug'=> 'account.fund-tranfers.create',
+                    'description'=> 'Fund Transfer Create permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Edit',
+                    'slug'=> 'account.fund-tranfers.edit',
+                    'description'=> 'Fund Transfer Edit permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Delete',
+                    'slug'=> 'account.fund-tranfers.delete',
+                    'description'=> 'Fund Transfer delete permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+    
+                [
+                    'name'=> 'Fund Transfer Verify',
+                    'slug'=> 'account.fund-tranfers.verify',
+                    'description'=> 'Fund Transfer verify permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Approve',
+                    'slug'=> 'account.fund-tranfers.approve',
+                    'description'=> 'Fund Transfer approve permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer View',
+                    'slug'=> 'account.fund-tranfers.view',
+                    'description'=> 'Fund Transfer View permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+
 
 
              //default-payable-receivables

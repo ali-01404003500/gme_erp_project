@@ -92,9 +92,8 @@
         'task-menu-title'=>'Task App',
 
         'bookmark-menu-title'=>'Bookmarks',
-
-        
-
+ 
+       
         'broker-list-menu-title' => 'Broker List',
         'broker-create-menu-title' => 'Broker Create',
         'update-broker-menu-title' => 'Update Broker',
@@ -579,4 +578,8 @@
 
         'sales_target' => 'Sales Target',
         'sales_target Settings' => 'Sales Target Settings',
+
+        'fund-transfers-list' => 'Fund Transfer List',
+        'create-fund-transfer' => 'Create Fund Transfer',
+
     ];
