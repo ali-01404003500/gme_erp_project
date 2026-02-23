@@ -893,7 +893,15 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'account.payments.loan-payment',
                 'parent_key' => 'account.payments',
             ],
- 
+
+            //Loan Payments
+            [
+                'title' => 'Fund Transfer',
+                'description' => 'Permission of Add, Remove, Update, Delete, Verify, Approve Fund Transfer',
+                'key' => 'account.fund-tranfers',
+                'parent_key' => 'accounts',
+            ],
+
             //Vendor Bills
             [
                 'title' => 'Vendor Bills',

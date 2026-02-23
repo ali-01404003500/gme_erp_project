@@ -319,6 +319,16 @@
                 </li>
             @endif
 
+            @if (hasPermission('account.fund-transfers.index'))
+                <li>
+                    <a href="{{ route('account.fund-transfers.index') }}"
+                        class="{{ request()->routeIs('account.fund-transfers.index') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-receipt"></span>
+                        {{ t_('fund transfer') }}
+                    </a>
+                </li>
+            @endif
+
 
 
             @if (hasPermission('account.collections.*'))

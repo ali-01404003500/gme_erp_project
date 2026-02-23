@@ -59,17 +59,17 @@
                                         <td class="text-center">{{ number_format($transfer->amount, 2) }}</td>
                                         <td class="text-center">
                                             @if($transfer->status == 'pending')
-                                                <span class="badge badge-warning">Pending</span>
+                                                <span class="badge  badge-round badge-warning">Pending</span>
                                             @elseif($transfer->status == 'confirmed')
-                                                <span class="badge badge-success">Confirmed</span>
+                                                <span class="badge  badge-round badge-success">Confirmed</span>
                                             @else
-                                                <span class="badge badge-danger">{{ ucfirst($transfer->status) }}</span>
+                                                <span class="badge  badge-round badge-danger">{{ ucfirst($transfer->status) }}</span>
                                             @endif
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                                 <!-- Confirm Button -->
-                                                @if ($transfer->status == 'pending' && hasPermission('account.cash-transfers.confirm'))
+                                                @if ($transfer->status == 'pending' && hasPermission('account.cash-transfers.confirm') && (hasPermission('supper_admin') || (isset($currentEmployee) && $transfer->to_employee_id == $currentEmployee->id)))
                                                     <a href="{{ route('account.cash-transfers.edit', $transfer->id) }}?for=confirm"
                                                         class="btn btn-outline-info"
                                                         data-bs-toggle="tooltip"
