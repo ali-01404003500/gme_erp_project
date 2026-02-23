@@ -352,65 +352,65 @@ class PermissionTableSeed extends Seeder
 
             //TA/DA
             [
-                'name'=> 'TA/DA List',
-                'slug'=> 'hrm.bills.index',
-                'description'=> 'TA/DA list permission',
-                'key'=> 'hrm.bills'
+                'name' => 'TA/DA List',
+                'slug' => 'hrm.bills.index',
+                'description' => 'TA/DA list permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name'=> 'Create TA/DA',
-                'slug'=> 'hrm.bills.create',
-                'description'=> 'TA/DA create permission',
-                'key'=> 'hrm.bills'
+                'name' => 'Create TA/DA',
+                'slug' => 'hrm.bills.create',
+                'description' => 'TA/DA create permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name'=> 'TA/DA Update',
-                'slug'=> 'hrm.bills.update',
-                'description'=> 'TA/DA update permission',
-                'key'=> 'hrm.bills'
+                'name' => 'TA/DA Update',
+                'slug' => 'hrm.bills.update',
+                'description' => 'TA/DA update permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name'=> 'TA/DA View',
-                'slug'=> 'hrm.bills.show',
-                'description'=> 'TA/DA show permission',
-                'key'=> 'hrm.bills'
+                'name' => 'TA/DA View',
+                'slug' => 'hrm.bills.show',
+                'description' => 'TA/DA show permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name'=> 'TA/DA Delete',
-                'slug'=> 'hrm.bills.destroy',
-                'description'=> 'TA/DA delete permission',
-                'key'=> 'hrm.bills'
+                'name' => 'TA/DA Delete',
+                'slug' => 'hrm.bills.destroy',
+                'description' => 'TA/DA delete permission',
+                'key' => 'hrm.bills'
             ],
             [
-                'name'=> 'TA/DA Team Leader Verify',
-                'slug'=> 'hrm.bills.team_leader_verify',
-                'description'=> 'TA/DA team leader verify permission',
-                'key'=> 'hrm.bills'
-            ],
-
-            [
-                'name'=> 'TA/DA HR/Accounts Verify',
-                'slug'=> 'hrm.bills.accounts_verify',
-                'description'=> 'TA/DA HR/accounts verify permission',
-                'key'=> 'hrm.bills'
+                'name' => 'TA/DA Team Leader Verify',
+                'slug' => 'hrm.bills.team_leader_verify',
+                'description' => 'TA/DA team leader verify permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name'=> 'TA/DA Final Approve',
-                'slug'=> 'hrm.bills.final_approve',
-                'description'=> 'TA/DA final approve permission',
-                'key'=> 'hrm.bills'
+                'name' => 'TA/DA HR/Accounts Verify',
+                'slug' => 'hrm.bills.accounts_verify',
+                'description' => 'TA/DA HR/accounts verify permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name'=> 'TA/DA Verify',
-                'slug'=> 'hrm.bills.verify',
-                'description'=> 'TA/DA Verification List',
-                'key'=> 'hrm.bills'
+                'name' => 'TA/DA Final Approve',
+                'slug' => 'hrm.bills.final_approve',
+                'description' => 'TA/DA final approve permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA Verify',
+                'slug' => 'hrm.bills.verify',
+                'description' => 'TA/DA Verification List',
+                'key' => 'hrm.bills'
             ],
 
 
@@ -3619,31 +3619,31 @@ class PermissionTableSeed extends Seeder
             ],
             //TA/DA Payments   
             [
-                'name'=> 'TA/DA Payments List',
-                'slug'=> 'account.payments.petty-cash-payments.index',
-                'description'=> 'TA/DA payments list permission',
-                'key'=> 'account.payments.petty-cash-payments'
-             ],
-             [
-                'name'=> 'Create TA/DA Payments',
-                'slug'=> 'account.payments.petty-cash-payments.create',
-                'description'=> 'TA/DA payments create permission',
-                'key'=> 'account.payments.petty-cash-payments'
-             ],
+                'name' => 'TA/DA Payments List',
+                'slug' => 'account.payments.petty-cash-payments.index',
+                'description' => 'TA/DA payments list permission',
+                'key' => 'account.payments.petty-cash-payments'
+            ],
+            [
+                'name' => 'Create TA/DA Payments',
+                'slug' => 'account.payments.petty-cash-payments.create',
+                'description' => 'TA/DA payments create permission',
+                'key' => 'account.payments.petty-cash-payments'
+            ],
 
 
             //Loan Payments   
             [
-                'name'=> 'Loan Payments List',
-                'slug'=> 'account.payments.loan-payment.index',
-                'description'=> 'Loan payments list permission',
-                'key'=> 'account.payments.loan-payment'
+                'name' => 'Loan Payments List',
+                'slug' => 'account.payments.loan-payment.index',
+                'description' => 'Loan payments list permission',
+                'key' => 'account.payments.loan-payment'
             ],
             [
-                'name'=> 'Loan Payments',
-                'slug'=> 'account.payments.loan-payment.payment',
-                'description'=> 'Loan payments create permission',
-                'key'=> 'account.payments.loan-payment'
+                'name' => 'Loan Payments',
+                'slug' => 'account.payments.loan-payment.payment',
+                'description' => 'Loan payments create permission',
+                'key' => 'account.payments.loan-payment'
             ],
 
             //Vender bill settings account.vendor-bills.settings
@@ -4114,6 +4114,13 @@ class PermissionTableSeed extends Seeder
                 'name' => 'Cash Transfer Delete',
                 'slug' => 'account.cash-transfers.destroy',
                 'description' => 'Cash Transfer delete permission',
+                'key' => 'account.cash-transfers'
+            ],
+            //confirm cash transfer
+            [
+                'name' => 'Cash Transfer Confirm',
+                'slug' => 'account.cash-transfers.confirm',
+                'description' => 'Cash Transfer confirm permission',
                 'key' => 'account.cash-transfers'
             ],
 

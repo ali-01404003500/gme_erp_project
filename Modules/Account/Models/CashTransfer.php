@@ -22,4 +22,9 @@ class CashTransfer extends BaseModel
     {
         return $this->belongsTo(\Modules\HRMS\Models\Employee::class, 'to_employee_id');
     }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transaction::class, 'transactionable');
+    }
 }

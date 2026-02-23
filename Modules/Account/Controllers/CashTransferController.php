@@ -27,6 +27,7 @@ class CashTransferController extends Controller
     public function index()
     {
         $data['cashTransfers'] = $this->service->getAll();
+        $data['currentEmployee'] = \Modules\HRMS\Models\Employee::where('user_id', auth()->id())->first();
 
         return view("Account::cash-transfers.index", $data);
     }
@@ -89,6 +90,7 @@ class CashTransferController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'transfer_date' => 'required|date',
             'remarks' => 'nullable|string',
+            'status' => 'nullable|string',
         ]);
         try {
             $this->service->update($cashTransfer, $validate);

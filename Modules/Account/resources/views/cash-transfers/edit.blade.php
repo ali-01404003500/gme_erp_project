@@ -27,16 +27,27 @@
 
         <div class="row">
             <div class="col-md-12">
+                <x-error-alart />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-body">
                         <form action="{{ route('account.cash-transfers.update', $cashTransfer->id) }}" method="POST">
                             @csrf
                             @method('PUT')
+                            <input type="hidden" name="status" id="transfer_status" value="{{ $cashTransfer->status }}">
                             <div class="row">
                                 <div class="col-md-6 form-group">
                                     <label>From Employee (Sender)</label>
                                     <input type="text" class="form-control"
                                         value="{{ $cashTransfer->fromEmployee->full_name ?? '' }}" readonly disabled>
+                                    <div id="current_balance_container" style="display: none;">
+                                        <small class="text-info">Current Balance: <span
+                                                id="from_employee_balance">0.00</span></small>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-6 form-group">
@@ -74,9 +85,13 @@
                             </div>
 
                             <div class="mt-4 d-flex justify-content-end gap-1">
-                                <a href="{{ route('account.cash-transfers.index') }}"
-                                    class="btn btn-danger">Cancel</a>
+                                <a href="{{ route('account.cash-transfers.index') }}" class="btn btn-danger">Cancel</a>
                                 <button type="submit" class="btn btn-primary">Update Transfer</button>
+                                @if(request()->get('for') == 'confirm')
+                                    <button type="button" id="confirm_save_btn" class="btn btn-success">Confirm and
+                                        Save</button>
+                                    <button type="button" id="reject_btn" class="btn btn-danger">Reject</button>
+                                @endif
                             </div>
                         </form>
                     </div>
@@ -84,4 +99,61 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('page_scripts')
+    <script>
+        $(document).ready(function () {
+            var employee_id = "{{ $cashTransfer->from_employee_id }}";
+            if (employee_id) {
+                $.ajax({
+                    url: "{{ route('account.get-ballance') }}",
+                    type: 'GET',
+                    data: { account_id: employee_id, type: 'employee' },
+                    success: function (response) {
+                        $('#from_employee_balance').text(response.balance);
+                        $('#current_balance_container').show();
+                    }
+                });
+            }
+
+            // Confirm and Save button logic
+            $('#confirm_save_btn').on('click', function () {
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to confirm and save this transfer!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, confirm it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#transfer_status').val('confirmed');
+                        form.submit();
+                    }
+                });
+            });
+
+            // Reject button logic
+            $('#reject_btn').on('click', function () {
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to reject this transfer!",
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, reject it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#transfer_status').val('rejected');
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
