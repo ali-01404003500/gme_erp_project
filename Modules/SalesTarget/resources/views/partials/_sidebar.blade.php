@@ -60,7 +60,7 @@
                 </li>
             @endif
 
-            <hr style="border-top: 1px solid #444; margin: 5px 20px;">
+            {{-- <hr style="border-top: 1px solid #444; margin: 5px 20px;"> --}}
 
             @if (hasPermission('sales_target.settings.target.index'))
                 <li>
@@ -82,7 +82,7 @@
                 </li>
             @endif --}}
 
-            <hr style="border-top: 1px solid #444; margin: 5px 20px;">
+            {{-- <hr style="border-top: 1px solid #444; margin: 5px 20px;"> --}}
 
             @if (hasPermission('sales_target.settings.incentives.index'))
                 <li>

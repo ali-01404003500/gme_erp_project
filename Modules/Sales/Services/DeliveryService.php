@@ -18,27 +18,29 @@ use Modules\Purchase\Models\RequisitionReceiveSerial;
 
 class DeliveryService
 {
-    
+
     private $stockService;
 
     private $shipmentVerifyService;
 
-    public function __construct(StockService $stockService, ShipmentVerifyService $shipmentVerifyService) {
+    public function __construct(StockService $stockService, ShipmentVerifyService $shipmentVerifyService)
+    {
         $this->stockService = $stockService;
         $this->shipmentVerifyService = $shipmentVerifyService;
     }
 
-    public function getAll(int $limit = 20) {
-        if(!request()->has('status')){
+    public function getAll(int $limit = 20)
+    {
+        if (!request()->has('status')) {
             request()->merge(['status' => 'pending']);
         }
         return Delivery::query()
-        ->whereHas('source')
-        ->searchByFields(['status'])
-        ->filterByDateRange('delivery_date')
-        ->paginate($limit);
+            ->whereHas('source')
+            ->searchByFields(['status'])
+            ->filterByDateRange('delivery_date')
+            ->paginate($limit);
     }
-    
+
     public function store(array $data)
     {
         throw new \Exception('Not Implemented', 501);
@@ -71,8 +73,9 @@ class DeliveryService
         });
     }
 
-    public function stockOut(DeliveryStock $salesOrderDeliveryStock){
-        if($salesOrderDeliveryStock->lot_no){
+    public function stockOut(DeliveryStock $salesOrderDeliveryStock)
+    {
+        if ($salesOrderDeliveryStock->lot_no) {
             $stock = $this->stockService->store([
                 'product_id' => $salesOrderDeliveryStock->product_catalog_id,
                 'source_type' => DeliveryStock::class,
@@ -83,8 +86,8 @@ class DeliveryService
                 'date' =>  DeliveryStock::find($salesOrderDeliveryStock->id)?->deliveryDetail?->delivery?->delivery_date
             ]);
             return $stock;
-         }
-         if($salesOrderDeliveryStock->serial_no){
+        }
+        if ($salesOrderDeliveryStock->serial_no) {
             $stock = $this->stockService->store([
                 'product_id' => $salesOrderDeliveryStock->product_catalog_id,
                 'source_type' => DeliveryStock::class,
@@ -98,7 +101,8 @@ class DeliveryService
         }
     }
 
-    function storeShipping(Delivery $delivery){
+    function storeShipping(Delivery $delivery)
+    {
         // dd($delivery->source);
         /***
          * "address" => "Ishwardi/Bazar"
@@ -107,48 +111,50 @@ class DeliveryService
          */
         // impliments store shiping 
         return $this->shipmentVerifyService->initStore([
-            'customer_id'=> $delivery->source->customer_id,
-            'customer_address'=> $delivery->source->shipment->address,
-            'challan_no'=> $delivery->source->challan_no,
-            'courier_id'=> $delivery->source->shipment->courier_id,
-            'courier_date'=> $delivery->delivery_date,
-            'cartoon_no'=> $delivery->carton_no,
-            'source_id'=> $delivery->id,
-            'source_type'=> Delivery::class
+            'customer_id' => $delivery->source->customer_id,
+            'customer_address' => $delivery->source->shipment->address,
+            'challan_no' => $delivery->source->challan_no,
+            'courier_id' => $delivery->source->shipment->courier_id,
+            'courier_date' => $delivery->delivery_date,
+            'cartoon_no' => $delivery->carton_no,
+            'source_id' => $delivery->id,
+            'source_type' => Delivery::class
         ]);
     }
 
-/**
- * Assign a dongle to customer.
- *
- * @param DeliveryStock $serialStockSalesOrderDeliveryStock
- * @param int $customerId
- * @return DongleOrSerialEntry
- */
+    /**
+     * Assign a dongle to customer.
+     *
+     * @param DeliveryStock $serialStockSalesOrderDeliveryStock
+     * @param int $customerId
+     * @return DongleOrSerialEntry
+     */
 
-    function assignDongleToCustomer(DeliveryStock $serialStockSalesOrderDeliveryStock, $customerId){
+    function assignDongleToCustomer(DeliveryStock $serialStockSalesOrderDeliveryStock, $customerId)
+    {
         $inSource =  $this->stockService->getInSource($serialStockSalesOrderDeliveryStock->product_catalog_id, $serialStockSalesOrderDeliveryStock->serial_no);
         $customer = Customer::find($customerId);
-        if(!($inSource->serial_no?? null))
+        if (!($inSource->serial_no ?? null))
             return;
         return DongleOrSerialEntry::create([
-            'customer_id'=>$customerId,
-            'address'=>$customer->address??'N/A',
-            'product_id'=>$serialStockSalesOrderDeliveryStock->product_catalog_id,
-            'product_type'=>$serialStockSalesOrderDeliveryStock->productCatalog->productType->name,
-            'dongle_id'=>$inSource->serial_no,
-            'status'=>"active",
+            'customer_id' => $customerId,
+            'address' => $customer->address ?? 'N/A',
+            'product_id' => $serialStockSalesOrderDeliveryStock->product_catalog_id,
+            'product_type' => $serialStockSalesOrderDeliveryStock->productCatalog->productType->name,
+            'dongle_id' => $inSource->serial_no,
+            'status' => "active",
         ]);
     }
 
-    public function initShipping(Delivery $delivery){
+    public function initShipping(Delivery $delivery)
+    {
         // implements store shipping
 
     }
-    
+
     public function update(Delivery $delivery, $data, array $deliveryDetails, $deliveryStockDetails)
     {
-        
+
         DB::beginTransaction();
         $delivery->update($data);
         $result['delivery'] = $delivery;
@@ -245,7 +251,7 @@ class DeliveryService
 
         //Cost of Goods Sold account
         $cogs = Account::where('account_number', 5300)->first();
-        
+
         // Calculate total cost of goods sold first
         $totalCost = 0;
         $inventoryTransactions = [];
@@ -253,22 +259,20 @@ class DeliveryService
         foreach ($delivery->deliveryDetails as $deliveryDetail) {
             $inventoryAccount = $deliveryDetail->product->getInventoryAccount();
 
-            if($deliveryDetail->product->is_serial_product){
+            if ($deliveryDetail->product->is_serial_product) {
                 // $price = RequisitionReceiveSerial::whereIn('serial_no', $deliveryDetail->deliveryStocks->pluck('serial_no'))->get() ->pluck('requisition.requisitionDetails')->flatten()->where('product_id', $deliveryDetail->product_id)->first()->price;
-                            $price = $deliveryDetail->product->getLandedPrice($deliveryDetail->deliveryStocks->pluck('serial_no')->toArray());
-
-            } else{
-//                 dd($deliveryDetail,$deliveryDetail->deliveryStocks, 
-// RequisitionReceiveBatch::whereIn('lot_no', $deliveryDetail->deliveryStocks->pluck('lot_no'))->get()->pluck('requisition.requisitionDetails')->flatten()->where('product_id', $deliveryDetail->product_id)->first()->price            );
+                $price = $deliveryDetail->product->getLandedPrice($deliveryDetail->deliveryStocks->pluck('serial_no')->toArray());
+            } else {
+                //                 dd($deliveryDetail,$deliveryDetail->deliveryStocks, 
+                // RequisitionReceiveBatch::whereIn('lot_no', $deliveryDetail->deliveryStocks->pluck('lot_no'))->get()->pluck('requisition.requisitionDetails')->flatten()->where('product_id', $deliveryDetail->product_id)->first()->price            );
                 // $price = RequisitionReceiveBatch::with('requisition.requisitionDetails')->whereIn('lot_no', $deliveryDetail->deliveryStocks->pluck('lot_no'))->get()->pluck('requisition.requisitionDetails')->flatten()->where('product_id', $deliveryDetail->product_id)->first()->price;
-                            $price = $deliveryDetail->product->getLandedPrice($deliveryDetail->deliveryStocks->pluck('lot_no')->toArray());
-
+                $price = $deliveryDetail->product->getLandedPrice($deliveryDetail->deliveryStocks->pluck('lot_no')->toArray());
             }
-            
+
 
             $itemCost = $deliveryDetail->quantity * $price;
             $totalCost += $itemCost;
-            
+
             $inventoryTransactions[] = [
                 'account_id' => $inventoryAccount->id,
                 'invoice_no' => $delivery->source->sales_order_id ?? $delivery->source->invoice_id,
@@ -279,7 +283,7 @@ class DeliveryService
                 'transaction_date' => $delivery->delivery_date,
             ];
         }
-        
+
         // Create COGS transaction with total cost as debit amount
         $delivery->transactions()->create([
             'account_id' => $cogs->id,
@@ -290,12 +294,12 @@ class DeliveryService
             'description' => "Invoice for Deliverys #" . $delivery->source->sales_order_id ?? $delivery->source->invoice_id,
             'transaction_date' => $delivery->delivery_date,
         ]);
-        
+
         // Create inventory transactions
         foreach ($inventoryTransactions as $transaction) {
             $delivery->transactions()->create($transaction);
         }
-        
+
 
         // dd($delivery->transactions);
         $totalDebits = $delivery->transactions()->sum('debit_amount');

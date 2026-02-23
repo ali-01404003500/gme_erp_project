@@ -15,12 +15,10 @@
             <div class="card-body p-3">
                 <form action="{{ route('sales_target.perfomence.achievement') }}" method="GET" id="filterForm">
                     <div class="row align-items-end">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="fs-13 fw-500 mb-1">Filter by Employee</label>
                             <select class="form-control tom-select" name="user_ref_id" onchange="this.form.submit()">
-                                {{-- এই অপশনটি সিলেক্ট করলে সব এমপ্লয়ি দেখাবে --}}
                                 <option value="">--- ALL EMPLOYEES ---</option>
-
                                 @foreach ($employees as $employee)
                                     <option value="{{ $employee->id }}" {{ request('user_ref_id') == $employee->id ? 'selected' : '' }}>
                                         {{ $employee->display_name }}
@@ -28,16 +26,17 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label class="fs-13 fw-500 mb-1">Fiscal Year</label>
-                            <select class="form-control tom-select" name="year" onchange="this.form.submit()">
-                                @for ($i = date('Y'); $i >= date('Y') - 5; $i--)
-                                    <option value="{{ $i }}" {{ request('year', date('Y')) == $i ? 'selected' : '' }}>{{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
+                        <div class="col-md-3">
+                            <label class="fs-13 fw-500 mb-1">From Date</label>
+                            <input type="date" name="start_date" class="form-control"
+                                value="{{ request('start_date', date('Y-m-01')) }}" onchange="this.form.submit()">
                         </div>
-                        <div class="col-md-6 text-end">
+                        <div class="col-md-3">
+                            <label class="fs-13 fw-500 mb-1">To Date</label>
+                            <input type="date" name="end_date" class="form-control"
+                                value="{{ request('end_date', date('Y-m-t')) }}" onchange="this.form.submit()">
+                        </div>
+                        <div class="col-md-3 text-end">
                             <button type="button" onclick="window.print()" class="btn btn-light border btn-sm">
                                 <i class="bi bi-printer me-1"></i> Print Report
                             </button>
@@ -115,7 +114,8 @@
                                 <div class="text-center">
                                     <i class="bi bi-person-x fs-2 text-muted"></i>
                                     <p class="mt-2 text-muted">No employees found with targets for the year
-                                        {{ request('year', date('Y')) }}.</p>
+                                        {{ request('year', date('Y')) }}.
+                                    </p>
                                 </div>
                             </td>
                         </tr>

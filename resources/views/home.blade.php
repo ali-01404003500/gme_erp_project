@@ -395,13 +395,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            {{-- <div class="col-md-6">
                                 <div class="p-3" style="background: #f8fafc; border-radius: 12px;">
                                     <h6 class="fw-bold mb-3">Top Performer</h6>
                                     <div class="top-performer">
                                         <div class="performer-avatar">JD</div>
                                         <div class="performer-info">
-                                            <div class="performer-name">John Doe</div>
+                                            <div class="performer-name">Mr. X</div>
                                             <div class="performer-stats">156% achievement • 12 deals</div>
                                         </div>
                                         <span class="badge bg-success">#1</span>
@@ -410,42 +410,25 @@
                                         <div class="performer-avatar"
                                             style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">JS</div>
                                         <div class="performer-info">
-                                            <div class="performer-name">Jane Smith</div>
+                                            <div class="performer-name">Ms.</div>
                                             <div class="performer-stats">142% achievement • 10 deals</div>
                                         </div>
                                         <span class="badge bg-info">#2</span>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
 
                 <!-- Calendar Section -->
-                <div class="col-lg-4 mb-25">
+                <div class="col-lg-4">
                     <div class="glass-panel h-100 text-center">
-                        <h5 class="fw-bold mb-4">Operations Calendar</h5>
+                        <h5 class="fw-bold mb-4">Calendar</h5>
                         <div class="cal-header mb-4">
                             <div class="cal-month" id="calMonth">...</div>
                             <div class="cal-day" id="calDay">..</div>
                             <div class="fw-bold opacity-75" id="calYear">....</div>
-                        </div>
-                        <div class="text-start mt-4">
-                            <p class="fw-bold small text-muted text-uppercase mb-3">Today's Priority</p>
-                            <div class="activity-item">
-                                <div style="width: 4px; height: 35px; background: #6366f1; border-radius: 10px;"></div>
-                                <div>
-                                    <div class="small fw-bold">Equipment Inspection</div>
-                                    <div class="extra-small text-muted">09:00 AM - Central Warehouse</div>
-                                </div>
-                            </div>
-                            <div class="activity-item">
-                                <div style="width: 4px; height: 35px; background: #10b981; border-radius: 10px;"></div>
-                                <div>
-                                    <div class="small fw-bold">Client Support Meeting</div>
-                                    <div class="extra-small text-muted">02:30 PM - Virtual</div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
