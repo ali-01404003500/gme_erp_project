@@ -59,6 +59,7 @@ class BrokerPaymentController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validate = $request->validate([
             'broker_payment_bank_id' => 'nullable|array',
             'broker_payment_bank_id.*' => 'nullable',
@@ -66,7 +67,10 @@ class BrokerPaymentController extends Controller
             'remaining_amount.*' => 'required|numeric|min:0',
             'ids' => 'nullable|array',
             'ids.*' => 'nullable|integer|exists:sales_commissions,id',
-            'remarks' => 'nullable|string',
+            'remarks' => 'nullable|string', 
+            'attachment_name' => 'nullable|array',
+            'attachment_name.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+
         ]);
         
 

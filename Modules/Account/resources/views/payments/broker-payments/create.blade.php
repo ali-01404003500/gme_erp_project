@@ -109,7 +109,7 @@
                     {{-- Payment List --}}
                     <div class="card mb-4">
                         <div class="card-body">
-                            <form method="POST" action="{{ route('account.payments.broker-payments.store') }}">
+                            <form method="POST" action="{{ route('account.payments.broker-payments.store') }}" enctype="multipart/form-data">
                                 @csrf
                                 <table id="zero-config" class="table dt-table-hover" style="width:100%">
                                     <thead>
@@ -119,6 +119,7 @@
                                             <th>Request & Approved Info</th>
                                             <th>Transaction Info</th>
                                             <th>Payment</th>
+                                            <th>Attachment</th>
                                             <th class="no-content">
                                                 <input type="checkbox" class="check-all" id="check-all">
                                             </th>
@@ -215,6 +216,9 @@
                                                             value="{{ numberFormat($remaining) }}"
                                                             class="form-control remaining-input"
                                                             data-max="{{ $remaining }}" disabled>
+                                                    </td>
+                                                    <td> 
+                                                    <x-file-uploader :value="old('attachment_name')"  name="attachment_name_{{ $commission->id }}" id="attachment_name_{{ $commission->id }}"/>
                                                     </td>
                                                     <td>
                                                         <input type="checkbox" name="ids[]" value="{{ $commission->id }}"
