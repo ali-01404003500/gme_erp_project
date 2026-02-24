@@ -1,10 +1,11 @@
+{{-- Modules/HRMS/Resources/views/settings/approver-setup/approval-table.blade.php --}}
 @if(isset($currentApprovers) && count($currentApprovers) > 0)
     <div class="table-responsive">
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-bordered align-middle">
             <thead class="table-light">
                 <tr>
-                    <th width="80" class="text-center">Hierarchy</th>
-                    <th>Approver Code</th>
+                    <th width="80" class="text-center">Level</th>
+                    <th>EPF Number</th>
                     <th>Approver Name</th>
                     <th>Designation</th>
                     <th width="100" class="text-center">Action</th>
@@ -15,18 +16,24 @@
                 <tr>
                     <td class="text-center">
                         <span class="badge bg-primary rounded-pill px-3 py-2">
+                            <i class="fas fa-level-up-alt me-1"></i>
                             Level {{ $approver->hierarchy_level }}
                         </span>
                     </td>
                     <td>
-                        <strong>{{ $approver->approver->epf_number ?? 'N/A' }}</strong>
+                        <span class="fw-bold">{{ $approver->approver->epf_number ?? 'N/A' }}</span>
                     </td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <div class="avatar-circle bg-light-primary me-2">
-                                {{ strtoupper(substr($approver->approver->full_name, 0, 1)) }}
+                            <div class="avatar-circle me-2">
+                                {{ strtoupper(substr($approver->approver->full_name ?? 'U', 0, 1)) }}
                             </div>
-                            {{ $approver->approver->full_name }}
+                            <div>
+                                <div class="fw-bold">{{ $approver->approver->full_name ?? 'Unknown' }}</div>
+                                @if($approver->approver->epf_number)
+                                <small class="text-muted">{{ $approver->approver->epf_number }}</small>
+                                @endif
+                            </div>
                         </div>
                     </td>
                     <td>{{ $approver->approver->designation ?? 'N/A' }}</td>
@@ -35,9 +42,7 @@
                            style="cursor: pointer; font-size: 18px; transition: all 0.2s;"
                            data-approver-id="{{ $approver->approver_id }}"
                            data-employee-id="{{ $approver->employee_id }}"
-                           title="Remove Approver"
-                           onmouseover="this.style.transform='scale(1.1)'"
-                           onmouseout="this.style.transform='scale(1)'"></i>
+                           title="Remove Approver"></i>
                     </td>
                 </tr>
                 @endforeach
@@ -45,59 +50,51 @@
         </table>
         
         <!-- Summary -->
-        <div class="mt-2 text-muted small">
-            <i class="fas fa-info-circle me-1"></i>
-            Total {{ count($currentApprovers) }} approver(s) assigned
+        <div class="mt-3 d-flex justify-content-between align-items-center">
+            <div class="text-muted small">
+                <i class="fas fa-info-circle me-1"></i>
+                <strong>Total:</strong> {{ count($currentApprovers) }} approver(s) assigned
+            </div>
+            <div class="text-muted small">
+                <i class="fas fa-sort-numeric-up me-1"></i>
+                <strong>Hierarchy Levels:</strong> 1 to {{ count($currentApprovers) }}
+            </div>
         </div>
     </div>
 @else
     <div class="text-center py-5">
-        <div class="mb-3">
-            <i class="fas fa-users-slash fa-4x text-muted opacity-50"></i>
+        <div class="mb-4">
+            <div class="position-relative d-inline-block">
+                <i class="fas fa-users-slash fa-5x text-muted opacity-25"></i>
+                @if(isset($hasEmployeeSelected) && $hasEmployeeSelected)
+                <i class="fas fa-plus-circle text-primary position-absolute bottom-0 end-0" style="font-size: 30px;"></i>
+                @endif
+            </div>
         </div>
-        <h6 class="text-muted">No Approvers Assigned</h6>
-        <p class="text-muted small mb-0">Select an employee and add approvers from above</p>
+        <h5 class="text-muted mb-3">No Approvers Assigned</h5>
+        <p class="text-muted mb-3">
+            @if(isset($hasEmployeeSelected) && $hasEmployeeSelected)
+                This employee doesn't have any approvers configured yet.
+                <br>Use the search box above to find and add approvers.
+            @else
+                Select an employee from the dropdown above to view and manage their approvers.
+            @endif
+        </p>
+        
+        @if(isset($hasEmployeeSelected) && $hasEmployeeSelected)
+        <div class="d-flex justify-content-center gap-2">
+            <button class="btn btn-outline-primary" id="focusSearchBtn">
+                <i class="fas fa-search me-2"></i>Search Approvers
+            </button>
+            <div class="text-muted small align-self-center">
+                <i class="fas fa-arrow-up ms-2"></i>
+            </div>
+        </div>
+        @else
+        <div class="text-muted small">
+            <i class="fas fa-arrow-up me-2"></i>
+            Select an employee above to get started
+        </div>
+        @endif
     </div>
 @endif
-
-@push('styles')
-<style>
-.avatar-circle {
-    width: 32px;
-    height: 32px;
-    background-color: #e7f1ff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: bold;
-    color: #0d6efd;
-}
-
-.table tbody tr {
-    transition: all 0.2s;
-}
-
-.table tbody tr:hover {
-    background-color: #f8f9fa;
-}
-
-.badge {
-    font-weight: 500;
-    font-size: 12px;
-}
-
-@media (max-width: 768px) {
-    .table {
-        font-size: 14px;
-    }
-    
-    .avatar-circle {
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
-    }
-}
-</style>
-@endpush

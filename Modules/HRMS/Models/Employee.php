@@ -13,8 +13,10 @@ use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
 use Modules\HRMS\Models\Approver as ModelsApprover;
 use Modules\HRMS\Models\Kpi\Assessment;
+use Modules\HRMS\Models\Settings\Designation;
 use Modules\HRMS\Models\Settings\Supervisor;
-use Modules\Inventory\Models\Settings\Approver;
+// use Modules\Inventory\Models\Settings\Approver;
+use Modules\HRMS\Models\Approver;
 
 class Employee extends BaseModel
 {
@@ -46,10 +48,15 @@ class Employee extends BaseModel
                     ->withTimestamps();
     }
 
+     public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'designation_id', 'id');
+    }
+
     // Relationship: Approver records for this employee
     public function approverRecords()
     {
-        return $this->hasMany(ModelsApprover::class, 'employee_id');
+        return $this->hasMany(Approver::class, 'employee_id');
     }
     public function user()
     {

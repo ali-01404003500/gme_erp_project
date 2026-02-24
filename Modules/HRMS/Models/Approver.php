@@ -9,16 +9,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Approver extends BaseModel
 {
-    use HasFactory,SoftDeletes;
-    
+    use HasFactory, SoftDeletes;
+
     protected $guarded = [];
 
-    
+
 
     protected $table = 'approvers';
 
     protected $fillable = [
-        'employee_id', 'approver_id', 'hierarchy_level', 'status'
+        'employee_id',
+        'approver_id',
+        'hierarchy_level',
+        'status'
     ];
 
     protected $casts = [
@@ -26,17 +29,24 @@ class Approver extends BaseModel
         'status' => 'integer'
     ];
 
+
+
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'employee_id')->withTrashed();
     }
 
     public function approver()
     {
-        return $this->belongsTo(Employee::class, 'approver_id');
+        return $this->belongsTo(Employee::class, 'approver_id')->withTrashed();
     }
 
-     public function creator()
+
+
+
+
+
+    public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
     }
@@ -57,7 +67,7 @@ class Approver extends BaseModel
         return $query->where('employee_id', $employeeId);
     }
 
-      protected static function boot()
+    protected static function boot()
     {
         parent::boot();
 
@@ -74,6 +84,4 @@ class Approver extends BaseModel
             }
         });
     }
-
-
 }
