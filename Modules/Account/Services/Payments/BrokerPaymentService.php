@@ -25,6 +25,7 @@ class BrokerPaymentService
 
     public function store(array $data)
     {
+       
         $storedPayments = [];
 
         if (!empty($data['ids'])) {
@@ -35,7 +36,8 @@ class BrokerPaymentService
                 if ($paymentAmount > 0) {
                     $brokerPayment = BrokerPayment::create([
                         'sales_commission_id' => $id,
-                        'broker_payment_bank_id' => $data['broker_payment_bank_id'][$key] ?? null,
+                        'broker_payment_bank_id' => $data['broker_payment_bank_id'][$key] ?? null, 
+                        'attachment_name' => request()->input('attachment_name_'.$id) ?? null,
                         'payment_amount' => $paymentAmount,
                         'remarks' => $data['remarks'] ?? null,
                     ]);
