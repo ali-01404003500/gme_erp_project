@@ -12,11 +12,10 @@ use Modules\HRMS\Models\BillsAndAllowance;
 use Modules\Account\Models\Collections\Collection;
 use Modules\Account\Models\Transaction;
 use Modules\Sales\Models\SalesCommission;
+use Modules\HRMS\Models\SalaryGenerate;
 
 class TargetService
 {
-
-
     public function getAllEmployees()
     {
         return Employee::select('id', 'full_name as display_name')
@@ -24,14 +23,17 @@ class TargetService
             ->get();
     }
 
-
-
     public function getYearlyPerformanceSummary($startDate, $endDate, $selectedUserId = null)
     {
-        $machineTags = ['IC', 'BC', 'CC', 'Machine', 'I-Chroma Machine'];
+        $targetTagName = 'Machine';
 
         $startDateTime = new \DateTime($startDate);
         $endDateTime = new \DateTime($endDate);
+
+        // SalaryGenerate matching এর জন্য Y-m ফরম্যাট
+        $startMonthStr = $startDateTime->format('Y-m');
+        $endMonthStr = $endDateTime->format('Y-m');
+
         $startYear = $startDateTime->format('Y');
         $endYear = $endDateTime->format('Y');
 
@@ -53,7 +55,7 @@ class TargetService
             $user = $employee->user;
             if (!$user) continue;
 
-            // 1. Target calculation
+            //  Target calculation 
             $totalRangeTarget = 0;
             $tempDate = clone $startDateTime;
             while ($tempDate <= $endDateTime) {
@@ -69,16 +71,25 @@ class TargetService
                 if ($tempDate->format('Y-m') > $endDateTime->format('Y-m')) break;
             }
 
-            // 2. Fetch Sales Orders (Based on machine tags)
+            //  Fetch Sales Orders 
             $salesOrders = SalesOrder::where('created_by', $user->id)
+                ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
+                    $q->whereHas('product.tag', function ($q) use ($targetTagName) {
+                        $q->where('name', $targetTagName);
+                    });
+                }])
                 ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
-                ->whereHas('salesOrderDetails.product.tag', function ($q) use ($machineTags) {
-                    $q->whereIn('name', $machineTags);
-                })->get();
+                ->get();
+            $salesDetails = $salesOrders->pluck('salesOrderDetails')->flatten();
+            // dd($salesDetails->toArray());
+            // dd($salesDetails->sum('amount'), $salesDetails->sum('total_discount'));
+
 
             $salesOrderIds = $salesOrders->pluck('id')->toArray();
+            $achieved = (float)($salesDetails->sum('amount') - $salesDetails->sum('total_discount'));
 
-            // 3. Costing Logic (Using Transaction Model - Account 5300)
+
+            // Costing Logic (Account 5300 - 
             $totalCosting = 0;
             if (!empty($salesOrderIds)) {
                 $totalCosting = Transaction::where('transactionable_type', Delivery::class)
@@ -92,16 +103,23 @@ class TargetService
                     ->sum('debit_amount');
             }
 
-            // 4. Collection Logic (Status must be Approved)
-            $totalCollection = 0;
-            if (!empty($salesOrderIds)) {
-                $totalCollection = Collection::whereIn('source_id', $salesOrderIds)
-                    ->where('source_type', SalesOrder::class)
-                    ->where('status', 'approved')
-                    ->sum('total_amount');
-            }
 
-            // 5. TA & DA calculation (Approved or Paid status)
+            // Collection Logic 
+            $paidOrders = SalesOrder::where('created_by', $user->id)
+                ->where('paid_status', 'paid')
+                ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
+                    $q->whereHas('product.tag', function ($q) use ($targetTagName) {
+                        $q->where('name', $targetTagName);
+                    });
+                }])
+                ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+                ->get();
+
+            $paidSalesDetails = $paidOrders->pluck('salesOrderDetails')->flatten();
+            $totalCollection = (float)($paidSalesDetails->sum('amount') - $paidSalesDetails->sum('total_discount'));
+
+
+            // 5. TA & DA calculation
             $bills = BillsAndAllowance::where('employee_id', $employee->id)
                 ->whereBetween('date_of_bill_claim', [$startDate, $endDate])
                 ->whereIn('status', ['approved', 'paid'])
@@ -115,7 +133,7 @@ class TargetService
                 $totalDA += $bill->generalExpenses->sum('final_approved_amount') ?: $bill->generalExpenses->sum('amount');
             }
 
-            // commission calculation
+            // 6. Commission calculation 
             $totalCommission = 0;
             if (!empty($salesOrderIds)) {
                 $totalCommission = SalesCommission::whereIn('sales_order_id', $salesOrderIds)
@@ -123,8 +141,12 @@ class TargetService
                     ->sum('amount');
             }
 
-            $achieved = (float)$salesOrders->sum('net_amount');
-            $salaryExpense = (float)($employee->salary ?? 0);
+            // 7. Salary Expense
+            $salaryExpense = (float) \Modules\HRMS\Models\EmployeeSalary::where('employee_id', $employee->id)
+                ->where('status', 1)
+                ->latest('effective_date')
+                ->value('gross') ?? 0;
+
             $totalOperationalExpense = $totalTA + $totalDA + $totalCommission;
 
             $results[] = [
@@ -150,14 +172,10 @@ class TargetService
         return $results;
     }
 
-
-
     public function getAllTargets()
     {
         return Target::with('employee')->orderBy('year', 'desc')->get();
     }
-
-
 
     public function storeMultipleTargets(array $targetsData)
     {
@@ -168,7 +186,7 @@ class TargetService
                 Target::updateOrCreate(
                     [
                         'employee_id' => $data['employee_id'],
-                        'year'        => $data['year'] ?? date('Y'),
+                        'year'         => $data['year'] ?? date('Y'),
                     ],
                     [
                         'jan_target'   => $data['jan_target'] ?? 0,
@@ -189,8 +207,6 @@ class TargetService
             }
         });
     }
-
-
 
     public function deleteTarget($id)
     {

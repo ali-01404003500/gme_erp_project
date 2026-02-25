@@ -25,17 +25,26 @@ class BrokerPaymentService
 
     public function store(array $data)
     {
+       
         $storedPayments = [];
 
         if (!empty($data['ids'])) {
             foreach ($data['ids'] as $key => $id) {
+                //sales commission status update
+                $commission = SalesCommission::findOrFail($id);
+
+                $commission->update([
+                    'status' => 'paid',
+                ]);
+                
                 // Only store if remaining_amount is > 0
                 $paymentAmount = floatval(str_replace(',', '', $data['remaining_amount'][$key] ?? 0));
 
                 if ($paymentAmount > 0) {
                     $brokerPayment = BrokerPayment::create([
                         'sales_commission_id' => $id,
-                        'broker_payment_bank_id' => $data['broker_payment_bank_id'][$key] ?? null,
+                        'broker_payment_bank_id' => $data['broker_payment_bank_id'][$key] ?? null, 
+                        'attachment_name' => request()->input('attachment_name_'.$id) ?? null,
                         'payment_amount' => $paymentAmount,
                         'remarks' => $data['remarks'] ?? null,
                     ]);

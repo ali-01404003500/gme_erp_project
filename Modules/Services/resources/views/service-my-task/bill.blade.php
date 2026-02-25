@@ -153,7 +153,7 @@
                                         </div>
                                     </div>
 
-                                     @include('Services::service-my-task.service-bill')
+                                    @include('Services::service-my-task.service-bill')
 
                                     <div style="padding-right: 20px; padding-left: 20px; outline: 1px solid #e4e4e4;">
                                         <div class="row mt-3">
@@ -256,6 +256,58 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    
+                                    @if($serviceToken->work_type=='New Installation' || $serviceToken->work_type=='Re Installation' || $serviceToken->work_type=='Operating Training')
+                                    
+                                    <div style="padding-right: 20px; padding-left: 20px; outline: 1px solid #e4e4e4;">
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                <h5 class="text-uppercase mt-3 mb-3">Operator Info</h5>
+                                            </div>
+                                        </div> 
+                                        <div class="row">
+                                            <div class="form-group col-md-2">
+                                                <label>Operator Training Status</label>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="custom-control custom-radio mr-3">
+                                                        <input type="radio" id="operator_info_training_statusYes" name="operator_info_training_status" class="custom-control-input" value="yes" {{ old('operator_info_training_status', $serviceMyTask?->operator_info_training_status) == 'yes' ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="operator_info_training_statusYes">Yes</label>
+                                                    </div>
+                                                    <div class="custom-control custom-radio mr-3">
+                                                        <input type="radio" id="operator_info_training_statusNo" name="operator_info_training_status" class="custom-control-input" value="no" {{ old('operator_info_training_status', $serviceMyTask?->operator_info_training_status) == 'no' ? 'checked' : '' }}>
+                                                        <label class="custom-control-label" for="operator_info_training_statusNo">No</label>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="handover_info_name">Operator Name</label>
+                                                    <input type="text" class="form-control" id="operator_info_name" name="operator_info_name" placeholder="Name" value="{{ old('operator_info_name', $serviceMyTask?->operator_info_name) }}">
+                                                </div>
+                                            </div> 
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="handover_info_designation">Operator Designation</label>
+                                                    <input type="text" class="form-control" id="operator_info_designation" name="operator_info_designation" placeholder="Designation" value="{{ old('operator_info_designation', $serviceMyTask?->operator_info_designation) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="handover_info_contact_no">Operator Contact No</label>
+                                                    <input type="text" class="form-control" id="operator_info_contact_no" name="operator_info_contact_no" placeholder="Contact No" value="{{ old('operator_info_contact_no', $serviceMyTask?->operator_info_contact_no) }}">
+                                                </div>
+                                            </div>
+                                               <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="handover_info_contact_no">Operator Comments</label> 
+                                                    <input type="text" class="form-control" id="operator_comments" name="operator_comments" placeholder="Enter Operator Comments" value="{{ old('operator_info_contact_no', $serviceMyTask?->operator_comments) }}">
+                                                </div>
+                                            </div>
+                                             
+                                        </div>
+                                    </div>
+                                    @endif 
 
                                     <div class="row mt-4">
                                         <div class="col-md-12">
