@@ -2,12 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\SalesTarget\Controllers\AchievementBasedSalaryPolicyController;
+use Modules\SalesTarget\Controllers\TargetController;
+use Modules\SalesTarget\Controllers\SalesIncentiveController;
 
-Route::group(['middleware'=>'auth', 'prefix' => 'sales_target', 'as' => 'sales_target.'],function () {
+Route::group(['middleware' => 'auth', 'prefix' => 'sales_target', 'as' => 'sales_target.'], function () {
+
+    // Move this OUTSIDE the settings group
+    Route::get('performance/achievement', [TargetController::class, 'achievement'])
+        ->name('perfomence.achievement');
+
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
-        //Route::get('achievement-based-salary-policy', [AchievementBasedSalaryPolicyController::class, 'index'])->name('achievement-based-salary-policy.index');
         Route::resource('achievement-based-salary-policy', AchievementBasedSalaryPolicyController::class);
+        Route::resource('target', TargetController::class);
+        Route::resource('incentives', SalesIncentiveController::class);
     });
-
-
 });

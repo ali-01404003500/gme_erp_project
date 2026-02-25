@@ -1,6 +1,7 @@
 <?php
 
 namespace Modules\CRM\Controllers\Customer;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\AccessControl\CompanyInfo;
@@ -147,7 +148,6 @@ class CustomerController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
-
     }
     public function approve($id)
     {
@@ -527,5 +527,4 @@ class CustomerController extends Controller
         $this->service->insertFromCSV($filename);
         return redirect()->route('crm.customers.index')->with('success', 'Customer imported successfully.');
     }
-
 }
