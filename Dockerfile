@@ -27,12 +27,15 @@ RUN echo "max_input_vars = 5000000" >> /usr/local/etc/php/php.ini
 RUN echo "max_multipart_body_parts = 5000000" >> /usr/local/etc/php/php.ini
 RUN echo "upload_max_filesize = 1000M" >> /usr/local/etc/php/php.ini
 RUN echo "post_max_size = 1000M" >> /usr/local/etc/php/php.ini
-RUN echo "memory_limit = 4000M" >> /usr/local/etc/php/php.ini
+RUN echo "memory_limit = 2048M" >> /usr/local/etc/php/php.ini
 RUN echo "max_execution_time = 3000" >> /usr/local/etc/php/php.ini
 RUN echo "max_input_time = 3000" >> /usr/local/etc/php/php.ini
+RUN echo "opcache.enable=1" >> /usr/local/etc/php/php.ini
+RUN echo "opcache.memory_consumption=256" >> /usr/local/etc/php/php.ini
+RUN echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/php.ini
 
-
-
+# Create log directory for supervisor
+RUN mkdir -p /var/log/supervisor
 
 # Copy configs
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf

@@ -22,3 +22,6 @@ yarn-error.log
 .qwen
 docker-compose.yml
 nginx/
+**/caddy
+frankenphp
+frankenphp-worker.php
