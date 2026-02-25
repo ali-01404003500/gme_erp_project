@@ -69,7 +69,7 @@ class Customer extends BaseModel
         'supplier',
         'backupChallan',
         // 'quotation',
-        'salesOrder',
+        'salesOrder', 
         'salesRequisition',
         'shipmentVerify',
         'serviceToken',

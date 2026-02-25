@@ -331,6 +331,13 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'crm.daily-calls',
                 'parent_key' => 'crm',
             ],
+            //daily-Credit-calls
+            [
+                'title' => 'Daily Credit Calls',
+                'description' => 'Permission of Add, Legal, Show Daily Credit Calls',
+                'key' => 'crm.daily-credit-calls',
+                'parent_key' => 'crm',
+            ],
             //Reports
             [
                 'title' => 'Reports',

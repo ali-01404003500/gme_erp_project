@@ -30,6 +30,13 @@ class BrokerPaymentService
 
         if (!empty($data['ids'])) {
             foreach ($data['ids'] as $key => $id) {
+                //sales commission status update
+                $commission = SalesCommission::findOrFail($id);
+
+                $commission->update([
+                    'status' => 'paid',
+                ]);
+                
                 // Only store if remaining_amount is > 0
                 $paymentAmount = floatval(str_replace(',', '', $data['remaining_amount'][$key] ?? 0));
 
