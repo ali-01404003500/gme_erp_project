@@ -1,13 +1,13 @@
 FROM php:8.2
 
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip \        
+    git curl zip unzip \
     libzip-dev libpng-dev \
     libmagickwand-dev \
     supervisor \
-    && docker-php-ext-install pdo pdo_mysql zip gd ftp \
+    && docker-php-ext-install pdo pdo_mysql zip gd ftp pcntl \
     && pecl install redis imagick \
-    && docker-php-ext-enable redis imagick \
+    && docker-php-ext-enable redis imagick pcntl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
