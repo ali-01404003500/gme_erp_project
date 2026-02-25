@@ -353,7 +353,7 @@ class CustomerBalanceReportController extends Controller
 
         return [
             'customersearch' => Customer::actived()
-                ->select('id', 'company_name')
+                ->select('id', 'company_name','company_place_id')
                 ->orderBy('company_name')
                 ->get(),
             'company_info' => $companyInfo,

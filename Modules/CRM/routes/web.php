@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\CRM\Controllers\Customer\BrokerController;
 use Modules\CRM\Controllers\Customer\CustomerController;
 use Modules\CRM\Controllers\Customer\DailyCallController;
+use Modules\CRM\Controllers\Customer\DailyCreditCallController;
 use Modules\CRM\Controllers\Customer\Settings\CustomerRatingController;
 use Modules\CRM\Controllers\Customer\Settings\CustomerShippingController;
 use Modules\CRM\Controllers\Customer\Settings\CustomerTypeController;
@@ -51,8 +52,9 @@ Route::group(['middleware'=>'auth', 'prefix' => 'crm', 'as' => 'crm.'],function 
 
 
     Route::resource('daily-calls', DailyCallController::class);
+    Route::resource('daily-credit-calls', DailyCreditCallController::class);
 
-     Route::prefix('reports')->name('reports.')->group(function () {
+    Route::prefix('reports')->name('reports.')->group(function () {
 
         Route::get('customer-machine-code', [CustomerMachineCodeReportController::class, 'index'])->name('customer-machine-code');
         Route::get('customer-balance-details', [CustomerBalanceReportController::class, 'index'])

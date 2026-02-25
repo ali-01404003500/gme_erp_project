@@ -34,6 +34,17 @@
                 </a>
             </li>
         @endif
+        @if (hasPermission('crm.daily-credit-calls.index'))
+            <li>
+                <a href="{{ route('crm.daily-credit-calls.index') }}"
+                    class="{{ request()->routeIs('crm.daily-credit-calls.*') ? 'active' : '' }}">
+                    <span class="nav-icon uil uil-calendar-alt" style="margin-right: 20px;"></span>
+                    {{ t_('menu.daily-credit-calls') }}
+                </a>
+            </li>
+        @endif
+
+        
         @if (hasPermission('crm.customer-types.*') || hasPermission('crm.customer-ratings.*'))
             <li
                 class="has-subchild {{ request()->routeIs('crm.customer-types.*') || request()->routeIs('crm.customer-ratings.*') || request()->routeIs('crm.percentage-types.*') ? 'open' : '' }}">

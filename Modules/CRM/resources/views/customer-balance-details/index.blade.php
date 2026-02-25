@@ -55,7 +55,7 @@
                                             @foreach ($customersearch as $key => $value)
                                                 <option {{ request('search') == $value->id ? 'selected' : '' }}
                                                     value="{{ $value->id }}">
-                                                    {{ $value->company_name }} ({{ $value->phone }})</option>
+                                                    {{ $value->company_name }} ({{ $value->area?->area }})</option>
                                             @endforeach
                                         </select>
                                     </div>

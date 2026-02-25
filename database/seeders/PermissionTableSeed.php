@@ -1342,6 +1342,39 @@ class PermissionTableSeed extends Seeder
                 'key' => 'crm.daily-calls'
             ],
 
+            //daily-credit-calls
+            [
+                'name' => 'Create Daily Credit Call',
+                'slug' => 'crm.daily-credit-calls.create',
+                'description' => 'Daily Credit Call create permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+            [
+                'name' => 'Daily Credit Call List',
+                'slug' => 'crm.daily-Credit-calls.index',
+                'description' => 'Daily Credit Call list permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+
+            [
+                'name' => 'Daily Credit Call View',
+                'slug' => 'crm.daily-credit-calls.show',
+                'description' => 'Daily Credit Call show permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+            [
+                'name' => 'Credit Legal Task Assign',
+                'slug' => 'crm.daily-credit-calls.legal',
+                'description' => 'Credit Legal Task Assign permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+
+
+
             //brands
             [
                 'name' => 'Create Brand',
