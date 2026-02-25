@@ -32,32 +32,13 @@ class Employee extends BaseModel
         'leaves'
     ];
 
-
-    public function subordinates()
-    {
-        return $this->belongsToMany(Employee::class, 'approvers', 'approver_id', 'employee_id')
-                    ->withPivot('hierarchy_level')
-                    ->withTimestamps();
+    public function approvers(){
+        return $this->hasMany(Approver::class,'employee_id');
     }
 
-    // Relationship: Approvers for this employee
-    public function approvers()
-    {
-        return $this->belongsToMany(Employee::class, 'approvers', 'employee_id', 'approver_id')
-                    ->withPivot('hierarchy_level')
-                    ->withTimestamps();
-    }
+    
+    
 
-     public function designation()
-    {
-        return $this->belongsTo(Designation::class, 'designation_id', 'id');
-    }
-
-    // Relationship: Approver records for this employee
-    public function approverRecords()
-    {
-        return $this->hasMany(Approver::class, 'employee_id');
-    }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

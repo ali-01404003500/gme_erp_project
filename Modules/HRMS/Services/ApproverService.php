@@ -38,24 +38,21 @@ class ApproverService
             ->get();
     }
 
-    public function addApprovers($employeeId, array $approverIds)
+    public function addApprovers( array $approvers)
     {
         DB::beginTransaction();
         try {
-            foreach ($approverIds as $approverId) {
-                // Duplicate check
-                $exists = Approver::where('employee_id', $employeeId)
-                                  ->where('approver_id', $approverId)
-                                  ->exists();
-                if($exists) continue;
-
-                $currentMaxLevel = Approver::where('employee_id', $employeeId)->max('hierarchy_level') ?? 0;
-
-                Approver::create([
-                    'employee_id' => $employeeId,
-                    'approver_id' => $approverId,
-                    'hierarchy_level' => $currentMaxLevel + 1,
-                    'status' => 1
+            foreach ($approvers['approver_ids'] as $key=> $approver_ids) {
+                Approver::where('employee_id', $approvers['employee_id'])
+                ->whereNotIn('id', $approvers['approver_update_id']??[])
+                ->delete();
+           
+                Approver::updateOrCreate([
+                    'id'=> $approvers['approver_update_id'][ $key]??null,
+                ],[
+                    'hierarchy_level'=>$key + 1,
+                    'employee_id' =>  $approvers['employee_id'],
+                    'approver_id' =>$approver_ids,
                 ]);
             }
             DB::commit();

@@ -20,8 +20,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            // Unique constraint to prevent duplicate approver for same employee
-            $table->unique(['employee_id', 'approver_id'], 'unique_employee_approver');
             
         });
     }
