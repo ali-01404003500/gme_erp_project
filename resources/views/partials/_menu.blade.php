@@ -31,13 +31,12 @@
 
         /* Active State with Gradient */
         .sidebar_nav li > a.active {
-            background: linear-gradient(135deg, #63f1bd 0%, #52d28c 100%);
-            color: #169246 !important;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            background: #dcdedc;
+            color: #000000af !important; 
         }
 
         .sidebar_nav li > a.active .nav-icon {
-            color: #de8989;
+            color: #afa9a9;
         }
 
         .sidebar_nav li > a .nav-icon {
