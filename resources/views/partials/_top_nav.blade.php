@@ -13,8 +13,8 @@
 
                    
 
-                {{-- {{ App\Models\AccessControl\CompanyInfo::first()->company_name }} --}}
-                {{-- <img class="dark" src="{{ asset('assets/img/logo-white.svg') }}" alt="svg">
+                {{-- {{ App\Models\AccessControl\CompanyInfo::first()->company_name }}
+                <img class="dark" src="{{ asset('assets/img/logo-white.svg') }}" alt="svg">
                 <img class="light" src="{{ asset('assets/img/logo-white.svg') }}" alt="img"> --}}
             </a>
             <a href="#" class="sidebar-toggle">

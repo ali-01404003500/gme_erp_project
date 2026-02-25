@@ -51,7 +51,7 @@ class DeliveryController extends Controller
             ->with('deliveryDetails')
             ->get();
         $data['employees'] = Employee::query()->select('id', 'full_name as name')->get();
-    //    dd($data);
+        //    dd($data);
         return view('Sales::deliveries.create', $data);
     }
 
@@ -77,7 +77,7 @@ class DeliveryController extends Controller
         $data['previousDeliveries'] = Delivery::where('id', $id)
             ->with('deliveryDetails')
             ->get();
-        
+
         if ($request->has('export') && $request->get('export') === 'pdf') {
             $html = view('Sales::deliveries.pdf', $data)->render();
 
@@ -115,9 +115,13 @@ class DeliveryController extends Controller
         $validate = $request->validate([
             'arranged_by' => 'required|integer|exists:employees,id',
             'checked_by' => 'required|integer|exists:employees,id',
+
+            'carton_no' => 'required|string|max:255',
+
             'carton_no' => 'required|integer|min:1',
+
         ]);
-      
+
         $deliveryDetails = $request->validate([
             'product_id.*' => 'required|integer|exists:product_catalogs,id',
             'sales_quantity.*' => 'required|numeric',
@@ -154,18 +158,18 @@ class DeliveryController extends Controller
      * Show Delivery Details
      */
 
-   public function details(Request $request)
-{
-    $deliveryId = $request->delivery_id;
-    $productId = $request->product_id;
+    public function details(Request $request)
+    {
+        $deliveryId = $request->delivery_id;
+        $productId = $request->product_id;
 
-    $deliveryDetails = DeliveryDetail::with('deliveryStocks')
-        ->where('delivery_id', $deliveryId)
-        ->where('product_id', $productId)
-        ->get();
+        $deliveryDetails = DeliveryDetail::with('deliveryStocks')
+            ->where('delivery_id', $deliveryId)
+            ->where('product_id', $productId)
+            ->get();
 
-    return view("Sales::deliveries.details", [
-        'deliveryDetails' => $deliveryDetails
-    ]);
-}
+        return view("Sales::deliveries.details", [
+            'deliveryDetails' => $deliveryDetails
+        ]);
+    }
 }

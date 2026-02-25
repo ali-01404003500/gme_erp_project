@@ -21,6 +21,7 @@ use Modules\Sales\Models\SalesPaymentOnlineDeposit;
 use Modules\Sales\Models\SalesRequisition;
 use Modules\Sales\Models\FreeSalesInvoice;
 use Modules\Inventory\Models\Offer;
+use Modules\CRM\Models\Customer\Customer;
 
 class SalesOrderService
 {
@@ -75,7 +76,7 @@ class SalesOrderService
             ->when(auth()->user()->id != 1, function ($qr) {
                 $qr->whereIn('created_by', [auth()->user()->id]);
             })
-            ->when(request()->filled('additional_phone'),function ($qr){
+            ->when(request()->filled('additional_phone'), function ($qr) {
                 $qr->where('additional_phone', request('additional_phone'))->whereHas('customer', function ($q) {
                     $q->where('phone', request('additional_phone'));
                 });
@@ -91,6 +92,7 @@ class SalesOrderService
         // $this->applyOffers($data, $salesOrderDetails, $payments);
         $this->applyOfferProduct($data, $salesOrderDetails, $payments);
 
+
         // dd($payments);
         DB::beginTransaction();
         // Create sales order
@@ -99,11 +101,12 @@ class SalesOrderService
             $data['sales_order_id'] = $this->getSalesOrderId($data['customer_id']);
         }
         $data['sales_type'] = $data['sales_type'] ?? 'general_sales';
+        $data['user_ref_id'] = Customer::find($data['customer_id'])->user_ref_id;
         $result['salesOrder'] = SalesOrder::create($data);
         $result['salesOrderDetails'] = [];
 
         // Store sales order details
-        foreach ($salesOrderDetails['product_ids'] as $key => $productId){
+        foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
             $detailData = [
                 'product_id' => $productId,
                 'quantity' => $salesOrderDetails['quantity'][$key],
@@ -130,21 +133,21 @@ class SalesOrderService
 
         // dd($salesOrderShipments);
         // Handle shipment if available
-        if (isset($data['is_shipment']) && $data['is_shipment'] == 1){
+        if (isset($data['is_shipment']) && $data['is_shipment'] == 1) {
             $result['salesOrderShipments'] = $result['salesOrder']->shipment()->create([
                 'courier_id' => $salesOrderShipments['courier_id'],
-                'area_id' => $salesOrderShipments['area_id']  == 'address'? null : $salesOrderShipments['area_id'],
+                'area_id' => $salesOrderShipments['area_id']  == 'address' ? null : $salesOrderShipments['area_id'],
                 'address' => $salesOrderShipments['address'],
                 'contact_person_name' => $salesOrderShipments['contact_person_name'],
                 'contact_person_number' => $salesOrderShipments['contact_person_number'],
-                'condition' => ($salesOrderShipments['condition']??false)?true:false,
-                'additional_amount' => ($salesOrderShipments['condition']??false)? $salesOrderShipments['additional_amount']: null,
-                'condition_remarks' => ($salesOrderShipments['condition']??false)? $salesOrderShipments['condition_remarks']: null,            
+                'condition' => ($salesOrderShipments['condition'] ?? false) ? true : false,
+                'additional_amount' => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['additional_amount'] : null,
+                'condition_remarks' => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['condition_remarks'] : null,
             ]);
         }
 
         // Handle status: approved or pending
-        if ($data['status'] == 'approved'){
+        if ($data['status'] == 'approved') {
             // Create Delivery
             $result['delivery'] = Delivery::updateOrCreate([
                 'source_id' => $result['salesOrder']->id,
@@ -152,7 +155,7 @@ class SalesOrderService
             ], [
                 'delivery_date' => $data['delivery_date'] ?? $data['invoice_date'],
             ]);
-        } elseif ($data['status'] == 'pending'){
+        } elseif ($data['status'] == 'pending') {
             $result['salesOrder']->update(['status' => 'pending']);
             // Remove delivery if it exists
             $result['salesOrder']->delivery()->delete();
@@ -167,16 +170,16 @@ class SalesOrderService
         ]);
 
         // Update date values of $salesOrder->otp_verifications
-        if (request()->filled('otp_verifications')){
+        if (request()->filled('otp_verifications')) {
 
-            foreach (request()->otp_verifications as $otpJson){
+            foreach (request()->otp_verifications as $otpJson) {
                 $otpData = json_decode($otpJson, true);
 
                 $otpData['sourceable_id'] = $result['salesOrder']->id;
                 $otpData['sourceable_type'] = SalesOrder::class;
 
                 OtpVerification::updateOrCreate(
-                    ['id' => $otpData['id']??null],
+                    ['id' => $otpData['id'] ?? null],
                     $otpData
                 );
             }
@@ -184,22 +187,22 @@ class SalesOrderService
 
 
         // Save payments
-            foreach ($payments['payments_pay_mode'] ?? [] as $key => $payMode){
-                if ($payMode){
-                    $result['payments'][] = $result['salesOrder']->payments()->create([
-                        'pay_mode' => $payMode,
-                        'bank_id' => $payments['payments_bank_id'][$key] ?? null,
-                        'branch_id' => $payments['payments_branch_id'][$key] ?? null,
-                        'transaction_id' => $payments['payments_transaction_id'][$key] ?? null,
-                        'e_m_i_entries_id' => $payments['payments_emi_id'][$key] ?? null,
-                        'amount' => $payments['payments_amount'][$key] ?? 0,
-                        'date' => $payments['payments_date'][$key] ?? null,
-                        'attachments' => $payments['payments_attachments'][$key] ?? null,
-                        'verified' => $payments['payments_verified'][$key] ?? false,
-                        'remarks' => $payments['payments_remark'][$key] ?? null,                
-                    ]);
-                }
+        foreach ($payments['payments_pay_mode'] ?? [] as $key => $payMode) {
+            if ($payMode) {
+                $result['payments'][] = $result['salesOrder']->payments()->create([
+                    'pay_mode' => $payMode,
+                    'bank_id' => $payments['payments_bank_id'][$key] ?? null,
+                    'branch_id' => $payments['payments_branch_id'][$key] ?? null,
+                    'transaction_id' => $payments['payments_transaction_id'][$key] ?? null,
+                    'e_m_i_entries_id' => $payments['payments_emi_id'][$key] ?? null,
+                    'amount' => $payments['payments_amount'][$key] ?? 0,
+                    'date' => $payments['payments_date'][$key] ?? null,
+                    'attachments' => $payments['payments_attachments'][$key] ?? null,
+                    'verified' => $payments['payments_verified'][$key] ?? false,
+                    'remarks' => $payments['payments_remark'][$key] ?? null,
+                ]);
             }
+        }
         // Process payments
         /**  uncomment later
         foreach ($payments['payment_mode'] as $index => $mode){
@@ -208,10 +211,10 @@ class SalesOrderService
             ]);
             $this->storePaymentDetails($salesPayment, $salesPaymentDetail, $payments, $index, $mode);
         }*/
-            // dd($result);
+        // dd($result);
         // $this->makeTransaction($result['salesOrder']);
         // Commit the transaction
-         if($result['salesOrder']->status == 'approved' ){
+        if ($result['salesOrder']->status == 'approved') {
             $this->makeDummyTransaction($result['salesOrder']);
 
             // Check if there are payments and create collection
@@ -223,7 +226,7 @@ class SalesOrderService
                 'collection_date' => $data['invoice_date']
             ];
 
-            if(count($result['salesOrder']->payments) > 0){
+            if (count($result['salesOrder']->payments) > 0) {
                 $this->collectionService->storeForSales($collectionData, $result['salesOrder']->payments, $result['salesOrder']);
             }
         }
@@ -232,7 +235,7 @@ class SalesOrderService
         // dd();
         $clearanceOffers = [];
         foreach ($clearance as $range) {
-             $clearanceOffers[] = $range->offerDetails->offer->id;
+            $clearanceOffers[] = $range->offerDetails->offer->id;
             // dd($range->offerDetails->offer);
         }
 
@@ -450,8 +453,8 @@ class SalesOrderService
         //     $data['due_amount'] = 0;
         // }
     }
-    
-    
+
+
     /**
      * Apply discount-based offers
      */
@@ -700,7 +703,7 @@ class SalesOrderService
 
         return $totalDiscountAmount;
     }
-        
+
     public function calculateDiscountAmountForProducts(array $productsWithQty, ?string $invoiceDate = null): float
     {
         return $this->getDiscountAmountForProducts($productsWithQty, $invoiceDate);
@@ -741,7 +744,7 @@ class SalesOrderService
                     $reqQty = $buy->sales_quentity ?? $buy->quantity;
 
                     // if (!isset($productsWithQty[$prod]) || $productsWithQty[$prod] < $reqQty) {
-                    if (!isset($productsWithQty[$prod]) ) {
+                    if (!isset($productsWithQty[$prod])) {
                         $match = false;
                         break;
                     }
@@ -804,11 +807,11 @@ class SalesOrderService
         $offers = Offer::with([
             'offerDetails.clearanceOfferRanges',
         ])
-        ->where('rule_status', 'running')
-        ->whereDate('applied_date', '<=', $invoiceDate)
-        ->whereDate('stop_date', '>=', $invoiceDate)
-        ->where('offer_type', 'clearance')
-        ->get();
+            ->where('rule_status', 'running')
+            ->whereDate('applied_date', '<=', $invoiceDate)
+            ->whereDate('stop_date', '>=', $invoiceDate)
+            ->where('offer_type', 'clearance')
+            ->get();
 
         $matchedOffers = [];
         $netAmount = $salesOrder->net_amount;
@@ -818,8 +821,8 @@ class SalesOrderService
             foreach ($offer->offerDetails as $detail) {
                 foreach ($detail->clearanceOfferRanges as $range) {
                     // dd($range);
-                    if($netAmount >= $range->buying_amount_from && $netAmount <= $range->buying_amount_to) {
-                        $matchedOffers[] = $range ;
+                    if ($netAmount >= $range->buying_amount_from && $netAmount <= $range->buying_amount_to) {
+                        $matchedOffers[] = $range;
                     }
                 }
             }
@@ -828,15 +831,15 @@ class SalesOrderService
         return $matchedOffers;
     }
 
-    
-/**
- * Process delivery with stock details.
- *
- * @deprecated since v1.0.0
- * @param Delivery $delivery
- * @param array $salesOrderDetails
- * @return void
- */
+
+    /**
+     * Process delivery with stock details.
+     *
+     * @deprecated since v1.0.0
+     * @param Delivery $delivery
+     * @param array $salesOrderDetails
+     * @return void
+     */
     protected function processDeliverywithStockDetails($delivery, $salesOrderDetails)
     {
         $deliveryService = app(DeliveryService::class);
@@ -1338,7 +1341,7 @@ class SalesOrderService
                 'transaction_date' => $salesOrder->invoice_date
             ]);
         }
-// dd( $salesOrder->transactions, $totalInvoiceAmount,$salesOrder->vat , $salesOrder->salesOrderDetails);
+        // dd( $salesOrder->transactions, $totalInvoiceAmount,$salesOrder->vat , $salesOrder->salesOrderDetails);
 
         if ($salesOrder->vat > 0) {
             $salesOrder->transactions()->create([
@@ -1546,9 +1549,10 @@ class SalesOrderService
                     ['id' => $detailId],
                     [
                         'free_sales_invoice_id' => $freeSalesInvoice->id, // Ensure correct foreign key
-                    'product_id' => $productId,
-                    'quantity' => $data['quantity'][$key],
-                ]);
+                        'product_id' => $productId,
+                        'quantity' => $data['quantity'][$key],
+                    ]
+                );
                 $newDetailIds[] = $detail->id;
             }
 
@@ -1567,7 +1571,7 @@ class SalesOrderService
             $result['salesOrderDetails'] = [];
 
             // $freeSalesInvoice->details add to sales order details as offers product
-            foreach($freeSalesInvoice->details as $detail){
+            foreach ($freeSalesInvoice->details as $detail) {
                 $detailData = [
                     'product_id' => $detail->product_id,
                     'quantity' => $detail->quantity,
@@ -1589,7 +1593,6 @@ class SalesOrderService
                     'sales_order_id' => $salesOrder->id,
                     'product_id' => $detail->product_id,
                 ], $detailData);
-
             }
 
 

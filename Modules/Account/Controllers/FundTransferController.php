@@ -5,7 +5,11 @@ namespace Modules\Account\Controllers;
 use App\Http\Controllers\Controller;
 use Modules\Account\Models\FundTransfer;
 use Modules\Account\Services\FundTransferService;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
+use Modules\HRMS\Models\Employee; 
+use Illuminate\Support\Facades\Log;
+use Modules\Account\Models\AccountSetup\BankAccount;
+
 
 class FundTransferController extends Controller
 {
@@ -27,7 +31,7 @@ class FundTransferController extends Controller
     public function index()
     {
         $data['fundTransfers'] = $this->service->getAll();
-
+        $data['bankAccounts'] = BankAccount::with('bankBranch', 'bank')->where("payment_mode", "Cash")->get(); 
         return view("Account::fund-transfers.index", $data);
     }
 
@@ -45,10 +49,21 @@ class FundTransferController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
+  
             //validate rules
+            'transfer_date' => 'required|date',
+            'transfer_type' => 'required|in:bank_to_bank,bank_to_cash,cash_to_bank,bkash_to_bank',
+            'transfer_from' => 'required|string',
+            'transfer_to' => 'required|string',
+            'cheque_date' => 'nullable|date',
+            'cheque_no' => 'nullable|string',
+            'amount' => 'required|string',
+            'remarks' => 'required|string',
+            'attachments' => 'nullable|string',
+            'status' => 'required|string',
         ]);
         $this->service->store($validate);
-        return redirect()->route('account.fund-transfers.index')->with('success', 'FundTransfer created successfully.');
+        return redirect()->route('account.fund-transfers.edit')->with('success', 'FundTransfer created successfully.');
     }
 
     /**
@@ -78,6 +93,16 @@ class FundTransferController extends Controller
     {
         $validate = $request->validate([
             //validate rules
+            'transfer_date' => 'required|date',
+            'transfer_type' => 'required|in:bank_to_bank,bank_to_cash,cash_to_bank,bkash_to_bank',
+            'transfer_from' => 'required|string',
+            'transfer_to' => 'required|string',
+            'cheque_date' => 'nullable|date',
+            'cheque_no' => 'nullable|string',
+            'amount' => 'required|string',
+            'remarks' => 'required|string',
+            'attachments' => 'nullable|string',
+            'status' => 'required|string',
         ]);
         $this->service->update($fundTransfer, $validate);
 
@@ -91,6 +116,33 @@ class FundTransferController extends Controller
     {
         $this->service->delete($fundTransfer);
         return redirect()->route('account.fund-transfers.index')->with('success', 'FundTransfer deleted successfully.');
+    }
+
+
+    public function getAccount(Request $request){
+        
+        $data = [];
+        switch($request->transfer_type)
+        {
+            case 'bank_to_bank':
+                $data['sender_accounts'] = BankAccount::where('payment_mode','Online Deposit')->get();
+                $data['receiver_accounts'] = BankAccount::where('payment_mode','Online Deposit')->get();
+            break;
+            case 'bank_to_cash':
+                $data['sender_accounts'] = BankAccount::where('payment_mode','Online Deposit')->get();
+                $data['receiver_accounts'] = BankAccount::where('payment_mode','Cash')->get();
+            break;
+            case 'cash_to_bank':
+                $data['sender_accounts'] = BankAccount::where('payment_mode','Cash')->get();
+                $data['receiver_accounts'] = BankAccount::where('payment_mode','Online Deposit')->get();
+            break;
+            case 'bkash_to_bank':
+                $data['sender_accounts'] = BankAccount::where('payment_mode','bKash')->get();
+                $data['receiver_accounts'] = BankAccount::where('payment_mode','Online Deposit')->get();
+            break;
+
+        } 
+        return response()->json($data);
     }
  
 }

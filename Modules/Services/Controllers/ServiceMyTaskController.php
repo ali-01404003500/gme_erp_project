@@ -88,6 +88,12 @@ class ServiceMyTaskController extends Controller
             'return_bill_description' => 'nullable|string',
             'tips_amount' => 'nullable|numeric|min:0',
             'remarks' => 'nullable|string',
+            'operator_info_training_status' => 'nullable|string',
+            'operator_info_name' => 'nullable|string',
+            'operator_info_designation' => 'nullable|string',
+            'operator_info_contact_no' => 'nullable|string',
+            'operator_comments' => 'nullable|string',
+
         ]);
 
 

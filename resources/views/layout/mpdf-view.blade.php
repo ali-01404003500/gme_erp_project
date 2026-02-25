@@ -267,7 +267,7 @@
         
         <!-- Company Info -->
         <div class="company-info">
-            <h1 class="company-name">{{ $company_info->company_name ?? 'Opzo Company' }}</h1>
+            <h1 class="company-name">{{ $company_info->company_name ?? 'Global Medical Engineering (BD) Ltd.' }}</h1>
             <p class="company-details">{{ $company_info->company_bio }}</p>
             <p class="company-details">{{ $company_info->company_address }}</p>
             <p class="company-details">Hotline: {{ $company_info->company_phone }}</p>

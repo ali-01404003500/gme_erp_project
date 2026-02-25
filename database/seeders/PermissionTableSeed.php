@@ -1342,6 +1342,39 @@ class PermissionTableSeed extends Seeder
                 'key' => 'crm.daily-calls'
             ],
 
+            //daily-credit-calls
+            [
+                'name' => 'Create Daily Credit Call',
+                'slug' => 'crm.daily-credit-calls.create',
+                'description' => 'Daily Credit Call create permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+            [
+                'name' => 'Daily Credit Call List',
+                'slug' => 'crm.daily-Credit-calls.index',
+                'description' => 'Daily Credit Call list permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+
+            [
+                'name' => 'Daily Credit Call View',
+                'slug' => 'crm.daily-credit-calls.show',
+                'description' => 'Daily Credit Call show permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+            [
+                'name' => 'Credit Legal Task Assign',
+                'slug' => 'crm.daily-credit-calls.legal',
+                'description' => 'Credit Legal Task Assign permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+
+
+
             //brands
             [
                 'name' => 'Create Brand',
@@ -3187,6 +3220,52 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Cheque check Verifications  permission',
                 'key' => 'account.cheque-verifications'
             ],
+
+                //account.fund transfer
+                [
+                    'name'=> 'Fund Transfer List',
+                    'slug'=> 'account.fund-tranfers.index',
+                    'description'=> 'Fund Transfer list permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Create',
+                    'slug'=> 'account.fund-tranfers.create',
+                    'description'=> 'Fund Transfer Create permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Edit',
+                    'slug'=> 'account.fund-tranfers.edit',
+                    'description'=> 'Fund Transfer Edit permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Delete',
+                    'slug'=> 'account.fund-tranfers.delete',
+                    'description'=> 'Fund Transfer delete permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+    
+                [
+                    'name'=> 'Fund Transfer Verify',
+                    'slug'=> 'account.fund-tranfers.verify',
+                    'description'=> 'Fund Transfer verify permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Approve',
+                    'slug'=> 'account.fund-tranfers.approve',
+                    'description'=> 'Fund Transfer approve permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer View',
+                    'slug'=> 'account.fund-tranfers.view',
+                    'description'=> 'Fund Transfer View permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+
 
 
             //default-payable-receivables

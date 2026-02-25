@@ -155,9 +155,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     // });
     
  
-    Route::resource('fund-tranfers', FundTransferController ::class);
-    
-     
+    Route::resource('fund-transfers', FundTransferController ::class); 
+    Route::get('fund-transfers-get-accounts', [FundTransferController::class, 'getAccount'])->name('fund-transfers.getAccounts');
     
     Route::group(['prefix' => 'reports'], function () {
 

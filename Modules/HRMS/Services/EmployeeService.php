@@ -22,47 +22,46 @@ class EmployeeService
 
     public function getAll(int $limit = 20)
     {
-         return Employee::query()
-                ->with(
-                    'employementDetail.department',
-                    'employementDetail.designation',
-                    'employementDetail.supervisorName',
-                    'employementDetail.branch'
-                )
+        return Employee::query()
+            ->with(
+                'employementDetail.department',
+                'employementDetail.designation',
+                'employementDetail.supervisorName',
+                'employementDetail.branch'
+            )
 
-                ->when(request('full_name'), function ($q) {
-                    $q->where('full_name', request('full_name'));
-                })
+            ->when(request('full_name'), function ($q) {
+                $q->where('full_name', request('full_name'));
+            })
 
-                ->when(request('personal_mobile'), function ($q) {
-                    $q->where('personal_mobile', request('personal_mobile'));
-                })
+            ->when(request('personal_mobile'), function ($q) {
+                $q->where('personal_mobile', request('personal_mobile'));
+            })
 
-                ->when(request('status') !== null, function ($q) {
-                    $q->where('status', request('status'));
-                })
+            ->when(request('status') !== null, function ($q) {
+                $q->where('status', request('status'));
+            })
 
-                ->when(request('department'), function ($q) {
-                    $q->whereHas('employementDetail', function ($sub) {
-                        $sub->where('department_id', request('department'));
-                    });
-                })
+            ->when(request('department'), function ($q) {
+                $q->whereHas('employementDetail', function ($sub) {
+                    $sub->where('department_id', request('department'));
+                });
+            })
 
-                ->when(request('designation'), function ($q) {
-                    $q->whereHas('employementDetail', function ($sub) {
-                        $sub->where('designation_id', request('designation'));
-                    });
-                })
+            ->when(request('designation'), function ($q) {
+                $q->whereHas('employementDetail', function ($sub) {
+                    $sub->where('designation_id', request('designation'));
+                });
+            })
 
-                ->when(request('branch'), function ($q) {
-                    $q->whereHas('employementDetail', function ($sub) {
-                        $sub->where('branch_id', request('branch'));
-                    });
-                })
+            ->when(request('branch'), function ($q) {
+                $q->whereHas('employementDetail', function ($sub) {
+                    $sub->where('branch_id', request('branch'));
+                });
+            })
 
-                ->likeSearch('present_address')
-                ->paginate($limit);
-
+            ->likeSearch('present_address')
+            ->paginate($limit);
     }
 
     public function create($type, array $data, $employementDetails, $user)
@@ -70,10 +69,9 @@ class EmployeeService
 
         $result = [];
         DB::beginTransaction();
-  
-        if( $type == 'employee_information')
-        {
-            
+
+        if ($type == 'employee_information') {
+
             $user = User::create([
                 'name' => $data['full_name'],
                 'email' => $user['system_username'],
@@ -88,26 +86,25 @@ class EmployeeService
             $result['employee'] = Employee::create($data);
             $result['employee']->createBankAccount();
 
-            
+
             $result['employee']->employementDetails()->create([
                 'employee_id' => $result['employee']->id,
-                'card_no' => $employementDetails['card_no'], 
+                'card_no' => $employementDetails['card_no'],
                 'branch_id' => $employementDetails['user_branch_id'],
-            ]); 
+            ]);
         }
- 
+
         // dd($result);
         DB::commit();
         return $result;
     }
 
     public function update($type, Employee $employee, array $data, array $contact, array $educationsDetails, array $employementDetails, array $documents1, array $documents2, array $bank, array $tax, array $employeement_experience, array $employeeFamilyContact, array $user)
-    {  
+    {
         //dd( $employementDetails);
 
 
-        if( $type == 'employee_information')
-        {
+        if ($type == 'employee_information') {
             $employee->update($data);
             $employee->employementDetail->update([
                 'card_no' => $employementDetails['card_no']
@@ -116,52 +113,44 @@ class EmployeeService
             // Update the user's branch to match the employee's branch
             if ($employee->user) {
                 $employee->user->update([
-                    'branch_id' => $employementDetails['user_branch_id'], 
+                    'branch_id' => $employementDetails['user_branch_id'],
                 ]);
-    
-            } 
-
-            
-            
+            }
         }
 
-        if( $type == 'contact')
-        {
+        if ($type == 'contact') {
             $employee->update($contact);
         }
-        if( $type == 'documents')
-        {
+        if ($type == 'documents') {
             $employee->update($documents1);
 
             EmployeeDocuments::create([
-                'employee_id' => $employee->id, 
+                'employee_id' => $employee->id,
                 'title' => $documents2['title'],
                 'remarks' => $documents2['remarks'],
                 'document_upload' => $documents2['document_upload'],
             ]);
         }
-        if( $type == 'job_status')
-        {
+        if ($type == 'job_status') {
             $employee->update([
-                  'status' => $employementDetails['status'],
+                'status' => $employementDetails['status'],
             ]);
 
             // Reset and save employment detailsBill
             $employee->employementDetails()->delete();
             EmployementDetail::create([
-                'employee_id' => $employee->id, 
+                'employee_id' => $employee->id,
                 'date_of_joining' => $employementDetails['date_of_joining'],
                 'employment_type_id' => $employementDetails['employment_type_id'],
                 'department_id' => $employementDetails['department_id'],
                 'designation_id' => $employementDetails['designation_id'],
                 'supervisor' => $employementDetails['supervisor'],
                 'branch_id' => $employementDetails['user_branch_id'],
-              
-                
+
+
             ]);
         }
-        if( $type == 'educational')
-        {
+        if ($type == 'educational') {
             // Reset and save education details
             $employee->educationDetails()->delete();
             // dd($educationsDetails);
@@ -192,24 +181,21 @@ class EmployeeService
                 }
             }
         }
-        if( $type == 'bank')
-        {
+        if ($type == 'bank') {
             $employee->update($bank);
         }
-        if( $type == 'tax')
-        {
+        if ($type == 'tax') {
             $employee->update($tax);
         }
         //dd( $employeement_experience);
-        if( $type == 'employeement_experience')
-        {
+        if ($type == 'employeement_experience') {
             // Reset and save employeement experience details
             $employee->employeementExperience()->delete();
-           
+
             if (!empty($employeement_experience['company_name'])) {
                 foreach ($employeement_experience['company_name'] as $key => $company_name) {
                     if (
-                        empty($company_name) && 
+                        empty($company_name) &&
                         empty($employeement_experience['address'][$key]) &&
                         empty($employeement_experience['designation'][$key]) &&
                         empty($employeement_experience['start_date'][$key]) &&
@@ -219,7 +205,7 @@ class EmployeeService
                     ) {
                         continue; // skip blank rows
                     }
- 
+
                     EmployeeExperience::create([
                         'employee_id' => $employee->id,
                         'company_name' => $company_name,
@@ -228,21 +214,20 @@ class EmployeeService
                         'start_date' => $employeement_experience['start_date'][$key],
                         'end_date' => $employeement_experience['end_date'][$key],
                         'salary' => $employeement_experience['salary'][$key],
-                        'remarks' => $employeement_experience['remarks'][$key], 
+                        'remarks' => $employeement_experience['remarks'][$key],
                     ]);
                 }
             }
         }
         //dd( $employeeFamilyContact);
-        if( $type == 'family_contact')
-        {
-           // Reset and save employee family contact details
+        if ($type == 'family_contact') {
+            // Reset and save employee family contact details
             $employee->employeeFamilyContact()->delete();
-          
+
             if (!empty($employeeFamilyContact['name'])) {
                 foreach ($employeeFamilyContact['name'] as $key => $name) {
                     if (
-                        empty($name) && 
+                        empty($name) &&
                         empty($employeeFamilyContact['relationship'][$key]) &&
                         empty($employeeFamilyContact['gender'][$key]) &&
                         empty($employeeFamilyContact['nid'][$key]) &&
@@ -251,7 +236,7 @@ class EmployeeService
                     ) {
                         continue; // skip blank rows
                     }
- 
+
                     EmployeeFamilyContact::create([
                         'employee_id' => $employee->id,
                         'name' => $name,
@@ -263,23 +248,21 @@ class EmployeeService
                     ]);
                 }
             }
-        } 
-        if( $type == 'system')
-        {
-           //dd( $user);
+        }
+        if ($type == 'system') {
+            //dd( $user);
             $userData['user_status'] = $user['user_status'];
             $employee->user->update($userData);
-            
+
             // Update the user's password if a new password is provided
             if (!empty($user['system_password'])) {
                 $userData['password'] = bcrypt($user['system_password']);
                 $employee->user->update($userData);
-        
-            } 
+            }
         }
- 
 
-        
+
+
 
         return $employee;
     }
@@ -464,7 +447,7 @@ class EmployeeService
             ];
 
             // Call the creator (transaction inside)
-            $this->create($type='', $employeeData, $educationDetails, $employmentDetails, $userData);
+            $this->create($type = '', $employeeData, $educationDetails, $employmentDetails, $userData);
         }
 
         fclose($file);

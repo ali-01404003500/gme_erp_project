@@ -331,6 +331,13 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'crm.daily-calls',
                 'parent_key' => 'crm',
             ],
+            //daily-Credit-calls
+            [
+                'title' => 'Daily Credit Calls',
+                'description' => 'Permission of Add, Legal, Show Daily Credit Calls',
+                'key' => 'crm.daily-credit-calls',
+                'parent_key' => 'crm',
+            ],
             //Reports
             [
                 'title' => 'Reports',
@@ -893,7 +900,15 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'account.payments.loan-payment',
                 'parent_key' => 'account.payments',
             ],
- 
+
+            //Loan Payments
+            [
+                'title' => 'Fund Transfer',
+                'description' => 'Permission of Add, Remove, Update, Delete, Verify, Approve Fund Transfer',
+                'key' => 'account.fund-tranfers',
+                'parent_key' => 'accounts',
+            ],
+
             //Vendor Bills
             [
                 'title' => 'Vendor Bills',

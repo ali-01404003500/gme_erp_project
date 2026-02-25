@@ -52,6 +52,7 @@
                                         <th>Amount</th>
                                         <th>Bank Info</th>
                                         <th>Remarks</th>
+                                        <th>Attachemnt</th>
                                         <th>Status</th>
                                         <th class="no-content">Action</th>
                                     </tr>
@@ -70,6 +71,11 @@
                                                 - {{ optional($payment->brokerPaymentBank)->bank_name }}
                                             </td>
                                             <td>{{ $payment->remarks }}</td>
+                                            <td>
+                                                @if($payment->attachment_name)
+                                                    <a href="{{ asset($payment->attachment_name) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($payment->status == 'pending')
                                                     <span class="badge badge-round bg-warning">Pending</span>

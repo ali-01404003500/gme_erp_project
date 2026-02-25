@@ -4,354 +4,276 @@
 @section('description', 'Application Entry')
 
 @section('content')
-    <style>
-        #right-column {
-            margin-bottom: 10px !important;
-        }
+<style>
+    /* Modern Mesh Gradient Background */
+    body {
+        background: radial-gradient(at 0% 0%, rgba(95, 99, 242, 0.12) 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, rgba(121, 40, 202, 0.1) 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, rgba(0, 212, 255, 0.12) 0px, transparent 50%),
+                    radial-gradient(at 0% 100%, rgba(95, 99, 242, 0.08) 0px, transparent 50%),
+                    #f8fafc !important;
+        min-height: 100vh;
+    }
 
-        .row {
-            padding: 15px;
-            margin-top: 10px;
-        }
+    /* Glassmorphism Card Style */
+    .card {
+        border: 1px solid rgba(255, 255, 255, 0.7) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
+        border-radius: 16px !important;
+    }
 
-        .form-group label {
-            margin-bottom: 3px;
-        }
+    /* UPDATED: Table Header - Medium Big & Bold */
+    .table thead th {
+        background-color: rgba(95, 99, 242, 0.08) !important;
+        color: #0f172a !important; /* Deep dark for contrast */
+        font-weight: 800 !important; /* Extra Bold */
+        text-transform: uppercase;
+        font-size: 0.95rem !important; /* Medium-Big size */
+        letter-spacing: 0.05em;
+        border-bottom: 3px solid #5f63f2 !important; /* Stronger accent border */
+        padding: 20px 15px !important; /* More vertical space */
+        vertical-align: middle;
+    }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            margin-top: 3px;
-        }
+    /* Modern Tabs */
+    .nav-tabs.vertical-tabs {
+        border-bottom: 2px solid rgba(95, 99, 242, 0.1);
+        gap: 10px;
+    }
 
-        #title {
-            padding: 0;
-            margin-top: 0;
-        }
+    .nav-tabs.vertical-tabs .nav-item .nav-link {
+        border: none;
+        background: transparent;
+        font-weight: 700;
+        color: #64748b;
+        padding: 12px 25px;
+        border-radius: 10px 10px 0 0;
+        transition: all 0.3s;
+    }
 
-        #justify-content-center {
-            margin-top: 10px !important;
-        }
+    .nav-tabs.vertical-tabs .nav-item .nav-link.active {
+        background-color: #5f63f2;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(95, 99, 242, 0.2);
+    }
 
-        .card-body {
-            margin-right: 7vh;
-            margin-left: 7vh;
-        }
+    /* Form Styling */
+    .form-control, .tom-select {
+        border-radius: 10px !important;
+        border: 1px solid #e2e8f0 !important;
+        padding: 10px 15px !important;
+    }
 
-        .row {
-            padding: 2vh;
-        }
+    .table tbody td {
+        padding: 15px !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
+        color: #334155;
+    }
 
-        .nav-tabs.vertical-tabs .nav-item .nav-link {
-            background-color: #f7ecfd;
-            color: #3d3d3d;
-            border-radius: 5px 5px 0 0;
-        }
+    .btn-submit {
+        background: linear-gradient(90deg, #5f63f2, #7928ca);
+        border: none;
+        padding: 12px 30px;
+        font-weight: 700;
+        border-radius: 10px;
+        transition: transform 0.2s;
+        color: white;
+    }
 
-        .nav-tabs.vertical-tabs .nav-item .nav-link.active {
-            background-color: var(--color-primary);
-            color: #ffffff;
-        }
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(95, 99, 242, 0.3);
+        color: white;
+    }
+</style>
 
-        .tab-content {
-            padding: 20px;
-            border: 1px solid #dee2e6;
-            border-top: none;
-            border-radius: 0 0 5px 5px;
-        }
-
-        .search-form {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-    </style>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-12">
-
-                {{-- Breadcrumb --}}
-                <div class="breadcrumb-main d-flex justify-content-between align-items-center">
-                    <div class="breadcrumb-action justify-content-center flex-wrap">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">{{ trans('Application Entry') }}</li>
-                            </ol>
-                        </nav>
-                    </div>
-                    <div class="action-btn mt-sm-0 mt-15">
-                        <a href="{{ route('cms.application-entries.index') }}"
-                            class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm">
-                            <i class="fa fa-list"></i> List
-                        </a>
-                    </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="breadcrumb-main d-flex justify-content-between align-items-center py-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent p-0 mb-0">
+                        <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i> Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ trans('Application Entry') }}</li>
+                    </ol>
+                </nav>
+                <div class="action-btn">
+                    <a href="{{ route('cms.application-entries.index') }}"
+                        class="btn btn-outline-warning btn-sm radius-md px-3 shadow-sm" style="border-radius: 10px;">
+                        <i class="fa fa-list me-1"></i> View List
+                    </a>
                 </div>
-
-                <div class="d-flex align-items-center user-member__title mb-2">
-                    <h4 class="text-capitalize">{{ trans('Application Entry') }}</h4>
-                </div>
-                <x-error-alart />
             </div>
+            <x-error-alart />
         </div>
+    </div>
 
-        {{-- Tabs --}}
-        <div class="card mb-50">
-            <div class="row justify-content-center" id="justify-content-center">
+    <div class="card mb-50">
+        <div class="card-body py-4 px-lg-5">
+            <div class="dm-tab tab-horizontal">
+                <ul class="nav nav-tabs vertical-tabs mb-4" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link {{ !request()->hasAny(['customer_id', 'from', 'to']) && request()->query('tab') !== 'cheque' ? 'active' : '' }}"
+                            id="tab-v-1-tab" data-bs-toggle="tab" href="#tab-v-1" role="tab">
+                            Deed Document / NOC
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->hasAny(['customer_id', 'from', 'to']) || request()->query('tab') === 'cheque' ? 'active' : '' }}"
+                            id="tab-v-2-tab" data-bs-toggle="tab" href="#tab-v-2" role="tab">
+                            Cheque Application
+                        </a>
+                    </li>
+                </ul>
 
-                <div class="dm-tab tab-horizontal">
-                    {{-- Tab Menu --}}
-                    <ul class="nav nav-tabs vertical-tabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link {{ !request()->hasAny(['customer_id', 'from', 'to']) && request()->query('tab') !== 'cheque' ? 'active' : '' }}"
-                                id="tab-v-1-tab" data-bs-toggle="tab" href="#tab-v-1" role="tab"
-                                aria-selected="{{ !request()->hasAny(['customer_id', 'from', 'to']) && request()->query('tab') !== 'cheque' ? 'true' : 'false' }}">
-                                Deed Document / NOC
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->hasAny(['customer_id', 'from', 'to']) || request()->query('tab') === 'cheque' ? 'active' : '' }}"
-                                id="tab-v-2-tab" data-bs-toggle="tab" href="#tab-v-2" role="tab"
-                                aria-selected="{{ request()->hasAny(['customer_id', 'from', 'to']) || request()->query('tab') === 'cheque' ? 'true' : 'false' }}">
-                                Cheque
-                            </a>
-                        </li>
-                    </ul>
+                <div class="tab-content border-0 p-0">
+                    {{-- Tab 1: Deed Document / NOC --}}
+                    <div class="tab-pane fade {{ !request()->hasAny(['customer_id', 'from', 'to']) && request()->query('tab') !== 'cheque' ? 'show active' : '' }}"
+                        id="tab-v-1" role="tabpanel">
+                        
+                        <form action="{{ route('cms.application-entries.store', app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <input type="hidden" name="form_type" value="deed_noc">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-700 text-dark">Date <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control flatdate shadow-sm" name="date" value="{{ old('date', date('Y-m-d')) }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-700 text-dark">Application Type <span class="text-danger">*</span></label>
+                                    <select class="form-control tom-select" name="type">
+                                        <option value="Deed Document" @if (old('type') == 'Deed Document') selected @endif>Deed Document</option>
+                                        <option value="NOC" @if (old('type') == 'NOC') selected @endif>NOC</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-700 text-dark">Customer <span class="text-danger">*</span></label>
+                                    <select class="form-control tom-select" name="customer_id" required>
+                                        <option value="">Select a Customer</option>
+                                        @foreach ($customers as $item)
+                                            <option value="{{ $item->id }}" {{ old('customer_id') == $item->id ? 'selected' : '' }}>{{ $item->company_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="form-label fw-700 text-dark">Description <span class="text-danger">*</span></label>
+                                    <textarea name="description" class="form-control shadow-sm" rows="4">{{ old('description') }}</textarea>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-submit shadow-lg">Submit Entry</button>
+                            </div>
+                        </form>
+                    </div>
 
-                    {{-- Tab Content --}}
-                    <div class="tab-content">
-
-                        {{-- Tab 1: Deed Document / NOC --}}
-                        <div class="tab-pane fade {{ !request()->hasAny(['customer_id', 'from', 'to']) && request()->query('tab') !== 'cheque' ? 'show active' : '' }}"
-                            id="tab-v-1" role="tabpanel" aria-labelledby="tab-v-1-tab">
-
-                            <form action="{{ route('cms.application-entries.store', app()->getLocale()) }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="form_type" value="deed_noc">
-
-                                <div class="row mb-2 mt-3">
-                                    <div class="form-group col-md-6 mb-25">
-                                        <label for="date" class="color-dark fs-14 fw-500 align-center">Date <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control flatdate ip-gray radius-xs b-light px-15"
-                                            name="date" id="date" value="{{ old('date', date('Y-m-d')) }}"
-                                            placeholder="Date">
+                    {{-- Tab 2: Cheque --}}
+                    <div class="tab-pane fade {{ request()->hasAny(['customer_id', 'from', 'to']) || request()->query('tab') === 'cheque' ? 'show active' : '' }}"
+                        id="tab-v-2" role="tabpanel">
+                        {{-- Search section --}}
+                        <div class="search-form mb-4 shadow-sm">
+                            <form method="GET" action="{{ route('cms.application-entries.create', app()->getLocale()) }}" class="row g-3 align-items-center">
+                                <div class="col-md-4">
+                                    <select class="form-control tom-select" name="customer_id">
+                                        <option value="">Select Customer</option>
+                                        @foreach ($customerSearch as $customer)
+                                            <option value="{{ $customer->id }}" {{ request('customer_id') == $customer->id ? 'selected' : '' }}>{{ $customer->company_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control datePicker" name="from" value="{{ request('from') }}" placeholder="From Date">
+                                        <span class="input-group-text bg-white border-0"><i class="las la-arrow-right"></i></span>
+                                        <input type="text" class="form-control datePicker" name="to" value="{{ request('to') }}" placeholder="To Date">
                                     </div>
-
-                                    <div class="form-group col-md-6 mb-25">
-                                        <label for="type" class="color-dark fs-14 fw-500 align-center">Application Type
-                                            <span class="text-danger">*</span></label>
-                                        <select class="form-control tom-select" name="type" id="type">
-                                            <option value="Deed Document" @if (old('type') == 'Deed Document') selected @endif>
-                                                Deed Document</option>
-                                            <option value="NOC" @if (old('type') == 'NOC') selected @endif>NOC
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group col-md-12 mb-25">
-                                        <label for="customer_id" class="color-dark fs-14 fw-500 align-center">Customer <span
-                                                class="text-danger">*</span></label>
-                                        <select class="form-control tom-select" name="customer_id" id="customer_id"
-                                            required>
-                                            <option value="">Select a Customer</option>
-                                            @foreach ($customers as $item)
-                                                <option value="{{ $item->id }}"
-                                                    {{ old('customer_id') == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->company_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group col-md-12 mb-25">
-                                        <label for="description" class="color-dark fs-14 fw-500 align-center">Description
-                                            <span class="text-danger">*</span></label>
-                                        <textarea name="description" id="description" class="form-control ip-gray radius-xs b-light px-15"
-                                            placeholder="Remarks">{{ old('description') }}</textarea>
-                                    </div>
-
-                                    {{-- Submit --}}
-                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
-                                        <button type="submit"
-                                            class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">
-                                            Submit
-                                        </button>
-                                    </div>
+                                </div>
+                                <div class="col-md-2 d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary w-100 radius-md shadow-sm"><i class="fa fa-search"></i></button>
+                                    <a href="{{ route('cms.application-entries.create', app()->getLocale()) }}?tab=cheque" class="btn btn-light border w-100 radius-md">Reset</a>
                                 </div>
                             </form>
                         </div>
 
-                        {{-- Tab 2: Cheque --}}
-                        <div class="tab-pane fade {{ request()->hasAny(['customer_id', 'from', 'to']) || request()->query('tab') === 'cheque' ? 'show active' : '' }}"
-                            id="tab-v-2" role="tabpanel" aria-labelledby="tab-v-2-tab">
+                        <form action="{{ route('cms.application-entries.store', app()->getLocale()) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="form_type" value="cheque">
+                            <input type="hidden" name="type" value="Cheque">
+                            <input type="hidden" name="date" value="{{ date('Y-m-d') }}">
 
-                            {{-- Search Form --}}
-                            <form method="GET" action="{{ route('cms.application-entries.create', app()->getLocale()) }}"
-                                class="search-form mb-3">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <select class="form-control tom-select" name="customer_id">
-                                            <option value="">Select Customer</option>
-                                            @foreach ($customerSearch as $customer)
-                                                <option value="{{ $customer->id }}"
-                                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                    {{ $customer->company_name }} - {{ $customer->address}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="input-daterange input-group">
-                                            <input type="text" class="form-control datePicker" name="from"
-                                                value="{{ request('from') }}" placeholder="From Date"
-                                                autocomplete="off" />
-                                            <span class="input-group-text"><i class="fa fa-exchange-alt"></i></span>
-                                            <input type="text" class="form-control datePicker" name="to"
-                                                value="{{ request('to') }}" placeholder="To Date" autocomplete="off" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="btn-group">
-                                            <button type="submit" class="btn btn-sm btn-primary"><i
-                                                    class="fa fa-search"></i> Search</button>
-                                            <a href="{{ route('cms.application-entries.create', app()->getLocale()) }}?tab=cheque"
-                                                class="btn btn-sm btn-secondary">Clear</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            <div class="mb-4">
+                                <label class="form-label fw-700 text-dark">Batch Description <span class="text-danger">*</span></label>
+                                <textarea name="descriptions" class="form-control shadow-sm" rows="3">{{ old('description') }}</textarea>
+                            </div>
 
-                            <form action="{{ route('cms.application-entries.store', app()->getLocale()) }}"
-                                method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="form_type" value="cheque">
-
-                                <div class="form-group col-md-12 mb-25">
-                                    <label for="cheque_description"
-                                        class="color-dark fs-14 fw-500 align-center">Description
-                                        <span class="text-danger">*</span></label>
-                                    <textarea name="descriptions" id="cheque_description" class="form-control ip-gray radius-xs b-light px-15"
-                                        placeholder="Remarks">{{ old('description') }}</textarea>
-                                    <input type="hidden" name="type" value="Cheque">
-                                    <input type="hidden" name="date" value="{{ date('Y-m-d') }}">
-                                </div>
-
-                                {{-- Cheque Table --}}
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th width="5%">SL</th>
-                                                <th width="20%">Customer Info</th>
-                                                <th width="20%">Bank Info</th>
-                                                <th width="20%">Cheque Info</th>
-                                                <th width="20%">Receive Info</th>
-                                                <th width="15%"><input type="checkbox" id="checkAll"> Select All</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (count($entries) > 0)
-                                                @foreach ($entries as $entry)
-                                                    @foreach ($entry->details as $detail)
-                                                        <tr>
-                                                            <td>{{ $loop->iteration }}</td>
-
-                                                            {{-- Customer Info --}}
-                                                            <td>
-                                                                <strong>{{ $entry->customer->company_name }}</strong><br>
-                                                                {{ $entry->customer->address }}<br>
-                                                                {{ $entry->customer->phone ?? '' }}
-                                                            </td>
-
-                                                            {{-- Bank Info --}}
-                                                            <td>
-                                                                <strong>Bank:</strong> {{ $detail->bank->name ?? '-' }}
-                                                                <br>
-                                                                <strong>Branch:</strong>
-                                                                {{ $detail->branch->name ?? '-' }}<br>
-                                                                @php
-                                                                    $documents = is_string($detail->document)
-                                                                        ? json_decode($detail->document, true)
-                                                                        : $detail->document;
-                                                                @endphp
-                                                                @if (!empty($documents) && is_array($documents))
-                                                                    @foreach ($documents as $doc)
-                                                                        <a href="{{ $doc }}" target="_blank"><i
-                                                                                class="fa fa-image"></i></a>
-                                                                    @endforeach
-                                                                @endif
-                                                            </td>
-
-                                                            {{-- Cheque Info --}}
-                                                            <td>
-                                                                <strong>No:</strong> {{ $detail->cheque_no ?? '-' }} <br>
-                                                                <strong>Date:</strong> {{ $detail->cheque_date ?? '-' }}
-                                                                <br>
-                                                                <strong>Amount:</strong>
-                                                                {{ number_format($detail->amount) }}
-                                                            </td>
-
-                                                            {{-- Receive Info --}}
-                                                            <td>
-                                                                <strong>Received by:</strong> {{ $entry->createdBy->name }}
-                                                                <br>
-                                                                <strong>Entry Date:</strong>
-                                                                {{ $entry->created_at->format('d-m-Y') }}
-                                                            </td>
-
-                                                            {{-- Action --}}
-                                                            <td>
-                                                                <input type="checkbox" class="form-check-input checkbox"
-                                                                    name="advance_cheque_entry_detail_id[]"
-                                                                    value="{{ $detail->id }}">
-                                                                <input type="hidden"
-                                                                    name="customer_id[{{ $detail->id }}]"
-                                                                    value="{{ $entry->customer->id }}">
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endforeach
-                                            @else
+                            <div class="table-responsive table-container border rounded">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">SL</th>
+                                            <th>Customer</th>
+                                            <th>Bank & Branch</th>
+                                            <th>Cheque Details</th>
+                                            <th>Receiver</th>
+                                            <th class="text-center">
+                                               Select All <input type="checkbox" class="form-check-input" id="checkAll">
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($entries as $entry)
+                                            @foreach ($entry->details as $detail)
                                                 <tr>
-                                                    <td colspan="6" class="text-center">No cheque entries found. Please
-                                                        adjust your search criteria.</td>
+                                                    <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
+                                                    <td>
+                                                        <div class="fw-bold text-dark">{{ $entry->customer->company_name }}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small fw-bold text-dark">{{ $detail->bank->name ?? '-' }}</div>
+                                                        <div class="text-muted small">{{ $detail->branch->name ?? '-' }}</div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-light text-dark border me-1">#{{ $detail->cheque_no ?? '-' }}</span>
+                                                        <span class="text-primary fw-bold">{{ number_format($detail->amount) }}</span>
+                                                    </td>
+                                                    <td><div class="fw-bold">{{ $entry->createdBy->name }}</div><div class="text-muted small">{{ $entry->created_at->format('d M, Y') }}</div></td>
+                                                    <td class="text-center">
+                                                        <input type="checkbox" class="form-check-input checkbox" name="advance_cheque_entry_detail_id[]" value="{{ $detail->id }}">
+                                                        <input type="hidden" name="customer_id[{{ $detail->id }}]" value="{{ $entry->customer->id }}">
+                                                    </td>
                                                 </tr>
-                                            @endif
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            @endforeach
+                                        @empty
+                                            <tr><td colspan="6" class="text-center py-4 text-muted">No cheque entries found.</td></tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
 
-                                @if (count($entries) > 0)
-                                    {{-- Submit --}}
-                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
-                                        <button type="submit"
-                                            class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">
-                                            Submit Selected Cheques
-                                        </button>
-                                    </div>
-                                @endif
-                            </form>
-                        </div>
+                            @if (count($entries) > 0)
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="submit" class="btn btn-submit shadow-lg">Submit Selected Cheques</button>
+                                </div>
+                            @endif
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @section('page_scripts')
     <script>
-        // ✅ Check All functionality
         document.getElementById('checkAll').addEventListener('change', function() {
             const checked = this.checked;
             document.querySelectorAll('.checkbox').forEach(cb => cb.checked = checked);
         });
 
-        // ✅ If all checked manually, update master checkbox
         document.querySelectorAll('.checkbox').forEach(cb => {
             cb.addEventListener('change', function() {
                 const all = document.querySelectorAll('.checkbox').length;
