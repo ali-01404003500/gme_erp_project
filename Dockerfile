@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     libmagickwand-dev \
     supervisor \
     && docker-php-ext-install pdo pdo_mysql zip gd ftp pcntl \
-    && pecl install redis imagick \
+    && pecl install redis imagick swoole \
     && docker-php-ext-enable redis imagick pcntl \
     && rm -rf /var/lib/apt/lists/*
 
