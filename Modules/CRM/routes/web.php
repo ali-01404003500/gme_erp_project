@@ -52,7 +52,10 @@ Route::group(['middleware'=>'auth', 'prefix' => 'crm', 'as' => 'crm.'],function 
 
 
     Route::resource('daily-calls', DailyCallController::class);
+
     Route::resource('daily-credit-calls', DailyCreditCallController::class);
+    Route::get('daily-credit-calls-legal', [DailyCreditCallController::class, 'legal'])->name('daily-credit-calls.legal');
+    Route::post('daily-credit-calls-legal', [DailyCreditCallController::class, 'legalStore'])->name('daily-credit-calls.legalStore');
 
     Route::prefix('reports')->name('reports.')->group(function () {
 

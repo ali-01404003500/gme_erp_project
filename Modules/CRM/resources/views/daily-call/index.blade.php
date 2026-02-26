@@ -105,7 +105,7 @@
 
                                 @foreach ($dailyCalls as $value)
                                     <tr>
-                                            <td class="text-center">{{ ($dailyCalls->currentPage() - 1) * $dailyCalls->perPage() + $loop->iteration  }}</td>
+                                        <td class="text-center">{{ ($dailyCalls->currentPage() - 1) * $dailyCalls->perPage() + $loop->iteration  }}</td>
                                         <td>
                                             <a class="text-dark fw-500"
                                                 href="{{ route('crm.daily-calls.show', $value->id) }}">

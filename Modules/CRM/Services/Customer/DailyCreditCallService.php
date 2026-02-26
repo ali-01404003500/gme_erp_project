@@ -3,21 +3,24 @@
 namespace Modules\CRM\Services\Customer;
 
 use Modules\CRM\Models\Customer\DailyCreditCall;
- 
- 
-
+use Modules\CRM\Models\Customer\DailyLegalTask;
 
 class DailyCreditCallService
 {
     
     public function getAll(int $limit = 20) {
         return DailyCreditCall::query();
-        //->paginate($limit);
+        
     }
-    
+
+
     public function store(array $data)
     {
         return DailyCreditCall::create($data);
+    }
+      public function legalStore(array $data)
+    {
+        return DailyLegalTask::create($data);
     }
 
     public function update(DailyCreditCall $dailyCreditCall, array $data)
@@ -34,14 +37,22 @@ class DailyCreditCallService
     public function show($id)
     {
         $data = DailyCreditCall::where('customer_id', $id)
-            ->with('createBy')
+            ->with('createdBy')
             ->orderBy('call_date', 'desc')
-            ->get()
-            ->toArray();
+            ->get();
   
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+        return $data;
+    }
+
+
+    
+    public function legalShow($id)
+    {
+        $data = DailyLegalTask::where('customer_id', $id)
+            ->with('createdBy')
+            ->orderBy('created_at', 'desc')
+            ->get();
+  
+        return $data;
     }
 }

@@ -4,15 +4,11 @@ namespace Modules\CRM\Models\Customer;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
-use App\Models\User;
-use App\Traits\AutoCreatedUpdated;
 use App\Traits\AutoCreateUpdateAndHistory;
-use App\Traits\AutoHistory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\HRMS\Models\Employee;
+use Modules\CRM\Models\Customer\Customer;
 
-class DailyCreditCall extends BaseModel
+class DailyLegalTask extends BaseModel
 {
     use HasFactory;
     use AutoCreateUpdateAndHistory;
@@ -24,5 +20,4 @@ class DailyCreditCall extends BaseModel
     {
         return $this->belongsTo(Customer::class);
     }  
-     
 }

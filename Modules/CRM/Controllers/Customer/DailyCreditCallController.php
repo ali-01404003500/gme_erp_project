@@ -8,10 +8,13 @@ use App\Models\GeoLocation;
 use Carbon\Carbon;
 use Modules\CRM\Models\Customer\DailyCreditCall;
 use Modules\CRM\Services\Customer\DailyCreditCallService;
+use Modules\CRM\Models\Customer\DailyLegalTask;
 use Illuminate\Http\Request;
 use Modules\CRM\Models\Customer\Customer;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Modules\HRMS\Models\Employee;
+
 
 class DailyCreditCallController extends Controller
 {
@@ -71,6 +74,32 @@ class DailyCreditCallController extends Controller
         return view('CRM::daily-credit-call.create-modal',$data);
     }
 
+
+    /**
+     * Show the form for creating a legal task entry.
+     */
+    public function legal(Request $request)
+    {
+        $data = [];
+        $data['customer'] = Customer::select('id', 'company_name', 'phone','address')
+            ->where('id', $request->id)
+            ->first();
+
+        $data['legalTask'] = $this->service->legalShow($request->id);
+        $data['employees'] = Employee::select(['id','full_name'])->where('status','1')->get(); 
+    
+        // Build the report data
+        return view('CRM::daily-credit-call.legal-modal',$data);
+
+
+        
+
+        
+
+        
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
@@ -99,7 +128,7 @@ class DailyCreditCallController extends Controller
 
             
             $result = $this->service->store($validate); 
-            return redirect()->route('crm.daily-credit-call.index')->with('success', 'Daily Credit Call created successfully.');
+            return redirect()->route('crm.daily-credit-calls.index')->with('success', 'Daily Credit Call created successfully.');
         }
         catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -107,6 +136,40 @@ class DailyCreditCallController extends Controller
 
  
     }
+    
+
+    public function legalStore(Request $request)
+    {
+ 
+        //dd($request->all());
+        $validate = $request->validate([
+            'customer_id' => 'required',
+            'task_type' => 'string', 
+            'status' => 'string',
+            'assign_to' => 'string',
+            'assign_remarks' => 'string',
+        ]);
+
+         
+        try {
+
+            //Update previous entry status
+            DailyLegalTask::where('customer_id', $validate['customer_id'])
+            ->where('status', 'pending')  
+            ->update(['status' => 'changed']);
+
+            
+            $result = $this->service->legalStore($validate); 
+            return redirect()->route('crm.daily-credit-calls.index')->with('success', 'Legal task assign successfully.');
+        }
+        catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
+ 
+    }
+    
+
 
     /**
      * Display the specified resource.
@@ -335,7 +398,7 @@ class DailyCreditCallController extends Controller
         ];
     }
 
-     private function fetchBulkCollections($customerIds)
+    private function fetchBulkCollections($customerIds)
     {
         // Get customers and build account mapping using getAccount() method
         $customers = Customer::whereIn('id', $customerIds)
