@@ -92,25 +92,25 @@ class ChequeVerificationController extends Controller
         return view("chequeVerifications.edit", $data);
     }
    public function deposit(Request $request, $id)
-{
-    $validated = $request->validate([
-        'deposit_date' => 'required|date',
-        'head_id'      => 'required|exists:bank_accounts,id',
-        'remarks'      => 'nullable|string|max:500',
-        'document'     => 'required|array|min:1', 
-        'document.*'   => 'required|string',
-    ], [
-        'document.required'   => 'The attachment field is required.',
-        'document.min'        => 'The attachment field is required.',
-        'document.*.required' => 'The attachment field is required.',
-    ]);
+    {
+        $validated = $request->validate([
+            'deposit_date' => 'required|date',
+            'head_id'      => 'required|exists:bank_accounts,id',
+            'remarks'      => 'nullable|string|max:500',
+            'document'     => 'required|array|min:1', 
+            'document.*'   => 'required|string',
+        ], [
+            'document.required'   => 'The attachment field is required.',
+            'document.min'        => 'The attachment field is required.',
+            'document.*.required' => 'The attachment field is required.',
+        ]);
 
-    $validated['head_id'] = BankAccount::find($validated['head_id'])->getAccount()->id;
-    $verification = ChequeVerification::findOrFail($id);
+        $validated['head_id'] = BankAccount::find($validated['head_id'])->getAccount()->id;
+        $verification = ChequeVerification::findOrFail($id);
 
-    $this->service->deposit($verification, $validated);
-    return redirect()->back()->with('success', 'Cheque deposit updated successfully.');
-}
+        $this->service->deposit($verification, $validated);
+        return redirect()->back()->with('success', 'Cheque deposit updated successfully.');
+    }
 
 
     public function cash(Request $request, $id)
@@ -121,6 +121,16 @@ class ChequeVerificationController extends Controller
         $this->service->cash($verification);
         return redirect()->back()->with('success', 'Cheque marked as Cash successfully.');
     }
+
+    public function chequeReturn($id)
+    {
+
+        $verification = ChequeVerification::findOrFail($id);
+
+        $this->service->chequeReturn($verification);
+        return redirect()->back()->with('success', 'Cheque return to advance cheque list.');
+    }
+    
     public function updateStatus(Request $request, $id)
     {
         // dd($request->all());

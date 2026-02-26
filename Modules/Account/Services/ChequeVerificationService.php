@@ -8,6 +8,7 @@ use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
 use Modules\Account\Models\AdvanceChequeEntry;
 use Modules\Account\Models\AdvanceChequeEntryDetail;
+use Modules\Account\Models\ChequeDishonorSummary;
 use Modules\Account\Models\ChequeVerification;
 
 class ChequeVerificationService
@@ -94,6 +95,11 @@ class ChequeVerificationService
                     $entry->status = 'pending';
                 }
 
+                ChequeDishonorSummary::create([
+                    'cheque_verification_id' => $entry->id,
+                    'dishonor_date' => now(),
+                ]);
+
                 $entry->dishonored_by = auth()->id();
             }
 
@@ -167,6 +173,21 @@ class ChequeVerificationService
             $th->getMessage();
         }
     }
+
+    public function chequeReturn(ChequeVerification $chequeVerification)
+    {
+        DB::beginTransaction();
+
+        $data['status'] = 'return';
+        $chequeVerification->update($data);
+        $chequeVerification->source->update(['status'=>'Pending']);
+         
+        DB::commit();
+
+        return $chequeVerification;
+    }
+
+
     public function makeBankTransaction(ChequeVerification $chequeVerification)
     {
         // Delete any existing transactions to prevent duplicates

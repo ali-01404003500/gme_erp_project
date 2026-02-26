@@ -90,10 +90,18 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="software_version">Software Version</label>
-                                            <input type="text" name="software_version" class="form-control"
-                                                id="software_version" placeholder="Software Version" readonly>
-
+                                            <label for="software_version">Software Version</label> 
+                                            <select name="software_version" id="software_version" class="form-control">
+                                                <option value="">--Select Software Version--</option>
+                                                <option value="Old Software Version">Old Software Version</option>
+                                                <option value="New Software Version">New Software Version</option>
+                                                <option value="G-55 Power & Smart">G-55 Power & Smart</option>
+                                                <option value="MAC Id">MAC Id</option>
+                                                <option value="Loading">Loading</option>
+                                                <option value="Device Id-12 Digit">Device Id-12 Digit</option>
+                                                <option value="Device Id-16 Digit">Device Id-16 Digit</option>
+                                                <option value="Others">Others</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">

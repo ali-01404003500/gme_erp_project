@@ -123,7 +123,10 @@
                                             <td>
                                                 <strong>Cheque No:</strong> {{ $entry->cheque_no ?? '-' }} <br>
                                                 <strong>Cheque Date:</strong> {{ $entry->cheque_date ?? '-' }} <br>
-                                                <strong>Amount:</strong> {{ number_format($entry->amount) }}
+                                                <strong>Amount:</strong> {{ number_format($entry->amount) }} <br><br>  
+                                                @foreach ( $entry->chequeDishonorSummaries as $index => $chequeDishonorSummary )
+                                                    <span class="text-danger">{{ ordinal($index + 1) }} Dishonor Date : {{ $chequeDishonorSummary->dishonor_date}}<span><br>
+                                                @endforeach
                                             </td>
 
                                             {{-- Entry Info --}}
@@ -178,6 +181,7 @@
                                                                 <i class="fas fa-money-bill-wave"></i> Cash 
                                                             </button>
                                                         </form>
+                                                            <a href="{{ route('account.cheque-verifications.return', $entry->id) }}" class="btn btn-danger"><i class="fa fa-undo"></i>Return</a>
                                                         @endif
                                                     @elseif($entry->status == 'deposited')
                                                         @if (hasPermission('account.cheque-verifications.check'))

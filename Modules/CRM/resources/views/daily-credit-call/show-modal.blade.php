@@ -9,34 +9,30 @@
             <thead class="table-light">
                 <tr>
                     <th style="width: 5%;">SL</th>
-                    <th style="width: 15%;">Reminder Date</th>
+                    <th style="width: 15%;">Call Date</th> 
                     <th style="width: 15%;">Commitment Date</th>
                     <th style="width: 15%;">Commitment Amount</th>
                     <th style="width: 10%;">Status</th>
-                    <th style="width: 40%;">Call Info</th>
+                    <th style="width: 25%;">Call Info</th>
                 </tr>
             </thead>
-            <tbody> 
-                @php
-                
-                    $entries = $dailyCreditCall->original['data'] ?? [];
-                @endphp
-                @if(!empty($entries) && count($entries) > 0)
-                    @foreach($entries as $index => $entry)
+            <tbody>  
+                @if(!empty($dailyCreditCall) && count($dailyCreditCall) > 0)
+                    @foreach($dailyCreditCall as $index => $entry)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $entry['call_date'] ?? '-' }}</td>
-                            <td>{{ $entry['commitment_date'] ?? '-' }}</td>
-                            <td>{{ $entry['commitment_amount'] ?? 0 }}</td>
-                            <td>{{ $entry['status'] ?? '-' }}</td>
+                            <td>{{ $entry->call_date ?? '-' }}</td> 
+                            <td>{{ $entry->commitment_date ?? '-' }}</td>
+                            <td>{{ $entry->commitment_amount ?? 0 }}</td>
+                            <td>{{ $entry->status  ?? '-' }}</td>
                             <td>
-                                {{  $entry['create_by']['full_name']  ?? '-' }}
+                                {{  $entry->createdBy->name  ?? '-' }}
                                 <br>
-                                {{ $entry['created_at'] ? substr($entry['created_at'], 0, 10) : '-' }}
+                                {{ $entry->created_at ? substr($entry->created_at, 0, 10) : '-' }}
                             </td> 
                         </tr>
                         <tr> 
-                            <td colspan="6">{{ $entry['remarks'] ?? '-' }}</td>
+                            <td colspan="6">{{ $entry->remarks ?? '-' }}</td>
                         </tr>
                     @endforeach
                 @else

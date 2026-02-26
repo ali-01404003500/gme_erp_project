@@ -100,7 +100,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table dt-table-hover" id="zero-config"
-                                    style="font-size: 12px;">
+                                    style="font-size: 12px;"> 
                                     <thead>
                                         <tr>
                                             <th class="text-center" style="width: 5%;">SL</th>
@@ -140,7 +140,7 @@
                                                         @if (hasPermission('crm.daily-credit-calls.create')) 
                                                             <button type="button"
                                                                 class="btn btn-sm btn-outline-primary btn-create-details"
-                                                                data-id='{{$value->id}}'
+                                                                data-id='{{$customer['customer_id']}}'
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#creditCallCreateModal">
                                                                 <i class="las la-plus"></i>
@@ -150,7 +150,7 @@
                                                         @if (hasPermission('crm.daily-credit-calls.legal'))  
                                                             <button type="button"
                                                                 class="btn btn-sm btn-outline-success btn-legal-details"
-                                                                data-id='{{$value->id}}'
+                                                                data-id='{{$customer['customer_id']}}'
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#creditCallLegalModal">
                                                               <i class="fas fa-balance-scale"></i>
@@ -161,7 +161,7 @@
                                                         @if (hasPermission('crm.daily-credit-calls.show')) 
                                                             <button type="button"
                                                                 class="btn btn-sm btn-outline-info btn-view-details"
-                                                                data-id='{{$value->id}}'
+                                                                data-id='{{$customer['customer_id']}}'
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#creditCallDetailsModal">
                                                                 <i class="fas fa-eye"></i>
@@ -219,7 +219,7 @@
         <div class="modal-dialog modal-xl modal-custom">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Legal Action</h5>
+                    <h5 class="modal-title">Task assign for legal action</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body" id="creditCallLegalBody">
@@ -274,6 +274,15 @@
                 const url = "{{ route('crm.daily-credit-calls.show', ['daily_credit_call' => 'REPLACE_ID']) }}".replace('REPLACE_ID', cusId);
 
                 $('#creditCallDetailsBody').loadWithSpinner(url);
+ 
+            });
+
+
+            $(document).on('click', '.btn-legal-details', function () {  
+                let cusId = $(this).data('id');     
+                const url = `{{ route('crm.daily-credit-calls.legal') }}?id=`+cusId;
+
+                $('#creditCallLegalBody').loadWithSpinner(url);
  
             });
 
