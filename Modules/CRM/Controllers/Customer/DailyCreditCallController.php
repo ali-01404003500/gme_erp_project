@@ -259,20 +259,29 @@ class DailyCreditCallController extends Controller
 
         // Build report data
         $reportData = [];
+         
         foreach ($customerIds as $customerId) {
+
             $customer = $customers[$customerId] ?? null;
             if (!$customer) {
                 continue;
             }
-            
+
+            $openingBalance = $aggregatedData['opening_balances'][$customerId] ?? 0;
+
+            //  Skip যদি opening balance 0 বা negative হয়
+            if ($openingBalance <= 0) {
+                continue;
+            }
+
             $customerData = [
                 'customer_id' => $customerId,
                 'account_id' => $customer->getAccount()->id ?? null,
                 'customer_name' => $customer->company_name,
                 'address' => $customer->address,
                 'phone' => $customer->phone,
-                'user_reference' => $customer->userRef->full_name,
-                'opening_balance' => $aggregatedData['opening_balances'][$customerId] ?? 0,
+                'user_reference' => $customer->userRef->full_name ?? null,
+                'opening_balance' => $openingBalance,
             ];
 
             $reportData[] = $customerData;
