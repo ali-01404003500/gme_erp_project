@@ -247,7 +247,7 @@
         }
     </style>
 
-    <div class="container-fluid d-none">
+    <div class="container-fluid">
         <div class="social-dash-wrap">
 
             <!-- Header Section -->
