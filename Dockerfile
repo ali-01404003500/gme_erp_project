@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp
+FROM php:8.2
 
 RUN apt-get update && apt-get install -y \
     git curl zip unzip \
@@ -32,9 +32,6 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
         echo "memory_limit = 2048M"; \
         echo "max_execution_time = 3000"; \
         echo "max_input_time = 3000"; \
-        echo "opcache.enable=1"; \
-        echo "opcache.memory_consumption=256"; \
-        echo "opcache.max_accelerated_files=20000"; \
     } > "$PHP_INI_DIR/conf.d/docker-php-config.ini"
 
 # Create log directory for supervisor
