@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     && docker-php-ext-install pdo pdo_mysql zip gd ftp pcntl \
     && pecl install redis imagick swoole \
-    && docker-php-ext-enable redis imagick pcntl \
+    && docker-php-ext-enable redis imagick pcntl swoole \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
