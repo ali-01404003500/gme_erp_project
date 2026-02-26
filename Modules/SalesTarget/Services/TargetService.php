@@ -1,18 +1,15 @@
 <?php
-
 namespace Modules\SalesTarget\Services;
 
-use Illuminate\Support\Facades\DB;
-use Modules\SalesTarget\Models\Target;
 use App\Models\User;
-use Modules\HRMS\Models\Employee;
-use Modules\Sales\Models\SalesOrder;
-use Modules\Sales\Models\Delivery;
-use Modules\HRMS\Models\BillsAndAllowance;
-use Modules\Account\Models\Collections\Collection;
+use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Transaction;
+use Modules\HRMS\Models\BillsAndAllowance;
+use Modules\HRMS\Models\Employee;
+use Modules\HRMS\Models\EmployeeSalary;
+use Modules\SalesTarget\Models\Target;
 use Modules\Sales\Models\SalesCommission;
-use Modules\HRMS\Models\SalaryGenerate;
+use Modules\Sales\Models\SalesOrder;
 
 class TargetService
 {
@@ -28,21 +25,21 @@ class TargetService
         $targetTagName = 'Machine';
 
         $startDateTime = new \DateTime($startDate);
-        $endDateTime = new \DateTime($endDate);
+        $endDateTime   = new \DateTime($endDate);
 
-        // SalaryGenerate matching এর জন্য Y-m ফরম্যাট
+        // -----------> Get SalaryGenerate matching Y-m
         $startMonthStr = $startDateTime->format('Y-m');
-        $endMonthStr = $endDateTime->format('Y-m');
+        $endMonthStr   = $endDateTime->format('Y-m');
 
         $startYear = $startDateTime->format('Y');
-        $endYear = $endDateTime->format('Y');
+        $endYear   = $endDateTime->format('Y');
 
         $targetQuery = Target::whereBetween('year', [$startYear, $endYear]);
         if ($selectedUserId) {
             $targetQuery->where('employee_id', $selectedUserId);
         }
 
-        $activeTargets = $targetQuery->get();
+        $activeTargets     = $targetQuery->get();
         $targetEmployeeIds = $activeTargets->pluck('employee_id')->unique()->toArray();
 
         $employees = Employee::with(['user.roles', 'employementDetail.designation'])
@@ -53,26 +50,31 @@ class TargetService
 
         foreach ($employees as $employee) {
             $user = $employee->user;
-            if (!$user) continue;
+            if (! $user) {
+                continue;
+            }
 
-            //  Target calculation 
+            // ---------> Target calculation
             $totalRangeTarget = 0;
-            $tempDate = clone $startDateTime;
+            $tempDate         = clone $startDateTime;
             while ($tempDate <= $endDateTime) {
-                $monthCol = strtolower($tempDate->format('M')) . '_target';
+                $monthCol    = strtolower($tempDate->format('M')) . '_target';
                 $currentYear = $tempDate->format('Y');
-                $targetRow = $activeTargets->where('employee_id', $employee->id)
+                $targetRow   = $activeTargets->where('employee_id', $employee->id)
                     ->where('year', $currentYear)
                     ->first();
                 if ($targetRow) {
-                    $totalRangeTarget += (float)$targetRow->$monthCol;
+                    $totalRangeTarget += (float) $targetRow->$monthCol;
                 }
                 $tempDate->modify('first day of next month');
-                if ($tempDate->format('Y-m') > $endDateTime->format('Y-m')) break;
+                if ($tempDate->format('Y-m') > $endDateTime->format('Y-m')) {
+                    break;
+                }
+
             }
 
-            //  Fetch Sales Orders 
-            $salesOrders = SalesOrder::where('created_by', $user->id)
+            // --------> Fetch Sales Orders
+            $salesOrders  = SalesOrder::where('created_by', $user->id)
                 ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
                     $q->whereHas('product.tag', function ($q) use ($targetTagName) {
                         $q->where('name', $targetTagName);
@@ -84,27 +86,22 @@ class TargetService
             // dd($salesDetails->toArray());
             // dd($salesDetails->sum('amount'), $salesDetails->sum('total_discount'));
 
-
             $salesOrderIds = $salesOrders->pluck('id')->toArray();
-            $achieved = (float)($salesDetails->sum('amount') - $salesDetails->sum('total_discount'));
+            $achieved      = (float) ($salesDetails->sum('amount') - $salesDetails->sum('total_discount'));
 
+            // --------> Costing Logic (Account 5300 -
+            $totalCosting = Transaction::where('transactionable_type', 'Modules\Sales\Models\Delivery')
+                ->whereHasMorph('transactionable', ['Modules\Sales\Models\Delivery'], function ($query) use ($salesOrderIds) {
+                    $query->whereIn('source_id', $salesOrderIds);
+                })
+                ->whereHas('account', function ($query) {
+                    $query->where('account_number', 5300);
+                })
+                ->selectRaw("SUM(debit_amount - credit_amount) as net_cost")
+                ->first()
+                ->net_cost ?? 0;
 
-            // Costing Logic (Account 5300 - 
-            $totalCosting = 0;
-            if (!empty($salesOrderIds)) {
-                $totalCosting = Transaction::where('transactionable_type', Delivery::class)
-                    ->whereHasMorph('transactionable', [Delivery::class], function ($query) use ($salesOrderIds) {
-                        $query->whereIn('source_id', $salesOrderIds);
-                    })
-                    ->where('balance_type', 'debit')
-                    ->whereHas('account', function ($query) {
-                        $query->where('account_number', 5300);
-                    })
-                    ->sum('debit_amount');
-            }
-
-
-            // Collection Logic 
+            // --------> Collection Logic
             $paidOrders = SalesOrder::where('created_by', $user->id)
                 ->where('paid_status', 'paid')
                 ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
@@ -116,56 +113,62 @@ class TargetService
                 ->get();
 
             $paidSalesDetails = $paidOrders->pluck('salesOrderDetails')->flatten();
-            $totalCollection = (float)($paidSalesDetails->sum('amount') - $paidSalesDetails->sum('total_discount'));
+            $totalCollection  = (float) ($paidSalesDetails->sum('amount') - $paidSalesDetails->sum('total_discount'));
 
+            // --------> Salary Expense
+            $salaryExpense = (float) EmployeeSalary::where('employee_id', $employee->id)
+                ->where('status', 1)
+                ->latest('effective_date')
+                ->value('gross') ?? 0;
 
-            // 5. TA & DA calculation
+            // --------> TA & DA calculation
             $bills = BillsAndAllowance::where('employee_id', $employee->id)
-                ->whereBetween('date_of_bill_claim', [$startDate, $endDate])
-                ->whereIn('status', ['approved', 'paid'])
+                ->where('status', 'team_leader_check')
                 ->with(['transportExpenses', 'generalExpenses'])
+                ->whereBetween('date_of_bill_claim', [$startDate, $endDate])
                 ->get();
 
             $totalTA = 0;
             $totalDA = 0;
+
             foreach ($bills as $bill) {
-                $totalTA += $bill->transportExpenses->sum('final_approved_amount') ?: $bill->transportExpenses->sum('amount');
-                $totalDA += $bill->generalExpenses->sum('final_approved_amount') ?: $bill->generalExpenses->sum('amount');
+
+                $totalTA += $bill->transportExpenses->sum(function ($item) {
+                    return $item->final_approved_amount ?: ($item->accounts_approved_amount ?: ($item->team_leader_approved_amount ?: $item->amount));
+                });
+
+                $totalDA += $bill->generalExpenses->sum(function ($item) {
+                    return $item->final_approved_amount ?: ($item->accounts_approved_amount ?: ($item->team_leader_approved_amount ?: $item->amount));
+                });
             }
 
-            // 6. Commission calculation 
+            // --------> Commission calculation
             $totalCommission = 0;
-            if (!empty($salesOrderIds)) {
+            if (! empty($salesOrderIds)) {
                 $totalCommission = SalesCommission::whereIn('sales_order_id', $salesOrderIds)
                     ->whereIn('status', ['verify', 'approved', 'paid'])
                     ->sum('amount');
             }
 
-            // 7. Salary Expense
-            $salaryExpense = (float) \Modules\HRMS\Models\EmployeeSalary::where('employee_id', $employee->id)
-                ->where('status', 1)
-                ->latest('effective_date')
-                ->value('gross') ?? 0;
-
-            $totalOperationalExpense = $totalTA + $totalDA + $totalCommission;
+            $totalOperationalExpense = $totalTA + $totalDA + (float) $totalCommission;
 
             $results[] = [
-                'name' => $employee->full_name,
-                'designation' => $employee->employementDetail->designation->name ?? 'N/A',
-                'target' => $totalRangeTarget,
-                'achieved' => $achieved,
-                'costing' => (float)$totalCosting,
-                'collection' => (float)$totalCollection,
-                'due' => (float)($achieved - $totalCollection),
-                'percent' => $totalRangeTarget > 0 ? ($achieved / $totalRangeTarget) * 100 : 0,
-                'salary_expense' => $salaryExpense,
-                'ta_expense' => (float)$totalTA,
-                'da_expense' => (float)$totalDA,
-                'commission' => (float)$totalCommission,
-                'entertainment' => 0,
+                'name'              => $employee->full_name,
+                'designation'       => $employee->employementDetail->designation->name ?? 'N/A',
+                'target'            => $totalRangeTarget,
+                'achieved'          => $achieved,
+                'costing'           => (float) $totalCosting,
+                'collection'        => (float) $totalCollection,
+                'due'               => (float) ($achieved - $totalCollection),
+                'percent'           => $totalRangeTarget > 0 ? ($achieved / $totalRangeTarget) * 100 : 0,
+                'salary_expense'    => $salaryExpense,
+                'ta_expense'        => (float) $totalTA,
+                'da_expense'        => (float) $totalDA,
+                'commission'        => (float) $totalCommission,
+                'entertainment'     => 0,
                 'total_excl_salary' => $totalOperationalExpense,
                 'total_incl_salary' => $salaryExpense + $totalOperationalExpense,
-                'deals' => $salesOrders->count()
+                'deals'             => $salesOrders->count(),
             ];
         }
 
@@ -181,12 +184,14 @@ class TargetService
     {
         return DB::transaction(function () use ($targetsData) {
             foreach ($targetsData as $data) {
-                if (empty($data['employee_id'])) continue;
+                if (empty($data['employee_id'])) {
+                    continue;
+                }
 
                 Target::updateOrCreate(
                     [
                         'employee_id' => $data['employee_id'],
-                        'year'         => $data['year'] ?? date('Y'),
+                        'year'        => $data['year'] ?? date('Y'),
                     ],
                     [
                         'jan_target'   => $data['jan_target'] ?? 0,

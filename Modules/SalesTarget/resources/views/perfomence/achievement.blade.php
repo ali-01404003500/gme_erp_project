@@ -157,7 +157,7 @@
                         <td>৳{{ number_format($totalComm, 0) }}</td>
                         <td>-</td>
                         <td>৳{{ number_format($totalExcl, 0) }}</td>
-                        <td style="background: #eee;">৳{{ number_format($totalIncl, 0) }}</td>
+                        <td>৳{{ number_format($totalIncl, 0) }}</td>
                     </tr>
                 </tfoot>
                 @endif
