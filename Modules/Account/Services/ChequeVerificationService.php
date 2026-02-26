@@ -167,6 +167,21 @@ class ChequeVerificationService
             $th->getMessage();
         }
     }
+
+    public function chequeReturn(ChequeVerification $chequeVerification)
+    {
+        DB::beginTransaction();
+
+        $data['status'] = 'return';
+        $chequeVerification->update($data);
+        $chequeVerification->source->update(['status'=>'Pending']);
+         
+        DB::commit();
+
+        return $chequeVerification;
+    }
+
+
     public function makeBankTransaction(ChequeVerification $chequeVerification)
     {
         // Delete any existing transactions to prevent duplicates

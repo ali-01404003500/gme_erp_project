@@ -258,6 +258,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     Route::resource('cheque-verifications', ChequeVerificationController::class);
     Route::post('cheque-verifications/deposit/{id}', [ChequeVerificationController::class, 'deposit'])->name('cheque-verifications.deposit');
     Route::post('cheque-verifications/cash/{id}', [ChequeVerificationController::class, 'cash'])->name('cheque-verifications.cash');
+    Route::get('cheque-verifications/return/{id}', [ChequeVerificationController::class, 'chequeReturn'])->name('cheque-verifications.return');
 
     Route::post('cheque-verifications/status/{id}', [ChequeVerificationController::class, 'updateStatus'])->name('cheque-verifications.status');
 

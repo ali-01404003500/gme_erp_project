@@ -178,6 +178,7 @@
                                                                 <i class="fas fa-money-bill-wave"></i> Cash 
                                                             </button>
                                                         </form>
+                                                            <a href="{{ route('account.cheque-verifications.return', $entry->id) }}" class="btn btn-danger"><i class="far fa-return"></i>Return</a>
                                                         @endif
                                                     @elseif($entry->status == 'deposited')
                                                         @if (hasPermission('account.cheque-verifications.check'))
