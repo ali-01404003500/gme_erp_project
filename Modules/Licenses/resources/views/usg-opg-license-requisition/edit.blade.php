@@ -80,9 +80,17 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="software_version">Software Version</label>
-                                            <input type="text" name="software_version" class="form-control"
-                                                value="{{ $license->software_version }}" id="software_version"
-                                                placeholder="Software Version" readonly>
+                                            <select name="software_version" id="software_version" class="form-control">
+                                                <option value="">-- Select Software Version --</option>
+                                                <option value="Old Software Version" {{ (old('software_version', $entry->software_version ?? '') == 'Old Software Version') ? 'selected' : '' }}>Old Software Version</option>
+                                                <option value="New Software Version" {{ (old('software_version', $entry->software_version ?? '') == 'New Software Version') ? 'selected' : '' }}>New Software Version</option>
+                                                <option value="G-55 Power & Smart" {{ (old('software_version', $entry->software_version ?? '') == 'G-55 Power & Smart') ? 'selected' : '' }}>G-55 Power & Smart</option>
+                                                <option value="MAC Id" {{ (old('software_version', $entry->software_version ?? '') == 'MAC Id') ? 'selected' : '' }}>MAC Id</option>
+                                                <option value="Loading" {{ (old('software_version', $entry->software_version ?? '') == 'Loading') ? 'selected' : '' }}>Loading</option>
+                                                <option value="Device Id-12 Digit" {{ (old('software_version', $entry->software_version ?? '') == 'Device Id-12 Digit') ? 'selected' : '' }}>Device Id-12 Digit</option>
+                                                <option value="Device Id-16 Digit" {{ (old('software_version', $entry->software_version ?? '') == 'Device Id-16 Digit') ? 'selected' : '' }}>Device Id-16 Digit</option>
+                                                <option value="Others" {{ (old('software_version', $entry->software_version ?? '') == 'Others') ? 'selected' : '' }}>Others</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
