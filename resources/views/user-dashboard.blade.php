@@ -262,34 +262,30 @@
 
     <div class="container-fluid">
         <div class="social-dash-wrap">
-
-           
-            @if(hasPermission('dashboard.admin'))
-            <!-- Summary -->
+            <!-- User Summary -->
             <div class="row px-4">
-                <!-- Summary Section -->
+                <!-- User Summary Section -->
                 <div class="col-lg-12 mb-25">
                     <div class="glass-panel h-100">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="fw-bold m-0">Summary</h5>
+                            <h5 class="fw-bold m-0">Target Summary</h5>
                             <div class="btn-group shadow-sm radius-md">
-                                <button id="btnDaily" class="btn btn-sm btn-white active border">Daily</button>
-                                <button id="btnMonthly" class="btn btn-sm btn-white border">Monthly</button>
-                                <button id="btnYearly" class="btn btn-sm btn-white border">Yearly</button>
+                                <button id="btnUserMonthly" class="btn btn-sm btn-white border">Monthly</button>
+                                <button id="btnUserYearly" class="btn btn-sm btn-white border">Yearly</button>
                             </div>
                         </div> 
  
-                        <!-- Summary Stats Row -->
+                        <!-- Target Summary Stats Row -->
                         <div class="row g-3 mb-4">
-                             <div class="col-xl-3 col-sm-6 mb-25">
+                            <div class="col-xl-3 col-sm-6 mb-25">
                                 <div class="overview-card-modern">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <p class="card-label" id="sales-title">Daily Sales</p>
-                                            <h1 class="card-value" id="total-sales">0</h1> 
-                                            <h6 class="pre-card-value" id="pre-total-sales">PRV:0</h6> 
+                                            <p class="card-label" id="target-title">Monthly Sales Target</p>
+                                            <h1 class="card-value" id="total-target">0</h1> 
+                                            <h6 class="pre-card-value" id="pre-total-target">PRV:0</h6> 
                                         </div>
-                                        <div class="icon-box bg-success-grad"><i class="uil uil-shopping-cart-alt"></i></div>
+                                        <div class="icon-box bg-success-grad"><i class="uil uil-money-bill"></i></div>
                                     </div>
                                 </div>
                             </div>
@@ -297,11 +293,11 @@
                                 <div class="overview-card-modern">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <p class="card-label" id="purchase-title">Daily Purchase</p>
-                                            <h1 class="card-value" id="total-purchases">0</h1> 
-                                            <h6 class="pre-card-value" id="pre-total-purchases">PRV:0</h6>
+                                            <p class="card-label" id="achieve-title">Monthly Sales Target Achieve</p>
+                                            <h1 class="card-value" id="total-achieve">0</h1> 
+                                            <h6 class="pre-card-value" id="pre-total-achieve">PRV:0</h6>
                                         </div>
-                                        <div class="icon-box bg-success-grad"><i class="uil uil-shopping-cart-alt"></i></div>
+                                        <div class="icon-box bg-success-grad"><i class="uil uil-money-bill"></i></div>
                                     </div>
                                 </div>
                             </div>
@@ -309,9 +305,9 @@
                                 <div class="overview-card-modern">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <p class="card-label" id="collection-title">Daily Collection</p>
-                                            <h1 class="card-value" id="total-collections">0</h1>
-                                            <h6 class="pre-card-value" id="pre-total-collections">PRV:0</h6>
+                                            <p class="card-label" id="unachieve-title">Monthly Sales Target Unachieved</p>
+                                            <h1 class="card-value" id="total-unachieve">0</h1>
+                                            <h6 class="pre-card-value" id="pre-total-unachieve">PRV:0</h6>
                                              
                                         </div>
                                         <div class="icon-box bg-primary-grad"><i class="uil uil-money-bill"></i></div>
@@ -322,24 +318,77 @@
                                 <div class="overview-card-modern">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <p class="card-label" id="payment-title">Daily Payment</p>
-                                            <h1 class="card-value" id="total-payments">0</h1> 
-                                            <h6 class="pre-card-value" id="pre-total-payments">PRV:0</h6>
+                                            <p class="card-label" id="achieve-rate-title">Achieve Percentage</p>
+                                            <h1 class="card-value" id="total-achieve-rate">0</h1> 
+                                            <h6 class="pre-card-value" id="pre-total-achieve-rate">PRV:0</h6>
                                         </div>
                                         <div class="icon-box bg-success-grad"><i class="uil uil-money-bill"></i></div>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Allowance Summary Stats Row --> 
+                            <h5 class="fw-bold m-0">Allowance & Due Summary</h5>
+                            <div class="col-xl-3 col-sm-6 mb-25">
+                                <div class="overview-card-modern">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="card-label" id="ta-title">Monthly TA Amount</p>
+                                            <h1 class="card-value" id="total-ta">0</h1> 
+                                            <h6 class="pre-card-value" id="pre-total-ta">PRV:0</h6> 
+                                        </div>
+                                        <div class="icon-box bg-success-grad"><i class="uil uil-money-bill"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-sm-6 mb-25">
+                                <div class="overview-card-modern">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="card-label" id="da-title">Monthly DA Amount</p>
+                                            <h1 class="card-value" id="total-da">0</h1> 
+                                            <h6 class="pre-card-value" id="pre-total-da">PRV:0</h6>
+                                        </div>
+                                        <div class="icon-box bg-success-grad"><i class="uil uil-money-bill"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-sm-6 mb-25">
+                                <div class="overview-card-modern">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="card-label" id="tada-title">Monthly TA & DA Amount</p>
+                                            <h1 class="card-value" id="total-tada">0</h1>
+                                            <h6 class="pre-card-value" id="pre-total-tada">PRV:0</h6>
+                                                
+                                        </div>
+                                        <div class="icon-box bg-primary-grad"><i class="uil uil-money-bill"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-sm-6 mb-25">
+                                <div class="overview-card-modern">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <p class="card-label" id="market-due-title">Market Due</p>
+                                            <h1 class="card-value" id="total-market-due">0</h1> 
+                                            <h6 class="pre-card-value" id="pre-total-market-due">PRV:0</h6>
+                                        </div>
+                                        <div class="icon-box bg-success-grad"><i class="uil uil-money-bill"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                   
+
                         </div> 
                     </div>
+
+                   
+               
                 </div> 
             </div>
-            @endif
-           
-            @if(hasPermission('dashboard.user') && !hasPermission('dashboard.admin') )
-                @include('user-dashboard');
-            @endif
-            
+        
+          
         </div>
     </div>
 
@@ -347,50 +396,82 @@
         <p>@php date_default_timezone_set('Asia/Dhaka') @endphp Copyright © {{ date('Y') }}<a href="https://gmebd.com" target="__blank"> Global Medical Engineering (BD) Ltd</a>. All rights reserved</p>
     </footer>
 @endsection
-
+@push('script')
+    
 @section('page_scripts')
     @stack('script')
     <script> 
         $(document).ready(function() {
   
-            function loadSummary(btnId,type) {
+            function loadUserSummary(btnId,type) {
 
                 $.ajax({
-                    url: "{{ route('dashboard.summary') }}",
+                    url: "{{ route('dashboard.usersummary') }}",
                     type: "GET",
                     data: { type: type },
                     success: function(response) {
                         //console.log(response);
-
+ 
                         // Safely convert to Number
-                        var currentSales = Number(response.currentSales) || 0;
-                        var previousSales = Number(response.previousSales) || 0;
+                        var currentSalesTarget = Number(response.currentSalesTarget) || 0;
+                        var previousSalesTarget = Number(response.previousSalesTarget) || 0;
 
-                        var currentPurchase = Number(response.currentPurchase) || 0;
-                        var previousPurchase = Number(response.previousPurchase) || 0;
+                        var currentSalesTargetAcv = Number(response.currentSalesTargetAcv) || 0;
+                        var previousSalesTargetAcv = Number(response.previousSalesTargetAcv) || 0;
 
-                        var currentCollection = Number(response.currentCollection) || 0;
-                        var previousCollection = Number(response.previousCollection) || 0;
+                        var currentSalesTargetUnacv = Number(response.currentSalesTargetUnacv) || 0;
+                        var previousSalesTargetUnacv = Number(response.previousSalesTargetUnacv) || 0;
 
-                        var currentPayment = Number(response.currentPayment) || 0;
-                        var previousPayment = Number(response.previousPayment) || 0;
+                        var currentSalesTargetAcvPer = Number(response.currentSalesTargetAcvPer) || 0;
+                        var previousSalesTargetAcvPer = Number(response.previousSalesTargetAcvPer) || 0;
+
+                        var currentTa = Number(response.currentTa) || 0;
+                        var previousTa = Number(response.previousTa) || 0;
+
+                        var currentDa = Number(response.currentDa) || 0;
+                        var previousDa = Number(response.previousDa) || 0;
+
+                        var currentTaDa = Number(response.currentTaDa) || 0;
+                        var previousTaDa = Number(response.previousTaDa) || 0;
+
+                        var currentMarketDue = Number(response.currentMarketDue) || 0;
+                        var previousMarketDue = Number(response.previousMarketDue) || 0;
+ 
 
                         // Update DOM
-                        $('#sales-title').text(type.toUpperCase()+' Sales');
-                        $('#total-sales').text(currentSales.toFixed(2));
-                        $('#pre-total-sales').text('PRV: '+previousSales.toFixed(2));
+                        $('#target-title').text(type.toUpperCase()+' Sales Target');
+                        $('#total-target').text(currentSalesTarget.toFixed(2));
+                        $('#pre-total-target').text('PRV: '+previousSalesTarget.toFixed(2));
 
-                        $('#purchase-title').text(type.toUpperCase()+' Purchase');
-                        $('#total-purchases').text(currentPurchase.toFixed(2));
-                        $('#pre-total-purchases').text('PRV: '+previousPurchase.toFixed(2));
+                        $('#achieve-title').text(type.toUpperCase()+' Sales Target Achiev');
+                        $('#total-achieve').text(currentSalesTargetAcv.toFixed(2));
+                        $('#pre-total-achieve').text('PRV: '+previousSalesTargetAcv.toFixed(2)); 
 
-                        $('#collection-title').text(type.toUpperCase()+' Collection');
-                        $('#total-collections').text(currentCollection.toFixed(2));
-                        $('#pre-total-collections').text('PRV: '+previousCollection.toFixed(2));
+                        $('#unachieve-title').text(type.toUpperCase()+' Sales Target Unachieved');
+                        $('#total-unachieve').text(currentSalesTargetUnacv.toFixed(2));
+                        $('#pre-total-unachieve').text('PRV: '+previousSalesTargetUnacv.toFixed(2));
 
-                        $('#payment-title').text(type.toUpperCase()+' Payment');
-                        $('#total-payments').text(currentPayment.toFixed(2));
-                        $('#pre-total-payments').text('PRV: '+previousPayment.toFixed(2));
+                        $('#achieve-rate-title').text(type.toUpperCase()+' Achieve Percentage');
+                        $('#total-achieve-rate').text(currentSalesTargetAcvPer.toFixed(2));
+                        $('#pre-total-achieve-rate').text('PRV: '+previousSalesTargetAcvPer.toFixed(2));
+
+
+
+                        $('#ta-title').text(type.toUpperCase()+' TA Amount');
+                        $('#total-ta').text(currentTa.toFixed(2));
+                        $('#pre-total-ta').text('PRV: '+previousTa.toFixed(2));
+
+                        $('#da-title').text(type.toUpperCase()+' Da Amount');
+                        $('#total-da').text(currentDa.toFixed(2));
+                        $('#pre-total-da').text('PRV: '+previousDa.toFixed(2)); 
+
+                        $('#tada-title').text(type.toUpperCase()+' TA & DA Amount');
+                        $('#total-tada').text(currentTaDa.toFixed(2));
+                        $('#pre-total-tada').text('PRV: '+previousTaDa.toFixed(2));
+
+                        $('#market-due-title').text(type.toUpperCase()+' Market Due');
+                        $('#total-market-due').text(currentMarketDue.toFixed(2));
+                        $('#pre-total-market-due').text('PRV: '+previousMarketDue.toFixed(2));
 
                         // Active button
                         $('.btn-group button').removeClass('active');
@@ -403,27 +484,22 @@
                
             }
 
-            // Default load (Daily)
-            loadSummary('btnDaily','daily');
-
-            $('#btnDaily').click(function() {
-                loadSummary('btnDaily','daily');
+            // Default load (Monthly)
+            loadUserSummary('btnUserMonthly','monthly');
+ 
+            $('#btnUserMonthly').click(function() {
+                loadUserSummary('btnUserMonthly','monthly');
             });
 
-            $('#btnMonthly').click(function() {
-                loadSummary('btnMonthly','monthly');
-            });
-
-            $('#btnYearly').click(function() {
-                loadSummary('btnYearly','yearly');
+            $('#btnUserYearly').click(function() {
+                loadUserSummary('btnUserYearly','yearly');
             });
  
 
         });
 
-        
+      
  
     </script>
-@endsection
-
- 
+@endsection 
+@endpush

@@ -2,19 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Services\DashboardService;
+use Illuminate\Http\Request; 
 
 class DashboardController extends Controller {
     
+    /**
+     * Service variable
+     *
+     * @var DashboardService
+     */
+    private $service;
+    function __construct(DashboardService $service)
+    {
+        $this->service = $service;
+    }
+
+
     /**
      * Display dashbnoard demo one of the resource.
      *
      * @return \Illuminate\View\View
      */
+
+
+    
     public function index(){
         $title = "Dashboard Demo One";
         $description = "Some description for the page";
-        return view('pages.dashboard.demo_one',compact('title','description'));
+        return view('home');
+    }
+
+    public function summary(Request $request){ 
+        $data = $this->service->getSummary($request->type);
+
+        return response()->json($data);
+    }
+    public function summaryForUser(Request $request){ 
+        $data = $this->service->getUserSummary($request->type);
+
+        return response()->json($data);
     }
 
     /**
