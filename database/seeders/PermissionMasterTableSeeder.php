@@ -17,6 +17,14 @@ class PermissionMasterTableSeeder extends Seeder
     public function run()
     {
         $data = [
+
+            //dashboard
+            [
+                'title' => 'Dashboard',
+                'description' => "Dashboard for user or admin ",
+                'key' => 'dashboard', 
+            ],
+
             [
                 'title' => 'Access Control',
                 'description' => "Permission of Add, Remove, Update, Delete Users",
@@ -1156,6 +1164,8 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'sales_target.settings.achievement-based-salary-policy',
                 'parent_key' => 'sales_target.settings',
             ],
+
+            
         ];
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0');

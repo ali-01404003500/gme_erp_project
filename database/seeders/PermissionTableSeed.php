@@ -27,6 +27,23 @@ class PermissionTableSeed extends Seeder
          * key: every permission part of permission master. key is the master key that holding all permission
          */
         $permissions = [
+
+
+            //dashboard   
+            [
+                'name' => 'Admin Dashboard',
+                'description' => 'Permission to view admin dashboard',
+                'slug' => 'dashboard.admin',
+                'key' => 'dashboard',
+            ],
+            [
+                'name' => 'User Dashboard',
+                'description' => 'Permission to view user dashboard',
+                'slug' => 'dashboard.user',
+                'key' => 'dashboard',
+            ],
+
+
             // Users Crud
             [
                 'name' => 'Create Role',
@@ -4812,6 +4829,9 @@ class PermissionTableSeed extends Seeder
                 'slug' => 'sales_target.settings.achievement-based-salary-policy.show',
                 'key' => 'sales_target.settings.achievement-based-salary-policy',
             ],
+
+
+           
 
         ];
 
