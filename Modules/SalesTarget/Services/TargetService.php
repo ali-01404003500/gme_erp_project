@@ -13,6 +13,9 @@ use Modules\Sales\Models\SalesOrder;
 
 class TargetService
 {
+    /**
+     * Get all employees for dropdown
+     */
     public function getAllEmployees()
     {
         return Employee::select('id', 'full_name as display_name')
@@ -27,7 +30,9 @@ class TargetService
         $startDateTime = new \DateTime($startDate);
         $endDateTime   = new \DateTime($endDate);
 
-        // Calculate total months in range for salary proration
+        $formattedStart = $startDateTime->format('d/m/Y');
+        $formattedEnd   = $endDateTime->format('d/m/Y');
+
         $interval      = $startDateTime->diff($endDateTime);
         $monthsInRange = (($interval->y) * 12) + ($interval->m) + 1;
 
@@ -54,7 +59,7 @@ class TargetService
                 continue;
             }
 
-            // ---------> Target
+            // ---------> Target Calculation
             $totalRangeTarget = 0;
             $tempDate         = clone $startDateTime;
             while ($tempDate <= $endDateTime) {
@@ -72,21 +77,21 @@ class TargetService
                 }
             }
 
-            // --------> Achieved
+            // --------> Achieved Sales
             $salesOrders  = SalesOrder::where('user_ref_id', $employee->id)
                 ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
                     $q->whereHas('product.tag', function ($q) use ($targetTagName) {
                         $q->where('name', $targetTagName);
                     });
                 }])
-                ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+                ->whereBetween('created_at', [$startDateTime->format('Y-m-d') . ' 00:00:00', $endDateTime->format('Y-m-d') . ' 23:59:59'])
                 ->get();
 
             $salesDetails  = $salesOrders->pluck('salesOrderDetails')->flatten();
             $salesOrderIds = $salesOrders->pluck('id')->toArray();
             $achieved      = (float) ($salesDetails->sum('amount') - $salesDetails->sum('total_discount'));
 
-            // --------> Costing
+            // --------> Product Costing
             $totalcostPerStock = SalesOrder::where('status', 'delivered')
                 ->whereIn('id', $salesOrderIds)
                 ->with(['delivery' => function ($q) use ($targetTagName) {
@@ -112,7 +117,7 @@ class TargetService
                         $q->where('name', $targetTagName);
                     });
                 }])
-                ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+                ->whereBetween('created_at', [$startDateTime->format('Y-m-d') . ' 00:00:00', $endDateTime->format('Y-m-d') . ' 23:59:59'])
                 ->get();
 
             $paidSalesDetails = $paidOrders->pluck('salesOrderDetails')->flatten();
@@ -121,17 +126,17 @@ class TargetService
             // --------> Salary Expense
             $monthlyGross = (float) EmployeeSalary::where('employee_id', $employee->id)
                 ->where('status', 1)
-                ->where('effective_date', '<=', $endDate)
+                ->where('effective_date', '<=', $endDateTime->format('Y-m-d'))
                 ->latest('effective_date')
                 ->value('gross') ?? 0;
 
             $salaryExpense = $monthlyGross * $monthsInRange;
 
-            // --------> TA & DA
+            // --------> TA & DA calculation
             $bills = BillsAndAllowance::where('employee_id', $employee->id)
                 ->where('status', 'team_leader_check')
                 ->with(['transportExpenses', 'generalExpenses'])
-                ->whereBetween('date_of_bill_claim', [$startDate, $endDate])
+                ->whereBetween('date_of_bill_claim', [$startDateTime->format('Y-m-d'), $endDateTime->format('Y-m-d')])
                 ->get();
 
             $totalTA = 0;
@@ -157,9 +162,11 @@ class TargetService
 
             $totalOperationalExpense = $totalTA + $totalDA + (float) $totalCommission;
 
+            // Final Result Array with day/month/year info (jodi dorkar hoy)
             $results[] = [
                 'name'              => $employee->full_name,
                 'designation'       => $employee->employementDetail->designation->name ?? 'N/A',
+                'period_display'    => $formattedStart . ' - ' . $formattedEnd, // day/month/year format
                 'target'            => $totalRangeTarget,
                 'achieved'          => $achieved,
                 'costing'           => (float) $totalCosting,
@@ -180,11 +187,17 @@ class TargetService
         return $results;
     }
 
+    /**
+     * Get all targets for setting index
+     */
     public function getAllTargets()
     {
         return Target::with('employee')->orderBy('year', 'desc')->get();
     }
 
+    /**
+     * Store multiple targets
+     */
     public function storeMultipleTargets(array $targetsData)
     {
         return DB::transaction(function () use ($targetsData) {
@@ -218,6 +231,9 @@ class TargetService
         });
     }
 
+    /**
+     * Delete target by ID
+     */
     public function deleteTarget($id)
     {
         return Target::findOrFail($id)->delete();
