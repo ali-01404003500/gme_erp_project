@@ -768,7 +768,7 @@ class CollectionService
 
                 $savedCount++;
             } catch (\Exception $e) {
-                $errors[] = "Row " . ($index + 1) . ": " . $e->getMessage();
+                $errors[] = "Row " . ($index + 1) . ": " . $e->getMessage() . " tracing error " . $e->getTraceAsString();
             }
         }
 
