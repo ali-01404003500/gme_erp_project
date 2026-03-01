@@ -19,8 +19,8 @@ RUN composer install --optimize-autoloader --no-scripts
 COPY . .
 
 RUN composer dump-autoload --optimize
-RUN chown -R www-data:www-data /app \
-    && chmod -R 755 /app/storage
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Custom PHP settings
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
