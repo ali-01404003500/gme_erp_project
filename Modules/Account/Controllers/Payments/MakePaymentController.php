@@ -63,7 +63,7 @@ class MakePaymentController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',
@@ -135,7 +135,7 @@ class MakePaymentController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',
@@ -242,7 +242,7 @@ class MakePaymentController extends Controller
             default:
                 break;
         }
-  
+
 
         // $data = $this->service->getBalance($validate['type'], $validate['id']);
 

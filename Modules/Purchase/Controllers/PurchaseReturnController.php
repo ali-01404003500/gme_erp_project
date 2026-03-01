@@ -16,17 +16,17 @@ use Dompdf\Options;
 
 class PurchaseReturnController extends Controller
 {
-    private $service; 
-    
+    private $service;
+
     function __construct(PurchaseReturnService $service)
     {
         $this->service = $service;
     }
-    
+
     public function index(Request $request)
     {
         $data['purchaseReturns'] = $this->service->getAll();
-        $data['suppliers'] = Supplier::query()->where('status',1)->get();
+        $data['suppliers'] = Supplier::query()->where('status', 1)->get();
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
@@ -36,7 +36,7 @@ class PurchaseReturnController extends Controller
             $options = new Options();
             $options->setIsHtml5ParserEnabled(true);
             $options->setIsRemoteEnabled(true);
-            
+
             $dompdf = new Dompdf($options);
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'portrait');
@@ -52,18 +52,18 @@ class PurchaseReturnController extends Controller
         $data['invoices'] = RequisitionReceive::with('receiveDetails.requitions')->get();
 
         $data['products'] = RequisitionDetail::where('requisition_id', $request->invoice_id)
-            ->with(['requisition.supplier','requisition.receive'])
+            ->with(['requisition.supplier', 'requisition.receive'])
             ->get();
-        
+
         $data['receive'] = optional(optional($data['products']->first())->requisition)->receive;
         return view('Purchase::returns.create', $data);
     }
 
     public function store(Request $request)
     {
-        $license_no = $this->getLicenseNumber($request->input('supplier_id')); 
+        $license_no = $this->getLicenseNumber($request->input('supplier_id'));
 
-        if($request->input('checks') == null){
+        if ($request->input('checks') == null) {
             return redirect()->back()->with('error', 'Please select atleast one product');
         }
 
@@ -77,7 +77,7 @@ class PurchaseReturnController extends Controller
             'net_amount' => 'required|numeric|min:0',
             'remarks' => 'nullable|string|max:255',
             'return_date' => 'required|date',
-            'reference_invoice'  => 'nullable|string|max:255',
+            'reference_invoice' => 'nullable|string|max:255',
         ]);
 
         $products = $request->validate([
@@ -97,7 +97,7 @@ class PurchaseReturnController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',
@@ -123,7 +123,7 @@ class PurchaseReturnController extends Controller
     public function getLicenseNumber($supplier_id)
     {
         $today = date('Y-m-d');
-        
+
         $authUser = auth()->user()->id;
         $authUserBranch = auth()->user()->branch_id;
         $authUserBranchType = auth()->user()->branch->branch_type_id;
@@ -131,7 +131,7 @@ class PurchaseReturnController extends Controller
         $licensesToday = PurchaseReturn::whereDate(DB::raw('DATE(created_at)'), $today)
             ->where('created_by', $authUser)
             ->count();
-        
+
         $licenseNumber = sprintf(
             'SCT-%02d-SC-%02d-%s-USR-%06d-PR-%06d',
             $authUserBranch,
@@ -140,7 +140,7 @@ class PurchaseReturnController extends Controller
             $authUser,
             $licensesToday + 1
         );
-        
+
         return $licenseNumber;
     }
 
@@ -167,7 +167,7 @@ class PurchaseReturnController extends Controller
     public function update(Request $request, $id)
     {
         $purchaseReturn = $this->service->show($id);
-        
+
         $validate = $request->validate([
             'requisition_id' => 'required|exists:requisitions,id',
             'requisition_receive_id' => 'required|exists:requisition_receives,id',
@@ -178,7 +178,7 @@ class PurchaseReturnController extends Controller
             'net_amount' => 'required|numeric|min:0',
             'remarks' => 'nullable|string|max:255',
             'return_date' => 'required|date',
-            'reference_invoice'  => 'nullable|string|max:255',
+            'reference_invoice' => 'nullable|string|max:255',
         ]);
 
         $products = $request->validate([
@@ -198,7 +198,7 @@ class PurchaseReturnController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',

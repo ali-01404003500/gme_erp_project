@@ -22,12 +22,12 @@ class SalesReturnController extends Controller
      *
      * @var SalesReturnService
      */
-    private $service; 
+    private $service;
     function __construct(SalesReturnService $service)
     {
         $this->service = $service;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -44,13 +44,13 @@ class SalesReturnController extends Controller
      */
     public function create(Request $request)
     {
-         $data['invoices'] = SalesOrder::where('status', 'delivered')->get();
+        $data['invoices'] = SalesOrder::where('status', 'delivered')->get();
 
         $data['products'] = SalesOrderDetails::where('sales_order_id', $request->invoice_id)
             ->with(['salesOrder.delivery.deliveryDetails.deliveryStocks'])
             ->get();
         $data['delivery'] = optional(optional($data['products']->first())->salesOrder)->delivery;
-//   dd($data['products'], $data['delivery'], $data['invoices']);
+        //   dd($data['products'], $data['delivery'], $data['invoices']);
         return view('Sales::sales-return.create', $data);
     }
 
@@ -61,9 +61,9 @@ class SalesReturnController extends Controller
     {
         // dd($request->all());
         // Validate main fields
-         $license_no = $this->getLicenseNumber(); 
+        $license_no = $this->getLicenseNumber();
 
-        if($request->input('checks') == null){
+        if ($request->input('checks') == null) {
             return redirect()->back()->with('error', 'Please select atleast one product');
         }
 
@@ -100,7 +100,7 @@ class SalesReturnController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',
@@ -122,10 +122,10 @@ class SalesReturnController extends Controller
         return redirect()->route('sales.sales-returns.index')->with('success', 'SalesReturn created successfully.');
     }
 
-      public function getLicenseNumber()
+    public function getLicenseNumber()
     {
         $today = date('Y-m-d');
-        
+
         $customer_count = SalesReturn::whereDate(DB::raw('DATE(created_at)'), $today)->count();
 
         $authUser = auth()->user()->id;
@@ -135,7 +135,7 @@ class SalesReturnController extends Controller
         $licensesToday = SalesReturn::whereDate(DB::raw('DATE(created_at)'), $today)
             ->where('created_by', $authUser)
             ->count();
-        
+
         // Generate license number with the appropriate format
         $licenseNumber = sprintf(
             'SCT-%02d-SC-%02d-%s-USR-%06d-PR-%06d',
@@ -145,14 +145,14 @@ class SalesReturnController extends Controller
             $authUser,
             $licensesToday + 1
         );
-        
+
         return $licenseNumber;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $data['salesReturn'] = $this->service->show($id);
         $data['company_info'] = CompanyInfo::first();
@@ -175,7 +175,7 @@ class SalesReturnController extends Controller
     public function update(Request $request, $id)
     {
         $salesReturn = $this->service->show($id);
-        if($request->input('checks') == null){
+        if ($request->input('checks') == null) {
             return redirect()->back()->with('error', 'Please select atleast one product');
         }
 
@@ -210,7 +210,7 @@ class SalesReturnController extends Controller
         ]);
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',
@@ -226,7 +226,7 @@ class SalesReturnController extends Controller
             'payments_remark' => 'nullable|array',
             'payments_remark.*' => 'nullable|string',
         ]);
-        $this->service->update($salesReturn, $validate, $products,   $payments);
+        $this->service->update($salesReturn, $validate, $products, $payments);
 
         return redirect()->route('sales.sales-returns.index')->with('success', 'SalesReturn updated successfully.');
     }
@@ -271,9 +271,11 @@ class SalesReturnController extends Controller
                         $subQuery->where('product_id', $product_id);
                     });
                 })
-                ->with(['salesReturnDetails.salesReturnStock' => function ($query) use ($product_id) {
-                    $query->where('product_id', $product_id);
-                }])
+                ->with([
+                    'salesReturnDetails.salesReturnStock' => function ($query) use ($product_id) {
+                        $query->where('product_id', $product_id);
+                    }
+                ])
                 ->get()
                 ->pluck('salesReturnDetails')
                 ->flatten()
@@ -324,7 +326,7 @@ class SalesReturnController extends Controller
     public function approveStore(Request $request, $id)
     {
         // dd($request->all());
-        $validate = $request->validate([ 
+        $validate = $request->validate([
             'sales_return_id' => 'required|exists:sales_returns,id',
         ]);
         $validateDetails = $request->validate([
@@ -333,12 +335,12 @@ class SalesReturnController extends Controller
             'return_qty.*' => 'nullable|numeric',
         ]);
 
-        foreach($validateDetails['return_qty'] as $key => $salesQuantity){
-            if($validateDetails['return_qty'][$key] != $validateDetails['quantity'][$key]){
-                return redirect()->back()->withErrors(['quantity.'.$key => 'The sales quantity and quantity of product '.$key.' should be same.']);
+        foreach ($validateDetails['return_qty'] as $key => $salesQuantity) {
+            if ($validateDetails['return_qty'][$key] != $validateDetails['quantity'][$key]) {
+                return redirect()->back()->withErrors(['quantity.' . $key => 'The sales quantity and quantity of product ' . $key . ' should be same.']);
             }
         }
-        
+
         $deliveryStockDetails = $request->validate([
             'lot_no.*.*' => 'nullable|string',
             'lots_quantity.*.*' => 'nullable|numeric',

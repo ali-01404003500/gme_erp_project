@@ -12,6 +12,7 @@ use Modules\Services\Models\ServiceToken;
 use Modules\Services\Services\ServiceBillService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use Modules\Account\Models\Setup\Bank;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\Services\Models\ServiceMyTask;
@@ -31,7 +32,7 @@ class ServiceBillController extends Controller
         $this->service = $service;
         $this->smsService = $smsService;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -51,7 +52,7 @@ class ServiceBillController extends Controller
         $data['serviceToken'] = ServiceToken::find($request->token_id);
         if ($data['serviceToken']->service_type == 'ON SPOT') {
             $data['product'] = ProductCatalog::where('name', 'Service Charge With (TA) (DA)')->first();
-        } else if($data['serviceToken']->service_type == 'ON CALL') {
+        } else if ($data['serviceToken']->service_type == 'ON CALL') {
             $data['product'] = ProductCatalog::where('name', 'Service Charge On Call')->first();
         } else {
             $data['product'] = ProductCatalog::where('name', 'Service Charge (IN HOUSE)')->first();
@@ -79,13 +80,13 @@ class ServiceBillController extends Controller
 
         return view('Services::service-my-task.bill', $data);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        
+
         $validate = $request->validate([
             //validate rules
         ]);
@@ -96,7 +97,7 @@ class ServiceBillController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $data['serviceBill'] = $this->service->show($id);
 
@@ -156,11 +157,8 @@ class ServiceBillController extends Controller
         // Generate a 6-digit OTP
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        // Store OTP in session with a 5-minute expiration
-        session()->put('service_bill_otp_' . $customer->id, [
-            'otp' => $otp,
-            'expires_at' => now()->addMinutes(5),
-        ]);
+        // Store OTP in cache with a 5-minute expiration (300 seconds)
+        Cache::put('service_bill_otp_' . $customer->id, $otp, 300);
 
         // Prepare customer phone number for SMS service
         $customerPhone = $customer->phone;
@@ -204,25 +202,24 @@ class ServiceBillController extends Controller
         ]);
 
         $customerId = $request->customer_id;
-        $otpData = session()->get('service_bill_otp_' . $customerId);
+        $cachedOtp = Cache::get('service_bill_otp_' . $customerId);
 
-        if (!$otpData || now()->isAfter($otpData['expires_at'])) {
-            session()->forget('service_bill_otp_' . $customerId);
+        if (!$cachedOtp) {
             return response()->json([
                 'success' => false,
-                'message' => 'OTP has expired. Please request a new one.',
+                'message' => 'OTP has expired or is invalid. Please request a new one.',
             ]);
         }
 
-        if ($otpData['otp'] !== $request->otp) {
+        if ($cachedOtp !== $request->otp) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid OTP. Please try again.',
             ]);
         }
 
-        // OTP is correct, clear it from the session
-        session()->forget('service_bill_otp_' . $customerId);
+        // OTP is correct, clear it from the cache
+        Cache::forget('service_bill_otp_' . $customerId);
 
         return response()->json([
             'success' => true,

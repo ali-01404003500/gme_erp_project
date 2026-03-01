@@ -24,11 +24,11 @@ class CollectionService
     public function getAll(int $limit = 20)
     {
         return Collection::query()->with(["collectionFrom"])->filterByDateRange('created_at')
-        ->when(request()->filled('customer_id'), function ($query) {
-            $query->where('collection_from_type', Customer::class)-> where('collection_from_id', request('customer_id'));
-        })
-        ->likeSearch('collection_id')
-        ->paginate($limit);
+            ->when(request()->filled('customer_id'), function ($query) {
+                $query->where('collection_from_type', Customer::class)->where('collection_from_id', request('customer_id'));
+            })
+            ->likeSearch('collection_id')
+            ->paginate($limit);
     }
 
     public function getCollectionId()
@@ -56,19 +56,19 @@ class CollectionService
         DB::beginTransaction();
         // dd($data, $payments);
 
-         // Build attributes without null collection_date
+        // Build attributes without null collection_date
         $attributes = [
-            'collection_id' =>$data['collection_id'] ?? $this->getCollectionId(),
+            'collection_id' => $data['collection_id'] ?? $this->getCollectionId(),
             'total_amount' => $data['payments_total_amount'],
             'advance_amount' => $data['payments_advance_amount'],
             'status' => $data['status'],
         ];
-        
+
         // Only add collection_date if it's not null
         if (!empty($data['collection_date'])) {
             $attributes['collection_date'] = $data['collection_date'];
         }
-        
+
         $collection = Collection::create($attributes);
         $from = null;
         switch ($data['collection_type']) {
@@ -224,60 +224,102 @@ class CollectionService
         // dd($collection->payments);
         $collection->transactions()->delete();
 
-        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI'])->sum('amount');
+        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI', 'AIT', 'Waiver', 'Waiver Bad Debt'])->sum('amount');
 
         $receivableCreditAmount = $collection->total_amount - $chequeAndEmiAmount;
 
-        if($chequeAndEmiAmount > 0){
+        if ($chequeAndEmiAmount > 0) {
 
             foreach ($collection->payments as $payment) {
-                if($payment->pay_mode == 'Cheque'){
+                if ($payment->pay_mode == 'Cheque') {
                     // cheque entry
-                     if($payment->chequeVerification){
+                    if ($payment->chequeVerification) {
                         // update
-                         $payment->chequeVerification()->update([
+                        $payment->chequeVerification()->update([
                             'customer_id' => $collection->collectionFrom->id,
-                            'bank_id'     => $payment->bank->id,
-                            'branch_id'   => $payment->branch->id,
-                            'cheque_no'   => $payment->transaction_no,
+                            'bank_id' => $payment->bank->id,
+                            'branch_id' => $payment->branch->id,
+                            'cheque_no' => $payment->transaction_no,
                             'cheque_date' => $payment->date,
-                            'amount'      => $payment->amount,
-                         ]);
-                     } else {
+                            'amount' => $payment->amount,
+                        ]);
+                    } else {
                         $payment->chequeVerification()->create([
                             'customer_id' => $collection->collectionFrom->id,
-                            'bank_id'     => $payment->bank_id,
-                            'branch_id'   => $payment->branch_id,
-                            'cheque_no'   => $payment->transaction_id,
+                            'bank_id' => $payment->bank_id,
+                            'branch_id' => $payment->branch_id,
+                            'cheque_no' => $payment->transaction_id,
                             'cheque_date' => $payment->date,
-                            'amount'      => $payment->amount,
+                            'amount' => $payment->amount,
                             "document" => $payment->attachments,
                             "remarks" => $payment->remarks,
-                         ]);
-                         $payment->load('chequeVerification');
+                        ]);
+                        $payment->load('chequeVerification');
                         // dd($payment->chequeVerification,  $cheqye, get_class($payment), $payment);
-                     }
+                    }
                     //  dd($payment->chequeVerification, $payment, get_class($payment));
-                } else if($payment->pay_mode == 'EMI'){
+                } else if ($payment->pay_mode == 'EMI') {
                     // emi update
-                    if($payment->bank){
+                    if ($payment->bank) {
                         // dd($collection->source,$payment->bank);
                         $payment->bank->restore();
                         $payment->bank->update([
                             'deleted_by' => null,
-                            'sales_order_id'=> $collection->source_type == SalesOrder::class? $collection->source->id : null
+                            'sales_order_id' => $collection->source_type == SalesOrder::class ? $collection->source->id : null
                         ]);
 
                         // dd($payment->bank);
                     }
                     // $payment->emiEntry
                     // dd($payment,  $payment->bank, $payment->bank->emiDetails);
+                } else if ($payment->pay_mode == 'AIT') {
+                    // Dr AIT Receivable A/C.
+                    $aitReceivableAccount = Account::where('account_number', '102301')->first();
+                    $collection->transactions()->create([
+                        'account_id' => $aitReceivableAccount->id,
+                        'balance_type' => 'debit',
+                        'invoice_no' => $collection->collection_id,
+                        'amount' => $payment->amount,
+                        'debit_amount' => $payment->amount,
+                        'credit_amount' => 0,
+                        'description' => 'Collection Payment',
+                        'transaction_date' => $collection->collection_date,
+                    ]);
+
+                } else if ($payment->pay_mode == 'Waiver') {
+                    // Dr Waiver A/C.
+                    $waiverAccount = Account::where('account_number', '505301')->first();
+                    $collection->transactions()->create([
+                        'account_id' => $waiverAccount->id,
+                        'balance_type' => 'debit',
+                        'invoice_no' => $collection->collection_id,
+                        'amount' => $payment->amount,
+                        'debit_amount' => $payment->amount,
+                        'credit_amount' => 0,
+                        'description' => 'Collection Payment',
+                        'transaction_date' => $collection->collection_date,
+                    ]);
+
+                } else if ($payment->pay_mode == 'Waiver Bad Debt') {
+                    // Dr Waiver Bad Debt A/C.
+                    $waiverBadDebtAccount = Account::where('account_number', '505401')->first();
+                    $collection->transactions()->create([
+                        'account_id' => $waiverBadDebtAccount->id,
+                        'balance_type' => 'debit',
+                        'invoice_no' => $collection->collection_id,
+                        'amount' => $payment->amount,
+                        'debit_amount' => $payment->amount,
+                        'credit_amount' => 0,
+                        'description' => 'Collection Payment',
+                        'transaction_date' => $collection->collection_date,
+                    ]);
+
                 }
             }
         }
-        if($receivableCreditAmount <= 0){
+        if ($receivableCreditAmount <= 0) {
             $receivableCreditAmount = 0;
-            return ;
+            return;
         }
 
         // accounts
@@ -286,10 +328,10 @@ class CollectionService
 
         // dd($collection->payments);
         foreach ($collection->payments as $payment) {
-            if (in_array($payment->pay_mode, ['Cheque', 'EMI'])) {
+            if (in_array($payment->pay_mode, ['Cheque', 'EMI', 'AIT', 'Waiver', 'Waiver Bad Debt'])) {
                 continue;
             }
-            if ($payment->bank) {                
+            if ($payment->bank) {
                 $collection->transactions()->create([
                     'account_id' => $payment->bank->getAccount()->id,
                     'balance_type' => 'debit',
@@ -459,28 +501,28 @@ class CollectionService
 
     public function delete(Collection $collection)
     {
-         if ($collection->source_type == EMIEntryDetail::class) {
-                $emiEntryDetail = EMIEntryDetail::find($collection->source_id);
-                if ($emiEntryDetail) {
-                    $emiEntryDetail->update([
+        if ($collection->source_type == EMIEntryDetail::class) {
+            $emiEntryDetail = EMIEntryDetail::find($collection->source_id);
+            if ($emiEntryDetail) {
+                $emiEntryDetail->update([
+                    'status' => 'due',
+                ]);
+            }
+        }
+        if ($collection->source_type == EMIEntry::class) {
+            $emiEntry = EMIEntry::find($collection->source_id);
+            if ($emiEntry) {
+                $emiEntry->update([
+                    'status' => 'due',
+                ]);
+                $emiEntry
+                    ->emiDetails()
+                    ->where('status', '=', 'settlement_processing')
+                    ->update([
                         'status' => 'due',
                     ]);
-                }
             }
-            if ($collection->source_type == EMIEntry::class) {
-                $emiEntry = EMIEntry::find($collection->source_id);
-                if ($emiEntry) {
-                    $emiEntry->update([
-                        'status' => 'due',
-                    ]);
-                    $emiEntry
-                        ->emiDetails()
-                        ->where('status', '=', 'settlement_processing')
-                        ->update([
-                            'status' => 'due',
-                        ]);
-                }
-            }
+        }
         $collection->transactions()->delete();
         $collection->payments()->delete();
         $collection->collectionFrom()->dissociate();
@@ -490,7 +532,8 @@ class CollectionService
     public function show($id)
     {
         return Collection::with([
-            'payments', 'collectionFrom'
+            'payments',
+            'collectionFrom'
         ])->findOrFail($id);
     }
 
@@ -503,19 +546,19 @@ class CollectionService
                 ->value('id') ?? throw new \Exception("Vendor not found: {$jsonData['customer_name']}");
         } else {
 
-        // if customer id then find with customer id or find with customer name
-                if(!empty($jsonData['customer_id'])){
-                    $customerId = Customer::where('customer_id', $jsonData['customer_id'])
+            // if customer id then find with customer id or find with customer name
+            if (!empty($jsonData['customer_id'])) {
+                $customerId = Customer::where('customer_id', $jsonData['customer_id'])
                     ->value('id') ?? throw new \Exception("Customer not found: {$jsonData['customer_id']}");
-                }else{
-                    $customerId = Customer::where('company_name', $jsonData['customer_name'])
+            } else {
+                $customerId = Customer::where('company_name', $jsonData['customer_name'])
                     ->value('id') ?? throw new \Exception("Customer not found: {$jsonData['customer_name']}");
-                }
+            }
             // $customerId = Customer::where('company_name', $jsonData['customer_name'])->orWhere('customer_id', $jsonData['customer_id'])
             //     ->value('id') ?? throw new \Exception("Customer not found: {$jsonData['customer_name']}");
         }
         // Calculate total amounts
-         
+
         // dd($jsonData['payments']);
 
         $totalPaid = 0;
@@ -526,8 +569,8 @@ class CollectionService
         // calculate total amounts here
         $jsonData['total_amount'] = $totalPaid;
         $jsonData['payable_amount'] = $totalPaid;
-        $jsonData['due_amount']=0;
-        $jsonData['advance_amount']=0;
+        $jsonData['due_amount'] = 0;
+        $jsonData['advance_amount'] = 0;
 
         // Prepare main validation data
         $validate = [
@@ -570,7 +613,7 @@ class CollectionService
         // Process each payment entry
         foreach ($jsonData['payments'] as $payment) {
             // Payment mode validation
-            $validModes = ['Cash', 'Cheque', 'Online Deposit', 'bKash', 'Nagad', 'Rocket', 'Card', 'EMI', 'Card Payment'];
+            $validModes = ['Cash', 'Cheque', 'Online Deposit', 'bKash', 'Nagad', 'Rocket', 'Card', 'EMI', 'Card Payment', 'AIT', 'Waiver'];
             if (!in_array($payment['pay_mode'], $validModes)) {
                 throw new \Exception("Invalid payment mode: {$payment['pay_mode']}");
             }
@@ -581,7 +624,7 @@ class CollectionService
                 ? ($banks[$payment['bank_name']] ?? null)
                 : ($accounts[$payment['bank_name']] ?? null);
 
-            $branchId = $payment['branch_name'] 
+            $branchId = $payment['branch_name']
                 ? ($branches[$payment['branch_name']] ?? throw new \Exception("Branch not found: {$payment['branch_name']}"))
                 : null;
 
@@ -600,7 +643,7 @@ class CollectionService
             $payments['payments_attachments'][] = $payment['attachment'] ?? null;
             $payments['payments_verified'][] = false;
             $payments['payments_remark'][] = $payment['remark'] ?? null;
-            $payments['diposit'][] =$payment['diposit'] ?? null;
+            $payments['diposit'][] = $payment['diposit'] ?? null;
 
         }
 
@@ -609,7 +652,7 @@ class CollectionService
             'payments' => $payments
         ];
     }
-   /**
+    /**
      * Store a new payment from a json file
      *
      * @param \Illuminate\Http\Request $request
@@ -666,7 +709,7 @@ class CollectionService
             'status' => $depositInfo['type'] == 'cash' ? 'cashed' : 'deposited' ?? null,
             'charge' => $depositInfo['charge'] ?? null,
             'deposit_date' => $depositInfo['date'] ?? null,
-            'deposited_by' =>  $userId ?? null
+            'deposited_by' => $userId ?? null
         ];
     }
 
@@ -693,29 +736,29 @@ class CollectionService
             try {
                 $mappedData = $this->mapJson($item);
                 $collection = $this->store($mappedData['validate'], $mappedData['payments'])["collection"] ?? null;
-                
+
                 //diposit check
                 foreach ($collection->payments as $payment) {
-                    if($payment->pay_mode == 'Cheque'){
+                    if ($payment->pay_mode == 'Cheque') {
                         // cheque entry
-                        $payment->load('chequeVerification'); 
+                        $payment->load('chequeVerification');
                         // dd($collection, $payment->chequeVerification, $mappedData['payments']['diposit'] );
-                        if($payment->chequeVerification && $mappedData['payments']['diposit'][0]){
+                        if ($payment->chequeVerification && $mappedData['payments']['diposit'][0]) {
                             // update
                             // dd($mappedData['payments']['diposit'][0], );
                             $payment->chequeVerification()->update($this->mapDepositData($mappedData['payments']['diposit'][0]));
-                                //  dd($payment->chequeVerification);
+                            //  dd($payment->chequeVerification);
                             $payment->chequeVerification->refresh();
-                            if($mappedData['payments']['diposit'][0]['type'] == 'bank'){
-                                
+                            if ($mappedData['payments']['diposit'][0]['type'] == 'bank') {
+
                                 app(ChequeVerificationService::class)->makeBankTransaction($payment->chequeVerification);
-                            }else{
+                            } else {
 
                                 app(ChequeVerificationService::class)->makeCashTransaction($payment->chequeVerification);
                             }
                         }
-                       
-                    
+
+
                     }
                 }
 

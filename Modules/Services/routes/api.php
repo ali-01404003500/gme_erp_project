@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Services\Controllers\Api\ProblemTypeController;
 use Modules\Services\Controllers\Api\ServiceController;
 use Modules\Services\Controllers\Api\ServiceMyTaskController;
+use Modules\Services\Controllers\ServiceBillController;
 
 Route::group(['middleware' => ['auth:api'], 'prefix' => 'services', 'as' => 'services.'], function () {
     Route::get('service-get-serial', [ServiceController::class, 'getSerialIds']);
@@ -16,5 +17,9 @@ Route::group(['middleware' => ['auth:api'], 'prefix' => 'services', 'as' => 'ser
     Route::apiResource('services', ServiceController::class);
     Route::apiResource('service-my-task', ServiceMyTaskController::class);
     Route::get('get-service-for-my-task', [ServiceMyTaskController::class, 'serviceMyTask']);
+
+    // OTP Routes for Service Bill
+    Route::post('send-otp', [ServiceBillController::class, 'sendOtp']);
+    Route::post('verify-otp', [ServiceBillController::class, 'verifyOtp']);
 
 });
