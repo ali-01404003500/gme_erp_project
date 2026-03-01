@@ -83,6 +83,34 @@
                                             </div>
                                         </div>
 
+                                        {{-- Department --}}
+                                      <div class="row mb-3">
+                                        <label class="col-sm-3 col-form-label bolder">Department</label>
+                                        <div class="col-sm-9">
+                                           <select name="department_id" class="form-control">
+                                                <option value="">-- Select Department --</option>
+                                                @foreach($departments as $id => $name)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('department_id', $holiday->department_id) == $id ? 'selected' : '' }}>
+                                                        {{ $name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+
+
+                                            @error('department_id')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                           
+
+
+
+
+
+
                                         <div class="form-group row mb-3" id="day_to_day_value"
                                             style="display: {{ $holiday->holiday_day_type == 1 ? 'block' : 'none' }}">
                                             <label for="inputError" class="col-sm-3 col-form-label bolder">

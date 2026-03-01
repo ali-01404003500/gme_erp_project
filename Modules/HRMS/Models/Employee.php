@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\HRMS\Models;
 
 use App\Models\BaseModel;
@@ -10,7 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
+use Modules\HRMS\Models\Approver;
 use Modules\HRMS\Models\Kpi\Assessment;
+use Modules\HRMS\Models\Settings\Designation;
+// use Modules\Inventory\Models\Settings\Approver;
 
 class Employee extends BaseModel
 {
@@ -23,8 +25,13 @@ class Employee extends BaseModel
     public $deletePrevent = [
         'salaryGenerates',
         'attendances',
-        'leaves'
+        'leaves',
     ];
+
+    public function approvers()
+    {
+        return $this->hasMany(Approver::class, 'employee_id');
+    }
 
     public function user()
     {
@@ -108,7 +115,6 @@ class Employee extends BaseModel
         return $this->morphOne(BankAccount::class, 'sourceable');
     }
 
-
     public function createBankAccount()
     {
         $existingAccount = $this->bankAccount()->first();
@@ -118,12 +124,12 @@ class Employee extends BaseModel
         }
 
         $bankAccount = $this->bankAccount()->create([
-            'payment_mode' => "Cash",
-            'account_name' => $this->full_name . " – Cash in Hand",
-            'account_code' => $this->id . "1001",
+            'payment_mode'    => "Cash",
+            'account_name'    => $this->full_name . " – Cash in Hand",
+            'account_code'    => $this->id . "1001",
             'opening_balance' => "0.00",
-            'bank_id' => null,
-            'bank_branch_id' => null,
+            'bank_id'         => null,
+            'bank_branch_id'  => null,
             'bank_account_no' => null,
         ]);
         $bankAccount->getAccount();
@@ -133,7 +139,7 @@ class Employee extends BaseModel
     public function getAccount()
     {
         $bankAccount = $this->bankAccount()->first();
-        $account = $bankAccount ? $bankAccount->getAccount() : null;
+        $account     = $bankAccount ? $bankAccount->getAccount() : null;
         if ($account == null) {
             $this->createBankAccount();
             $this->load('bankAccount');
@@ -141,8 +147,6 @@ class Employee extends BaseModel
         }
         return $account;
     }
-
-
 
     // ============================================
     // SALARY ACCOUNTS (5041, 2002)
@@ -164,18 +168,16 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name" => "Salaries & Allowances Expense - " . $this->full_name,
-            "account_number" => '5041' . $this->id,
-            "account_group_id" => 5,
-            "account_control_id" => 5040,
+            "name"                  => "Salaries & Allowances Expense - " . $this->full_name,
+            "account_number"        => '5041' . $this->id,
+            "account_group_id"      => 5,
+            "account_control_id"    => 5040,
             "account_subsidiary_id" => 5041,
-            "opening_balance" => "0.00",
-            "remarks" => "A Salaries & Allowances Expense account is created for " . $this->full_name,
-            "is_deletable" => 0,
+            "opening_balance"       => "0.00",
+            "remarks"               => "A Salaries & Allowances Expense account is created for " . $this->full_name,
+            "is_deletable"          => 0,
         ]);
     }
-
-
 
     public function getSalaryLiabilitieAccount()
     {
@@ -193,14 +195,14 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name" => "Salaries Payable - " . $this->full_name,
-            "account_number" => '2002' . $this->id,
-            "account_group_id" => 2,
-            "account_control_id" => 2000,
+            "name"                  => "Salaries Payable - " . $this->full_name,
+            "account_number"        => '2002' . $this->id,
+            "account_group_id"      => 2,
+            "account_control_id"    => 2000,
             "account_subsidiary_id" => 2002,
-            "opening_balance" => "0.00",
-            "remarks" => "A Salaries Payable account is created for " . $this->full_name,
-            "is_deletable" => 0,
+            "opening_balance"       => "0.00",
+            "remarks"               => "A Salaries Payable account is created for " . $this->full_name,
+            "is_deletable"          => 0,
         ]);
     }
 
@@ -208,7 +210,6 @@ class Employee extends BaseModel
     // LOAN ACCOUNTS (1015)
     // ============================================
 
-    
     public function getLoanReceivableAccount()
     {
         $account = $this->accounts()->where('account_subsidiary_id', 1015)->first();
@@ -225,14 +226,14 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name" => "Loan Receivable - " . $this->full_name,
-            "account_number" => '1015' . $this->id,
-            "account_group_id" => 1,
-            "account_control_id" => 1000,
+            "name"                  => "Loan Receivable - " . $this->full_name,
+            "account_number"        => '1015' . $this->id,
+            "account_group_id"      => 1,
+            "account_control_id"    => 1000,
             "account_subsidiary_id" => 1015,
-            "opening_balance" => "0.00",
-            "remarks" => "A Loan Receivable account is created for " . $this->full_name,
-            "is_deletable" => 0,
+            "opening_balance"       => "0.00",
+            "remarks"               => "A Loan Receivable account is created for " . $this->full_name,
+            "is_deletable"          => 0,
         ]);
     }
 
@@ -256,17 +257,17 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name" => "Staff Advance - " . $this->full_name,
-            "account_number" => '1022' . $this->id,
-            "account_group_id" => 1,
-            "account_control_id" => 1000,
+            "name"                  => "Staff Advance - " . $this->full_name,
+            "account_number"        => '1022' . $this->id,
+            "account_group_id"      => 1,
+            "account_control_id"    => 1000,
             "account_subsidiary_id" => 1022,
-            "opening_balance" => "0.00",
-            "remarks" => "A Staff IOU account is created for " . $this->full_name,
-            "is_deletable" => 0,
+            "opening_balance"       => "0.00",
+            "remarks"               => "A Staff IOU account is created for " . $this->full_name,
+            "is_deletable"          => 0,
         ]);
     }
- 
+
     // ============================================
     // STAFF LOAN ACCOUNTS (2008)
     // ============================================
@@ -287,14 +288,14 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name" => "Staff Loan - " . $this->full_name,
-            "account_number" => '1021' . $this->id,
-            "account_group_id" => 1,
-            "account_control_id" => 1000,
+            "name"                  => "Staff Loan - " . $this->full_name,
+            "account_number"        => '1021' . $this->id,
+            "account_group_id"      => 1,
+            "account_control_id"    => 1000,
             "account_subsidiary_id" => 1021,
-            "opening_balance" => "0.00",
-            "remarks" => "A Staff Loan account is created for " . $this->full_name,
-            "is_deletable" => 0,
+            "opening_balance"       => "0.00",
+            "remarks"               => "A Staff Loan account is created for " . $this->full_name,
+            "is_deletable"          => 0,
         ]);
     }
 
@@ -326,14 +327,14 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name" => "Employee Cash - " . $this->full_name,
-            "account_number" => '2009' . $this->id,
-            "account_group_id" => 1, // Assets
-            "account_control_id" => 1000, // Current Assets
+            "name"                  => "Employee Cash - " . $this->full_name,
+            "account_number"        => '2009' . $this->id,
+            "account_group_id"      => 1,    // Assets
+            "account_control_id"    => 1000, // Current Assets
             "account_subsidiary_id" => 2009, // Employee Cash
-            "opening_balance" => "0.00",
-            "remarks" => "Employee cash account for petty cash - " . $this->full_name,
-            "is_deletable" => 0,
+            "opening_balance"       => "0.00",
+            "remarks"               => "Employee cash account for petty cash - " . $this->full_name,
+            "is_deletable"          => 0,
         ]);
     }
 
@@ -361,21 +362,21 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name" => "Petty Cash Payable - " . $this->full_name,
-            "account_number" => '2015' . $this->id,
-            "account_group_id" => 2, // Liabilities
-            "account_control_id" => 2000, // Current Liabilities
+            "name"                  => "Petty Cash Payable - " . $this->full_name,
+            "account_number"        => '2015' . $this->id,
+            "account_group_id"      => 2,    // Liabilities
+            "account_control_id"    => 2000, // Current Liabilities
             "account_subsidiary_id" => 2015, // Petty Cash Payable
-            "opening_balance" => "0.00",
-            "remarks" => "Petty cash payable account for " . $this->full_name,
-            "is_deletable" => 0,
+            "opening_balance"       => "0.00",
+            "remarks"               => "Petty cash payable account for " . $this->full_name,
+            "is_deletable"          => 0,
         ]);
     }
 
     /**
      * Get or create Employee Cash Account for a given user (static method)
      * This is used for login user's cash account during petty cash payments
-     * 
+     *
      * @param \App\Models\User $user
      * @return \Modules\Account\Models\Account
      */
@@ -389,9 +390,8 @@ class Employee extends BaseModel
         }
     }
 
-
     public function designation()
     {
-        return $this->belongsTo(\Modules\HRMS\Models\Settings\Designation::class, 'designation_id');
+        return $this->belongsTo(Designation::class, 'designation_id');
     }
 }

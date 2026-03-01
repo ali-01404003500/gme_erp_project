@@ -20,6 +20,10 @@ class HolidayService
             'end_date' => $data['holiday_day_type'] == 2 ? null : $data['end_date'],
             'every_year' => $data['every_year'],
             'day_name' => $data['holiday_day_type'] == 2 ? implode(',', $data['day']) : '',
+
+            // new fields
+           
+            'department' => $data['department'] ?? null,
         ]);
     }
 
@@ -32,6 +36,10 @@ class HolidayService
             'end_date' => $data['holiday_day_type'] == 2 ? null : $data['end_date'],
             'every_year' => $data['every_year'],
             'day_name' => $data['holiday_day_type'] == 2 ? implode(',', $data['day']) : '',
+
+            //  new fields
+                
+                'department' => $data['department'] ?? null,
         ]);
         return $holiday;
     }

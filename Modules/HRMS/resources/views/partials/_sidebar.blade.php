@@ -39,6 +39,18 @@
               </li>
           @endif
 
+             {{-- Leave Adjsutment --}}
+                       @if (hasPermission('hrm.settings.leaveAdjustment.index'))
+                          <li>
+                            <a href="{{ route('hrm.settings.leaveAdjustment.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.leaveAdjustment.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-door-open"></span>
+                              <span class="menu-text"> {{ t_('menu.leave-adjustment') }}</span>   
+                                </a>
+                                <ul></ul>
+                          </li>
+                      @endif
+
           @if (hasPermission('hrm.noticeboards.*'))
               <li>
                   <a href="{{ route('hrm.noticeboards.index') }}"
@@ -294,6 +306,19 @@
                                   {{ t_('menu.hrm-settings-leave-types-menu-title') }}</a>
                           </li>
                       @endif
+
+                        @if (hasPermission('hrm.settings.employee-approvers.index'))
+                            <li>
+                                <a href="{{ route('hrm.settings.employee-approvers.index') }}"
+                                class="{{ request()->routeIs('settings.employee-approvers.*') ? 'active' : '' }}">
+                                    <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
+                                    {{ t_('menu.Approver-Setup') }}
+                                </a>
+                            </li>
+                        @endif
+
+                   
+
                       @if (hasPermission('hrm.settings.shifts.index'))
                           <li><a href="{{ route('hrm.settings.shifts.index') }}"
                                   class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">

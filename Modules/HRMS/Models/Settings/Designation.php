@@ -7,6 +7,8 @@ use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\HRMS\Controllers\EmployeeApproverController;
+use Modules\HRMS\Models\Employee;
 
 class Designation extends BaseModel
 {
@@ -18,4 +20,9 @@ class Designation extends BaseModel
 
     protected $guarded = [];
     public $deletePrevent = ['designations'];
+
+     public function employees()
+    {
+        return $this->hasMany(Employee::class, 'designation_id', 'id');
+    }
 }
