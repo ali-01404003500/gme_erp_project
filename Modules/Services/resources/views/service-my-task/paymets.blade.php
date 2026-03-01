@@ -11,7 +11,10 @@
                 <option value="Nagad">Nagad</option>
                 <option value="Rocket">Rocket</option>
                 <option value="Card Payment">Card</option>
-                <option value="EMI">Payment  EMI</option>
+                <option value="EMI">Payment EMI</option>
+                <option value="AIT">AIT</option>
+                <option value="Waiver">Waiver</option>
+                <option value="Waiver Bad Debt">Waiver Bad Debt</option>
             </select>
         </div>
         <div class="col-md-2 mb-2 pay-field account-field">
@@ -23,7 +26,7 @@
                 <option value=""></option>
 
                 @php
-                    if(!isset($banks) || !$banks->count()) {
+                    if (!isset($banks) || !$banks->count()) {
                         $banks = \Modules\Account\Models\Bank::all();
                     }
                 @endphp
@@ -81,16 +84,20 @@
         <tbody id="payment-body">
             {{-- Show old pay modes if available, else show $payments if defined --}}
             @php
-            $paymodes = old('payments_pay_mode', []);
+                $paymodes = old('payments_pay_mode', []);
             @endphp
             @if (!empty($paymodes))
                 @foreach ($paymodes as $key => $paymode)
                     <tr>
                         <td>{{ $paymode }}<input type="hidden" name="payments_pay_mode[]" value="{{ $paymode }}"></td>
-                        <td>{{ old('payments_bank_name')[$key] ?? '' }}<input type="hidden" name="payments_bank_id[]" value="{{ old('payments_bank_id')[$key] ?? '' }}"></td>
-                        <td>{{ old('payments_branch_name')[$key] ?? '' }}<input type="hidden" name="payments_branch_id[]" value="{{ old('payments_branch_id')[$key] ?? '' }}"></td>
-                        <td>{{ old('payments_transaction_id')[$key] ?? '' }}<input type="hidden" name="payments_transaction_id[]" value="{{ old('payments_transaction_id')[$key] ?? '' }}"></td>
-                        <td>{{ old('payments_date')[$key] ?? '' }}<input type="hidden" name="payments_date[]" value="{{ old('payments_date')[$key] ?? '' }}"></td>
+                        <td>{{ old('payments_bank_name')[$key] ?? '' }}<input type="hidden" name="payments_bank_id[]"
+                                value="{{ old('payments_bank_id')[$key] ?? '' }}"></td>
+                        <td>{{ old('payments_branch_name')[$key] ?? '' }}<input type="hidden" name="payments_branch_id[]"
+                                value="{{ old('payments_branch_id')[$key] ?? '' }}"></td>
+                        <td>{{ old('payments_transaction_id')[$key] ?? '' }}<input type="hidden"
+                                name="payments_transaction_id[]" value="{{ old('payments_transaction_id')[$key] ?? '' }}"></td>
+                        <td>{{ old('payments_date')[$key] ?? '' }}<input type="hidden" name="payments_date[]"
+                                value="{{ old('payments_date')[$key] ?? '' }}"></td>
                         <td class="amount-value">
                             {{ old('payments_amount')[$key] ?? 0 }}
                             <input type="hidden" name="payments_amount[]" value="{{ old('payments_amount')[$key] ?? '' }}">
@@ -98,44 +105,59 @@
                         <td>
                             <span class="file_name">{{ old('payments_attachments')[$key] ?? '' }}</span>
                             <div class="spinner-border spinner-border-sm" style="display: none;" role="status"></div>
-                            <input type="hidden" name="payments_attachments[]" class="attachments" value="{{ old('payments_attachments')[$key] ?? '' }}">
-                            <input type="hidden" name="payments_verified[]" class="verified" value="{{ old('payments_verified')[$key] ?? '' }}">
+                            <input type="hidden" name="payments_attachments[]" class="attachments"
+                                value="{{ old('payments_attachments')[$key] ?? '' }}">
+                            <input type="hidden" name="payments_verified[]" class="verified"
+                                value="{{ old('payments_verified')[$key] ?? '' }}">
                             {{-- @dd($payment) --}}
                             <input type="hidden" name="payments_emi_id[]" value="{{ old('payments_emi_id')[$key] ?? '' }}">
                         </td>
-                        <td>{{ old('payments_remark')[$key] ?? '' }}<input type="hidden" name="payments_remark[]" value="{{ old('payments_remark')[$key] ?? '' }}"></td>
-                        <td><button class="btn btn-danger btn-xs remove-row"  type="button"><i class="fa fa-trash"></i></button></td>
+                        <td>{{ old('payments_remark')[$key] ?? '' }}<input type="hidden" name="payments_remark[]"
+                                value="{{ old('payments_remark')[$key] ?? '' }}"></td>
+                        <td><button class="btn btn-danger btn-xs remove-row" type="button"><i class="fa fa-trash"></i></button>
+                        </td>
                     </tr>
                 @endforeach
             @elseif(isset($payments) && count($payments))
-                    {{-- @dd($payments, $payments->pluck('bank')); --}}
+                {{-- @dd($payments, $payments->pluck('bank')); --}}
                 @foreach ($payments as $payment)
-                {{-- @dd($payment->bank()); --}}
+                    {{-- @dd($payment->bank()); --}}
                     <tr>
                         <td>{{ $payment->pay_mode ?? '' }}
                             <input type="hidden" name="payments_pay_mode[]" value="{{ $payment->pay_mode ?? '' }}">
                             <input type="hidden" name="payments_id[]" value="{{ $payment->id }}">
                         </td>
-                        <td>{{ $payment->bank?->account_name ?? $payment->bank?->emi_number??$payment->bank?->name ??'' }}<input type="hidden" name="payments_bank_id[]" value="{{ $payment->bank_id ?? '' }}"></td>
-                        <td>{{ $payment->branch->name ?? '' }}<input type="hidden" name="payments_branch_id[]" value="{{ $payment->branch_id ?? '' }}"></td>
-                        <td>{{ $payment->transaction_id ?? '' }}<input type="hidden" name="payments_transaction_id[]" value="{{ $payment->transaction_id ?? '' }}"></td>
-                        <td>{{ $payment->date ?? '' }}<input type="hidden" name="payments_date[]" value="{{ $payment->date ?? '' }}"></td>
+                        <td>{{ $payment->bank?->account_name ?? $payment->bank?->emi_number ?? $payment->bank?->name ?? '' }}<input
+                                type="hidden" name="payments_bank_id[]" value="{{ $payment->bank_id ?? '' }}"></td>
+                        <td>{{ $payment->branch->name ?? '' }}<input type="hidden" name="payments_branch_id[]"
+                                value="{{ $payment->branch_id ?? '' }}"></td>
+                        <td>{{ $payment->transaction_id ?? '' }}<input type="hidden" name="payments_transaction_id[]"
+                                value="{{ $payment->transaction_id ?? '' }}"></td>
+                        <td>{{ $payment->date ?? '' }}<input type="hidden" name="payments_date[]"
+                                value="{{ $payment->date ?? '' }}"></td>
                         <td class="amount-value">
                             {{ $payment->amount ?? 0 }}
                             <input type="hidden" name="payments_amount[]" value="{{ $payment->amount ?? '' }}">
                         </td>
                         <td>
                             <span class="file_name">
-                                @if($payment->attachments) <button type="button" onclick="showImage('{{ $payment->attachments }}')" class="btn btn-outline-primary btn-sm download-file" ><i class="fa fa-eye"></i> preview</button>@endif
+                                @if($payment->attachments) <button type="button"
+                                    onclick="showImage('{{ $payment->attachments }}')"
+                                    class="btn btn-outline-primary btn-sm download-file"><i class="fa fa-eye"></i>
+                                preview</button>@endif
                             </span>
                             <div class="spinner-border spinner-border-sm" style="display: none;" role="status"></div>
-                            <input type="hidden" name="payments_attachments[]" class="attachments" value="{{ $payment->attachments ?? '' }}">
-                            <input type="hidden" name="payments_verified[]" class="verified" value="{{ $payment->verified ?? 0 }}">
-                             {{-- @dd($payment) --}}
+                            <input type="hidden" name="payments_attachments[]" class="attachments"
+                                value="{{ $payment->attachments ?? '' }}">
+                            <input type="hidden" name="payments_verified[]" class="verified"
+                                value="{{ $payment->verified ?? 0 }}">
+                            {{-- @dd($payment) --}}
                             <input type="hidden" name="payments_emi_id[]" value="{{ $payment->e_m_i_entries_id ?? '' }}">
                         </td>
-                        <td>{{ $payment->remarks ?? '' }}<input type="hidden" name="payments_remark[]" value="{{ $payment->remarks ?? '' }}"></td>
-                        <td><button class="btn btn-danger btn-xs remove-row"  type="button"><i class="fa fa-trash"></i></button></td>
+                        <td>{{ $payment->remarks ?? '' }}<input type="hidden" name="payments_remark[]"
+                                value="{{ $payment->remarks ?? '' }}"></td>
+                        <td><button class="btn btn-danger btn-xs remove-row" type="button"><i class="fa fa-trash"></i></button>
+                        </td>
                     </tr>
                 @endforeach
             @endif
@@ -199,7 +221,7 @@
             // Extract the file extension from the URL
             const extension = url.split('.').pop().toLowerCase();
             const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
-            
+
             // Check if the file is an image
             if (imageExtensions.includes(extension)) {
                 // If it's an image, display it in the modal
@@ -218,30 +240,30 @@
         }
 
         function updateDue() {
-                const payable = parseFloat($('input[name="payments_payable_amount"]').val()) || 0;
-                const total = parseFloat($('input[name="payments_total_amount"]').val()) || 0;
-                const difference = total - payable;
+            const payable = parseFloat($('input[name="payments_payable_amount"]').val()) || 0;
+            const total = parseFloat($('input[name="payments_total_amount"]').val()) || 0;
+            const difference = total - payable;
 
-                if (difference > 0) {
-                    // Extra payment is advance
-                    $('#total-due span').text("0.00");
-                    $('input[name="payments_due_amount"]').val("0.00");
-                    $('input[name="payments_due_amount"]').trigger('change');
+            if (difference > 0) {
+                // Extra payment is advance
+                $('#total-due span').text("0.00");
+                $('input[name="payments_due_amount"]').val("0.00");
+                $('input[name="payments_due_amount"]').trigger('change');
 
-                    $('#total-advance span').text(difference.toFixed());
-                    $('input[name="payments_advance_amount"]').val(difference.toFixed());
-                } else {
-                    // Still due
-                    const due = Math.abs(difference);
-                    $('#total-due span').text(due.toFixed());
-                    $('input[name="payments_due_amount"]').val(due.toFixed());
-                    $('input[name="payments_due_amount"]').trigger('change');
+                $('#total-advance span').text(difference.toFixed());
+                $('input[name="payments_advance_amount"]').val(difference.toFixed());
+            } else {
+                // Still due
+                const due = Math.abs(difference);
+                $('#total-due span').text(due.toFixed());
+                $('input[name="payments_due_amount"]').val(due.toFixed());
+                $('input[name="payments_due_amount"]').trigger('change');
 
-                    $('#total-advance span').text("0.00");
-                    $('input[name="payments_advance_amount"]').val("0.00");
+                $('#total-advance span').text("0.00");
+                $('input[name="payments_advance_amount"]').val("0.00");
 
-                    $("input#input-amount").val(due.toFixed());
-                }
+                $("input#input-amount").val(due.toFixed());
+            }
         }
 
 
@@ -254,7 +276,7 @@
                 method: 'POST',
                 body: formData
             });
-            if(response){
+            if (response) {
                 toastr.success("File uploaded successfully");
             }
             return await response.json();
@@ -263,7 +285,7 @@
         //async function to delete EMI entry
         async function deleteEMI(emiId) {
             const url = "{{ route('account.emi-entries.destroy', ':id') }}".replace(':id', emiId);
-            console.log({url});
+            console.log({ url });
             const response = await fetch("{{ route('account.emi-entries.destroy', ':id') }}".replace(':id', emiId), {
                 method: 'DELETE',
                 headers: {
@@ -274,7 +296,7 @@
                 }
             });
             const result = await response.json();
-            if(result.message) {
+            if (result.message) {
                 toastr.success(result.message);
             }
             return result;
@@ -282,13 +304,13 @@
 
         //async function to delete file
         async function deleteFile(url) {
-            const response = await fetch( url, {
+            const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             });
-            if(response.message){
+            if (response.message) {
                 toastr.success(response.message);
             }
             return await response.json();
@@ -306,40 +328,43 @@
             updateDue();
         }
 
-       function toggleFormFields(type) {
+        function toggleFormFields(type) {
             // Hide all fields first
             $('.account-field, .bank-field, .branch-field, .txn-field').addClass('d-none');
-           
+
             // Show fields based on payment type
-            switch(type) {
-               case 'Cash':
-                   $('.account-field').removeClass('d-none');
-                   break;
-                   
-               case 'Cheque':
-                   $('.bank-field, .branch-field, .txn-field').removeClass('d-none');
-                   $('.txn-field .form-label').text('Cheque No');
-                   break;
-                   
-               case 'Online Deposit':
-                   $('.account-field').removeClass('d-none');
-                   break;
-                   
-               case 'bKash':
-               case 'Nagad':
-               case 'Rocket':
-               case 'Card Payment':
-                   $('.account-field, .txn-field').removeClass('d-none');
-                   $('.txn-field .form-label').text('Transaction ID');
-                   break;
-                   
-               case 'EMI':
-                   // Only date and amount fields will be shown (handled by default hide)
-                   break;
-                   
-               default:
-                   $('.account-field, .txn-field').removeClass('d-none');
-                   $('.txn-field .form-label').text('Transaction ID');
+            switch (type) {
+                case 'Cash':
+                    $('.account-field').removeClass('d-none');
+                    break;
+
+                case 'Cheque':
+                    $('.bank-field, .branch-field, .txn-field').removeClass('d-none');
+                    $('.txn-field .form-label').text('Cheque No');
+                    break;
+
+                case 'Online Deposit':
+                    $('.account-field').removeClass('d-none');
+                    break;
+
+                case 'bKash':
+                case 'Nagad':
+                case 'Rocket':
+                case 'Card Payment':
+                    $('.account-field, .txn-field').removeClass('d-none');
+                    $('.txn-field .form-label').text('Transaction ID');
+                    break;
+
+                case 'EMI':
+                case 'AIT':
+                case 'Waiver':
+                case 'Waiver Bad Debt':
+                    // Only date and amount fields will be shown (handled by default hide)
+                    break;
+
+                default:
+                    $('.account-field, .txn-field').removeClass('d-none');
+                    $('.txn-field .form-label').text('Transaction ID');
             }
         }
 
@@ -348,7 +373,7 @@
             $('#input-pay-mode').prop('tomselect')?.sync();
             $('#input-pay-mode').trigger('change');
 
-        
+
             // Clear other fields
             $('#input-account').prop('tomselect')?.options.length > 1 && $('#input-account').prop('tomselect')?.clear();
             $('#input-bank').prop('tomselect')?.clear();
@@ -358,40 +383,47 @@
             // $('#input-amount').val();
             $('#input-file').val('');
             $('#input-remark').val('');
-        
+
             // The toggleFormFields will be called by the 'change' trigger on pay-mode
         }
 
         $(document).ready(function () {
             $('#input-date').val(new Date().toISOString().split('T')[0]);
-            
+
             // resetInputs();
 
             $('#input-pay-mode').on('change', function () {
                 const isAdmin = "{{ hasPermission('supper_admin') }}";
-                
+                const payMode = $(this).val();
+
+                if (payMode === 'AIT' || payMode === 'Waiver' || payMode === 'Waiver Bad Debt' || payMode === 'EMI') {
+                    $(".account-field").html('');
+                    toggleFormFields(payMode);
+                    return;
+                }
+
                 $.ajax({
                     url: '{{ route('account.account-setup.bank-accounts.get-accounts') }}',
                     type: 'GET',
                     data: {
-                        payment_mode: $(this).val()
+                        payment_mode: payMode
                     },
                     success: function (response) {
-                       console.log(response);
-                       if(response){
-                        const select = $('<select id="input-account" class="form-select tom-select"><option value="">Select Account</option></select>');
-                        response.forEach(account => {
-                            select.append($('<option></option>').attr('value', account.id).text(account.account_name));
-                        })
+                        console.log(response);
+                        if (response) {
+                            const select = $('<select id="input-account" class="form-select tom-select"><option value="">Select Account</option></select>');
+                            response.forEach(account => {
+                                select.append($('<option></option>').attr('value', account.id).text(account.account_name));
+                            })
 
-                        $(".account-field").html('<label for="input-account" class="form-label">Select Account</label>').append(select);
-                        if(select.find('option').length === 2){
-                            select.find('option:nth-child(2)').attr('selected', 'selected');
+                            $(".account-field").html('<label for="input-account" class="form-label">Select Account</label>').append(select);
+                            if (select.find('option').length === 2) {
+                                select.find('option:nth-child(2)').attr('selected', 'selected');
+                            }
+                            new TomSelect(select[0]);
+
+
                         }
-                        new TomSelect(select[0]);
-
-                       
-                       }
                     }
                 });
                 toggleFormFields($(this).val());
@@ -415,102 +447,107 @@
 
                 const customer_id = $('#customer_id').val() || $("#collectionFrom option:selected").val();
 
-                console.log({customer_id});
-                
+                console.log({ customer_id });
+
                 const txn = $('#input-txn').val();
                 const date = $('#input-date').val();
                 const amount = $('#input-amount').val();
                 const fileInput = $('#input-file')[0];
                 const file = fileInput.files[0];
                 const remark = $('#input-remark').val();
-                if(!payMode || !date || !amount || !remark){
+                if (!payMode || !date || !amount || !remark) {
                     toastr.error('Please fill up all the required fields');
                     return;
                 }
 
-                if((payMode == 'Card Payment' || payMode == 'bKash' || payMode == 'Nagad' || payMode == 'Rocket' ) && (!(account_id || bank_id) || !txn)){
+                if ((payMode == 'Card Payment' || payMode == 'bKash' || payMode == 'Nagad' || payMode == 'Rocket') && (!(account_id || bank_id) || !txn)) {
                     toastr.error('Please fill up all the required fields');
                     return;
                 }
 
-                if(payMode == 'Cheque' && (!bank_id || !branch_id  || !txn)){
+                if (payMode == 'Cheque' && (!bank_id || !branch_id || !txn)) {
                     toastr.error('Please fill up all the required fields');
                     return;
                 }
 
-                if((payMode == 'Cash' || payMode == 'Online Deposit') && (!account_id)){
+                if ((payMode == 'Cash' || payMode == 'Online Deposit') && (!account_id)) {
                     toastr.error('Please fill up all the required fields');
                     return;
                 }
 
-                if(payMode === 'EMI'){
-                    openEmiCreateModal( customer_id, amount)
-                    .then((response) => {
-                        // console.log({id: response.data?.eMIEntry});
-                        
-                        let row = $(`<tr>
-                            <td>${payMode}<input type="hidden" name="payments_pay_mode[]" value="${payMode}"></td>
-                            <td>${response.data?.eMIEntry?.emi_number}<input type="hidden" name="payments_bank_id[]" value="${account_id || bank_id}"></td>
-                            <td>${branch_id?branch_name:""}<input type="hidden" name="payments_branch_id[]" value="${branch_id}"></td>
-                            <td>${txn}<input type="hidden" name="payments_transaction_id[]" value="${txn}"></td>
-                            <td>${date}<input type="hidden" name="payments_date[]" value="${date}"></td>
-                            <td class="amount-value">${parseFloat(amount).toFixed()}<input type="hidden" name="payments_amount[]" value="${amount}"></td>
-                            <td>
-                                <span class="file_name"></span>
-                                <div class="spinner-border spinner-border-sm" role="status">
-                                </div>
-                                <input type="hidden" name="payments_attachments[]" class="attachments">
-                                <input type="hidden" name="payments_verified[]" class="verified" value="0">
-                                <input type="hidden" name="payments_emi_id[]" value="${response.data?.eMIEntry?.id??''}">
-                            </td>
-                            <td>${remark}<input type="hidden" name="payments_remark[]" value="${remark}"></td>
-                            <td><button class="btn btn-danger btn-xs remove-row" type="button"><i class="fa fa-trash"></i></button></td>
-                        </tr>`);
+                if ((payMode == 'AIT' || payMode == 'Waiver' || payMode == 'Waiver Bad Debt') && (!amount || !remark)) {
+                    toastr.error('Please fill up amount and remark');
+                    return;
+                }
 
-                        $('#payment-body').append(row);
+                if (payMode === 'EMI') {
+                    openEmiCreateModal(customer_id, amount)
+                        .then((response) => {
+                            // console.log({id: response.data?.eMIEntry});
 
-                        if (file) {
-                            uploadFile(file).then(res => {
+                            let row = $(`<tr>
+                                                <td>${payMode}<input type="hidden" name="payments_pay_mode[]" value="${payMode}"></td>
+                                                <td>${response.data?.eMIEntry?.emi_number}<input type="hidden" name="payments_bank_id[]" value="${account_id || bank_id}"></td>
+                                                <td>${branch_id ? branch_name : ""}<input type="hidden" name="payments_branch_id[]" value="${branch_id}"></td>
+                                                <td>${txn}<input type="hidden" name="payments_transaction_id[]" value="${txn}"></td>
+                                                <td>${date}<input type="hidden" name="payments_date[]" value="${date}"></td>
+                                                <td class="amount-value">${parseFloat(amount).toFixed()}<input type="hidden" name="payments_amount[]" value="${amount}"></td>
+                                                <td>
+                                                    <span class="file_name"></span>
+                                                    <div class="spinner-border spinner-border-sm" role="status">
+                                                    </div>
+                                                    <input type="hidden" name="payments_attachments[]" class="attachments">
+                                                    <input type="hidden" name="payments_verified[]" class="verified" value="0">
+                                                    <input type="hidden" name="payments_emi_id[]" value="${response.data?.eMIEntry?.id ?? ''}">
+                                                </td>
+                                                <td>${remark}<input type="hidden" name="payments_remark[]" value="${remark}"></td>
+                                                <td><button class="btn btn-danger btn-xs remove-row" type="button"><i class="fa fa-trash"></i></button></td>
+                                            </tr>`);
+
+                            $('#payment-body').append(row);
+
+                            if (file) {
+                                uploadFile(file).then(res => {
+                                    row.find('.spinner-border').hide();
+
+                                    console.log({ path: res.path });
+                                    if (res.path) {
+                                        row.find('.attachments').val(res.path);
+                                        row.find('.file_name').html(`<button type="button" onclick="showImage('${res.path}')" class="btn btn-outline-primary btn-sm download-file" ><i class="fa fa-eye"></i> preview</button>`)
+                                    }
+                                });
+                            } else {
                                 row.find('.spinner-border').hide();
+                                row.find('.file_name').text('');
+                                row.find('.attachments').val('');
+                            }
 
-                                console.log({path:res.path});
-                                if(res.path){
-                                    row.find('.attachments').val(res.path); 
-                                    row.find('.file_name').html(`<button type="button" onclick="showImage('${res.path}')" class="btn btn-outline-primary btn-sm download-file" ><i class="fa fa-eye"></i> preview</button>`)
-                                }
-                            });
-                        }else{
-                            row.find('.spinner-border').hide();
-                            row.find('.file_name') .text('');
-                            row.find('.attachments').val('');
-                        }
-
-                        updateTotal();
-                        resetInputs();
-                    }).catch((error) => {
-                        console.error('Error creating EMI:', error);
-                        toastr.error('Failed to create EMI. Please try again.');
-                    })
+                            updateTotal();
+                            resetInputs();
+                        }).catch((error) => {
+                            console.error('Error creating EMI:', error);
+                            toastr.error('Failed to create EMI. Please try again.');
+                        })
                     return;
                 }
                 let row = $(`<tr>
-                    <td>${payMode}<input type="hidden" name="payments_pay_mode[]" value="${payMode}"></td>
-                    <td>${account_id?account_name:bank_name}<input type="hidden" name="payments_bank_id[]" value="${account_id || bank_id}"></td>
-                    <td>${branch_id?branch_name:""}<input type="hidden" name="payments_branch_id[]" value="${branch_id}"></td>
-                    <td>${txn}<input type="hidden" name="payments_transaction_id[]" value="${txn}"></td>
-                    <td>${date}<input type="hidden" name="payments_date[]" value="${date}"></td>
-                    <td class="amount-value">${parseFloat(amount).toFixed()}<input type="hidden" name="payments_amount[]" value="${amount}"></td>
-                    <td>
-                        <span class="file_name"></span>
-                        <div class="spinner-border spinner-border-sm" role="status">
-                        </div>
-                        <input type="hidden" name="payments_attachments[]" class="attachments">
-                        <input type="hidden" name="payments_verified[]" class="verified" value="0">
-                        <input type="hidden" name="payments_emi_id[]" value="">
-                    </td>
-                    <td>${remark}<input type="hidden" name="payments_remark[]" value="${remark}"></td>
-                    <td><button class="btn btn-danger btn-xs remove-row"  type="button"><i class="fa fa-trash"></i></button></td>
-                </tr>`);
+                                        <td>${payMode}<input type="hidden" name="payments_pay_mode[]" value="${payMode}"></td>
+                                        <td>${account_id ? account_name : bank_name}<input type="hidden" name="payments_bank_id[]" value="${account_id || bank_id}"></td>
+                                        <td>${branch_id ? branch_name : ""}<input type="hidden" name="payments_branch_id[]" value="${branch_id}"></td>
+                                        <td>${txn}<input type="hidden" name="payments_transaction_id[]" value="${txn}"></td>
+                                        <td>${date}<input type="hidden" name="payments_date[]" value="${date}"></td>
+                                        <td class="amount-value">${parseFloat(amount).toFixed()}<input type="hidden" name="payments_amount[]" value="${amount}"></td>
+                                        <td>
+                                            <span class="file_name"></span>
+                                            <div class="spinner-border spinner-border-sm" role="status">
+                                            </div>
+                                            <input type="hidden" name="payments_attachments[]" class="attachments">
+                                            <input type="hidden" name="payments_verified[]" class="verified" value="0">
+                                            <input type="hidden" name="payments_emi_id[]" value="">
+                                        </td>
+                                        <td>${remark}<input type="hidden" name="payments_remark[]" value="${remark}"></td>
+                                        <td><button class="btn btn-danger btn-xs remove-row"  type="button"><i class="fa fa-trash"></i></button></td>
+                                    </tr>`);
 
                 $('#payment-body').append(row);
 
@@ -518,15 +555,15 @@
                     uploadFile(file).then(res => {
                         row.find('.spinner-border').hide();
 
-                        console.log({path:res.path});
-                        if(res.path){
-                            row.find('.attachments').val(res.path); 
+                        console.log({ path: res.path });
+                        if (res.path) {
+                            row.find('.attachments').val(res.path);
                             row.find('.file_name').html(`<button type="button" onclick="showImage('${res.path}')" class="btn btn-outline-primary btn-sm download-file" ><i class="fa fa-eye"></i> preview</button>`)
                         }
                     });
-                }else{
+                } else {
                     row.find('.spinner-border').hide();
-                    row.find('.file_name') .text('');
+                    row.find('.file_name').text('');
                     row.find('.attachments').val('');
                 }
 
@@ -537,12 +574,12 @@
             $(document).on('click', '.remove-row', function () {
                 const row = $(this).closest('tr');
                 const emiId = row.find('input[name="payments_emi_id[]"]').val();
-                
+
                 // If it's an EMI payment, delete the EMI entry first
-                if(emiId) {
+                if (emiId) {
                     deleteEMI(emiId).then(() => {
                         // After deleting EMI, also delete file if exists
-                        if(row.find('.attachments').val()){
+                        if (row.find('.attachments').val()) {
                             deleteFile(row.find('.attachments').val());
                         }
                         row.remove();
@@ -553,7 +590,7 @@
                     });
                 } else {
                     // For non-EMI payments, just delete file if exists
-                    if(row.find('.attachments').val()){
+                    if (row.find('.attachments').val()) {
                         deleteFile(row.find('.attachments').val());
                     }
                     row.remove();
@@ -579,7 +616,7 @@
                             })));
                         }
                     });
-                } 
+                }
             });
 
 

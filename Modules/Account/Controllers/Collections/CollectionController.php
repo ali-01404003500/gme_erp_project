@@ -22,12 +22,12 @@ class CollectionController extends Controller
      *
      * @var CollectionService
      */
-    private $service; 
+    private $service;
     function __construct(CollectionService $service)
     {
         $this->service = $service;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -67,7 +67,7 @@ class CollectionController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer',
             'payments_branch_id' => 'nullable|array',
@@ -99,21 +99,21 @@ class CollectionController extends Controller
      * Display the specified resource.
      */
     /**
- * Display the specified resource.
- */
+     * Display the specified resource.
+     */
     public function show(Request $request, $id)
     {
         $data['collection'] = $this->service->show($id);
         $data['company_info'] = CompanyInfo::first(); // Adjust based on your actual model
-        
+
         // dd($data['collection']);
         // Check if export is requested
         if ($request->filled('export_type')) {
             $filename = 'Collection_Receipt_' . $data['collection']->collection_id . '_' . today()->format('Y_m_d');
-            
+
             return (new ExportService())->exportData(
-                $data, 
-                'Account::collections.export.', 
+                $data,
+                'Account::collections.export.',
                 $filename
             );
         }
@@ -138,7 +138,7 @@ class CollectionController extends Controller
      */
     public function update(Request $request, Collection $collection)
     {
-         $validate = $request->validate([
+        $validate = $request->validate([
             'voucher_type' => 'required|string|in:Collection',
             'collection_type' => 'required|string|in:customer',
             'collection_from' => 'required|integer|exists:customers,id',
@@ -153,7 +153,7 @@ class CollectionController extends Controller
             'payments_id' => 'array',
             'payments_id.*' => 'nullable|integer|exists:payments,id',
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer',
             'payments_branch_id' => 'nullable|array',
@@ -177,7 +177,7 @@ class CollectionController extends Controller
             'payments_due_amount' => 'nullable|numeric',
             'payments_advance_amount' => 'nullable|numeric'
         ]);
-        $this->service->update($collection, $validate,  $payments);
+        $this->service->update($collection, $validate, $payments);
 
         // Determine success message based on status
         $status = $validate['status'];
@@ -268,8 +268,8 @@ class CollectionController extends Controller
                 break;
         }
 
-        $data = $query ;
-        $data['balance'] = $data; 
+        $data = $query;
+        $data['balance'] = $data;
         return response()->json($data);
     }
 }

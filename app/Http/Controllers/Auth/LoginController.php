@@ -181,33 +181,34 @@ class LoginController extends Controller
 
     public function loginApi(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required',
             'password' => 'required',
         ]);
 
-        $field = is_numeric($request->email) ? 'employee_full_id' : 'email';
+        // $field = is_numeric($request->email) ? 'employee_full_id' : 'email';
 
-        $user = User::where($field, $request->email)->first();
+        // $user = User::where($field, $request->email)->first();
 
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
+        // if (!$user) {
+        //     return response()->json(['error' => 'User not found'], 404);
+        // }
 
-        if ($user->user_status != 'active') {
-            return response()->json(['error' => 'Account is inactive'], 403);
-        }
+        // if ($user->user_status != 'active') {
+        //     return response()->json(['error' => 'Account is inactive'], 403);
+        // }
 
-        $credentials = [
-            $field => $request->email,
-            'password' => $request->password,
-        ];
+        // $credentials = [
+        //     $field => $request->email,
+        //     'password' => $request->password,
+        // ];
 
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $this->authenticated($request, auth()->user());
+        InvalidateAuthUserCashe(auth()->user()->id);
 
         return $this->respondWithToken($token);
     }

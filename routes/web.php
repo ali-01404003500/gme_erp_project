@@ -66,8 +66,12 @@ Route::group(['middleware' => 'auth'], function () {
     //         return getDistrict($request->division);
     //     }
     // })->name('locations');
+ 
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/summary', [App\Http\Controllers\DashboardController::class, 'summary'])->name('dashboard.summary');
+    Route::get('/dashboard/summary-user', [App\Http\Controllers\DashboardController::class, 'summaryForUser'])->name('dashboard.usersummary');
 
-    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+
     Route::get('my-profile', [App\Http\Controllers\HomeController::class, 'myProfile'])->name('my_profile');
     Route::post('change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
     Route::post('profile-photograph-upload', [App\Http\Controllers\HomeController::class, 'profilePhotographUpload'])->name('profile-photograph-upload');

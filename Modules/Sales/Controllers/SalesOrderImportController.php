@@ -194,7 +194,7 @@ class SalesOrderImportController extends Controller
                 $errors[] = 'JSON must contain "sales_orders" array';
             } else {
                 foreach ($jsonData['sales_orders'] as $index => $order) {
-                    if (!isset($order['customer_name'] ) && !isset($order['customer_id'])) {
+                    if (!isset($order['customer_name']) && !isset($order['customer_id'])) {
                         $errors[] = "Order " . ($index + 1) . ": customer_name is required";
                     }
                     if (!isset($order['products']) || !is_array($order['products']) && !empty($order['products_code'])) {
@@ -234,7 +234,7 @@ class SalesOrderImportController extends Controller
         // Get latest 3 sales orders from the database
         $salesOrders = \Modules\Sales\Models\SalesOrder::with([
             'customer',
-            'salesOrderDetails.product' => function($query) {
+            'salesOrderDetails.product' => function ($query) {
                 $query->with('brand', 'productType');
             },
             'salesOrderDetails',
@@ -242,20 +242,20 @@ class SalesOrderImportController extends Controller
             'shipment.courier',
             'shipment'
         ])
-        ->latest()
-        ->take(3)
-        ->get();
+            ->latest()
+            ->take(3)
+            ->get();
 
         $template = ['sales_orders' => []];
 
-      
+
 
         // If no sales orders found, use default template
         if (empty($template['sales_orders'])) {
             $template = [
                 'sales_orders' => [
                     [
-                        'sales_order_id'=> 'SCT-01-SC-02-20251129-USR-000001-SL-000004',
+                        'sales_order_id' => 'SCT-01-SC-02-20251129-USR-000001-SL-000004',
                         'customer_id' => 'CUS-00000002632',
                         'invoice_date' => '2024-09-08',
                         'delivery_date' => '2024-09-10',
@@ -272,7 +272,7 @@ class SalesOrderImportController extends Controller
                         'is_offer' => false,
                         'products' => [
                             [
-                                'product_code' =>  "PCT-01-SC-02-20251129-USR-000001-SL-000004",
+                                'product_code' => "PCT-01-SC-02-20251129-USR-000001-SL-000004",
                                 'quantity' => 2,
                                 'price' => 5000.00,
                                 'unit_discount' => 100.00,
@@ -292,7 +292,7 @@ class SalesOrderImportController extends Controller
                                 ]
                             ],
                             [
-                                'product_code' =>  "PCT-01-SC-02-20251129-USR-000001-SL-000004",
+                                'product_code' => "PCT-01-SC-02-20251129-USR-000001-SL-000004",
                                 'quantity' => 1,
                                 'price' => 65500,
                                 'unit_discount' => 100,
@@ -339,7 +339,7 @@ class SalesOrderImportController extends Controller
                         ]
                     ],
                     [
-                        'sales_order_id'=> 'SCT-01-SC-02-20251129-USR-000001-SL-000005',
+                        'sales_order_id' => 'SCT-01-SC-02-20251129-USR-000001-SL-000005',
                         'customer_id' => 'CUS-00000002632',
                         'invoice_date' => '2024-09-08',
                         'delivery_date' => '2024-09-10',
@@ -355,23 +355,23 @@ class SalesOrderImportController extends Controller
                         'sales_type' => 'free_sales',
                         'is_offer' => false,
                         'products' => [
-                             [
-                                 'product_name' => 'Free Sample Product B',
-                                 'model' => '456',
-                                 'quantity' => 1,
-                                 'price' => 0.00,
-                                 'unit_discount' => 0.00,
-                                 'total_discount' => 0.00,
-                                 'amount' => 0.00,
-                                 'stock_details' => [
-                                     [
-                                         'batch_no' => 'FREE001',
-                                         'quantity' => 1,
-                                         'type' => 'lot'
-                                     ]
-                                 ]
-                             ]
-                         ],
+                            [
+                                'product_name' => 'Free Sample Product B',
+                                'model' => '456',
+                                'quantity' => 1,
+                                'price' => 0.00,
+                                'unit_discount' => 0.00,
+                                'total_discount' => 0.00,
+                                'amount' => 0.00,
+                                'stock_details' => [
+                                    [
+                                        'batch_no' => 'FREE001',
+                                        'quantity' => 1,
+                                        'type' => 'lot'
+                                    ]
+                                ]
+                            ]
+                        ],
                         'shipment' => [
                             'courier_name' => 'Sundarban Courier',
                             'area_name' => 'Dhaka',
@@ -396,7 +396,7 @@ class SalesOrderImportController extends Controller
                                     'pay_mode' => 'bKash',
                                     'bank_name' => '01231234567',
                                     'amount' => 8000.00,
-                                    'payment_date'  => '2024-09-08',
+                                    'payment_date' => '2024-09-08',
                                     'transaction_id' => 'bKashtran123',
                                     'remarks' => 'bKash payment'
                                 ]

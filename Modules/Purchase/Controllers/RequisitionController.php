@@ -195,7 +195,7 @@ class RequisitionController extends Controller
             }
         }
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -228,10 +228,10 @@ class RequisitionController extends Controller
             'amount' => 'nullable|array|min:1',
             'amount.*' => 'required|min:0',
         ]);
-      
+
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',
@@ -252,7 +252,7 @@ class RequisitionController extends Controller
         // Add requisition_no to the validation data
         $validate['requisition_no'] = $requisition_no;
 
-        $result = $this->service->store($validate, $productValidate,$payments);
+        $result = $this->service->store($validate, $productValidate, $payments);
 
         $this->generalNotificationService->store([
             'title' => 'New Requisition',
@@ -265,7 +265,7 @@ class RequisitionController extends Controller
 
     public function getRequisitionNumber()
     {
-         $today = date('Y-m-d');
+        $today = date('Y-m-d');
 
         $authUser = auth()->user()->id;
         $authUserBranch = auth()->user()->branch_id;
@@ -377,7 +377,7 @@ class RequisitionController extends Controller
         ]);
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
             'payments_transaction_id' => 'nullable|array',

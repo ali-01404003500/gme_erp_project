@@ -27,9 +27,9 @@ class TargetService
         $startDateTime = new \DateTime($startDate);
         $endDateTime   = new \DateTime($endDate);
 
-        // -----------> Get SalaryGenerate matching Y-m
-        $startMonthStr = $startDateTime->format('Y-m');
-        $endMonthStr   = $endDateTime->format('Y-m');
+        // Calculate total months in range for salary proration
+        $interval      = $startDateTime->diff($endDateTime);
+        $monthsInRange = (($interval->y) * 12) + ($interval->m) + 1;
 
         $startYear = $startDateTime->format('Y');
         $endYear   = $endDateTime->format('Y');
@@ -54,7 +54,7 @@ class TargetService
                 continue;
             }
 
-            // ---------> Target calculation
+            // ---------> Target
             $totalRangeTarget = 0;
             $tempDate         = clone $startDateTime;
             while ($tempDate <= $endDateTime) {
@@ -70,11 +70,10 @@ class TargetService
                 if ($tempDate->format('Y-m') > $endDateTime->format('Y-m')) {
                     break;
                 }
-
             }
 
-            // --------> Fetch Sales Orders
-            $salesOrders  = SalesOrder::where('created_by', $user->id)
+            // --------> Achieved
+            $salesOrders  = SalesOrder::where('user_ref_id', $employee->id)
                 ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
                     $q->whereHas('product.tag', function ($q) use ($targetTagName) {
                         $q->where('name', $targetTagName);
@@ -82,27 +81,31 @@ class TargetService
                 }])
                 ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
                 ->get();
-            $salesDetails = $salesOrders->pluck('salesOrderDetails')->flatten();
-            // dd($salesDetails->toArray());
-            // dd($salesDetails->sum('amount'), $salesDetails->sum('total_discount'));
 
+            $salesDetails  = $salesOrders->pluck('salesOrderDetails')->flatten();
             $salesOrderIds = $salesOrders->pluck('id')->toArray();
             $achieved      = (float) ($salesDetails->sum('amount') - $salesDetails->sum('total_discount'));
 
-            // --------> Costing Logic (Account 5300 -
-            $totalCosting = Transaction::where('transactionable_type', 'Modules\Sales\Models\Delivery')
-                ->whereHasMorph('transactionable', ['Modules\Sales\Models\Delivery'], function ($query) use ($salesOrderIds) {
-                    $query->whereIn('source_id', $salesOrderIds);
-                })
-                ->whereHas('account', function ($query) {
-                    $query->where('account_number', 5300);
-                })
-                ->selectRaw("SUM(debit_amount - credit_amount) as net_cost")
-                ->first()
-                ->net_cost ?? 0;
+            // --------> Costing
+            $totalcostPerStock = SalesOrder::where('status', 'delivered')
+                ->whereIn('id', $salesOrderIds)
+                ->with(['delivery' => function ($q) use ($targetTagName) {
+                    $q->with(['deliveryDetails' => function ($q) use ($targetTagName) {
+                        $q->whereHas('product.tag', function ($q) use ($targetTagName) {
+                            $q->where('name', $targetTagName);
+                        });
+                    }]);
+                }])->get()->pluck('delivery.deliveryDetails')->flatten()->pluck('deliveryStocks')->flatten();
 
-            // --------> Collection Logic
-            $paidOrders = SalesOrder::where('created_by', $user->id)
+            $totalCosting = 0;
+            if ($totalcostPerStock->isNotEmpty()) {
+                foreach ($totalcostPerStock as $cost) {
+                    $totalCosting += $cost->productCatalog->getLandedPrice($cost->serial_no ?? $cost->lot_no);
+                }
+            }
+
+            // --------> Collection
+            $paidOrders = SalesOrder::where('user_ref_id', $employee->id)
                 ->where('paid_status', 'paid')
                 ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
                     $q->whereHas('product.tag', function ($q) use ($targetTagName) {
@@ -116,12 +119,15 @@ class TargetService
             $totalCollection  = (float) ($paidSalesDetails->sum('amount') - $paidSalesDetails->sum('total_discount'));
 
             // --------> Salary Expense
-            $salaryExpense = (float) EmployeeSalary::where('employee_id', $employee->id)
+            $monthlyGross = (float) EmployeeSalary::where('employee_id', $employee->id)
                 ->where('status', 1)
+                ->where('effective_date', '<=', $endDate)
                 ->latest('effective_date')
                 ->value('gross') ?? 0;
 
-            // --------> TA & DA calculation
+            $salaryExpense = $monthlyGross * $monthsInRange;
+
+            // --------> TA & DA
             $bills = BillsAndAllowance::where('employee_id', $employee->id)
                 ->where('status', 'team_leader_check')
                 ->with(['transportExpenses', 'generalExpenses'])
@@ -132,7 +138,6 @@ class TargetService
             $totalDA = 0;
 
             foreach ($bills as $bill) {
-
                 $totalTA += $bill->transportExpenses->sum(function ($item) {
                     return $item->final_approved_amount ?: ($item->accounts_approved_amount ?: ($item->team_leader_approved_amount ?: $item->amount));
                 });
@@ -142,7 +147,7 @@ class TargetService
                 });
             }
 
-            // --------> Commission calculation
+            // --------> Commission
             $totalCommission = 0;
             if (! empty($salesOrderIds)) {
                 $totalCommission = SalesCommission::whereIn('sales_order_id', $salesOrderIds)

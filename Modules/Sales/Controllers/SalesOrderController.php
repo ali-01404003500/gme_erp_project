@@ -138,7 +138,7 @@ class SalesOrderController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer',
             'payments_branch_id' => 'nullable|array',
@@ -210,11 +210,13 @@ class SalesOrderController extends Controller
 
         $data['customers'] = CustomerSetting::where('customer_id', $request->id)
             ->with('customer', 'customer.area', 'customer.customerShippingAddress', 'customerSettingBrokers', 'customerSettingDiscounts', 'customerSettingFixedDiscounts', 'customerSettingSelfCommissions', 'customerSettingSelfCommissions', 'customer.customerType')->first();
-        
-        $data['latestShipmentAddress'] = SalesOrder::query()->where('customer_id', $request->id)->with(['shipment'=>function($query){
-            $query->latest()->limit(3);
-        }])->get()->pluck('shipment');
- 
+
+        $data['latestShipmentAddress'] = SalesOrder::query()->where('customer_id', $request->id)->with([
+            'shipment' => function ($query) {
+                $query->latest()->limit(3);
+            }
+        ])->get()->pluck('shipment');
+
         return response()->json($data);
     }
 
@@ -227,7 +229,7 @@ class SalesOrderController extends Controller
         $discountRange = null;
         if ($productSetting && $customerSetting) {
             $productPrice = $customerSetting?->customerSettingFixedDiscounts?->where('product_id', $request->product_id)?->first();
-            if($productPrice){
+            if ($productPrice) {
                 //pass
             } else if ($productSetting->discount_type == "Percentage") {
                 if ($customerSetting->discount_type == 1 || $customerSetting->discount_type == 3) {// percentage
@@ -240,7 +242,7 @@ class SalesOrderController extends Controller
                 if ($customerSetting->discount_type == 2 || $customerSetting->discount_type == 3) {// fixed
                     $discountRange = ['min' => $productSetting->min_discount, 'max' => $productSetting->max_discount];
                 }
-               
+
             }
         }
         return response()->json(['customerSetting' => $customerSetting, 'productSetting' => $productSetting, 'discount' => ['percentage' => $percentage, 'productPrice' => $productPrice, 'discountRange' => $discountRange]]);
@@ -380,7 +382,7 @@ class SalesOrderController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer',
             'payments_branch_id' => 'nullable|array',

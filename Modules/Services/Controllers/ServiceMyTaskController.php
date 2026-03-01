@@ -20,16 +20,16 @@ class ServiceMyTaskController extends Controller
      *
      * @var ServiceMyTaskService
      */
-    private $service; 
+    private $service;
     function __construct(ServiceMyTaskService $service)
     {
         $this->service = $service;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
-    public function index() 
+    public function index()
     {
         $dateRange = request()->query('from_to_date');
         $status = request()->query('status');
@@ -37,7 +37,7 @@ class ServiceMyTaskController extends Controller
         if ($dateRange) {
             $dates = explode(' to ', $dateRange);
 
-            $query->whereBetween('updated_at', [$dates[0].' 00:00:00', $dates[1].' 23:59:59']);
+            $query->whereBetween('updated_at', [$dates[0] . ' 00:00:00', $dates[1] . ' 23:59:59']);
         }
         if ($status) {
             $query->where('action', $status);
@@ -59,7 +59,7 @@ class ServiceMyTaskController extends Controller
      */
     public function create()
     {
-        
+
         return view('serviceMyTasks.create');
     }
 
@@ -69,11 +69,11 @@ class ServiceMyTaskController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-         $validate = $request->validate([
+        $validate = $request->validate([
             'service_token_id' => 'required|integer|exists:service_tokens,id',
-            'bill_type' => 'required|in:service_bill,service_return_bill', 
+            'bill_type' => 'required|in:service_bill,service_return_bill',
             'net_amount' => 'nullable|numeric|min:0',
-            'description' => 'nullable|string', 
+            'description' => 'nullable|string',
             'basic_info_supply_voltage' => 'nullable|string',
             'basic_info_generator_backup' => 'nullable|in:0,1',
             'basic_info_ground_voltage' => 'nullable|string',
@@ -101,21 +101,21 @@ class ServiceMyTaskController extends Controller
         // Validate pending service tokens
         $pendingServiceToken = null;
 
-        if($validate['status'] != 'cancelled') {
+        if ($validate['status'] != 'cancelled') {
             // Validate pending service tokens
             $pendingServiceToken = $request->validate([
                 'pending_token_ids' => 'required|array',
                 'pending_token_ids.*' => 'required|integer|exists:service_tokens,id',
                 'pending_descriptions' => 'nullable|array',
                 'pending_descriptions.*' => 'required|string|min:100',
-            ],[
+            ], [
                 'pending_descriptions.*.min' => 'The pending description must be at least 100 characters.',
                 'pending_descriptions.*.required' => 'The pending description is required.'
             ]);
         }
 
 
-        
+
 
         // Validate service bills
         $serviceBills = $request->validate([
@@ -134,7 +134,7 @@ class ServiceMyTaskController extends Controller
         ]);
 
 
-        $serviceReturnBills =  $request->validate([
+        $serviceReturnBills = $request->validate([
             'return_bill_product_ids' => 'nullable|array',
             'return_bill_product_ids.*' => 'nullable|integer|exists:product_catalogs,id',
             'return_bill_quantity' => 'nullable|array',
@@ -155,7 +155,7 @@ class ServiceMyTaskController extends Controller
         // Validate payments
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer',
             'payments_branch_id' => 'nullable|array',
@@ -197,10 +197,10 @@ class ServiceMyTaskController extends Controller
             ]);
         }
 
-    //    dd(  $salesOrderShipments );
+        //    dd(  $salesOrderShipments );
 
         // dd($validate, $payments, $serviceBills,  $pendingServiceToken);
-    
+
         $this->service->store($validate, $pendingServiceToken, $payments, $serviceBills, $serviceReturnBills, $salesOrderShipments);
         return redirect()->route('services.service-my-task.index')->with('success', 'Service My Task created successfully.');
     }
@@ -208,7 +208,7 @@ class ServiceMyTaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $data['serviceMyTask'] = $this->service->show($id);
 
@@ -256,7 +256,7 @@ class ServiceMyTaskController extends Controller
         return view('Services::service-my-task.solution-verification', $data);
     }
 
-    public function solutionVerificationStore(Request $request,$id)
+    public function solutionVerificationStore(Request $request, $id)
     {
         // dd($request->all());
         $serviceMyTask = ServicePendingToken::findOrFail($id);
@@ -266,16 +266,15 @@ class ServiceMyTaskController extends Controller
         ]);
         if ($validate['status'] == 'Unchanged') {
             $serviceMyTask->update([
-                'status' =>  $validate['status'],
-            ]);        
-        }
-        else {
+                'status' => $validate['status'],
+            ]);
+        } else {
             $serviceMyTask->update([
-                'status' =>  $validate['status'],
-                'description' =>  $validate['description'],
+                'status' => $validate['status'],
+                'description' => $validate['description'],
             ]);
         }
-       
+
         return redirect()->back()->with('success', 'Solution Verified successfully.');
     }
 }
