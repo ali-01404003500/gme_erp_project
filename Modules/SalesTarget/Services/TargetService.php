@@ -162,11 +162,10 @@ class TargetService
 
             $totalOperationalExpense = $totalTA + $totalDA + (float) $totalCommission;
 
-            // Final Result Array with day/month/year info (jodi dorkar hoy)
             $results[] = [
                 'name'              => $employee->full_name,
                 'designation'       => $employee->employementDetail->designation->name ?? 'N/A',
-                'period_display'    => $formattedStart . ' - ' . $formattedEnd, // day/month/year format
+                'period_display'    => $formattedStart . ' - ' . $formattedEnd,
                 'target'            => $totalRangeTarget,
                 'achieved'          => $achieved,
                 'costing'           => (float) $totalCosting,
