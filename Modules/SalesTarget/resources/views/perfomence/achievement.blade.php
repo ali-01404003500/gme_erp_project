@@ -14,9 +14,10 @@
         <div class="card mb-3 border-0 shadow-sm d-print-none">
             <div class="card-body p-3">
                 <form action="{{ route('sales_target.perfomence.achievement') }}" method="GET" id="filterForm">
-                    <div class="row align-items-end">
-                        <div class="col-md-3">
-                            <label class="fs-13 fw-500 mb-1">Filter by Employee</label>
+                    <div class="row g-2 align-items-end">
+                        
+                        <div class="col-xl-3 col-md-3">
+                            <label class="fs-12 fw-500 mb-1 text-muted">Employee</label>
                             <select class="form-control tom-select" name="employee_id" onchange="this.form.submit()">
                                 <option value="">--- ALL EMPLOYEES ---</option>
                                 @foreach ($employees as $employee)
@@ -26,21 +27,34 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="fs-13 fw-500 mb-1">From Date</label>
-                            <input type="date" name="start_date" class="form-control"
+
+                        <div class="col-xl-2 col-md-2">
+                            <label class="fs-12 fw-500 mb-1 text-muted">From Date</label>
+                            <input type="date" name="start_date" class="form-control form-control-sm"
                                 value="{{ $startDate }}" onchange="this.form.submit()">
                         </div>
-                        <div class="col-md-3">
-                            <label class="fs-13 fw-500 mb-1">To Date</label>
-                            <input type="date" name="end_date" class="form-control"
+
+                        <div class="col-xl-2 col-md-2">
+                            <label class="fs-12 fw-500 mb-1 text-muted">To Date</label>
+                            <input type="date" name="end_date" class="form-control form-control-sm"
                                 value="{{ $endDate }}" onchange="this.form.submit()">
                         </div>
-                        <div class="col-md-3 text-end">
-                            <button type="button" onclick="window.print()" class="btn btn-primary btn-sm">
-                                <i class="bi bi-printer me-1"></i> Print Report
-                            </button>
+
+                        <div class="col-xl-5 col-md-5 text-end">
+                            <div class="d-flex justify-content-end">
+                                <a href="{{ route('sales_target.perfomence.achievement') }}" 
+                                   class="btn btn-white btn-sm border me-2 shadow-sm fw-500" 
+                                   title="Reset Filters">
+                                    <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                                </a>
+                                
+                                <button type="button" onclick="window.print()" 
+                                        class="btn btn-primary btn-sm shadow-sm fw-500">
+                                    <i class="bi bi-printer me-1"></i> Print Report
+                                </button>
+                            </div>
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -52,11 +66,11 @@
             <p>Period: {{ date('d M, Y', strtotime($startDate)) }} to {{ date('d M, Y', strtotime($endDate)) }}</p>
         </div>
 
-        <div class="table-responsive bg-white rounded shadow-sm">
+        <div class="table-responsive bg-white rounded shadow-sm border">
             <table class="table table-bordered table-sm text-center align-middle custom-zebra"
                 style="font-size: 11px; min-width: 1200px;">
                 <thead class="bg-light">
-                    <tr class="text-uppercase">
+                    <tr class="text-uppercase" style="background: #f9faff;">
                         <th rowspan="2" class="align-middle">SL</th>
                         <th rowspan="2" class="align-middle text-left" style="min-width: 180px;">Employee Info</th>
                         <th colspan="6" class="bg-primary-transparent border-bottom-0">Sales Target & Achievement</th>
@@ -64,7 +78,7 @@
                         <th colspan="4" class="bg-secondary-transparent border-bottom-0">Operational Expenses</th>
                         <th colspan="2" class="bg-light-transparent border-bottom-0">Summary</th>
                     </tr>
-                    <tr class="text-uppercase" style="font-size: 9px;">
+                    <tr class="text-uppercase" style="font-size: 9px; background: #f9faff;">
                         <th class="bg-primary-transparent">Target</th>
                         <th class="bg-primary-transparent">Achieved</th>
                         <th class="bg-primary-transparent">Costing</th>
@@ -75,8 +89,8 @@
                         <th class="bg-secondary-transparent">DA Expense</th>
                         <th class="bg-secondary-transparent">Commission</th>
                         <th class="bg-secondary-transparent">Entertainment</th>
-                        <th class="bg-light-transparent">Excluding Salary</th>
-                        <th class="bg-light-transparent">Including Salary</th>
+                        <th class="bg-light-transparent">Excl. Salary</th>
+                        <th class="bg-light-transparent">Incl. Salary</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,9 +125,9 @@
                                 </div>
                             </td>
                             <td class="fw-bold">৳{{ number_format($data['target'], 0) }}</td>
-                            <td class="text-primary">৳{{ number_format($data['achieved'], 0) }}</td>
+                            <td class="text-primary fw-bold">৳{{ number_format($data['achieved'], 0) }}</td>
                             <td>৳{{ number_format($data['costing'], 0) }}</td>
-                            <td class="text-success">৳{{ number_format($data['collection'], 0) }}</td>
+                            <td class="text-success fw-bold">৳{{ number_format($data['collection'], 0) }}</td>
                             <td class="text-danger">৳{{ number_format($data['due'], 0) }}</td>
                             <td>
                                 <span class="badge {{ $data['percent'] >= 80 ? 'bg-success' : ($data['percent'] >= 50 ? 'bg-warning' : 'bg-danger') }} rounded-pill"
@@ -121,35 +135,33 @@
                                     {{ number_format($data['percent'], 1) }}%
                                 </span>
                             </td>
-                            <td>৳{{ number_format($data['salary_expense'], 0) }}</td>
+                            <td class="fw-bold text-muted">৳{{ number_format($data['salary_expense'], 0) }}</td>
                             <td>৳{{ number_format($data['ta_expense'], 0) }}</td>
                             <td>৳{{ number_format($data['da_expense'], 0) }}</td>
                             <td>৳{{ number_format($data['commission'], 0) }}</td>
                             <td>৳{{ number_format($data['entertainment'], 0) }}</td>
-                            <td class="fw-bold">৳{{ number_format($data['total_excl_salary'], 0) }}</td>
+                            <td class="fw-bold text-dark">৳{{ number_format($data['total_excl_salary'], 0) }}</td>
                             <td class="fw-bold text-dark" style="background: #f8f9ff;">
                                 ৳{{ number_format($data['total_incl_salary'], 0) }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="15" class="py-5">
-                                <div class="text-center">
-                                    <i class="bi bi-person-x fs-2 text-muted"></i>
-                                    <p class="mt-2 text-muted">No records found for the selected period.</p>
-                                </div>
+                            <td colspan="15" class="py-5 text-center">
+                                <i class="bi bi-folder-x fs-2 text-muted"></i>
+                                <p class="mt-2 text-muted">No records found for selected criteria.</p>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
                 @if(count($results) > 0)
-                <tfoot class="bg-warning fw-bold">
-                    <tr>
+                <tfoot class="bg-warning-light fw-bold">
+                    <tr style="background: #fff8e1;">
                         <td colspan="2" class="text-center text-uppercase">Grand Total:</td>
                         <td>৳{{ number_format($totalTarget, 0) }}</td>
-                        <td>৳{{ number_format($totalAchieved, 0) }}</td>
+                        <td class="text-primary">৳{{ number_format($totalAchieved, 0) }}</td>
                         <td>৳{{ number_format($totalCosting, 0) }}</td>
-                        <td>৳{{ number_format($totalCollection, 0) }}</td>
-                        <td>৳{{ number_format($totalDue, 0) }}</td>
+                        <td class="text-success">৳{{ number_format($totalCollection, 0) }}</td>
+                        <td class="text-danger">৳{{ number_format($totalDue, 0) }}</td>
                         <td>{{ $totalTarget > 0 ? number_format(($totalAchieved / $totalTarget) * 100, 1) : 0 }}%</td>
                         <td>৳{{ number_format($totalSalary, 0) }}</td>
                         <td>৳{{ number_format($totalTA, 0) }}</td>
@@ -157,7 +169,7 @@
                         <td>৳{{ number_format($totalComm, 0) }}</td>
                         <td>-</td>
                         <td>৳{{ number_format($totalExcl, 0) }}</td>
-                        <td style="background: #eee;">৳{{ number_format($totalIncl, 0) }}</td>
+                        <td class="text-dark">৳{{ number_format($totalIncl, 0) }}</td>
                     </tr>
                 </tfoot>
                 @endif
@@ -166,6 +178,7 @@
     </div>
 
     <style>
+        .fs-12 { font-size: 12px; }
         .table-sm th, .table-sm td { padding: 10px 6px !important; vertical-align: middle; border-color: #eee !important; }
         .bg-primary-transparent { background-color: rgba(0, 123, 255, 0.03); }
         .bg-secondary-transparent { background-color: rgba(108, 117, 125, 0.03); }
@@ -173,6 +186,7 @@
         .text-left { text-align: left !important; }
         .custom-zebra tbody tr:nth-of-type(odd) { background-color: rgba(0, 0, 0, .01); }
         .fw-500 { font-weight: 500; }
+        .btn-white { background: #fff; color: #444; }
 
         @media print {
             @page { size: landscape; margin: 0.5cm; }
@@ -181,7 +195,6 @@
             .container-fluid { padding: 0 !important; }
             .table { font-size: 7px !important; width: 100% !important; border-collapse: collapse !important; }
             .table th, .table td { border: 1px solid #000 !important; padding: 4px !important; }
-            .badge { border: 1px solid #ccc; color: black !important; background: transparent !important; }
         }
     </style>
 
