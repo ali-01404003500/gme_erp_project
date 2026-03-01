@@ -617,16 +617,16 @@ class CollectionService
         // Process each payment entry
         foreach ($jsonData['payments'] as $payment) {
             // Payment mode validation
-            $validModes = ['Cash', 'Cheque', 'Online Deposit', 'bKash', 'Nagad', 'Rocket', 'Card', 'EMI', 'Card Payment', 'AIT', 'Waiver'];
+            $validModes = ['Cash', 'Cheque', 'Online Deposit', 'bKash', 'Nagad', 'Rocket', 'Card', 'EMI', 'Card Payment', 'AIT', 'Waiver', 'Waiver Bad Debt'];
             if (!in_array($payment['pay_mode'], $validModes)) {
                 throw new \Exception("Invalid payment mode: {$payment['pay_mode']}");
             }
             // dd( $payment);
 
             // Map bank references
-            $bankId = $payment['pay_mode'] === 'Cheque'
+            $bankId = $payment['bank_name'] ? ($payment['pay_mode'] === 'Cheque'
                 ? ($banks[$payment['bank_name']] ?? null)
-                : ($accounts[$payment['bank_name']] ?? null);
+                : ($accounts[$payment['bank_name']] ?? null)) : null;
 
             $branchId = $payment['branch_name']
                 ? ($branches[$payment['branch_name']] ?? throw new \Exception("Branch not found: {$payment['branch_name']}"))
