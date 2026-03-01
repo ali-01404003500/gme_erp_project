@@ -1593,6 +1593,15 @@ class AccountGroupSeeder extends Seeder
                 'account_number' => '2200',
             ],
             [
+                'name' => 'AIT Payable',
+                'account_group_id' => 2,
+                'account_control_id' => 2010,
+                'account_subsidiary_id' => 2012,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '201201',
+            ],
+            [
                 'name' => 'Tax Payable',
                 'account_group_id' => 2,
                 'account_control_id' => 2010,

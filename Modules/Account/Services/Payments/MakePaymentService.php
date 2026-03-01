@@ -64,7 +64,7 @@ class MakePaymentService
             'payment_id' => $data['payment_id'],
             'amount' => $data['payments_total_amount'],
             'advance_amount' => $data['payments_advance_amount'],
-            'date' => $payments['payments_date'][0]??now()->format('Y-m-d'),
+            'date' => $payments['payments_date'][0] ?? now()->format('Y-m-d'),
             'payment_to_type' => get_class($payment_to),
             'payment_to_id' => $payment_to->id,
             'status' => $data['status'],
@@ -219,6 +219,22 @@ class MakePaymentService
 
         //credit
         foreach ($makePayment->paymentDetails as $payment) {
+            if (in_array($payment->pay_mode, ['AIT', 'Waiver', 'Waiver Bad Debt'])) {
+                if ($payment->pay_mode == 'AIT') {
+                    $aitPyableAccount = Account::where('account_number', '201201')->first();
+                    $makePayment->transactions()->create([
+                        'account_id' => $aitPyableAccount->id,
+                        'balance_type' => "credit",
+                        'invoice_no' => $makePayment->payment_id,
+                        'amount' => -$payment->amount,
+                        'debit_amount' => 0,
+                        'credit_amount' => $payment->amount,
+                        'description' => "Payment Created. #" . $makePayment->payment_id,
+                        'transaction_date' => $makePayment->date
+                    ]);
+                }
+                continue;
+            }
             if ($payment->bank) {
                 $makePayment->transactions()->create([
                     'account_id' => $payment->bank->getAccount()->id,
@@ -229,7 +245,7 @@ class MakePaymentService
                     'credit_amount' => $payment->amount,
                     'description' => "Payment Created. #" . $makePayment->payment_id,
                     'transaction_date' => $makePayment->date
-                    ]);
+                ]);
             }
             // dd($payment->bank->getAccount());
         }
@@ -247,14 +263,14 @@ class MakePaymentService
             'vendor' => Vendor::find($data['payment_to_id']),
             'petty_cash_expense' => Account::find($data['payment_to_id']),
             default => null
-            
-            };
-            // dd($payment_to);
+
+        };
+        // dd($payment_to);
 
         $updateData = [
             'amount' => $data['payments_total_amount'],
             'advance_amount' => $data['payments_advance_amount'],
-            'date' => $payments['payments_date'][0] ?? null??now()->format('Y-m-d'),
+            'date' => $payments['payments_date'][0] ?? null ?? now()->format('Y-m-d'),
             'payment_to_type' => get_class($payment_to),
             'payment_to_id' => $payment_to->id,
             'status' => $data['status'],

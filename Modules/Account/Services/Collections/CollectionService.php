@@ -224,7 +224,7 @@ class CollectionService
         // dd($collection->payments);
         $collection->transactions()->delete();
 
-        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI', 'AIT', 'Waiver', 'Waiver Bad Debt'])->sum('amount');
+        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI'])->sum('amount');
 
         $receivableCreditAmount = $collection->total_amount - $chequeAndEmiAmount;
 
@@ -272,7 +272,25 @@ class CollectionService
                     }
                     // $payment->emiEntry
                     // dd($payment,  $payment->bank, $payment->bank->emiDetails);
-                } else if ($payment->pay_mode == 'AIT') {
+                }
+            }
+        }
+        if ($receivableCreditAmount <= 0) {
+            $receivableCreditAmount = 0;
+            return;
+        }
+
+        // accounts
+        $customerReceivableAccount = $collection->collectionFrom->getAccount();
+        //debit
+
+        // dd($collection->payments);
+        foreach ($collection->payments as $payment) {
+            if (in_array($payment->pay_mode, ['Cheque', 'EMI'])) {
+                continue;
+            }
+            if (in_array($payment->pay_mode, ['AIT', 'Waiver', 'Waiver Bad Debt'])) {
+                if ($payment->pay_mode == 'AIT') {
                     // Dr AIT Receivable A/C.
                     $aitReceivableAccount = Account::where('account_number', '102301')->first();
                     $collection->transactions()->create([
@@ -315,20 +333,6 @@ class CollectionService
                     ]);
 
                 }
-            }
-        }
-        if ($receivableCreditAmount <= 0) {
-            $receivableCreditAmount = 0;
-            return;
-        }
-
-        // accounts
-        $customerReceivableAccount = $collection->collectionFrom->getAccount();
-        //debit
-
-        // dd($collection->payments);
-        foreach ($collection->payments as $payment) {
-            if (in_array($payment->pay_mode, ['Cheque', 'EMI', 'AIT', 'Waiver', 'Waiver Bad Debt'])) {
                 continue;
             }
             if ($payment->bank) {
