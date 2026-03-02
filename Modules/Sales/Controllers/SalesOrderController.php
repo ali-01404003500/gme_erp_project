@@ -86,7 +86,7 @@ class SalesOrderController extends Controller
     public function create(Request $request)
     {
 
-        $data['products'] = ProductCatalog::all();
+        $data['products'] = ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['references'] = SalesOrder::get();
@@ -316,7 +316,7 @@ class SalesOrderController extends Controller
         // dd($salesOrder);
         $data['salesOrder'] = $salesOrder;
         //
-        $data['products'] = ProductCatalog::all();
+        $data['products'] = ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::where('id', $salesOrder->customer->company_place_id)->get();

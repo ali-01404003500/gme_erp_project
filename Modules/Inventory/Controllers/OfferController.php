@@ -65,7 +65,7 @@ class OfferController extends Controller
      */
     public function create()
     {
-        $data['productCatalogs'] = ProductCatalog::all();
+        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['brands'] = Brand::all();
         return view('Inventory::offers.create', $data);
     }
@@ -164,7 +164,7 @@ $result = [];
     public function edit($id)
     {
         $data['offer'] = $this->service->show($id);
-        $data['productCatalogs'] = ProductCatalog::all();
+        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['brands'] = Brand::all();
         //
         return view("Inventory::offers.edit", $data);

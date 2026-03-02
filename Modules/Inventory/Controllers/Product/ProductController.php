@@ -192,7 +192,7 @@ class ProductController extends Controller
     {
         $data['product'] = $product;
         $data['product_types'] = ProductType::query()->where('status', 1)->get();
-        $data['product_catalogs'] = ProductCatalog::all();
+        $data['product_catalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['brands'] = Brand::all();
         $data['units'] = Unit::all();
         $data['tags'] = Tag::all();
