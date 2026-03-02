@@ -93,7 +93,7 @@ class SalesOrderController extends Controller
         $data['areas'] = Area::select('id', 'area')->get();
         $data['banks'] = Bank::get();
         $data['branches'] = BankBranch::get();
-        $data['services'] = Service::all();
+        $data['services'] = Service::with(['serviceTokens.customer.area'])->get();
         $data['selected_service_id'] = $request->service_id;
 
         return view('Sales::sales-order.create', $data);
