@@ -87,7 +87,7 @@ class SalesOrderController extends Controller
     {
 
         $data['products'] = ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['customers'] = Customer::activeCustomers()->select('id', 'company_name', 'company_place_id')->with('area:area')->get();
         $data['couriers'] = Courier::get();
         $data['references'] = SalesOrder::get();
         $data['areas'] = Area::get();
