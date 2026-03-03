@@ -2638,6 +2638,10 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Shipments verifes access permission',
                 'key' => 'sales.shipment-verifies'
             ],
+            
+
+
+
             //sales.condition-amount-collects
 
             [
@@ -3238,6 +3242,48 @@ class PermissionTableSeed extends Seeder
                 'key' => 'account.cheque-verifications'
             ],
 
+
+             //account.online-deposit-verifications.check
+            [
+                'name' => 'Online Deposit Verifications List',
+                'slug' => 'account.online-deposit-verifications.index',
+                'description' => 'Online deposit verifications list permission',
+                'key' => 'account.online-deposit-verifications'
+            ], 
+            [
+                'name' => 'Online Deposit Checking Check',
+                'slug' => 'account.online-deposit-verifications.check',
+                'description' => 'Online deposit verifications check permission',
+                'key' => 'account.online-deposit-verifications'
+            ],
+            [
+                'name' => 'Online Deposit Check Verifications Verify',
+                'slug' => 'account.online-deposit-verifications.check-verification',
+                'description' => 'Online deposit check Verifications  permission',
+                'key' => 'account.online-deposit-verifications'
+            ],
+
+
+            //account.mfs-verifications.check
+            [
+                'name' => 'MFS Verifications List',
+                'slug' => 'account.mfs-verifications.index',
+                'description' => 'MFS verifications list permission',
+                'key' => 'account.mfs-verifications'
+            ], 
+            [
+                'name' => 'MFS Checking Check',
+                'slug' => 'account.mfs-verifications.check',
+                'description' => 'MFS verifications check permission',
+                'key' => 'account.mfs-verifications'
+            ],
+            [
+                'name' => 'MFS Check Verifications Verify',
+                'slug' => 'account.mfs-verifications.check-verification',
+                'description' => 'MFS check Verifications  permission',
+                'key' => 'account.mfs-verifications'
+            ],
+
                 //account.fund transfer
                 [
                     'name'=> 'Fund Transfer List',
@@ -3678,6 +3724,12 @@ class PermissionTableSeed extends Seeder
                 'name' => 'Create TA/DA Payments',
                 'slug' => 'account.payments.petty-cash-payments.create',
                 'description' => 'TA/DA payments create permission',
+                'key' => 'account.payments.petty-cash-payments'
+            ],
+            [
+                'name' => 'TA/DA Payment View',
+                'slug' => 'account.payments.petty-cash-payments.show',
+                'description' => 'TA/DA payments view permission',
                 'key' => 'account.payments.petty-cash-payments'
             ],
 

@@ -394,11 +394,12 @@
                         @forelse($targets as $index => $target)
                             <tr>
                                 <td class="col-sl">{{ $index + 1 }}</td>
-                                <td class="col-employee">
+                                <td class="col-employee text-left">
                                     <div class="employee-info">
                                         <span class="employee-name" title="{{ $target->employee->full_name ?? 'N/A' }}">
 
-                                            {{ Str::limit($target->employee->full_name ?? 'N/A', 20) }}
+                                            {{ Str::limit($target->employee->full_name ?? 'N/A', 20) }}<br>
+                                            <span>{{  $target->employee->employementDetail->designation->name }} of <br>{{  $target->employee->employementDetail->department->name }}</span> 
                                         </span>
                                     </div>
                                 </td>

@@ -109,11 +109,12 @@ class ChequeVerificationService
                 $entry->charge = $data['charge'] ?? 0;
                 $entry->encashed_by = auth()->id();
             }
-            if ($data['status'] === 'honor-verified') {
+            if ($data['status'] === 'honor-verified') { 
                 $entry->status = $data['status'];
                 $entry->remarks = $data['remarks'] ?? null;
                 $entry->charge = $data['charge'] ?? 0;
                 $entry->encash_verified_by = auth()->id();
+            
                 $this->makeBankTransaction($entry);
                 if ($entry->source_type == AdvanceChequeEntryDetail::class) {
                     $advanceChequeEntry = AdvanceChequeEntryDetail::find($entry->source_id);
@@ -126,18 +127,20 @@ class ChequeVerificationService
                     }
                 }
             }
-
+           
             $entry->save();
-
+            
             DB::commit();
             return $entry;
         } catch (\Throwable $th) {
-            $th->getMessage();
+            DB::rollback();
+            throw $th;
         }
     }
 
     public function deposit(ChequeVerification $chequeVerification, array $data)
     {
+         
         $data['status'] = 'deposited';
         $data['deposited_by'] = auth()->id();
         $chequeVerification->update($data);
@@ -202,18 +205,39 @@ class ChequeVerificationService
         }
 
         $amount = $chequeVerification->amount;
+ 
 
         // 2. Debit Cash (Asset increase)
         $chequeVerification->transactions()->create([
             'account_id' => $bankAccount->id,
             'balance_type' => 'debit',
             'invoice_no' => 'CHQ-' . $chequeVerification->id,
-            'amount' => $amount,
-            'debit_amount' => $amount,
+            'amount' => $amount- $chequeVerification->charge,
+            'debit_amount' => $amount- $chequeVerification->charge,
             'credit_amount' => 0,
             'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
             'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
         ]);
+
+        if($chequeVerification->charge > 0){
+            // Bank charge entry
+            $bankChargeAccount =  Account::where('name', 'Bank Charge Expense')->first()->id; // Bank Charge Expense account
+            $chequeVerification->transactions()->create([
+                'account_id' => $bankChargeAccount,
+                'balance_type' => 'debit',
+                'invoice_no' => 'CHG-' . $chequeVerification->id,
+                'amount' => $chequeVerification->charge,
+                'debit_amount' => $chequeVerification->charge,
+                'credit_amount' => 0,
+                'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
+                'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
+            ]);
+
+            // Reduce the amount to be credited to A/R
+            $amount -= $chequeVerification->charge;
+        }
+
+
 
         // 3. Credit Accounts Receivable (Asset decrease)
         $chequeVerification->transactions()->create([
@@ -223,7 +247,7 @@ class ChequeVerificationService
             'amount' => -$amount,
             'debit_amount' => 0,
             'credit_amount' => $amount,
-            'description' => "Settlement of customer receivable via Cheque #{$chequeVerification->cheque_no}",
+            'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
             'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
         ]);
 

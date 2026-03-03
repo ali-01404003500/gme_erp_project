@@ -1343,6 +1343,31 @@ class AccountGroupSeeder extends Seeder
                 'updated_by' => 1
 
             ],
+            [
+                'id' => 5063,
+                'name' => 'MFS Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
+
+            ],
+            [
+                'id' => 5064,
+                'name' => 'Bank Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
+
+            ],
+
             //Indirect Expense
             [
                 'id' => 5071,

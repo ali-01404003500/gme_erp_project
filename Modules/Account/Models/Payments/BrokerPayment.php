@@ -30,4 +30,9 @@ class BrokerPayment extends BaseModel
     {
         return $this->morphMany(Transaction::class , 'transactionable');
     }
+
+     public function paymentDetails()
+    {
+        return $this->morphMany(MakePaymentDetail::class, 'paymentable');
+    }
 }

@@ -49,6 +49,15 @@ class BrokerPaymentService
                         'remarks' => $data['remarks'] ?? null,
                     ]);
 
+                    $cashAccount = auth()->user()->employee->getCashAccount();
+                    $brokerPayment->paymentDetails()->create([
+                        'pay_mode' => 'Cash',
+                        'bank_id' =>  $cashAccount->id?? null,
+                        'amount' => $paymentAmount,
+                        'date' => now()->format('Y-m-d'),
+                        'verified' => 0, 
+                        'remark' => $data['remarks'] ?? null,
+                    ]);
                     $storedPayments[] = $brokerPayment;
                 }
             }
@@ -81,13 +90,12 @@ class BrokerPaymentService
 
         // accounts
         $payableAccount = $payment->salesCommission->broker->getAccount();
-        $cashAccount = BankAccount::where('payment_mode', 'Cash')->first()->getAccount();
+        $cashAccount = $payment->paymentDetails->first()->bank ;
         //debit
         $payment->transactions()->create([
             'account_id' => $payableAccount->id,
             'balance_type' => 'debit',
             'invoice_no' => $payment->id,
-            'amount' => $payment->payment_amount,
             'debit_amount' => $payment->payment_amount,
             'credit_amount' => 0,
             'description' => 'Commission Payment Created. #' . $payment->id,
@@ -99,7 +107,6 @@ class BrokerPaymentService
             'account_id' => $cashAccount->id,
             'balance_type' => 'credit',
             'invoice_no' => $payment->id,
-            'amount' => -$payment->payment_amount,
             'debit_amount' => 0,
             'credit_amount' => $payment->payment_amount,
             'description' => 'Commission Payment Created. #' . $payment->id,

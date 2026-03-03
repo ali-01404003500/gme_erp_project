@@ -32,7 +32,7 @@ class LoanPaymentController extends Controller
         $data['loans'] = $this->service->getOnlyApproved();
         $data['employees'] = Employee::select(['id','full_name'])->get();
 
-        return view('Account::loan-payment.index', $data);
+        return view('Account::payments.loan-payments.index', $data);
     }
 
   
@@ -44,12 +44,21 @@ class LoanPaymentController extends Controller
         DB::beginTransaction(); 
         $loan = $this->service->show($id);
 
-        $loan->update([
-            'status' => 'paid',
+        $loan->update([ 
             'payment_date' =>  now(),
         ]);
+
+        $cashAccount = auth()->user()->employee->getCashAccount();
+        $loan->paymentDetails()->create([
+            'pay_mode' => 'Cash',
+            'bank_id' =>  $cashAccount->id?? null,
+            'amount' => $loan->amount,
+            'date' => now()->format('Y-m-d'),
+            'verified' => 0, 
+            'remark' => $loan->remarks ?? null,
+        ]);
  
-        $this->service->makeDummyTransaction($loan);
+        //$this->service->makeDummyTransaction($loan);
 
         DB::commit();
         return redirect()->route('account.payments.loan-payment.index')->with('success', 'LoanPayment payment successfully.');
