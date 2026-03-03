@@ -91,7 +91,7 @@ class ChequeVerificationController extends Controller
         //
         return view("chequeVerifications.edit", $data);
     }
-   public function deposit(Request $request, $id)
+    public function deposit(Request $request, $id)
     {
         $validated = $request->validate([
             'deposit_date' => 'required|date',

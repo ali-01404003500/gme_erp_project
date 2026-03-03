@@ -85,7 +85,7 @@
                 <div class="header-gradient d-flex justify-content-between align-items-center p-3">
                     <div class="p-3">
                         <h5 class="mb-0 fw-bold">Update Targets</h5>
-                        <span class="badge-edit mt-1 d-inline-block">Edit Mode: {{ $target->employee->name }}</span>
+                        <span class="badge-edit mt-1 d-inline-block">Edit Mode: {{ $target->employee->full_name }}</span>
                     </div>
                     <a href="{{ route('sales_target.settings.target.index') }}" class="btn btn-sm btn-outline-light">
                         <i class="bi bi-arrow-left me-1"></i> Back to List
@@ -113,7 +113,7 @@
                             <tbody>
                                 <tr class="target-row">
                                     <td style="min-width: 200px;">
-                                        <div class="emp-name-static">{{ $target->employee->name }}</div>
+                                        <div class="emp-name-static">{{ $target->employee->full_name }}</div>
                                         <input type="hidden" name="employee_id" value="{{ $target->employee_id }}">
                                     </td>
                                     <td style="width: 80px;">
@@ -124,7 +124,7 @@
                                     @foreach(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as $m)
                                         @php $field = $m . '_target'; @endphp
                                         <td>
-                                            <input type="number" step="0.01" name="{{ $field }}" class="input-flat month-input"
+                                            <input type="number" step="1000" name="{{ $field }}" class="input-flat month-input"
                                                 value="{{ $target->$field }}">
                                         </td>
                                     @endforeach

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Modules\HRMS\Models\BillsAndAllowance;
 use Modules\Account\Models\Transaction;
 use Modules\Account\Models\Account;
+use Modules\Account\Models\Payments\PettyCashPayment;
 use Modules\HRMS\Models\Employee;
 
 class PettyCashPaymentService
@@ -102,6 +103,31 @@ class PettyCashPaymentService
     }
 
     /**
+     * Get all approved bills for payment list
+     */
+    public function getPaymentList(Request $request)
+    {    
+        return BillsAndAllowance::query()
+            ->with([
+                'employee',
+                'transportExpenses.transportType',
+                'generalExpenses.expenseType',
+                'finalApprovedBy',
+                'createdBy'
+            ])
+            ->whereIn('status', ['paid', 'unpaid'])
+            ->when($request->filled('employee_id'), function ($query) use ($request) {
+                $query->where('employee_id', $request->employee_id);
+            })
+            ->when($request->filled('from') && $request->filled('to'), function ($query) use ($request) {
+                $query->whereBetween('payment_date', [$request->from, $request->to]);
+            })
+            ->orderBy('payment_date', 'desc')
+            ->get()
+            ->groupBy('employee_id');
+    }
+
+    /**
      * Get details for payment processing
      */
     public function getDetailsForPayment($ids)
@@ -150,59 +176,31 @@ class PettyCashPaymentService
     public function processPayment($ids, array $data)
     { 
         DB::beginTransaction();
+         
 
         try {
                 $bills = BillsAndAllowance::with(['employee','transportExpenses','generalExpenses'])
                     ->whereIn('id', $ids)
                     ->get();
 
-                foreach($bills as $bill) { 
+                $PettyCashPayment = PettyCashPayment::create([
+                    'employee_id' => $bills->first()->employee_id, 
+                    'amount' => 0,
+                    'remarks' => $data['remarks'] ?? null
+                ]);
+                $totalAmount = 0; 
+                $result = [];
 
+                foreach($bills as $bill) { 
+ 
                     // Validate bill status
                     if ($bill->status !== 'approved') {
                         throw new \Exception('Only approved bills can be paid');
                     }
 
-                    $employee = $bill->employee;
-                    $loginUser = Auth::user();
-
-                    // Get or create necessary accounts using Employee model methods
-                    $employeeCashAccount = $employee->getAccount();
-                    $pettyCashPayableAccount = $employee->getPettyCashPayableAccount();
-                
-
-                    // Get payment account from data OR use login user account as fallback
-                    $loginUserCashAccount = null;
-                    $paymentAccountId = $data['payment_account_id'] ?? null;
                     
-                    if ($paymentAccountId) {
-                        // Use specified payment account from JSON
-                        $loginUserCashAccount = Account::findOrFail($paymentAccountId);
-                        $paymentSource = " from {$loginUserCashAccount->name}";
-                    } else {
-                         
-                        // Fallback to login user account
-                        $loginUser = Employee::where('user_id', $loginUser->id)->first();
-                        
-                        if ($loginUser) {
-                            $loginUserCashAccount = $loginUser->getAccount();
-                            $paymentSource = " by {$loginUser->full_name}";
-                        } else {
-                            throw new \Exception("Neither payment account specified nor login user has employee account");
-                        }
-                    }
-        
                     // Calculate total approved amount
-                    $totalAmount = $bill->transportExpenses->sum('final_approved_amount') +
-                    $bill->generalExpenses->sum('final_approved_amount');
-
-                    // Generate invoice numbers for Step 2A and 2B
-                    // FIXED: Generate base invoice number once, then increment for Step 2B
-                    $invoiceNo2A = $this->generateInvoiceNumber();
-                    $invoiceNo2B = $this->incrementInvoiceNumber($invoiceNo2A);
-
-                    // STEP 2A: Recognize expenses and clear payable
-                    $expenseEntries = [];
+                    $totalAmount += $bill->transportExpenses->sum('final_approved_amount') + $bill->generalExpenses->sum('final_approved_amount');
 
                     // Process transport expenses
                     foreach ($bill->transportExpenses as $expense) {
@@ -211,14 +209,7 @@ class PettyCashPaymentService
                         if (!$accountHeadId) {
                             throw new \Exception("Account head not selected for transport expense #{$expense->id}");
                         }
-
-                        $expenseEntries[] = [
-                            'account_id' => $accountHeadId,
-                            'balance_type' => 'debit',
-                            'debit_amount' => $expense->final_approved_amount,
-                            'credit_amount' => 0,
-                            'description' => "Transport: {$expense->expense_description}"
-                        ];
+ 
 
                         // Store account head for future reference
                         $expense->update(['account_head_id' => $accountHeadId]);
@@ -230,80 +221,126 @@ class PettyCashPaymentService
 
                         if (!$accountHeadId) {
                             throw new \Exception("Account head not selected for general expense #{$expense->id}");
-                        }
-
-                        $expenseEntries[] = [
-                            'account_id' => $accountHeadId,
-                            'balance_type' => 'debit',
-                            'debit_amount' => $expense->final_approved_amount,
-                            'credit_amount' => 0,
-                            'description' => "General: {$expense->expense_description}"
-                        ];
+                        } 
 
                         // Store account head for future reference
                         $expense->update(['account_head_id' => $accountHeadId]);
                     }
-
-                    // Add credit to petty cash payable
-                    $expenseEntries[] = [
-                        'account_id' => $pettyCashPayableAccount->id,
-                        'balance_type' => 'credit',
-                        'debit_amount' => 0,
-                        'credit_amount' => $totalAmount,
-                        'description' => 'Petty cash payable cleared'
-                    ];
-
-                    // Create Step 2A journal entry
-                    $this->createJournalEntry(
-                        transactionableType: BillsAndAllowance::class,
-                        transactionableId: $bill->id,
-                        invoiceNo: $invoiceNo2A,
-                        description: "Expense Recognition - {$employee->full_name} (Bill #{$bill->id})",
-                        entries: $expenseEntries
-                    );
-
-                    // STEP 2B: Payment from login user to employee
-                    $this->createJournalEntry(
-                        transactionableType: BillsAndAllowance::class,
-                        transactionableId: $bill->id,
-                        invoiceNo: $invoiceNo2B,
-                        description: "Petty Cash Payment to {$employee->full_name} (Bill #{$bill->id})",
-                        entries: [
-                            [
-                                'account_id' => $employeeCashAccount->id,
-                                'balance_type' => 'debit',
-                                'debit_amount' => $totalAmount,
-                                'credit_amount' => 0,
-                                'description' => 'Cash received by employee'
-                            ],
-                            [
-                                'account_id' => $loginUserCashAccount->id,
-                                'balance_type' => 'credit',
-                                'debit_amount' => 0,
-                                'credit_amount' => $totalAmount,
-                                'description' => "Cash paid {$paymentSource}"
-                            ]
-                        ]
-                    );
-
-
+ 
                     // Update bill status
                     $bill->update([
-                        'status' => 'paid',
+                        'status' => 'unpaid',
+                        'petty_cash_payment_id' => $PettyCashPayment->id,
                         'payment_by' => auth()->user()->id,
                         'payment_date' => now(),
-                    ]);
-                    
-                    DB::commit();
+                    ]); 
 
-                    return [
-                        'success' => true,
-                        'bill' => $bill,
+                    $result[] = [
+                        'bill_id' => $bill->id,
+                        'total_amount' => $totalAmount
+                    ];
+                } 
+                //total amount update in petty cash payment table
+                $PettyCashPayment->update(['amount' => $totalAmount]);
+  
+
+                $cashAccount = auth()->user()->employee->getCashAccount();
+                $PettyCashPayment->paymentDetails()->create([
+                    'pay_mode' => 'Cash',
+                    'bank_id' =>  $cashAccount->id?? null,
+                    'amount' => $totalAmount,
+                    'date' => now()->format('Y-m-d'),
+                    'verified' => 0, 
+                    'remark' => $data['remarks'] ?? null,
+                ]);
+                
+
+
+                DB::commit();
+
+                return $result;
+            } 
+            catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
+    }
+
+    public function makeDummyTransaction(PettyCashPayment $PettyCashPayment)
+    { 
+        DB::beginTransaction(); 
+        try { 
+                
+                $totalAmount = 0;
+ 
+                $expenseEntries = []; 
+                $result = [];
+
+                foreach($PettyCashPayment->bills as $bill) {  
+
+                    // Validate bill status
+                    if ($bill->status !== 'unpaid') {
+                        throw new \Exception('Only unpaid bills can be paid');
+                    }
+  
+                    // Generate invoice numbers for Step 2A and 2B
+                    // FIXED: Generate base invoice number once, then increment for Step 2B
+                    $invoiceNo2A = $this->generateInvoiceNumber();
+                    $invoiceNo2B = $this->incrementInvoiceNumber($invoiceNo2A);
+
+                    
+                    // Process transport expenses
+                    foreach ($bill->transportExpenses->groupBy('account_head_id') as $accountHeadId => $expenses) {
+                        $PettyCashPayment->transactions()->create([
+                            'account_id' => $accountHeadId,
+                            'balance_type' => 'debit',
+                            'invoice_no' => $invoiceNo2A,
+                            'debit_amount' => $expenses->sum('final_approved_amount'),
+                            'credit_amount' => 0,
+                            'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
+                            'transaction_date' => $PettyCashPayment->created_at,
+                        ]); 
+                    }
+
+                    // Process general expenses
+                    foreach ($bill->generalExpenses->groupBy('account_head_id') as $accountHeadId => $expenses) {
+                        $PettyCashPayment->transactions()->create([
+                            'account_id' => $accountHeadId,
+                            'balance_type' => 'debit',
+                            'invoice_no' => $invoiceNo2A,
+                            'debit_amount' => $expenses->sum('final_approved_amount'),
+                            'credit_amount' => 0,
+                            'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
+                            'transaction_date' => $PettyCashPayment->created_at,
+                        ]); 
+                    }
+ 
+                    // Update bill status
+                    $bill->update([
+                        'status' => 'paid', 
+                    ]); 
+
+                    $result[] = [
+                        'bill_id' => $bill->id,
                         'total_amount' => $totalAmount,
                         'invoice_no_step2a' => $invoiceNo2A,
                         'invoice_no_step2b' => $invoiceNo2B
                     ];
-                } 
+                }  
+                $cashAccountHeadId = $PettyCashPayment->createdBy->employee->getCashAccount()->id ?? null;
+                $PettyCashPayment->transactions()->create([
+                    'account_id' => $cashAccountHeadId,
+                    'balance_type' => 'credit',
+                    'invoice_no' => $invoiceNo2B,
+                    'debit_amount' => 0,
+                    'credit_amount' => $PettyCashPayment->amount,
+                    'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
+                    'transaction_date' => $PettyCashPayment->created_at,
+                ]);
+                
+                DB::commit();
+
+                return $result;
             } 
             catch (\Exception $e) {
                 DB::rollBack();

@@ -1,6 +1,6 @@
 {{-- resources/views/Account/payments/petty-cash-payments/index.blade.php --}}
-@section('title', "TA/DA List for Payment")
-@section('description', "TA/DA List for Payment")
+@section('title', "Payment TA/DA List")
+@section('description', "Payment TA/DA List")
 @extends('layout.app')
 
 @section('content')
@@ -12,14 +12,14 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i> Home</a></li>
-                            <li class="breadcrumb-item active">TA/DA List for Payment</li>
+                            <li class="breadcrumb-item active">Payment TA/DA List</li>
                         </ol>
                     </nav>
                     <div class="breadcrumb-main__wrapper">
                         <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
-                            @if (hasPermission('account.payments.petty-cash-payments.list'))
-                            <a href="{{ route('account.payments.petty-cash-payments.list') }}" class="btn px-20 btn-primary btn-sm">
-                                <i class="las la-list fs-16"></i>List
+                            @if (hasPermission('account.payments.petty-cash-payments.index'))
+                            <a href="{{ route('account.payments.petty-cash-payments.index') }}" class="btn px-20 btn-primary btn-sm">
+                                <i class="las la-plus fs-16"></i>Payment TA/DA
                             </a>
                             @endif 
                         </div>
@@ -32,7 +32,7 @@
 
         <div class="row">
             <div class="col-md-12">
-                <h4 class="breadcrumb-title">TA/DA List for Payment</h4>
+                <h4 class="breadcrumb-title">Payment TA/DA List</h4>
             </div>
 
             <!-- Search Form -->
@@ -81,18 +81,17 @@
                                 <thead>
                                     <tr>
                                         <th>SL</th>
-                                        <th>Employee Name</th>
-                                        <th>Request Amount</th>
-                                        <th>Team Leader Checked Amount</th>
-                                        <th>HR Checked Amount</th>
-                                        <th>Final Approve Amount</th>
-                                        <th>Entry Info</th>
+                                        <th>Employee Name</th> 
+                                        <th>Payment Amount</th> 
+                                        <th>Payment By</th>
+                                        <th>Payment Date</th>
+                                        <th>Payment Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php
-                                        $tRequestAmt = $tTeamAppAmt = $tHrAppAmt = $tFinalAppAmt =  $i = 0;
+                                        $tFinalAppAmt =  $i = 0;
                                     @endphp
                              
                                     @foreach($pettyCashList as $employeeId => $bills) 
@@ -101,34 +100,28 @@
                                             $bill = $bills->first(); 
                                             $billIds = $bills->pluck('id')->toArray();
 
-                                            $tRequestAmt +=  $bills->pluck('transportExpenses')->flatten()->sum('amount') + $bills->pluck('generalExpenses')->flatten()->sum('amount') ;
-                                            $tTeamAppAmt += $bills->pluck('transportExpenses')->flatten()->sum('team_leader_approved_amount') + $bills->pluck('generalExpenses')->flatten()->sum('team_leader_approved_amount');
-                                            $tHrAppAmt += $bills->pluck('transportExpenses')->flatten()->sum('accounts_approved_amount') + $bills->pluck('generalExpenses')->flatten()->sum('accounts_approved_amount');
                                             $tFinalAppAmt += $bills->pluck('transportExpenses')->flatten()->sum('final_approved_amount') + $bills->pluck('generalExpenses')->flatten()->sum('final_approved_amount');
                                         @endphp
                                         <tr>
                                             <td class="text-center">{{ ++$i  }}</td>
                                             <td>
                                                 {{ $bill->employee->full_name }} 
-                                            </td>
-                                            <td>
-                                                {{ $bills->pluck('transportExpenses')->flatten()->sum('amount') + $bills->pluck('generalExpenses')->flatten()->sum('amount') }} 
-                                            </td>
-                                            <td> 
-                                                {{ $bills->pluck('transportExpenses')->flatten()->sum('team_leader_approved_amount') + $bills->pluck('generalExpenses')->flatten()->sum('team_leader_approved_amount') }} 
-                                            </td>
-                                            <td> 
-                                                {{ $bills->pluck('transportExpenses')->flatten()->sum('accounts_approved_amount') + $bills->pluck('generalExpenses')->flatten()->sum('accounts_approved_amount') }}                                             
-                                            </td>
+                                            </td> 
                                             <td> 
                                                 {{ $bills->pluck('transportExpenses')->flatten()->sum('final_approved_amount') + $bills->pluck('generalExpenses')->flatten()->sum('final_approved_amount') }} 
                                             </td> 
                                              
                                             <td>
-                                                {{ $bill->createdBy->name ?? $bill->employee->full_name }}
+                                                {{ $bill->paymentBy->name ?? $bill->employee->full_name }}
+                                            </td>
+                                            <td>
+                                                {{ $bill->payment_date  }}
+                                            </td>
+                                            <td>
+                                                {{ $bill->status  }}
                                             </td>
                                             <td class="text-center">
-                                                @if(hasPermission('account.payments.petty-cash-payments.create'))
+                                                @if(hasPermission('account.payments.petty-cash-payments.showDetails'))
                                                 <button type="button"
                                                         class="btn btn-sm btn-outline-info btn-view-details"
                                                         data-id='@json($billIds)'
@@ -145,16 +138,7 @@
                                     <tr>
                                         <td colspan="2" class="text-end" >
                                             Total
-                                        </td>
-                                        <td>
-                                            {{ $tRequestAmt }}
-                                        </td>
-                                        <td>
-                                            {{ $tTeamAppAmt }}
-                                        </td>
-                                        <td>
-                                            {{ $tHrAppAmt }}
-                                        </td>
+                                        </td> 
                                         <td>
                                             {{ $tFinalAppAmt }}
                                         </td>
@@ -175,7 +159,7 @@
     <div class="modal-dialog modal-xl modal-custom">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">TA/DA Payment Details</h5>
+                <h5 class="modal-title">TA/DA Payment List</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="paymentDetailsBody">
@@ -306,7 +290,7 @@
         $(document).on('click', '.btn-view-details', function () { 
             let billIds = $(this).data('id');
             billIds = JSON.stringify(billIds); 
-            const url = `{{ route('account.payments.petty-cash-payments.details') }}?ids=`+billIds;
+            const url = `{{ route('account.payments.petty-cash-payments.show-details') }}?ids=`+billIds;
    
             
 

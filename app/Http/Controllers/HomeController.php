@@ -81,7 +81,13 @@ class HomeController extends Controller
                 }
                 $collectionService->storeFromJsonFile();
                 break;
-
+            case  'MFS Collection':
+                $mfsVerificationService = app(\Modules\Account\Services\MFSVerificationService::class);
+                if ($useDirectData) {
+                    return $mfsVerificationService->handleDirectImport( $request->input('data'));
+                }
+                $mfsVerificationService->storeFromJsonFile();
+                break;
             case 'Supplier Payment':
                 $paymentService = new \Modules\Account\Services\Payments\MakePaymentService();
                 if ($useDirectData) {

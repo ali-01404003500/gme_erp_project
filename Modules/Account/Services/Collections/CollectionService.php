@@ -224,7 +224,7 @@ class CollectionService
         // dd($collection->payments);
         $collection->transactions()->delete();
 
-        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI'])->sum('amount');
+        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI','Online Deposit','bKash'])->sum('amount');
 
         $receivableCreditAmount = $collection->total_amount - $chequeAndEmiAmount;
 
@@ -258,7 +258,58 @@ class CollectionService
                         // dd($payment->chequeVerification,  $cheqye, get_class($payment), $payment);
                     }
                     //  dd($payment->chequeVerification, $payment, get_class($payment));
-                } else if ($payment->pay_mode == 'EMI') {
+                }  
+                else if ($payment->pay_mode == 'Online Deposit') {
+                    // Online Deposit entry
+                    if ($payment->onlineDepositVerification) {
+                        // update
+                        $payment->onlineDepositVerification()->update([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank->id, 
+                            'deposit_date' => $payment->date,
+                            'amount' => $payment->amount,
+                        ]);
+                    } else {
+                        $payment->onlineDepositVerification()->create([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank_id,  
+                            'deposit_date' => $payment->date,
+                            'amount' => $payment->amount,
+                            "document" => $payment->attachments,
+                            "remarks" => $payment->remarks,
+                        ]);
+                        $payment->load('onlineDepositVerification');
+                          
+                    }
+                   
+                } 
+                else if ($payment->pay_mode == 'bKash') {
+                    // bKash
+                    if ($payment->mfsVerification) {
+                        // update
+                        $payment->mfsVerification()->update([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank->id, 
+                            'transaction_no' => $payment->transaction_no,
+                            'transaction_date' => $payment->date,
+                            'amount' => $payment->amount,
+                        ]);
+                    } else {
+                        $payment->mfsVerification()->create([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank_id, 
+                            'transaction_no' => $payment->transaction_id,
+                            'transaction_date' => $payment->date,
+                            'amount' => $payment->amount,
+                            "document" => $payment->attachments,
+                            "remarks" => $payment->remarks,
+                        ]);
+                        $payment->load('mfsVerification');
+                          
+                    }
+                   
+                }
+                else if ($payment->pay_mode == 'EMI') {
                     // emi update
                     if ($payment->bank) {
                         // dd($collection->source,$payment->bank);
@@ -286,7 +337,7 @@ class CollectionService
 
         // dd($collection->payments);
         foreach ($collection->payments as $payment) {
-            if (in_array($payment->pay_mode, ['Cheque', 'EMI'])) {
+            if (in_array($payment->pay_mode, ['Cheque', 'EMI','Online Deposit','bKash'])) {
                 continue;
             }
             if (in_array($payment->pay_mode, ['AIT', 'Waiver', 'Waiver Bad Debt'])) {

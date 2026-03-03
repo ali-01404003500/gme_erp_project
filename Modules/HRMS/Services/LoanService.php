@@ -47,9 +47,11 @@ class LoanService
  
     public function makeDummyTransaction(Loan $loan)
     {
+        
         $loan->transactions()->delete();
+ 
+        $cashAccount = $loan->paymentDetails->first()->bank;
 
-        $cashAccount = auth()->user()->employee->getAccount();
 
         $loan->transactions()->create([
             'account_id' => $cashAccount->id,

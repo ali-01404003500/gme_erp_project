@@ -1,4 +1,4 @@
-@section('title', 'Target Matrix Configuration')
+@section('title', 'Sales Target Entry')
 @extends('layout.app')
 
 @section('content')
@@ -111,10 +111,9 @@
             <div class="header-gradient d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="mb-0 fw-bold">Target Configuration</h5>
-                    <small class="text-muted">Type in the name box to search employees</small>
                 </div>
                 <button type="button" class="btn-add" id="add-row">
-                    <i class="bi bi-plus-lg me-1"></i> Add Member
+                    <i class="bi bi-plus-lg me-1"></i> Add Employee
                 </button>
             </div>
 
@@ -135,29 +134,59 @@
                             </tr>
                         </thead>
                         <tbody id="matrix-body">
-                            <tr class="target-row">
-                                <td class="text-center sl-no">1</td>
-                                <td>
-                                    <select name="targets[0][employee_id]" class="employee-search" required>
-                                        <option value="">Search Employee...</option>
-                                        @foreach($employees as $emp)
-                                            <option value="{{ $emp->id }}">{{ $emp->display_name }}</option>
+                           @if($employees->isEmpty())
+                                <tr class="target-row">
+                                    <td class="text-center sl-no">1</td>
+                                    <td>
+                                        <select name="targets[0][employee_id]" class="employee-search" required>
+                                            <option value="">Search Employee...</option>
+                                            @foreach($employees as $emp)
+                                                <option value="{{ $emp->id }}">{{ $emp->full_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                   <td>
+                                        <input type="number" name="targets[0][year]" class="input-flat" value="{{ date('Y') }}">
+                                    </td>
+                                    @foreach(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as $m)
+                                        <td>
+                                            <input type="number" step="1000" name="targets[0][{{$m}}_target]" class="input-flat month-input" value="0">
+                                        </td>
+                                    @endforeach
+                                    <td>
+                                        <input type="number" name="targets[0][total_target]" class="input-flat row-total" value="0" readonly>
+                                    </td>
+                                    <td class="text-center">
+                                        <button type="button" class="remove-row-btn remove-row"><i class="bi bi-trash3-fill"></i></button>
+                                    </td>
+                                </tr> 
+                            @else
+                                @foreach($employees as $key => $emp)
+                                    <tr class="target-row">
+                                        <td class="text-center sl-no">{{ $key + 1 }}</td>
+                                        <td>
+                                            <span>{{ $emp->full_name }}</span><br>
+                                            <span>{{  $emp->employementDetail->designation->name }} of <br>{{  $emp->employementDetail->department->name }}</span> 
+                                            <input type="hidden" name="targets[{{ $key }}][employee_id]" class="form-control"  value="{{$emp->id}}"> 
+                                        </td>
+                                        <td>
+                                            <input type="number" name="targets[{{ $key }}][year]" class="input-flat" value="{{ date('Y') }}">
+                                        </td>
+                                        @foreach(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as $m)
+                                            <td>
+                                                <input type="number" step="1000" name="targets[{{ $key }}][{{$m}}_target]" class="input-flat month-input" value="0">
+                                            </td>
                                         @endforeach
-                                    </select>
-                                </td>
-                                <td><input type="number" name="targets[0][year]" class="input-flat" value="{{ date('Y') }}">
-                                </td>
-                                @foreach(['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] as $m)
-                                    <td><input type="number" step="0.01" name="targets[0][{{$m}}_target]"
-                                            class="input-flat month-input" value="0"></td>
+                                        <td>
+                                            <input type="number" name="targets[{{ $key }}][total_target]" class="input-flat row-total" value="0" readonly>
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="remove-row-btn remove-row"><i class="bi bi-trash3-fill"></i></button>
+                                        </td>
+                                    </tr> 
                                 @endforeach
-                                <td><input type="number" name="targets[0][total_target]" class="input-flat row-total"
-                                        value="0" readonly></td>
-                                <td class="text-center">
-                                    <button type="button" class="remove-row-btn remove-row"><i
-                                            class="bi bi-trash3-fill"></i></button>
-                                </td>
-                            </tr>
+                            @endif    
+                           
                         </tbody>
                     </table>
                 </div>
