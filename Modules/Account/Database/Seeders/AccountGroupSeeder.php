@@ -1846,6 +1846,24 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'is_deletable' => 0,
                 'account_number' => '505401',
+            ],
+            [
+                'name' => 'MFS Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'account_subsidiary_id' => 5063,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '506301',
+            ],
+            [
+                'name'=>'Bank Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'account_subsidiary_id' => 5064,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '506401',
             ]
         ];
 
