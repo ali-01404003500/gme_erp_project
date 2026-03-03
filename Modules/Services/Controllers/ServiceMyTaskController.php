@@ -252,7 +252,7 @@ class ServiceMyTaskController extends Controller
         $data['serviceMyTasks'] = ServicePendingToken::where('status', 'pending')->whereHas('serviceMyTask', function ($query) {
             $query->where('status', 'approved');
         })->get();
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         return view('Services::service-my-task.solution-verification', $data);
     }
 

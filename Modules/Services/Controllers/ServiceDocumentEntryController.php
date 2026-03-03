@@ -36,7 +36,7 @@ class ServiceDocumentEntryController extends Controller
      */
     public function create()
     {
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         return view('Services::document-entries.create', $data);
     }
 
@@ -72,7 +72,7 @@ class ServiceDocumentEntryController extends Controller
     {
         $serviceDocumentEntry = $this->service->show($id);
         $data['serviceDocumentEntry'] = $serviceDocumentEntry;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         return view("Services::document-entries.edit", $data);
     }
 

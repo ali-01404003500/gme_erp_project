@@ -74,7 +74,7 @@ class BackupChallanController extends Controller
      */
     public function create()
     {
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::get();
@@ -201,7 +201,7 @@ class BackupChallanController extends Controller
     public function edit(BackupChallan $backupChallan)
     {
         $data['backupChallan'] = $backupChallan;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::where('id', $backupChallan->customer->company_place_id)->get();
@@ -253,7 +253,7 @@ class BackupChallanController extends Controller
     {
         $data['backupChallan'] = $this->service->show($id);
 
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::where('id', $data['backupChallan']->customer->company_place_id)->get();

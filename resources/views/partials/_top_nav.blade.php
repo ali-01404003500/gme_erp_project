@@ -1,13 +1,18 @@
 <nav class="navbar navbar-light">
     <div class="navbar-left">
         <div class="logo-area">
-            <a class="navbar-brand" href="/">
-                @if (App\Models\AccessControl\CompanyInfo::first()->company_logo != null)
-                    <img class="dark" src="{{ App\Models\AccessControl\CompanyInfo::first()->company_logo }}" alt="{{ App\Models\AccessControl\CompanyInfo::first()->company_name }}" style="height:60px!important; object-fit:contain ">
-                    <img class="light" src="{{ App\Models\AccessControl\CompanyInfo::first()->company_logo }}" alt="{{ App\Models\AccessControl\CompanyInfo::first()->company_name }}" style="height:60px!important; object-fit:contain ">
+            <a class="navbar-brand" href="#">
+                @php
+                    $companyInfo = cache()->remember('company_info', now()->addHours(24), function () {
+                        return \App\Models\AccessControl\CompanyInfo::first();
+                    });
+                @endphp
+                @if ($companyInfo?->company_logo != null)
+                    <img class="dark" src="{{ $companyInfo->company_logo }}" alt="{{ $companyInfo->company_name }}" style="height:60px!important; object-fit:contain ">
+                    <img class="light" src="{{ $companyInfo->company_logo }}" alt="{{ $companyInfo->company_name }}" style="height:60px!important; object-fit:contain ">
                 @else
                 <h3>
-                    {{ App\Models\AccessControl\CompanyInfo::first()->company_name }}
+                    {{ $companyInfo?->company_name }}
                 </h3>
                 @endif
 

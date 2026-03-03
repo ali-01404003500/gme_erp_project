@@ -86,15 +86,20 @@ class SalesOrderController extends Controller
     public function create(Request $request)
     {
 
-        $data['products'] = ProductCatalog::all();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['products'] = cache()->remember('sales_order_products', 3600, function () {
+            return ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
+        });
+        $data['customers'] = cache()->remember('sales_order_customers', 3600, function () {
+            return Customer::activeCustomers()->select('id', 'company_name', 'company_place_id', 'status')->with('area')->get();
+        });
+        // dd($data['customers']);
         $data['couriers'] = Courier::get();
-        $data['references'] = SalesOrder::get();
-        $data['areas'] = Area::get();
+        $data['references'] = SalesOrder::select('id', 'customer_id', 'sales_order_id', 'invoice_date')->get();
+        $data['areas'] = Area::select('id', 'area')->get();
         $data['banks'] = Bank::get();
         $data['branches'] = BankBranch::get();
-        $data['services'] = Service::all();
         $data['selected_service_id'] = $request->service_id;
+        $data['services'] = $request->service_id ? Service::with(['serviceTokens.customer.area'])->get() : [];
 
         return view('Sales::sales-order.create', $data);
     }
@@ -316,7 +321,7 @@ class SalesOrderController extends Controller
         // dd($salesOrder);
         $data['salesOrder'] = $salesOrder;
         //
-        $data['products'] = ProductCatalog::all();
+        $data['products'] = ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::where('id', $salesOrder->customer->company_place_id)->get();

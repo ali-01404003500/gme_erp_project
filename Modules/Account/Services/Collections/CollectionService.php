@@ -675,17 +675,13 @@ class CollectionService
             // dd( $payment);
 
             // Map bank references
-            $bankId = $payment['bank_name'] ? ($payment['pay_mode'] === 'Cheque'
+            $bankId = $payment['bank_name'] ?? null ? ($payment['pay_mode'] === 'Cheque'
                 ? ($banks[$payment['bank_name']] ?? null)
                 : ($accounts[$payment['bank_name']] ?? null)) : null;
 
-            $branchId = $payment['branch_name']
-                ? ($branches[$payment['branch_name']] ?? throw new \Exception("Branch not found: {$payment['branch_name']}"))
-                : null;
+            $branchId = $payment['branch_name'] ?? null ? ($branches[$payment['branch_name']] ?? throw new \Exception("Branch not found: {$payment['branch_name']}")) : null;
 
-            $emiId = $payment['pay_mode'] === 'EMI'
-                ? ($emis[$payment['bank_name']] ?? throw new \Exception("EMI reference not found: {$payment['bank_name']}"))
-                : null;
+            $emiId = $payment['pay_mode'] === 'EMI' ?? null ? ($emis[$payment['bank_name']] ?? throw new \Exception("EMI reference not found: {$payment['bank_name']}")) : null;
 
             // Add to payments array
             $payments['payments_pay_mode'][] = $payment['pay_mode'];
