@@ -502,4 +502,10 @@ class Customer extends BaseModel
         InvalidateAuthUserCashe($user->id);
         return $user;
     }
+
+    public function getNameAttribute()
+    { 
+        $area = optional($this->area)->area ?? null; 
+        return "{$this->company_name} - {$area}";
+    }
 }

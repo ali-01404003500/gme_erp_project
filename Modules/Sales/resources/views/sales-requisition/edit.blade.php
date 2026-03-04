@@ -71,17 +71,12 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
-                                            <select name="customer_id" id="customer_id" class="form-control tom-select">
-                                                <option value="">Choose Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}"
-                                                        {{ old('customer_id', $salesRequisition->customer_id) == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}@if ($customer->area != null)
-                                                            ({{ optional($customer->area)->area }})
-                                                        @endif
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <select name="customer_id" id="customer_id" class="form-control">
+                                                <option value="{{ $salesRequisition->customer_id }}" selected>
+                                                {{ $salesRequisition->customer->company_name }} - {{ optional($salesRequisition->customer->area)->area }} 
+                                                </option>
+                                            </select> 
+
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -154,12 +149,8 @@
                                                                 <td>
                                                                     <select name="product_ids[]"
                                                                         class="form-control product_ids to-select">
-                                                                        <option value="">Choose Product</option>
-                                                                        @foreach ($products as $product)
-                                                                            <option value="{{ $product->id }}"
-                                                                                {{ $product->id == $value->product_id ? 'selected' : '' }}>
-                                                                                {{ $product->name }}</option>
-                                                                        @endforeach
+                                                                        <option value="{{ $value->product_id }}" selected>
+                                                                                {{ $value->product->name }}</option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
@@ -794,7 +785,44 @@
             handleShipmentConfirm();
             handleCourierConfirm();
             handleCondition();
+
+  
         });
+
+        function prouctAutocompleteLoad(row){
+            const p = $(row).find(".product_ids");
+            const productSelect = new TomSelect(p[0], {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('product_ids'))
+                productSelect.addOption({
+                    id: "{{ request('product_ids') }}",
+                    text: "{{ request('product_ids') }}"
+                });
+                productSelect.setValue("{{ request('product_ids') }}");
+            @endif
+        }
+        
     </script>
 
 
@@ -814,6 +842,7 @@
             rowTemplate.find('input').val('');
             rowTemplate.find('.to-select option:selected').removeAttr('selected');
             rowTemplate.find('#remove_row').removeClass('disabled').removeAttr('disabled');
+            rowTemplate.find('.product_ids option').remove(); 
 
             $("#product_info_table tbody tr:first-child").find('.to-select').each(function() {
                 new TomSelect(this, {});
@@ -895,14 +924,17 @@
                 });
                 calculateTotalForPercentage();
             }
-
-            $("#add_row").click(function() {
+ 
+            $("#add_row").click(function () {
                 const newRow = rowTemplate.clone();
-                newRow.find('.to-select').each(function() {
-                    new TomSelect(this, {});
-                });
+                
+                // Reset discount_type field in new row
+                newRow.find('.discount_type_input').val('');
                 $("#product_info_table tbody").append(newRow);
+
+                prouctAutocompleteLoad(newRow);
             });
+
 
             $("#product_info_table").on("keyup change", "#quantity, #price, #unit_discount, #additional_percentage", function() {
                 let additionalPercentage = parseFloat($("#additional_percentage").val()) || 0;

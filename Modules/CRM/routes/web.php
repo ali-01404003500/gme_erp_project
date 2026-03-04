@@ -30,7 +30,8 @@ Route::group(['middleware'=>'auth', 'prefix' => 'crm', 'as' => 'crm.'],function 
     Route::post('update-broker-details/{id}', [CustomerController::class, 'updateBrokerWithSettings'])->name('update-broker-details');
 
     Route::get('customer-count', [CustomerController::class, 'countCustomer'])->name('customer.count');
-    Route::get('get-customers', [CustomerController::class, 'getCustomers'])->name('get-customers');
+    Route::get('get-customers', [CustomerController::class, 'getCustomers'])->name('get-customers');    
+    Route::get('autocomplete-customers', [CustomerController::class, 'customerAutocomplete']) ->name('autocomplete.customers');
 
     /* Customer Type */
     Route::resource('customer-types', CustomerTypeController::class);

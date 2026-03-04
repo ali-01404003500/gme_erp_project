@@ -5,6 +5,7 @@ namespace Modules\CRM\Controllers\Customer;
 use App\Http\Controllers\Controller;
 
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use Modules\HRMS\Models\Employee;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Inventory\Models\Settings\Tag;
@@ -526,5 +527,21 @@ class CustomerController extends Controller
         $path = $file->storeAs('public', $filename);
         $this->service->insertFromCSV($filename);
         return redirect()->route('crm.customers.index')->with('success', 'Customer imported successfully.');
+    }
+
+
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {
+
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $data = $autocompleteService->customerSearch(
+            Customer::class,
+            ['company_name','address','phone'],
+            $request->search,
+            ['id', 'company_name','company_place_id'],
+            10
+        ); 
+        return response()->json($data);
     }
 }

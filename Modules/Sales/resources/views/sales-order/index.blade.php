@@ -45,15 +45,9 @@
                                             <tr>
 
                                                 <td class="text-center">
-                                                    <select name="customer_id" id="customer_id" class="tom-select  input-sm"
+                                                    <select name="customer_id" id="customer_id" class="  input-sm"
                                                         data-placeholder="Select Customer">
-                                                        <option value=""></option>
-                                                        @foreach ($customers as $customer)
-                                                            <option @if (request('customer_id') == $customer->id) selected @endif
-                                                                value="{{ $customer->id }}">
-                                                                {{ $customer->company_name }} - {{ $customer->area->area ?? ''   }}
-                                                            </option>
-                                                        @endforeach
+                                                        <option value=""></option> 
                                                     </select>
                                                 </td>
 
@@ -302,5 +296,39 @@
             format: 'dd-mm-yyyy',
             autoclose: true
         });
+
+
+        $(document).ready(function () {
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ request('customer_id') }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+        }); 
     </script>
 @endSection

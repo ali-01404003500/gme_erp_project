@@ -5,6 +5,7 @@ namespace Modules\Sales\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use Modules\Inventory\Models\Product;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Sales\Models\Courier;
@@ -22,6 +23,7 @@ use Modules\CRM\Models\Customer\CustomerSetting;
 use Modules\LocationManager\Models\Area;
 use Modules\Sales\Models\FreeSalesInvoice;
 use Illuminate\Support\Facades\Session;
+use Modules\HRMS\Models\Employee;
 use Modules\Services\Models\Service;
 
 class SalesOrderController extends Controller
@@ -572,4 +574,62 @@ class SalesOrderController extends Controller
             return redirect()->back()->with('error', 'Failed to save free sales invoice: ' . $e->getMessage())->withInput();
         }
     }
-}
+
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    { 
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $data = $autocompleteService->customerSearch(
+            Customer::class,
+            ['company_name','address','phone'],
+            $request->search,
+            ['id', 'company_name','company_place_id', 'phone', 'customer_type', 'address'],
+            30
+        ); 
+
+        
+        return response()->json($data);
+    }
+
+    public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->productSearch(
+            ProductCatalog::class,
+            ['name','model'],
+            $request->search,
+            ['id', 'name','model','product_brand_id'],
+            30
+        ); 
+        return response()->json($data);
+    }
+    public function employeeAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            Employee::class,
+            ['full_name'],
+
+            $request->search,
+            ['id', 'full_name'],
+            20,
+            ['status' => '1']
+        ); 
+        return response()->json($data);
+    }
+
+    public function invoiceAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            SalesOrder::class,
+            ['sales_order_id'],
+
+            $request->search,
+            ['id', 'sales_order_id'],
+            20
+        ); 
+        return response()->json($data);
+    }
+    
+} 

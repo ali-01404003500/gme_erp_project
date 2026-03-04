@@ -2,6 +2,8 @@
 
 use Modules\Sales\Controllers\BrandSupplierSalesReportController;
 use Illuminate\Support\Facades\Route;
+use Modules\Account\Controllers\CustomerController;
+use Modules\Account\Controllers\ProductController;
 use Modules\Inventory\Models\Product\Settings\Brand;
 use Modules\Sales\Controllers\BackupChallanController;
 use Modules\Sales\Controllers\BackupChallanDeliveryController;
@@ -33,6 +35,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::get('sales-orders-product-free-sales-invoice/{id}', [SalesOrderController::class, 'productFreeSalesInvoice'])->name("sales-orders.product-free-sales-invoice");
     Route::post('sales-orders-product-free-sales-invoice/{id}', [SalesOrderController::class, 'storeProductFreeSalesInvoice'])->name("sales-orders.product-free-sales-invoice.store");
     Route::get('sales-orders-product-free-sales-invoice/view/{id}', [SalesOrderController::class, 'viewProductFreeSalesInvoice'])->name("sales-orders.product-free-sales-invoice.view");
+    Route::get('sales-orders-autocomplete-customers', [SalesOrderController::class, 'customerAutocomplete']) ->name('sales-orders-autocomplete.customers');
+    Route::get('sales-orders-autocomplete-products', [SalesOrderController::class, 'productAutocomplete']) ->name('sales-orders-autocomplete.products');
 
     // Sales Order Import Routes
     Route::group(['prefix' => 'sales-order-import'], function () {
@@ -68,7 +72,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     });
 
     Route::resource('sales-order-deliveries', SalesOrderDeliveryController::class);
+    Route::get('sales-orders-autocomplete-employees', [SalesOrderController::class, 'employeeAutocomplete']) ->name('sales-orders-autocomplete.employees'); 
     Route::resource('fake-invoices', FakeInvoiceController::class);
+    Route::get('sales-orders-autocomplete-invoice', [SalesOrderController::class, 'invoiceAutocomplete']) ->name('sales-orders-autocomplete.invoice'); 
+
 
     Route::resource('sales-commissions', SalesCommissionController::class);
 
