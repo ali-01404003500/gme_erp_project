@@ -340,7 +340,7 @@ class InvoiceWiseCollectionService
         $customer = $invoiceWiseCollection->customer;
         $customerReceivableAccount = $customer->getAccount();
 
-        $chequeAndEmiAmount = $invoiceWiseCollection->payments()->whereIn('pay_mode', ['Cheque', 'EMI'])->sum('amount');
+        $chequeAndEmiAmount = $invoiceWiseCollection->payments()->whereIn('pay_mode', ['Cheque', 'EMI','Online Deposit','bKash'])->sum('amount');
 
         $receivableCreditAmount = $invoiceWiseCollection->total_amount - $chequeAndEmiAmount;
 
@@ -374,7 +374,58 @@ class InvoiceWiseCollectionService
                         // dd($payment->chequeVerification,  $cheqye, get_class($payment), $payment);
                     }
                     //  dd($payment->chequeVerification, $payment, get_class($payment));
-                } else if ($payment->pay_mode == 'EMI') {
+                }
+                else if ($payment->pay_mode == 'Online Deposit') {
+                    // Online Deposit entry
+                    if ($payment->onlineDepositVerification) {
+                        // update
+                        $payment->onlineDepositVerification()->update([
+                            'customer_id' => $customer->id,
+                            'head_id' => $payment->bank->id, 
+                            'deposit_date' => $payment->date,
+                            'amount' => $payment->amount,
+                        ]);
+                    } else {
+                        $payment->onlineDepositVerification()->create([
+                            'customer_id' => $customer->id,
+                            'head_id' => $payment->bank_id,  
+                            'deposit_date' => $payment->date,
+                            'amount' => $payment->amount,
+                            "document" => $payment->attachments,
+                            "remarks" => $payment->remarks,
+                        ]);
+                        $payment->load('onlineDepositVerification');
+                          
+                    }
+                   
+                } 
+                else if ($payment->pay_mode == 'bKash') {
+                    // bKash
+                    if ($payment->mfsVerification) {
+                        // update
+                        $payment->mfsVerification()->update([
+                            'customer_id' => $customer->id,
+                            'head_id' => $payment->bank->id, 
+                            'transaction_no' => $payment->transaction_no,
+                            'transaction_date' => $payment->date,
+                            'amount' => $payment->amount,
+                        ]);
+                    } else {
+                        $payment->mfsVerification()->create([
+                            'customer_id' => $customer->id,
+                            'head_id' => $payment->bank_id, 
+                            'transaction_no' => $payment->transaction_id,
+                            'transaction_date' => $payment->date,
+                            'amount' => $payment->amount,
+                            "document" => $payment->attachments,
+                            "remarks" => $payment->remarks,
+                        ]);
+                        $payment->load('mfsVerification');
+                          
+                    }
+                   
+                }
+                else if ($payment->pay_mode == 'EMI') {
                     // emi update
                     if ($payment->bank) {
                         // dd($collection->source,$payment->bank);
@@ -408,7 +459,7 @@ class InvoiceWiseCollectionService
         // ]);
         // dd  ($invoiceWiseCollection->payments()->whereNotIn('pay_mode', ['Cheque', 'EMI'])->get());
         // Debit transactions for each payment method
-        foreach ($invoiceWiseCollection->payments()->whereNotIn('pay_mode', ['Cheque', 'EMI'])->get() as $payment) {
+        foreach ($invoiceWiseCollection->payments()->whereNotIn('pay_mode', ['Cheque', 'EMI','Online Deposit','bKash'])->get() as $payment) {
             if ($payment->bank) {
                 $invoiceWiseCollection->transactions()->create([
                     'account_id' => $payment->bank->getAccount()->id,

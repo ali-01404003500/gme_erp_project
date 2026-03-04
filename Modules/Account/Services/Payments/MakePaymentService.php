@@ -92,9 +92,9 @@ class MakePaymentService
         }
         $makePayment->refresh();
 
-        if ($makePayment->status === 'approved') {
+        /*if ($makePayment->status === 'approved') {
             $this->makeDummyTransaction($makePayment);
-        }
+        }*/
 
         // dd($result);
 
@@ -177,6 +177,7 @@ class MakePaymentService
      */
     public function makeDummyTransaction(MakePayment $makePayment)
     {
+        //dd($makePayment);
         $makePayment->transactions()->delete();
 
         $paymentTo = $makePayment->paymentTo;
@@ -195,7 +196,6 @@ class MakePaymentService
                 'account_id' => $payableAccount->id,
                 'balance_type' => "debit",
                 'invoice_no' => $makePayment->payment_id,
-                'amount' => $makePayment->amount - $makePayment->advance_amount,
                 'debit_amount' => $makePayment->amount - $makePayment->advance_amount,
                 'credit_amount' => 0,
                 'description' => "Payment Created. #" . $makePayment->payment_id,
@@ -208,7 +208,6 @@ class MakePaymentService
                 'account_id' => $advanceAccount->id,
                 'balance_type' => "debit",
                 'invoice_no' => $makePayment->payment_id,
-                'amount' => $makePayment->advance_amount,
                 'debit_amount' => $makePayment->advance_amount,
                 'credit_amount' => 0,
                 'description' => "Payment Created. #" . $makePayment->payment_id,
@@ -226,7 +225,6 @@ class MakePaymentService
                         'account_id' => $aitPyableAccount->id,
                         'balance_type' => "credit",
                         'invoice_no' => $makePayment->payment_id,
-                        'amount' => -$payment->amount,
                         'debit_amount' => 0,
                         'credit_amount' => $payment->amount,
                         'description' => "Payment Created. #" . $makePayment->payment_id,
@@ -240,7 +238,6 @@ class MakePaymentService
                     'account_id' => $payment->bank->getAccount()->id,
                     'balance_type' => "credit",
                     'invoice_no' => $makePayment->payment_id,
-                    'amount' => -$payment->amount,
                     'debit_amount' => 0,
                     'credit_amount' => $payment->amount,
                     'description' => "Payment Created. #" . $makePayment->payment_id,
@@ -308,9 +305,9 @@ class MakePaymentService
 
         $makePayment->refresh();
 
-        if ($makePayment->status === 'approved') {
+        /*if ($makePayment->status === 'approved') {
             $this->makeDummyTransaction($makePayment);
-        }
+        }*/
 
         DB::commit();
         return $makePayment;

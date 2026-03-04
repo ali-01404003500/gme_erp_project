@@ -15,6 +15,16 @@
                             </ol>
                         </nav>
                     </div>
+                    <div class="breadcrumb-main__wrapper">
+                        <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
+                            @if (hasPermission('account.payments.invoice-wise-payments.index'))
+                            <a href="{{ route('account.payments.invoice-wise-payments.index') }}" class="btn px-20 btn-primary btn-sm">
+                                <i class="las la-list fs-16"></i>List
+                            </a>
+                            @endif 
+                        </div>
+
+                    </div>
                     <div class="col-md-12 mt-4">
                         <h4 class="text-capitalize breadcrumb-title">{{ trans('Invoice Wise Payments') }}</h4>
                     </div>

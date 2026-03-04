@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Account\Models\Account;
 
 class BillsAndAllowance extends BaseModel
 {
@@ -66,6 +67,7 @@ class BillsAndAllowance extends BaseModel
     {
         return $this->belongsTo(User::class, 'payment_by');
     }
+ 
 
     public function approvedBy()
     {
