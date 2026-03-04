@@ -63,8 +63,8 @@ class ServiceBillController extends Controller
         $data['customers'] = Customer::activeCustomers()->get();
 
         $data['serviceMyTasks'] = $this->service->getAll();
-        $data['products'] = ProductCatalog::all();
-        $data['productCatalogs'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
+        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         // $data['BillingProducts'] = ProductCatalog::whereIn('name', ['Service Charge (IN HOUSE)', 'Service Charge With (TA) (DA)', 'Service Charge On Call'])->get();
         $data['banks'] = Bank::all();
         $data['pendingServiceTokens'] = ServiceToken::with("engineerAssign")->whereIn('action', ['Pending', 'Live'])->where('customer_id', $data['serviceToken']->customer_id)->get();

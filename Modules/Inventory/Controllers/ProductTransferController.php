@@ -67,7 +67,7 @@ class ProductTransferController extends Controller
         $data['warehouses'] = Branch::query()->get();
         $data['productTypes'] = ProductType::query()->where('status', 1)->get();
         $data['units'] = Unit::all();
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['productTransferRequest'] = ProductTransferRequest::with("productTransferRequestDetails")->findOrFail($request->product_transfer_request_id);
         if (isset($data['productTransferRequest']) == null) {
             return redirect()->back()->with('error', 'Product Transfer Request Not Found');
@@ -165,7 +165,7 @@ class ProductTransferController extends Controller
         $data['warehouses'] = Branch::query()->get();
         $data['productTypes'] = ProductType::query()->where('status', 1)->get();
         $data['units'] = Unit::all();
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         return view("Inventory::product-transfers.edit", $data);
     }
 

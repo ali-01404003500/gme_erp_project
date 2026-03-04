@@ -123,7 +123,7 @@ class StockController extends Controller
     function stockInHand(Request $request){
         $data['products'] = ProductCatalog::query()->where('status', 1)->get();
         $data['stocks'] = $this->service->stockInHand();
-        $data['productCatalogs'] = ProductCatalog::all();
+        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
