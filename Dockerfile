@@ -19,12 +19,11 @@ RUN composer install --optimize-autoloader --no-scripts
 COPY . .
 
 RUN composer dump-autoload --optimize
-RUN chown -R www-data:www-data /app \
-    && chmod -R 755 /app/storage
-
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
 # Custom PHP settings
 RUN { \
-    echo "memory_limit=512M"; \
+    echo "memory_limit=2048M"; \
     echo "upload_max_filesize=100M"; \
     echo "post_max_size=100M"; \
     echo "max_execution_time=120"; \
@@ -56,6 +55,7 @@ RUN { \
     echo "        fastcgi_index index.php;"; \
     echo "        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;"; \
     echo "        include fastcgi_params;"; \
+    echo "        fastcgi_read_timeout 300s;"; \
     echo "    }"; \
     echo ""; \
     echo "    location ~ /\.ht {"; \
