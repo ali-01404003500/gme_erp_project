@@ -46,7 +46,7 @@ class SalesOrderController extends Controller
         $this->service = $service;
         $this->generalNotificationService = $generalNotificationService;
 
-        $this->middleware('permited')->except(['getCustomerSetting', 'getSalesDiscount', 'countSalesOrder', 'countTotalSales', 'calculateDiscountForProducts']);
+        $this->middleware('permited')->except(['getCustomerSetting', 'getSalesDiscount', 'countSalesOrder', 'countTotalSales', 'calculateDiscountForProducts','invoiceAutocomplete','employeeAutocomplete','productAutocomplete','customerAutocomplete']);
         $this->middleware('permitedSlug:dashboard')->only(['countSalesOrder', 'countTotalSales']);
 
     }
