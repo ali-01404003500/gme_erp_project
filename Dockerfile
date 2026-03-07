@@ -23,7 +23,7 @@ RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 # Custom PHP settings
 RUN { \
-    echo "memory_limit=2048M"; \
+    echo "memory_limit=4096M"; \
     echo "upload_max_filesize=100M"; \
     echo "post_max_size=100M"; \
     echo "max_execution_time=120"; \
