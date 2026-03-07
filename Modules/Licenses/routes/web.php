@@ -30,5 +30,9 @@ Route::group(['middleware'=>'auth', 'prefix' => 'Licenses', 'as' => 'licenses.']
         Route::get('cbc-license-requisitions/{id}/approve', [CBCLicenseRequisitionController::class, 'approve'])->name('cbc-license-requisitions.approve');
         Route::put('cbc-license-requisitions/{id}/approve', [CBCLicenseRequisitionController::class, 'approveStore'])->name('cbc-license-requisitions.approveStore');
 
+        Route::get('dongle-or-serial-autocomplete-customers', [DongleOrSerialEntryController::class, 'customerAutocomplete']) ->name('dongle-or-serial-autocomplete.customers');
+        Route::get('dongle-or-serial-autocomplete-products', [DongleOrSerialEntryController::class, 'productAutocomplete']) ->name('dongle-or-serial-autocomplete.products');
+
+
 
 });
