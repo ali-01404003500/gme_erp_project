@@ -45,9 +45,9 @@ class AutocompleteService
 
                     'company_name'  => $item->{$displayColumns[1]}, 
                     'area'  => $item->area?->area, 
-                    'phone'  => $item->{$displayColumns[3]}, 
-                    'customer_type'  => $item->{$displayColumns[4]}, 
-                    'address'  => $item->{$displayColumns[5]}, 
+                    'phone'  => $item->{$displayColumns[3]??'phone'}, 
+                    'customer_type'  => $item->{$displayColumns[4]??'customer_type'}, 
+                    'address'  => $item->{$displayColumns[5]??'address'}, 
                 ];
             });
  
