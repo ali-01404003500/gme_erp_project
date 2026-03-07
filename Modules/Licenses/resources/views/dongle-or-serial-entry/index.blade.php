@@ -42,14 +42,9 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td>
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select"
+                                                <select name="customer_id" id="customer_id" class="form-control "
                                                     data-placeholder="Select Customer">
-                                                    <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ optional($value)->company_name }}</option>
-                                                    @endforeach
+                                                    <option value=""></option> 
                                                 </select>
                                             </td>
                                             <td>
@@ -226,6 +221,41 @@
     </div>
 @endsection
 @section('page_scripts')
+ <script>
+        $(document).ready(function() {
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
 
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('licenses.dongle-or-serial-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ request('customer_id') }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+ 
+            
+        });
+    </script>
 
 @endSection
