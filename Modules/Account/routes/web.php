@@ -88,6 +88,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     Route::group(['prefix' => 'collections', 'as' => 'collections.'], function () {
         Route::resource('collections', CollectionController::class);
         Route::resource('invoice-wise-collections', InvoiceWiseCollectionController::class);
+        Route::get('collections-autocomplete-customers', [CollectionController::class, 'customerAutocomplete']) ->name('collections-autocomplete.customers');
     });
 
     Route::group(['prefix' => 'payments', 'as' => 'payments.'], function () {

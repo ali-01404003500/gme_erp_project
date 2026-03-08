@@ -370,188 +370,253 @@
                                         <div class="row">
                                             <div class="form-group">
                                                 <div class="row">
-                                                    <div class="col-sm-5" style="text-align: right">
-                                                        <label class="col-sm-12 control-label"> Commission Type </label>
+                                                    <div class="row col-sm-6" style="border-right:1px solid">
+                                                        <div class="col-sm-5" style="text-align: right">
+                                                            <label class="col-sm-12 control-label"> Commission Type </label>
+                                                        </div>
+                                                        <div class="col-sm-7"> 
+                                                            <div class="col-sm-8 col-sm-8 @error('commission_type') has-error @enderror">
+                                                                <input class="form-check-input commission-checkbox" type="checkbox" name="commission_type[]" value="0" id="commission_n_a"
+                                                                {{ old('commission_type', $broker->commission_type) == '0' ? 'checked' : '' }} >
+                                                                <label class="form-check-label" for="commission_n_a">
+                                                                    N/A
+                                                                </label>
+
+                                                                <input class="form-check-input commission-checkbox" type="checkbox" name="commission_type[]" value="1" id="commission_percentage"
+                                                                {{ old('commission_type', $broker->commission_type) == '1' ? 'checked' : '' }} >
+                                                                <label class="form-check-label" for="commission_percentage">
+                                                                Percentage
+                                                                </label>
+                                                            
+                                                             
+                                                                @error('commission_type')
+                                                                    <span class="text-danger">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
+                                                        </div> 
                                                     </div>
-                                                    <div class="col-sm-7">
+                                                    <div class="row col-sm-6">
 
-                                                        <div
-                                                            class="col-sm-8 col-sm-8 @error('commission_type') has-error @enderror">
-                                                            <label>
-                                                                <input name="commission_type" type="radio"
-                                                                    value="0" class="ace"
-                                                                    {{ old('commission_type', $broker->commission_type) == '0' ? 'checked' : '' }}>
-                                                                <span class="lbl"> N/A</span>
-                                                            </label>
-                                                            <label>
-                                                                <input name="commission_type" type="radio"
-                                                                    value="1" class="ace"
-                                                                    {{ old('commission_type', $broker->commission_type) == '1' ? 'checked' : '' }}>
-                                                                <span class="lbl"> Percentage</span>
-                                                            </label>
-                                                            <label>
-                                                                <input name="commission_type" type="radio"
-                                                                    value="2" class="ace"
-                                                                    {{ old('commission_type', $broker->commission_type) == '2' ? 'checked' : '' }}>
-                                                                <span class="lbl"> Fixed</span>
-                                                            </label>
+                                                        <div class="col-sm-12"> 
+                                                            <div class="col-sm-8 col-sm-8 @error('commission_type') has-error @enderror">  
 
-                                                            @error('commission_type')
-                                                                <span class="text-danger">
-                                                                    {{ $message }}
-                                                                </span>
-                                                            @enderror
+                                                                <input class="form-check-input commission-checkbox" type="checkbox" name="commission_type[]" value="2" id="commission_fixed"
+                                                                {{ old('commission_type', $broker->commission_type) == '1' ? 'checked' : '' }} >
+                                                                <label class="form-check-label" for="commission_fixed">
+                                                                    Fixed
+                                                                </label> 
+
+                                                                
+                                                                @error('commission_type')
+                                                                    <span class="text-danger">
+                                                                        {{ $message }}
+                                                                    </span>
+                                                                @enderror
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                   
                                                 </div>
                                             </div>
-                                            <div class="form-group" id="percentage" style="display: none;">
-                                                <table class="table table-bordered percentage-table">
-                                                    <thead>
-                                                        <th>Percentage Type</th>
-                                                        <th>Percentage %</th>
-                                                        <th>
-                                                            <div class="btn-group btn-corner">
-                                                                <button class="btn btn-success btn-xs add-row"
-                                                                    onclick="addPercentageRow()" type="button">
-                                                                    <i class="fa fa-plus"></i>
-                                                                </button>
-                                                            </div>
-                                                        </th>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if ($broker->brokerCommission->count() > 0)
-                                                            @foreach ($broker->brokerCommission as $key => $item)
+
+                                            <div class="row col-sm-6" style="border-right:1px solid">
+                                                <div class="form-group" id="percentage">
+                                                    <table class="table table-bordered percentage-table">
+                                                        <thead>
+                                                            <th>Percentage Type</th>
+                                                            <th>Percentage %</th>
+                                                            <th>
+                                                                <div class="btn-group btn-corner">
+                                                                    <button class="btn btn-success btn-xs add-row"
+                                                                        onclick="addPercentageRow()" type="button">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </th>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if ($broker->brokerCommission->count() > 0)
+                                                                @foreach ($broker->brokerCommission->where('commission_type','1') as $key => $item)
+                                                                    <tr>
+                                                                        <td>
+                                                                            <select name="percentage_type[]"
+                                                                                class="form-control" onchange="getPercentage(this)" >
+                                                                                <option value="">Select Type</option>
+                                                                                @foreach ($percentageTypes as $percentageType)
+                                                                                    <option value="{{ $percentageType->id }}"
+                                                                                        {{ $item->percentage_type == $percentageType->id ? 'selected' : '' }}>
+                                                                                        {{ $percentageType->name }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text"
+                                                                                class="form-control input-sm"
+                                                                                name="percentage[]"
+                                                                                value="{{ $item->percentage }}"
+                                                                                placeholder="percentage">
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <div class="btn-group btn-corner">
+                                                                                <button class="btn btn-danger btn-xs"
+                                                                                    onclick="deletePercentageRow(this)" type="button">
+                                                                                    <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            @else
                                                                 <tr>
                                                                     <td>
-                                                                        <select name="percentage_type[]"
-                                                                            class="form-control" onchange="getPercentage(this)" >
+                                                                        <select name="percentage_type[]" class="form-control" onchange="getPercentage(this)">
                                                                             <option value="">Select Type</option>
                                                                             @foreach ($percentageTypes as $percentageType)
-                                                                                <option value="{{ $percentageType->id }}"
-                                                                                    {{ $item->percentage_type == $percentageType->id ? 'selected' : '' }}>
+                                                                                <option value="{{ $percentageType->id }}">
                                                                                     {{ $percentageType->name }}</option>
                                                                             @endforeach
                                                                         </select>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="text"
-                                                                            class="form-control input-sm"
-                                                                            name="percentage[]"
-                                                                            value="{{ $item->percentage }}"
+                                                                        <input type="text" class="form-control input-sm"
+                                                                            name="percentage[]" value=""
                                                                             placeholder="percentage">
                                                                     </td>
 
                                                                     <td>
                                                                         <div class="btn-group btn-corner">
                                                                             <button class="btn btn-danger btn-xs"
-                                                                                onclick="deletePercentageRow(this)" type="button">
+                                                                                onclick="deletePercentageRow(this)"
+                                                                                type="button">
                                                                                 <i class="fa fa-trash"></i>
                                                                             </button>
                                                                         </div>
                                                                     </td>
                                                                 </tr>
-                                                            @endforeach
-                                                        @else
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="row col-sm-6">
+                                                <div class="form-group" id="fixed">
+
+                                                    <table class="table table-bordered fixed-table" width="100%">
+                                                        <thead>
+                                                            <th width="60%">Product Name</th>
+                                                            <th width="30%">Amount</th>
+                                                            <th width="10%">
+                                                                <div class="btn-group btn-corner">
+                                                                    <button class="btn btn-success btn-xs add-row"
+                                                                        onclick="addFixedRow()" type="button">
+                                                                        <i class="fa fa-plus"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </th>
+                                                        </thead>
+                                                        <tbody> 
                                                             <tr>
                                                                 <td>
-                                                                    <select name="percentage_type[]" class="form-control" onchange="getPercentage(this)">
-                                                                        <option value="">Select Type</option>
-                                                                        @foreach ($percentageTypes as $percentageType)
-                                                                            <option value="{{ $percentageType->id }}">
-                                                                                {{ $percentageType->name }}</option>
-                                                                        @endforeach
+                                                                    <select name="fixed_type[]" class="form-control" onchange="getFixed(this)">
+                                                                        <option value="">Select Type</option> 
+                                                                        <option @if (optional($broker->brokerCommission->where('commission_type','3')->first())->fixed_type == 1)  selected @endif value="1">
+                                                                            Invoice Wise
+                                                                        </option>
+                                                                        <option @if (optional($broker->brokerCommission->where('commission_type','3')->first())->fixed_type == 2)  selected @endif value="2">
+                                                                            Monthly
+                                                                        </option>
+                                                                        <option @if (optional($broker->brokerCommission->where('commission_type','3')->first())->fixed_type == 3)  selected @endif  value="3">
+                                                                            Yearly
+                                                                        </option>
+                                                                        <option @if (optional($broker->brokerCommission->where('commission_type','3')->first())->fixed_type == 4)  selected @endif value="4">
+                                                                            Festival-Eid
+                                                                        </option>
+                                                                        <option @if (optional($broker->brokerCommission->where('commission_type','3')->first())->fixed_type == 5)  selected @endif  value="5">
+                                                                            Festival-Durga Puja
+                                                                        </option>
                                                                     </select>
                                                                 </td>
                                                                 <td>
                                                                     <input type="text" class="form-control input-sm"
-                                                                        name="percentage[]" value=""
-                                                                        placeholder="percentage">
+                                                                        name="fixed[]" value="{{ optional($broker->brokerCommission->where('commission_type','3')->first())->fixed }}"
+                                                                        placeholder="Amount">
                                                                 </td>
 
                                                                 <td>
                                                                     <div class="btn-group btn-corner">
                                                                         <button class="btn btn-danger btn-xs"
-                                                                            onclick="deletePercentageRow(this)"
-                                                                            type="button">
+                                                                            onclick="deleteFixedRow(this)"
+                                                                            type="button" >
                                                                             <i class="fa fa-trash"></i>
                                                                         </button>
                                                                     </div>
                                                                 </td>
-                                                            </tr>
-                                                        @endif
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="form-group" id="fixed" style="display: none;">
-                                                <div class="row">
-                                                    @if ($broker->brokerCommission->count() > 0)
+                                                            </tr> 
+                                                            @if ($broker->brokerCommission->count() > 0)
+                                                                @foreach ($broker->brokerCommission->where('commission_type','2') as $key => $item)
 
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-25">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <select name="fixed_type[]" class="form-control product_ids" onchange="getFixed(this)">
+                                                                                <option value="{{ $item->fixed_type }}" >{{ $item->product->name }}</option> 
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control input-sm"
+                                                                                name="fixed[]" value="{{ $item->fixed }}"
+                                                                                placeholder="Amount">
+                                                                        </td>
 
-                                                            <label for="Fixed"
-                                                                class="color-dark fs-14 fw-500 align-center">Fixed
-                                                                Type</label>
-                                                            <select
-                                                                class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                                                name="fixed_type" id="type">
-                                                                <option value="">Choose Type</option>
-                                                                <option @if ($broker->brokerCommission->first()->fixed_type == 1) selected @endif
-                                                                    value="1">Invoice Wise</option>
-                                                                <option @if ($broker->brokerCommission->first()->fixed_type == 2) selected @endif
-                                                                    value="2">Monthly</option>
-                                                                <option @if ($broker->brokerCommission->first()->fixed_type == 3) selected @endif
-                                                                    value="3">Yearly</option>
-                                                                <option @if ($broker->brokerCommission->first()->fixed_type == 4) selected @endif
-                                                                    value="4">Festival-Eid</option>
-                                                                <option @if ($broker->brokerCommission->first()->fixed_type == 5) selected @endif
-                                                                    value="5">Festival-Durga Puja</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-25">
+                                                                        <td>
+                                                                            <div class="btn-group btn-corner">
+                                                                                <button class="btn btn-danger btn-xs"
+                                                                                    onclick="deleteFixedRow(this)"
+                                                                                    type="button"  >
+                                                                                    <i class="fa fa-trash"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                    
+                                                                @endforeach
+                                                            @else
+                                                                <tr>
+                                                                    <td>
+                                                                        <select name="fixed_type[]" class="form-control product_ids" onchange="getFixed(this)">
+                                                                            <option value="">Select Type</option> 
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control input-sm"
+                                                                            name="fixed[]" value="0"
+                                                                            placeholder="Amount">
+                                                                    </td>
 
-                                                            <label for="Fixed"
-                                                                class="color-dark fs-14 fw-500 align-center">Amount</label>
-                                                            <input type="number" class="form-control" name="fixed"
-                                                                value="{{ $broker->brokerCommission->first()->fixed }}"
-                                                                placeholder="Fixed">
-                                                        </div>
-                                                    </div>
-                                                    @else
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-25">
+                                                                    <td>
+                                                                        <div class="btn-group btn-corner">
+                                                                            <button class="btn btn-danger btn-xs"
+                                                                                onclick="deleteFixedRow(this)"
+                                                                                type="button"  >
+                                                                                <i class="fa fa-trash"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
 
-                                                            <label for="Fixed"
-                                                                class="color-dark fs-14 fw-500 align-center">Fixed
-                                                                Type</label>
-                                                            <select
-                                                                class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                                                name="fixed_type" id="type">
-                                                                <option value="">Choose Type</option>
-                                                                <option value="1">Invoice Wise</option>
-                                                                <option value="2">Monthly</option>
-                                                                <option value="3">Yearly</option>
-                                                                <option value="4">Festival-Eid</option>
-                                                                <option value="5">Festival-Durga Puja</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-25">
-
-                                                            <label for="Fixed"
-                                                                class="color-dark fs-14 fw-500 align-center">Amount</label>
-                                                            <input type="number" class="form-control" name="fixed"
-                                                                value="" placeholder="Fixed">
-                                                        </div>
-                                                    </div>
-                                                    @endif
-
+                                                            @endif 
+                                                       
+                                                        </tbody>
+                                                    </table> 
+                                                    
                                                 </div>
+                                                
                                             </div>
+                                          
+                                           
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="tab-v-3" role="tabpanel" aria-labelledby="tab-v-3-tab">
@@ -766,45 +831,9 @@
 
     <script>
         $(document).ready(function() {
-            // Initially hide percentage options
-            // $('#percentage').hide();
-
-
-            // // Check the default value and show/hide elements accordingly
-            // if ($('input[name="commission_type"]:checked').val() == '1') {
-            //     $('#percentage').show(); // Show the percentage options if "Percentage" is selected by default
-            // }
-            changeCommissionType($('input[name="commission_type"]:checked'));
-
-            $('input[name="commission_type"]').change(function() {
-                console.log(this.value);
-                if ($(this).val() == '1') {
-                    $('#percentage').show(); // Show the percentage options if "Percentage" is selected
-                    $('#fixed').hide(); // Hide the fixed options if "Percentage" is selected
-                } else if ($(this).val() == '2') {
-                    $('#percentage').hide(); // Hide the percentage options if "Fixed" is selected
-                    $('#fixed').show(); // Show the fixed options if "Fixed" is selected
-                } else {
-                    $('#percentage')
-                .hide(); // Hide the options if neither "Percentage" nor "Fixed" is selected
-                    $('#fixed').hide(); // Hide the options if neither "Percentage" nor "Fixed" is selected
-                }
-            });
+             
         });
-
-        function changeCommissionType(elem) {
-            console.log("Load data", elem.val());
-            if ($(elem).val() == '1') {
-                $('#percentage').show(); // Show the percentage options if "Percentage" is selected
-                $('#fixed').hide(); // Hide the fixed options if "Percentage" is selected
-            } else if ($(elem).val() == '2') {
-                $('#percentage').hide(); // Hide the percentage options if "Fixed" is selected
-                $('#fixed').show(); // Show the fixed options if "Fixed" is selected
-            } else {
-                $('#percentage').hide(); // Hide the options if neither "Percentage" nor "Fixed" is selected
-                $('#fixed').hide(); // Hide the options if neither "Percentage" nor "Fixed" is selected
-            }
-        }
+ 
     </script>
 
 
@@ -835,13 +864,36 @@
     </script>
     <script>
       var selectedPercentageIds = []; // Array to store selected percentage type IDs
+      var selectedFixedIds = [];
 
     // Initialize selected IDs for existing rows
     $(document).ready(function () {
+
+        // commission checkbox click handle
+        $(".commission-checkbox").on("click", function(){
+
+            if($(this).val() == "0" && $(this).is(":checked")){
+                // hide sections
+                $("#commission_percentage, #commission_fixed").prop("checked", false);
+                $(".percentage-table, .fixed-table").hide();
+            } else { 
+                // show sections
+                $("#commission_percentage, #commission_fixed").prop("checked", true); 
+                $(".percentage-table, .fixed-table").show();
+            } 
+        });
+        
         $(".percentage-table tbody tr").each(function () {
             var selectedType = $(this).find("select").val();
             if (selectedType) {
                 selectedPercentageIds.push(selectedType);
+            }
+        });
+
+        $(".fixed-table tbody tr").each(function () {
+            var selectedType = $(this).find("select").val();
+            if (selectedType) {
+                selectedFixedIds.push(selectedType);
             }
         });
     });
@@ -903,6 +955,89 @@
             toastr.error(message);
         }
     }
+    
+
+    function addFixedRow() {
+        var table = $(".fixed-table tbody tr:last");
+        var newRow = table.clone();
+
+        // Reset inputs
+        newRow.find("input").val("").prop("disabled", false);
+
+        // Reset selects
+        newRow.find("select").val("");
+
+        // Enable buttons
+        newRow.find("button").prop("disabled", false);
+
+        // Remove old TomSelect wrapper
+        newRow.find(".ts-wrapper").remove();
+        newRow.find("select").removeClass("tomselected ts-hidden-accessible");
+
+        // Append row
+        newRow.insertAfter(table);
+
+        // Reinitialize TomSelect
+        prouctAutocompleteLoad(newRow);
+    }
+
+    function deleteFixedRow(object) {
+
+        var row = $(object).closest("tr");
+        var rowIndex = row.index(); 
+        var selectElement = row.find("select")[0];
+
+        if (selectElement && selectElement.value !== "") {
+            var index = selectedFixedIds.indexOf(selectElement.value);
+            if (index !== -1) {
+                selectedFixedIds.splice(index, 1);
+            }
+        }
+
+        // first & second row remove hobe na
+        if (rowIndex === 0 || rowIndex === 1) {
+
+            row.find("input").val("");
+
+            if (selectElement && selectElement.tomselect) {
+                selectElement.tomselect.clear();
+            } else {
+                row.find("select").val("");
+            }
+
+        } else {
+            row.remove();
+        }
+
+        refreshFixedOptions(); // jodi option refresh korte chao
+    }
+ 
+
+    function refreshFixedOptions(){
+        $(".fixed-table select").each(function(){
+            if(this.tomselect){
+                this.tomselect.refreshOptions(false);
+            }
+        });
+    }
+
+    function getFixed(selectElement) {
+        var percentageId = selectElement.value;
+
+        if (percentageId === "") {
+            return; // Do nothing if no option is selected
+        }
+
+        if (selectedPercentageIds.includes(percentageId)) {
+            showToast("warning", "You have already selected this Product or Fixed Type.");
+            selectElement.value = ""; // Reset selection
+            return;
+        }
+
+        // Add the selected type to the list
+        selectedPercentageIds.push(percentageId);
+    }
+
 
     </script>
   <script>
@@ -993,7 +1128,79 @@
                 autoclose: true
             });
         });
+
+
+        const productSelect = new TomSelect(".product_ids", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('crm.autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('product_ids'))
+            productSelect.addOption({
+                id: "{{ request('product_ids') }}",
+                text: "{{ request('product_ids') }}"
+            });
+            productSelect.setValue("{{ request('product_ids') }}");
+        @endif
+
+
     });
+
+ 
+
+    function prouctAutocompleteLoad(row){
+        const p = $(row).find(".product_ids");
+        const productSelect = new TomSelect(p[0], {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('product_ids'))
+            productSelect.addOption({
+                id: "{{ request('product_ids') }}",
+                text: "{{ request('product_ids') }}"
+            });
+            productSelect.setValue("{{ request('product_ids') }}");
+        @endif
+    }
+
+
 
     // Adds a new row with a cleared Customer select (so it shows no preselected data).
     function addCustomerAttachedRow() {

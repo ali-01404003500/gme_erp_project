@@ -510,7 +510,7 @@
                                     </td>
                                     <td>{{ $cheque['cheque_type'] }}</td>
                                     <td class="text-center">
-@php
+                                                    @php
                                                         $documents = is_string($cheque['document'])
                                                             ? json_decode($cheque['document'], true)
                                                             : $cheque['document'];

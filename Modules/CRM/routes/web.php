@@ -32,6 +32,8 @@ Route::group(['middleware'=>'auth', 'prefix' => 'crm', 'as' => 'crm.'],function 
     Route::get('customer-count', [CustomerController::class, 'countCustomer'])->name('customer.count');
     Route::get('get-customers', [CustomerController::class, 'getCustomers'])->name('get-customers');    
     Route::get('autocomplete-customers', [CustomerController::class, 'customerAutocomplete']) ->name('autocomplete.customers');
+    Route::get('autocomplete-products', [BrokerController::class, 'productAutocomplete']) ->name('autocomplete.products');
+
 
     /* Customer Type */
     Route::resource('customer-types', CustomerTypeController::class);

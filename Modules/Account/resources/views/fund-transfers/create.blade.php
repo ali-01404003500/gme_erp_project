@@ -96,7 +96,13 @@
                                 <!-- Amount -->
                                 <div class="col-md-4">
                                     <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
-                                    <input type="number" step="1000" name="amount" id="amount" class="form-control" value="{{ old('amount') }}" required>
+                                    <input type="number"   name="amount" id="amount" class="form-control" value="{{ old('amount') }}" required>
+                                </div>
+
+                                <!-- Charge -->
+                                <div class="col-md-4">
+                                    <label for="charge" class="form-label">Charge <span class="text-danger"></span></label>
+                                    <input type="number" name="charge" id="charge" class="form-control" value="{{ old('charge') }}">
                                 </div>
 
                                 <!-- Remarks -->
@@ -107,8 +113,9 @@
                                 
                                 <!-- Remarks -->
                                 <div class="col-md-4">
-                                    <label for="attachments" class="form-label">Attachment</label>
+                                    <label for="attachments" class="form-label">Attachment<span class="text-danger">*</span></label>
                                     <x-file-uploader :value="old('attachments')" name="attachments" />
+                                    
                                 </div>
  
                             </div>

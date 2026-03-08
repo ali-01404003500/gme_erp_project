@@ -100,6 +100,12 @@
                                     <input type="number" step="1000" name="amount" id="amount" class="form-control" value="{{ $fundTransfer->amount }}" required>
                                 </div>
 
+                                <!-- Charge -->
+                                <div class="col-md-4">
+                                    <label for="charge" class="form-label">Charge <span class="text-danger"></span></label>
+                                    <input type="number" name="charge" id="charge" class="form-control" value="{{ $fundTransfer->charge }}">
+                                </div>
+
                                 <!-- Remarks -->
                                 <div class="col-md-4">
                                     <label for="remarks" class="form-label">Remarks <span class="text-danger">*</span></label>
@@ -119,7 +125,7 @@
                             <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                 <div class="btn-group">
 
-                                    @if(!request()->filled('action'))
+                                    @if(hasPermission('account.fund-transfers.verify') && $fundTransfer->status=='pending')
                                         <button type="submit" class="btn btn-sm btn-success save-btn" >
                                             <i class="fa fa-save"></i> Update
                                         </button>

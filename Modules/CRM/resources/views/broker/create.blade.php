@@ -335,33 +335,38 @@
                                     <div class="row">
                                         <div class="form-group">
                                             <div class="row">
-                                                <div class="col-sm-5" style="text-align: right">
-                                                    <label class="col-sm-12 control-label"> Commission Type </label>
+                                                <div class="row col-sm-6" style="border-right:1px solid"> 
+                                                    <div class="col-sm-5" style="text-align: right">
+                                                        <label class="col-sm-12 control-label"> Commission Type </label>
+                                                    </div>
+                                                    <div class="col-sm-7">
+
+                                                        <div class="col-sm-8 col-sm-8 @error('commission_type') has-error @enderror">
+
+                                                            <input class="form-check-input commission-checkbox" type="checkbox" name="commission_type[]" value="0" id="commission_n_a">
+                                                            <label class="form-check-label" for="commission_n_a">
+                                                                N/A
+                                                            </label>
+
+                                                            <input class="form-check-input commission-checkbox" type="checkbox" name="commission_type[]" value="1" id="commission_percentage">
+                                                            <label class="form-check-label" for="commission_percentage">
+                                                               Percentage
+                                                            </label>
+                                                            @error('commission_type')
+                                                                <span class="text-danger">
+                                                                    {{ $message }}
+                                                                </span>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="col-sm-7">
-
-                                                    <div
-                                                        class="col-sm-8 col-sm-8 @error('commission_type') has-error @enderror">
-                                                        <label>
-                                                            <input name="commission_type" type="radio" value="0"
-                                                                class="ace"
-                                                                {{ old('commission_type') == '0' ? 'checked' : '' }}>
-                                                            <span class="lbl"> N/A</span>
-                                                        </label>
-                                                        <label>
-                                                            <input name="commission_type" type="radio" value="1"
-                                                                class="ace"
-                                                                {{ old('commission_type') == '1' || !old('commission_type') ? 'checked' : '' }}>
-                                                            <span class="lbl"> Percentage</span>
-                                                        </label>
-                                                        <label>
-                                                            <input name="commission_type" type="radio" value="2"
-                                                                class="ace"
-                                                                {{ old('commission_type') == '2' ? 'checked' : '' }}>
-                                                            <span class="lbl"> Fixed</span>
-                                                        </label>
-
-                                                        @error('commission_type')
+                                                <div class="row col-sm-6"  > 
+                                                    <div class="col-sm-8 col-sm-8 @error('commission_type') has-error @enderror">  
+                                                        <input class="form-check-input commission-checkbox" type="checkbox" name="commission_type[]" value="2" id="commission_fixed">
+                                                        <label class="form-check-label" for="commission_fixed">
+                                                            Fixed
+                                                        </label> 
+                                                        @error('commission_fixed')
                                                             <span class="text-danger">
                                                                 {{ $message }}
                                                             </span>
@@ -370,112 +375,156 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group" id="percentage" style="display: none;">
-                                            <table class="table table-bordered percentage-table">
-                                                <thead>
-                                                    <th>Percentage Type</th>
-                                                    <th>Percentage %</th>
-                                                    <th>
-                                                        <div class="btn-group btn-corner">
-                                                            <button class="btn btn-success btn-xs add-row"
-                                                                onclick="addPercentageRow()" type="button">
-                                                                <i class="fa fa-plus"></i>
-                                                            </button>
-                                                        </div>
-                                                    </th>
-                                                </thead>
-                                                <tbody>
-                                                    @if (old('percentage'))
-                                                        @foreach (old('percentage') as $key => $value)
+                                        <div class="row col-sm-6" style="border-right:1px solid">
+                                            <div class="form-group" id="percentage" style="">
+                                                <table class="table table-bordered percentage-table">
+                                                    <thead>
+                                                        <th>Percentage Type</th>
+                                                        <th>Percentage %</th>
+                                                        <th>
+                                                            <div class="btn-group btn-corner">
+                                                                <button class="btn btn-success btn-xs add-row"
+                                                                    onclick="addPercentageRow()" type="button">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </th>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (old('percentage'))
+                                                            @foreach (old('percentage') as $key => $value)
+                                                                <tr>
+                                                                    <td>
+                                                                        <select name="percentage_type[]" onchange="getPercentage(this)"
+                                                                            class="form-control">
+                                                                            <option value="">Select Type</option>
+                                                                            @foreach ($percentageTypes as $percentageType)
+                                                                                <option
+                                                                                    value="{{ $percentageType->id }}" {{ old('percentage_type.'.$key) == $percentageType->id ? 'selected' : ''}}>
+                                                                                    {{ $percentageType->name }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" class="form-control input-sm"
+                                                                            name="percentage[]" value="{{ $value }}"
+                                                                            placeholder="percentage">
+                                                                    </td>   
+
+                                                                    <td>
+                                                                        <div class="btn-group btn-corner">
+                                                                            <button class="btn btn-danger btn-xs"
+                                                                                onclick="deletePercentageRow(this)"
+                                                                                type="button">
+                                                                                <i class="fa fa-trash"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @else
                                                             <tr>
                                                                 <td>
-                                                                    <select name="percentage_type[]" onchange="getPercentage(this)"
-                                                                        class="form-control">
+                                                                    <select name="percentage_type[]" class="form-control" onchange="getPercentage(this)">
                                                                         <option value="">Select Type</option>
                                                                         @foreach ($percentageTypes as $percentageType)
-                                                                            <option
-                                                                                value="{{ $percentageType->id }}" {{ old('percentage_type.'.$key) == $percentageType->id ? 'selected' : ''}}>
+                                                                            <option value="{{ $percentageType->id }}">
                                                                                 {{ $percentageType->name }}</option>
                                                                         @endforeach
                                                                     </select>
                                                                 </td>
                                                                 <td>
                                                                     <input type="text" class="form-control input-sm"
-                                                                        name="percentage[]" value="{{ $value }}"
+                                                                        name="percentage[]" value=""
                                                                         placeholder="percentage">
-                                                                </td>   
-
+                                                                </td>
+        
                                                                 <td>
                                                                     <div class="btn-group btn-corner">
                                                                         <button class="btn btn-danger btn-xs"
-                                                                            onclick="deletePercentageRow(this)"
-                                                                            type="button">
+                                                                            onclick="deletePercentageRow(this)" type="button">
                                                                             <i class="fa fa-trash"></i>
                                                                         </button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                        @endforeach
-                                                    @else
+                                                        @endif
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row col-sm-6">
+                                            <div class="form-group" id="fixed" style="">
+                                                <table class="table table-bordered fixed-table">
+                                                    <thead>
+                                                        <th>Product Name</th>
+                                                        <th>Amount</th>
+                                                        <th>
+                                                            <div class="btn-group btn-corner">
+                                                                <button class="btn btn-success btn-xs add-row"
+                                                                    onclick="addFixedRow()" type="button">
+                                                                    <i class="fa fa-plus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </th>
+                                                    </thead>
+                                                    <tbody> 
                                                         <tr>
                                                             <td>
-                                                                <select name="percentage_type[]" class="form-control" onchange="getPercentage(this)">
-                                                                    <option value="">Select Type</option>
-                                                                    @foreach ($percentageTypes as $percentageType)
-                                                                        <option value="{{ $percentageType->id }}">
-                                                                            {{ $percentageType->name }}</option>
-                                                                    @endforeach
+                                                                <select name="fixed_type[]" class="form-control" onchange="getFixed(this)">
+                                                                    <option value="">Select Type</option> 
+                                                                    <option value="1">Invoice Wise</option>
+                                                                    <option value="2">Monthly</option>
+                                                                    <option value="3">Yearly</option>
+                                                                    <option value="4">Festival-Eid</option>
+                                                                    <option value="5">Festival-Durga Puja</option>
                                                                 </select>
                                                             </td>
                                                             <td>
                                                                 <input type="text" class="form-control input-sm"
-                                                                    name="percentage[]" value=""
-                                                                    placeholder="percentage">
+                                                                    name="fixed_amount[]" value=""
+                                                                    placeholder="Amount">
                                                             </td>
-    
+
                                                             <td>
                                                                 <div class="btn-group btn-corner">
                                                                     <button class="btn btn-danger btn-xs"
-                                                                        onclick="deletePercentageRow(this)" type="button">
+                                                                        onclick="deleteFixedRow(this)"
+                                                                        type="button">
                                                                         <i class="fa fa-trash"></i>
                                                                     </button>
                                                                 </div>
                                                             </td>
                                                         </tr>
-                                                    @endif
-                                                    
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="form-group" id="fixed" style="display: none;">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-25">
+                                                        <tr>
+                                                            <td>
+                                                                <select name="fixed_type[]" class="form-control product_ids" onchange="getFixed(this)">
+                                                                    <option value="">Select Type</option> 
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control input-sm"
+                                                                    name="fixed_amount[]" value=""
+                                                                    placeholder="Amount">
+                                                            </td>
 
-                                                        <label for="Fixed"
-                                                            class="color-dark fs-14 fw-500 align-center">Fixed
-                                                            Type</label>
-                                                        <select class="form-control" name="fixed_type" id="type">
-                                                            <option value="">Choose Type</option>
-                                                            <option value="1">Invoice Wise</option>
-                                                            <option value="2">Monthly</option>
-                                                            <option value="3">Yearly</option>
-                                                            <option value="4">Festival-Eid</option>
-                                                            <option value="5">Festival-Durga Puja</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-25">
-
-                                                        <label for="Fixed"
-                                                            class="color-dark fs-14 fw-500 align-center">Amount</label>
-                                                        <input type="number" class="form-control" name="fixed"
-                                                            value="" placeholder="Fixed">
-                                                    </div>
-                                                </div>
+                                                            <td>
+                                                                <div class="btn-group btn-corner">
+                                                                    <button class="btn btn-danger btn-xs"
+                                                                        onclick="deleteFixedRow(this)"
+                                                                        type="button">
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr> 
+                                                    </tbody>
+                                                </table>  
                                             </div>
-                                        </div>
+                                        </div> 
+                                        
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tab-v-3" role="tabpanel" aria-labelledby="tab-v-3-tab">
@@ -660,28 +709,7 @@
 
     <script>
         $(document).ready(function() {
-            // Initially hide percentage options
-            $('#percentage').hide();
-
-            // Check the default value and show/hide elements accordingly
-            if ($('input[name="commission_type"]:checked').val() == '1') {
-                $('#percentage').show(); // Show the percentage options if "Percentage" is selected by default
-            }
-
-            $('input[name="commission_type"]').change(function() {
-                console.log(this.value);
-                if ($(this).val() == '1') {
-                    $('#percentage').show(); // Show the percentage options if "Percentage" is selected
-                    $('#fixed').hide(); // Hide the fixed options if "Percentage" is selected
-                } else if ($(this).val() == '2') {
-                    $('#percentage').hide(); // Hide the percentage options if "Fixed" is selected
-                    $('#fixed').show(); // Show the fixed options if "Fixed" is selected
-                } else {
-                    $('#percentage')
-                        .hide(); // Hide the options if neither "Percentage" nor "Fixed" is selected
-                    $('#fixed').hide(); // Hide the options if neither "Percentage" nor "Fixed" is selected
-                }
-            });
+            
         });
     </script>
 
@@ -712,15 +740,38 @@
     </script>
     <script>
         var selectedPercentageIds = []; // Array to store selected percentage type IDs
-  
+        var selectedFixedIds = [];
+
       // Initialize selected IDs for existing rows
       $(document).ready(function () {
-          $(".percentage-table tbody tr").each(function () {
-              var selectedType = $(this).find("select").val();
-              if (selectedType) {
-                  selectedPercentageIds.push(selectedType);
-              }
-          });
+
+            $(".commission-checkbox").on("click", function(){
+
+                if($(this).val() == "0" && $(this).is(":checked")){
+                    // hide sections
+                    $("#commission_percentage, #commission_fixed").prop("checked", false);
+                    $(".percentage-table, .fixed-table").hide();
+                } else { 
+                    // show sections
+                    $("#commission_percentage, #commission_fixed").prop("checked", true); 
+                    $(".percentage-table, .fixed-table").show();
+                }
+
+            });
+ 
+            $(".percentage-table tbody tr").each(function () {
+                var selectedType = $(this).find("select").val();
+                if (selectedType) {
+                    selectedPercentageIds.push(selectedType);
+                }
+            });
+            $(".fixed-table tbody tr").each(function () {
+                var selectedType = $(this).find("select").val();
+                if (selectedType) {
+                    selectedFixedIds.push(selectedType);
+                }
+            });
+            
       });
   
       function getPercentage(selectElement) {
@@ -781,6 +832,89 @@
           }
       }
   
+        function addFixedRow() {
+            var table = $(".fixed-table tbody tr:last");
+            var newRow = table.clone();
+
+            // Reset inputs
+            newRow.find("input").val("").prop("disabled", false);
+
+            // Reset selects
+            newRow.find("select").val("");
+
+            // Enable buttons
+            newRow.find("button").prop("disabled", false);
+
+            // Remove old TomSelect wrapper
+            newRow.find(".ts-wrapper").remove();
+            newRow.find("select").removeClass("tomselected ts-hidden-accessible");
+
+            // Append row
+            newRow.insertAfter(table);
+
+            // Reinitialize TomSelect
+            prouctAutocompleteLoad(newRow);
+        }
+
+        function deleteFixedRow(object) {
+            var row = $(object).closest("tr"); 
+
+            var selectElement = row.find("select")[0];
+
+            if (selectElement && selectElement.value !== "") {
+                var index = selectedFixedIds.indexOf(selectElement.value);
+                if (index !== -1) {
+                    selectedFixedIds.splice(index, 1); // Remove from selected list
+                }
+            }
+
+            var table = $(".fixed-table tbody tr");
+
+            if (table.length > 1) {
+                row.remove();
+            } else {  
+                row.find("input").val("");
+
+                if(selectElement.tomselect){
+                    selectElement.tomselect.clear();
+                }else{
+                    row.find("select").val("");
+                }
+                
+            } 
+
+            // Optional: refresh other selects
+            refreshFixedOptions();
+
+
+
+        }
+
+        function refreshFixedOptions(){
+            $(".fixed-table select").each(function(){
+                if(this.tomselect){
+                    this.tomselect.refreshOptions(false);
+                }
+            });
+        }
+        function getFixed(selectElement) {
+            var percentageId = selectElement.value;
+
+            if (percentageId === "") {
+                return; // Do nothing if no option is selected
+            }
+
+            if (selectedPercentageIds.includes(percentageId)) {
+                showToast("warning", "You have already selected this Product or Fixed Type.");
+                selectElement.value = ""; // Reset selection
+                return;
+            }
+
+            // Add the selected type to the list
+            selectedPercentageIds.push(percentageId);
+        }
+
+        
       </script>
     <script>
       // Global variables for the original row template and tracking customer selections.
@@ -870,7 +1004,78 @@
                   autoclose: true
               });
           });
+
+
+        const productSelect = new TomSelect(".product_ids", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('crm.autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('product_ids'))
+            productSelect.addOption({
+                id: "{{ request('product_ids') }}",
+                text: "{{ request('product_ids') }}"
+            });
+            productSelect.setValue("{{ request('product_ids') }}");
+        @endif
+
+
       });
+
+        function prouctAutocompleteLoad(row){
+            const p = $(row).find(".product_ids");
+            const productSelect = new TomSelect(p[0], {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('product_ids'))
+                productSelect.addOption({
+                    id: "{{ request('product_ids') }}",
+                    text: "{{ request('product_ids') }}"
+                });
+                productSelect.setValue("{{ request('product_ids') }}");
+            @endif
+        }
+
+
+
   
       // Adds a new row with a cleared Customer select (so it shows no preselected data).
       function addCustomerAttachedRow() {
