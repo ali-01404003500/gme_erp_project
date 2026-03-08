@@ -115,35 +115,19 @@ class MFSVerificationService
           
         // accounts
         $customerReceivableAccount = $mFSVerification->customer->getAccount();
-
-        if( $mFSVerification->amount-$mFSVerification->charge > 0) {
-            //debit     
-            $mFSVerification->transactions()->create([
-                'account_id' => $mFSVerification->bankAccount->getAccount()->id,
-                'balance_type' => 'debit',
-                'invoice_no' => $mFSVerification->source?->collection_id, 
-                'debit_amount' => $mFSVerification->amount-$mFSVerification->charge,
-                'credit_amount' => 0,
-                'description' => 'Collection Payment',
-                'transaction_date' => $mFSVerification->transaction_date,
-            ]);
-        }
-
-        if($mFSVerification->charge > 0) {
-            $bankChargeAccount = Account::where('name', 'MFS Charge Expense')->first()->id; // Bank Charge Expense account
-            $mFSVerification->transactions()->create([
-                'account_id' => $bankChargeAccount,
-                'balance_type' => 'debit',
-                'invoice_no' => $mFSVerification->source?->collection_id, 
-                'debit_amount' => $mFSVerification->charge,
-                'credit_amount' => 0,
-                'description' => 'Collection Charge',
-                'transaction_date' => $mFSVerification->transaction_date,
-            ]);
-
-        }
-        
-
+ 
+        //debit     
+        $mFSVerification->transactions()->create([
+            'account_id' => $mFSVerification->bankAccount->getAccount()->id,
+            'balance_type' => 'debit',
+            'invoice_no' => $mFSVerification->source?->collection_id, 
+            'debit_amount' => $mFSVerification->amount,
+            'credit_amount' => 0, 
+            'description' => "Collection through bKash #{$mFSVerification->transaction_id}",
+            'transaction_date' => $mFSVerification->transaction_date,
+        ]);
+    
+ 
         //credit
         $mFSVerification->transactions()->create([
             'account_id' => $customerReceivableAccount->id,
@@ -151,10 +135,39 @@ class MFSVerificationService
             'invoice_no' => $mFSVerification->source?->collection_id, 
             'debit_amount' => 0,
             'credit_amount' => $mFSVerification->amount,
-            'description' => 'Collection Created',
+            'description' => "Collection through bKash #{$mFSVerification->transaction_id}",
             'transaction_date' => $mFSVerification->transaction_date,
         ]);
-            // dd(  $mFSVerification->transactions, $mFSVerification);
+
+
+        if($mFSVerification->charge > 0) 
+        { 
+            //debit 
+            $mFSVerification->transactions()->create([
+                'account_id' => $customerReceivableAccount->id,
+                'balance_type' => 'debit',
+                'invoice_no' => $mFSVerification->source?->collection_id, 
+                'debit_amount' => $mFSVerification->charge,
+                'credit_amount' => 0,
+                'description' => "Collection through bKash #{$mFSVerification->transaction_id}",
+                'transaction_date' => $mFSVerification->transaction_date,
+            ]);
+ 
+            //credit  
+            $bankChargeAccount = Account::where('account_number', '201401')->first()->id; // Bank Charge Expense account
+            $mFSVerification->transactions()->create([
+                'account_id' => $bankChargeAccount,
+                'balance_type' => 'credit',
+                'invoice_no' => $mFSVerification->source?->collection_id, 
+                'debit_amount' => 0,
+                'credit_amount' => $mFSVerification->charge,
+                'description' => "Collection through bKash #{$mFSVerification->transaction_id}",
+                'transaction_date' => $mFSVerification->transaction_date,
+            ]); 
+        }
+
+
+        // dd(  $mFSVerification->transactions, $mFSVerification);
 
  
     }

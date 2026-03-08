@@ -58,12 +58,13 @@ class FundTransferController extends Controller
             'cheque_date' => 'nullable|date',
             'cheque_no' => 'nullable|string',
             'amount' => 'required|string',
+            'charge' => 'nullable|string',
             'remarks' => 'required|string',
             'attachments' => 'nullable|string',
             'status' => 'required|string',
         ]);
-        $this->service->store($validate);
-        return redirect()->route('account.fund-transfers.edit')->with('success', 'FundTransfer created successfully.');
+        $result = $this->service->store($validate);
+        return redirect()->route('account.fund-transfers.edit',$result->id)->with('success', 'FundTransfer created successfully.');
     }
 
     /**
@@ -100,6 +101,7 @@ class FundTransferController extends Controller
             'cheque_date' => 'nullable|date',
             'cheque_no' => 'nullable|string',
             'amount' => 'required|string',
+            'charge' => 'nullable|string',
             'remarks' => 'required|string',
             'attachments' => 'nullable|string',
             'status' => 'required|string',

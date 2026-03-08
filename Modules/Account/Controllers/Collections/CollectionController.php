@@ -4,6 +4,7 @@ namespace Modules\Account\Controllers\Collections;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use Modules\Account\Models\Collections\Collection;
 use Modules\Account\Services\Collections\CollectionService;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class CollectionController extends Controller
     function __construct(CollectionService $service)
     {
         $this->service = $service;
+        $this->middleware('permited')->except(['customerAutocomplete']);
     }
 
     /**
@@ -270,6 +272,67 @@ class CollectionController extends Controller
 
         $data = $query;
         $data['balance'] = $data;
+        return response()->json($data);
+    }
+
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    { 
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $type = $request->type;
+        $data = '';
+
+        switch ($type) {
+            case 'customer':
+                $data = $autocompleteService->customerSearch(
+                    Customer::class,
+                    ['company_name','address','phone'],
+                    $request->search,
+                    ['id', 'company_name','company_place_id', 'phone', 'customer_type', 'address'],
+                    30
+                ); 
+                break;
+            case 'vendor': 
+                $data = $autocompleteService->search(
+                    Vendor::class,
+                    ['company_name'],
+                    $request->search,
+                    ['id', 'company_name'],
+                    30
+                );  
+                break;
+            case 'supplier': 
+                $data = $autocompleteService->search(
+                    Supplier::class,
+                    ['company_name'],
+                    $request->search,
+                    ['id', 'company_name'],
+                    30
+                );   
+                break;
+            case 'broker': 
+                $data = $autocompleteService->search(
+                    Broker::class,
+                    ['broker_name'],
+                    $request->search,
+                    ['id', 'broker_name'],
+                    30
+                );    
+                break;
+            case 'employee': 
+                $data = $autocompleteService->search(
+                    Employee::class,
+                    ['full_name'],
+                    $request->search,
+                    ['id', 'full_name'],
+                    30
+                );   
+                break;
+        }
+        
+        
+
+        
         return response()->json($data);
     }
 }

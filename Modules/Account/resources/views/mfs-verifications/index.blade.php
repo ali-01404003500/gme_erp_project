@@ -162,7 +162,7 @@
                                                                 title="Checking" data-id="{{ $entry->id }}"
                                                                 data-remarks="{{ $entry->remarks }}"
                                                                 data-charge="{{ $entry->charge }}"
-                                                                 data-status="verified">
+                                                                data-status="verified">
                                                                 <i class="fas fa-check-circle"></i> Checking
                                                             </button>
 
@@ -283,9 +283,9 @@
         $("#status_value").val(status);
         $("#status_remarks").val(remarks || '');
         $("#charge").val(charge);
-
+ 
         // change modal title + button based on status
-        if (status === "pending" || status === "approved") {
+        if (status === "verified" || status === "approved") {
             $("#statusModalTitle").html(
                 '<i class="fas fa-check-circle text-primary"></i> Confirm bKash Verification'
             );

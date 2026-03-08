@@ -2,6 +2,7 @@
 
 namespace Modules\Account\Services;
 
+use Modules\Account\Models\Account;
 use Modules\Account\Models\FundTransfer;
 
 class FundTransferService
@@ -47,28 +48,48 @@ class FundTransferService
     {
         $fromAccount = $fundTransfer->transferFromBankAccount->getAccount();
         $toAccount = $fundTransfer->transferToBankAccount->getAccount();
+        $chargeAccount = Account::where('name', 'Bank Transaction Charge')->first()->id; // expense account 
 
         $fundTransfer->transactions()->delete();
 
-        // Credit Sender (Asset decreases)
+        $amount = $fundTransfer->amount;
+        $charge = $fundTransfer->charge;
+
+ 
+
+        // Debit Receiver Bank
         $fundTransfer->transactions()->create([
-            'account_id' => $fromAccount->id,
-            'debit_amount' => $fundTransfer->amount,
+            'account_id' => $toAccount->id,
+            'debit_amount' => $amount,
             'credit_amount' => 0,
             'balance_type' => 'debit',
             'transaction_date' => $fundTransfer->transfer_date,
             'description' => 'Fund Transfer from ' . $fundTransfer->transferFromBankAccount->account_name . " to " . $fundTransfer->transferFromBankAccount->account_name,
         ]);
 
+        // Bank Charge Expense
+        if ($charge > 0 && $chargeAccount) {
+            $fundTransfer->transactions()->create([
+                'account_id' => $chargeAccount,
+                'debit_amount' => $charge,
+                'credit_amount' => 0,
+                'balance_type' => 'debit',
+                'transaction_date' => $fundTransfer->transfer_date,
+                 'description' => 'Fund Transfer from ' . $fundTransfer->transferFromBankAccount->account_name . " to " . $fundTransfer->transferFromBankAccount->account_name,
+            ]);
+        }
 
-        // Debit Receiver (Asset increases)
+
+        // Credit Sender Bank (amount + charge)
         $fundTransfer->transactions()->create([
-            'account_id' => $toAccount->id,
+            'account_id' => $fromAccount->id,
             'debit_amount' => 0,
-            'credit_amount' => $fundTransfer->amount,
+            'credit_amount' => $amount + $charge,
             'balance_type' => 'credit',
             'transaction_date' => $fundTransfer->transfer_date,
             'description' => 'Fund Transfer from ' . $fundTransfer->transferFromBankAccount->account_name . " to " . $fundTransfer->transferFromBankAccount->account_name,
         ]);
+
+       
     }
 }

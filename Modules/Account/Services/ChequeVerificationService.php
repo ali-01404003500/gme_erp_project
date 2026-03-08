@@ -212,32 +212,12 @@ class ChequeVerificationService
             'account_id' => $bankAccount->id,
             'balance_type' => 'debit',
             'invoice_no' => 'CHQ-' . $chequeVerification->id,
-            'amount' => $amount- $chequeVerification->charge,
-            'debit_amount' => $amount- $chequeVerification->charge,
+            'amount' => $amount,
+            'debit_amount' => $amount,
             'credit_amount' => 0,
             'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
             'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
         ]);
-
-        if($chequeVerification->charge > 0){
-            // Bank charge entry
-            $bankChargeAccount =  Account::where('name', 'Bank Charge Expense')->first()->id; // Bank Charge Expense account
-            $chequeVerification->transactions()->create([
-                'account_id' => $bankChargeAccount,
-                'balance_type' => 'debit',
-                'invoice_no' => 'CHG-' . $chequeVerification->id,
-                'amount' => $chequeVerification->charge,
-                'debit_amount' => $chequeVerification->charge,
-                'credit_amount' => 0,
-                'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
-                'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
-            ]);
-
-            // Reduce the amount to be credited to A/R
-            $amount -= $chequeVerification->charge;
-        }
-
-
 
         // 3. Credit Accounts Receivable (Asset decrease)
         $chequeVerification->transactions()->create([
@@ -250,6 +230,39 @@ class ChequeVerificationService
             'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
             'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
         ]);
+
+        if($chequeVerification->charge > 0){
+
+            $chequeVerification->transactions()->create([
+                'account_id' => $customerAccount->id,
+                'balance_type' => 'debit',
+                'invoice_no' => 'CHQ-' . $chequeVerification->id,
+                'amount' => -$amount,
+                'debit_amount' => $amount,
+                'credit_amount' => 0,
+                'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
+                'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
+            ]);
+
+            
+            // Bank charge entry
+            $bankChargeAccount =  Account::where('account_number', '201402')->first()->id; // Bank Charge Expense account
+            $chequeVerification->transactions()->create([
+                'account_id' => $bankChargeAccount,
+                'balance_type' => 'credit',
+                'invoice_no' => 'CHG-' . $chequeVerification->id,
+                'amount' => $chequeVerification->charge,
+                'debit_amount' => 0,
+                'credit_amount' => $chequeVerification->charge,
+                'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
+                'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')
+            ]);
+ 
+        }
+
+
+
+       
 
         // 4. Check balance
         $totalDebits = $chequeVerification->transactions()->sum('debit_amount');
