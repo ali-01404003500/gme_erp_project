@@ -278,6 +278,11 @@
                                             if ($transaction->transactionable) {
                                                 $particulars = class_basename($transaction->transactionable_type);
                                             }
+
+                                            if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='debit')
+                                                $particulars = 'MFS Charge';
+                                            else if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='credit')
+                                                $particulars = 'Collection';
                                         @endphp
 
                                         <tr>
