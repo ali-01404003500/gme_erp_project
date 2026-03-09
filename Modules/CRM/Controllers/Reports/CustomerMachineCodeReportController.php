@@ -149,49 +149,58 @@ class CustomerMachineCodeReportController extends Controller
     {
         $salesData = [];
         $currentDate = Carbon::now();
-        
+
         // Initialize empty collections for each customer
         foreach ($customerIds as $customerId) {
             $salesData[$customerId] = collect();
         }
-        
-        // Build query for last 6 months
-        for ($i = 0; $i < 6; $i++) {
-            $monthStart = $currentDate->copy()->subMonths($i)->startOfMonth();
-            $monthEnd = $currentDate->copy()->subMonths($i)->endOfMonth();
-            $monthLabel = $monthStart->format('M-Y');
-            
-            if ($productTypeId && $productTypeId != 'all') {
-                // Get product-specific sales
-                $monthlySales = DB::table('sales_order_details as sod')
-                    ->join('sales_orders as so', 'sod.sales_order_id', '=', 'so.id')
-                    ->join('product_catalogs as pc', 'sod.product_id', '=', 'pc.id')
-                    ->whereIn('so.customer_id', $customerIds)
-                    ->whereIn('so.status', ['delivered', 'partial'])
-                    ->whereBetween('so.invoice_date', [$monthStart, $monthEnd])
-                    ->where('pc.product_type_id', $productTypeId)
-                    ->whereNull('so.deleted_at')
-                    ->select(
-                        'so.customer_id',
-                        DB::raw('SUM(sod.quantity * sod.price) as total_amount')
-                    )
-                    ->groupBy('so.customer_id')
-                    ->get();
-            } else {
-                // Get total sales using DB query builder to avoid GROUP BY issues
-                $monthlySales = DB::table('sales_orders')
-                    ->whereIn('customer_id', $customerIds)
-                    ->whereIn('status', ['delivered', 'partial'])
-                    ->whereBetween('invoice_date', [$monthStart, $monthEnd])
-                    ->whereNull('deleted_at')
-                    ->select('customer_id', DB::raw('SUM(net_amount) as total_amount'))
-                    ->groupBy('customer_id')
-                    ->get();
-            }
-            
-            // Organize by customer
-            foreach ($monthlySales as $sale) {
+
+        // Calculate date range once
+        $sixMonthsAgo = $currentDate->copy()->subMonths(5)->startOfMonth();
+
+        if ($productTypeId && $productTypeId != 'all') {
+            // Single query for all 6 months with product type filter
+            $allSales = DB::table('sales_order_details as sod')
+                ->join('sales_orders as so', 'sod.sales_order_id', '=', 'so.id')
+                ->join('product_catalogs as pc', 'sod.product_id', '=', 'pc.id')
+                ->whereIn('so.customer_id', $customerIds)
+                ->whereIn('so.status', ['delivered', 'partial'])
+                ->whereBetween('so.invoice_date', [$sixMonthsAgo, $currentDate->copy()->endOfMonth()])
+                ->where('pc.product_type_id', $productTypeId)
+                ->whereNull('so.deleted_at')
+                ->select(
+                    'so.customer_id',
+                    'so.invoice_date',
+                    DB::raw('SUM(sod.quantity * sod.price) as total_amount')
+                )
+                ->groupBy('so.customer_id', 'so.invoice_date')
+                ->get();
+
+            // Group by customer and month
+            foreach ($allSales as $sale) {
                 if ($sale->total_amount > 0) {
+                    $monthLabel = Carbon::parse($sale->invoice_date)->format('M-Y');
+                    $salesData[$sale->customer_id]->push([
+                        'month' => $monthLabel,
+                        'amount' => $sale->total_amount
+                    ]);
+                }
+            }
+        } else {
+            // Single query for all 6 months
+            $allSales = DB::table('sales_orders')
+                ->whereIn('customer_id', $customerIds)
+                ->whereIn('status', ['delivered', 'partial'])
+                ->whereBetween('invoice_date', [$sixMonthsAgo, $currentDate->copy()->endOfMonth()])
+                ->whereNull('deleted_at')
+                ->select('customer_id', 'invoice_date', DB::raw('SUM(net_amount) as total_amount'))
+                ->groupBy('customer_id', 'invoice_date')
+                ->get();
+
+            // Group by customer and month
+            foreach ($allSales as $sale) {
+                if ($sale->total_amount > 0) {
+                    $monthLabel = Carbon::parse($sale->invoice_date)->format('M-Y');
                     $salesData[$sale->customer_id]->push([
                         'month' => $monthLabel,
                         'amount' => $sale->total_amount
@@ -199,7 +208,7 @@ class CustomerMachineCodeReportController extends Controller
                 }
             }
         }
-        
+
         return $salesData;
     }
     
@@ -209,12 +218,12 @@ class CustomerMachineCodeReportController extends Controller
     private function getBulkLastPayments($customerIds)
     {
         $paymentsData = [];
-        
+
         // Initialize empty collections
         foreach ($customerIds as $customerId) {
             $paymentsData[$customerId] = collect();
         }
-        
+
         // Get account IDs for customers with receivable and advance accounts
         $accountIds = DB::table('accounts')
             ->where('accountable_type', 'Modules\\CRM\\Models\\Customer\\Customer')
@@ -222,33 +231,32 @@ class CustomerMachineCodeReportController extends Controller
             ->whereIn('account_subsidiary_id', [1005, 2003]) // Receivable and Advance
             ->whereNull('deleted_at')
             ->pluck('id', 'accountable_id');
-        
+
         if ($accountIds->isEmpty()) {
             return $paymentsData;
         }
-        
-        // Get last credit transactions for each account (we'll limit to 3 per customer later)
+
+        // Get last 3 credit transactions per account using a subquery approach
         $allPayments = DB::table('transactions')
             ->whereIn('account_id', $accountIds->values()->toArray())
             ->where('balance_type', 'credit')
             ->whereNull('deleted_at')
-            ->select('account_id', 'created_at', 'amount', 'created_at')
+            ->select('account_id', 'created_at', 'amount')
             ->orderBy('created_at', 'desc')
             ->get();
-        
-        // Group by account_id manually
+
+        // Group by account_id and limit to 3 per account
         $payments = [];
         foreach ($allPayments as $payment) {
             if (!isset($payments[$payment->account_id])) {
                 $payments[$payment->account_id] = collect();
             }
-            // Only take first 3 payments per account
             if ($payments[$payment->account_id]->count() < 3) {
                 $payments[$payment->account_id]->push($payment);
             }
         }
-        
-        // Map payments to customers (already limited to 3 per account)
+
+        // Map payments to customers
         foreach ($accountIds as $customerId => $accountId) {
             if (isset($payments[$accountId]) && $payments[$accountId]->count() > 0) {
                 $customerPayments = $payments[$accountId]->map(function($transaction) {
@@ -257,11 +265,11 @@ class CustomerMachineCodeReportController extends Controller
                         'amount' => $transaction->amount
                     ];
                 });
-                
+
                 $paymentsData[$customerId] = $customerPayments;
             }
         }
-        
+
         return $paymentsData;
     }
     
@@ -271,7 +279,7 @@ class CustomerMachineCodeReportController extends Controller
     private function getBulkAccountBalances($customerIds)
     {
         $balances = [];
-        
+
         // Initialize balances
         foreach ($customerIds as $customerId) {
             $balances[$customerId] = [
@@ -279,45 +287,35 @@ class CustomerMachineCodeReportController extends Controller
                 'advance' => 0
             ];
         }
-        
-        // Get all accounts and their balances in one query
+
+        // Get all accounts with their balances in a single joined query
         $accountBalances = DB::table('accounts')
+            ->leftJoin('transactions', function($join) {
+                $join->on('accounts.id', '=', 'transactions.account_id')
+                     ->whereNull('transactions.deleted_at');
+            })
+            ->where('accounts.accountable_type', 'Modules\\CRM\\Models\\Customer\\Customer')
+            ->whereIn('accounts.accountable_id', $customerIds)
+            ->whereIn('accounts.account_subsidiary_id', [1005, 2003])
+            ->whereNull('accounts.deleted_at')
             ->select(
-                'accountable_id as customer_id',
-                'account_subsidiary_id',
-                'id as account_id'
+                'accounts.accountable_id as customer_id',
+                'accounts.account_subsidiary_id',
+                'accounts.id as account_id',
+                DB::raw('COALESCE(SUM(transactions.amount), 0) as balance')
             )
-            ->where('accountable_type', 'Modules\\CRM\\Models\\Customer\\Customer')
-            ->whereIn('accountable_id', $customerIds)
-            ->whereIn('account_subsidiary_id', [1005, 2003]) // Receivable and Advance
-            ->whereNull('deleted_at')
+            ->groupBy('accounts.accountable_id', 'accounts.account_subsidiary_id', 'accounts.id')
             ->get();
-        
-        // Get transaction sums for all accounts
-        $accountIds = $accountBalances->pluck('account_id')->toArray();
-        
-        if (!empty($accountIds)) {
-            $transactionSums = DB::table('transactions')
-                ->whereIn('account_id', $accountIds)
-                ->whereNull('deleted_at')
-                ->select('account_id', DB::raw('SUM(amount) as balance'))
-                ->groupBy('account_id')
-                ->pluck('balance', 'account_id');
-            
-            // Map balances to customers
-            foreach ($accountBalances as $account) {
-                $balance = $transactionSums[$account->account_id] ?? 0;
-                
-                if ($account->account_subsidiary_id == 1005) {
-                    // Receivable account
-                    $balances[$account->customer_id]['receivable'] = $balance;
-                } elseif ($account->account_subsidiary_id == 2003) {
-                    // Advance account
-                    $balances[$account->customer_id]['advance'] = $balance;
-                }
+
+        // Map balances to customers
+        foreach ($accountBalances as $account) {
+            if ($account->account_subsidiary_id == 1005) {
+                $balances[$account->customer_id]['receivable'] = (float)$account->balance;
+            } elseif ($account->account_subsidiary_id == 2003) {
+                $balances[$account->customer_id]['advance'] = (float)$account->balance;
             }
         }
-        
+
         return $balances;
     }
     
