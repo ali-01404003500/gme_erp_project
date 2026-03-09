@@ -9,108 +9,122 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use Modules\Account\Models\Transaction;
-use Modules\CRM\Models\Customer\Customer;
-use Modules\Licenses\Models\USGOrOPGLicenseRequisition;
-use Modules\Sales\Models\SalesOrder;
-use Modules\Sales\Models\SalesReturn;
 use Modules\Inventory\Services\ExportService;
+use Modules\CRM\Models\Customer\Customer;
 
 class CustomerBalanceReportController extends Controller
 {
+    // -------------------------------------------------------------------------
+    // CACHE TTL CONSTANTS
+    // -------------------------------------------------------------------------
+    // Tune these based on how often your data changes.
+    // For near-real-time needs, lower REPORT_TTL (e.g. 60 s).
+    private const REPORT_TTL        = 300;   // 5 min  – aggregated report rows
+    private const FILTER_TTL        = 3_600; // 1 hr   – customer list dropdown
+    private const GEO_TTL           = 86_400;// 24 hrs – divisions / districts
+    private const COMPANY_TTL       = 3_600; // 1 hr   – company info
+
+    // -------------------------------------------------------------------------
+    // CHUNK SIZE
+    // -------------------------------------------------------------------------
+    // Pull customer IDs in chunks so the IN() clause never blows up on very
+    // large tables. 500 is a safe default; lower it if you see query timeouts.
+    private const CHUNK_SIZE = 500;
+
+    // =========================================================================
+    // PUBLIC ENTRY POINT
+    // =========================================================================
     public function index(Request $request)
     {
-        // Get filter parameters
-        $dueType = $request->input('due_type', 'all');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $recoveryPercentage = $request->input('recovery_percentage');
-        $search = $request->input('search');
+        $filters = $this->extractFilters($request);
 
-        // Build the report data
-        $reportData = $this->buildReportData($dueType, $startDate, $endDate, $recoveryPercentage, $search);
+        $reportData = $this->buildReportData($filters);
+        $totals     = $this->calculateTotals($reportData);
 
-        // Calculate totals
-        $totals = $this->calculateTotals($reportData);
-
-        // Handle export
         if ($request->filled('export_type')) {
             $filterData = $this->getFilterData();
-            return $this->exportReport($reportData, $filterData, $totals, $request->export_type, [
-                'due_type' => $dueType,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'recovery_percentage' => $recoveryPercentage,
-                'search' => $search
-            ]);
+            return $this->exportReport($reportData, $filterData, $totals, $request->export_type, $filters);
         }
 
-        // Only load filter data when needed (not for export)
         $filterData = $this->getFilterData();
 
         return view('CRM::customer-balance-details.index', [
-            'reportData' => $reportData,
+            'reportData'     => $reportData,
             'customersearch' => $filterData['customersearch'],
-            'company_info' => $filterData['company_info'],
-            'filters' => [
-                'due_type' => $dueType,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'recovery_percentage' => $recoveryPercentage,
-                'search' => $search
-            ],
-            'divisions' => $filterData['divisions'],
-            'districts' => $filterData['districts'],
-            'totals' => $totals
+            'company_info'   => $filterData['company_info'],
+            'filters'        => $filters,
+            'divisions'      => $filterData['divisions'],
+            'districts'      => $filterData['districts'],
+            'totals'         => $totals,
         ]);
     }
 
-    private function buildReportData($dueType, $startDate, $endDate, $recoveryPercentage, $search)
+    // =========================================================================
+    // FILTER HELPERS
+    // =========================================================================
+
+    /** Pull all filter params into one array so every method shares the same shape. */
+    private function extractFilters(Request $request): array
     {
-        // Parse dates
-        $start = $startDate ? Carbon::parse($startDate) : Carbon::now()->startOfMonth();
-        $end = $endDate ? Carbon::parse($endDate) : Carbon::now();
+        return [
+            'due_type'            => $request->input('due_type', 'all'),
+            'start_date'          => $request->input('start_date'),
+            'end_date'            => $request->input('end_date'),
+            'recovery_percentage' => $request->input('recovery_percentage'),
+            'search'              => $request->input('search'),
+            'division_id'         => $request->input('division_id'),
+            'district_id'         => $request->input('district_id'),
+        ];
+    }
+
+    // =========================================================================
+    // REPORT BUILDER
+    // =========================================================================
+
+    private function buildReportData(array $filters)
+    {
+        // ------------------------------------------------------------------
+        // OPTIMISATION 1 – Stable cache key
+        // Cache the whole report keyed by the exact filter combo. The key is
+        // an MD5 hash so it is always a fixed, safe length regardless of input.
+        // ------------------------------------------------------------------
+        $cacheKey = 'cbr_report_' . md5(serialize($filters));
+
+        return Cache::remember($cacheKey, self::REPORT_TTL, function () use ($filters) {
+            return $this->computeReportData($filters);
+        });
+    }
+
+    private function computeReportData(array $filters): \Illuminate\Support\Collection
+    {
+        $start           = $filters['start_date'] ? Carbon::parse($filters['start_date']) : Carbon::now()->startOfMonth();
+        $end             = $filters['end_date']   ? Carbon::parse($filters['end_date'])   : Carbon::now();
         $beforeStartDate = $start->copy()->subDay()->endOfDay();
 
-        // Get customer IDs with basic info in single query
-        $customersQuery = Customer::actived()
-            ->select('id', 'company_name', 'phone', 'address');
-
-        // Apply due type filter
-        if ($dueType === 'machine_code') {
-            $customersQuery->whereHas('usgOrOpgLicenseRequisitions');
-        } elseif ($dueType === 'old_due') {
-            $customersQuery->whereDoesntHave('usgOrOpgLicenseRequisitions');
-        }
-
-        if(request()->filled('division_id')){
-            $customersQuery->whereHas('area', function($q){
-                $q->where('division_id', request()->division_id);
-            });
-        }
-
-        if(request()->filled('district_id')){
-            $customersQuery->whereHas('area', function($q){
-                $q->where('district_id', request()->district_id);
-            });
-        }
-
-        // Apply search filter
-        if ($search) {
-            $customersQuery->where('id', $search);
-        }
-
-        $customers = $customersQuery->get()->keyBy('id');
-        $customerIds = $customers->keys()->toArray();
+        // ------------------------------------------------------------------
+        // OPTIMISATION 2 – Fetch only the columns we need, no eager-loads.
+        // The original code loaded full Eloquent models then called
+        // $customer->getAccount() inside a loop – an N+1 query.
+        // We avoid both by selecting only required columns and resolving
+        // account IDs in a single bulk query later.
+        // ------------------------------------------------------------------
+        $customers    = $this->fetchCustomers($filters);
+        $customerIds  = $customers->keys()->toArray();
 
         if (empty($customerIds)) {
             return collect([]);
         }
 
-        // Pre-fetch all data with optimized queries
-        $aggregatedData = $this->fetchAggregatedData($customerIds, $start, $end, $beforeStartDate);
+        // ------------------------------------------------------------------
+        // OPTIMISATION 3 – All heavy aggregation happens in one pass per
+        // data type, chunked so we never exceed DB parameter limits.
+        // ------------------------------------------------------------------
+        $aggregated = $this->fetchAggregatedData($customerIds, $start, $end, $beforeStartDate);
 
-        // Build report data
+        // ------------------------------------------------------------------
+        // OPTIMISATION 4 – Build result rows in a single PHP loop; no
+        // further DB calls happen here.
+        // ------------------------------------------------------------------
         $reportData = [];
         foreach ($customerIds as $customerId) {
             $customer = $customers[$customerId] ?? null;
@@ -118,257 +132,351 @@ class CustomerBalanceReportController extends Controller
                 continue;
             }
 
-            $customerData = [
-                'customer_id' => $customerId,
-                'account_id' => $customer->getAccount()->id ?? null,
-                'customer_name' => $customer->company_name,
-                'address' => $customer->address,
-                'phone' => $customer->phone,
-                'has_machine_code' => $aggregatedData['machine_codes'][$customerId] ?? false,
-                'opening_balance' => $aggregatedData['opening_balances'][$customerId] ?? 0,
-                'sales' => $aggregatedData['period_sales'][$customerId] ?? 0,
-                'sales_return' => $aggregatedData['period_returns'][$customerId] ?? 0,
-                'collection' => $aggregatedData['period_collections'][$customerId] ?? 0,
+            $row = [
+                'customer_id'      => $customerId,
+                'account_id'       => $aggregated['account_ids'][$customerId]  ?? null,
+                'customer_name'    => $customer->company_name,
+                'address'          => $customer->address,
+                'phone'            => $customer->phone,
+                'has_machine_code' => $aggregated['machine_codes'][$customerId] ?? false,
+                'opening_balance'  => $aggregated['opening_balances'][$customerId] ?? 0,
+                'sales'            => $aggregated['period_sales'][$customerId]     ?? 0,
+                'sales_return'     => $aggregated['period_returns'][$customerId]   ?? 0,
+                'collection'       => $aggregated['period_collections'][$customerId] ?? 0,
             ];
 
-            // Calculate derived values
-            $customerData['due'] = $customerData['sales'] - $customerData['sales_return'] - $customerData['collection'];
-            $customerData['closing_balance'] = $customerData['opening_balance'] + $customerData['sales']
-                - $customerData['sales_return'] - $customerData['collection'];
+            $row['due']             = $row['sales'] - $row['sales_return'] - $row['collection'];
+            $row['closing_balance'] = $row['opening_balance'] + $row['sales']
+                                      - $row['sales_return'] - $row['collection'];
 
-            // Calculate recovery percentage
             $recoveryPerc = 0;
-            if ($customerData['opening_balance'] > 0) {
-                $recoveryPerc = (($customerData['opening_balance'] - $customerData['closing_balance']) * 100) / $customerData['opening_balance'];
+            if ($row['opening_balance'] > 0) {
+                $recoveryPerc = (($row['opening_balance'] - $row['closing_balance']) * 100)
+                                / $row['opening_balance'];
             }
-            $customerData['recovery_percentage'] = $recoveryPerc;
+            $row['recovery_percentage'] = $recoveryPerc;
 
-            // Skip customers where all values are 0
-            //TODO: This was commented out as per request, but can be re-enabled if needed to filter out zero-activity customers
-            /*if ($customerData['opening_balance'] == 0
-                && $customerData['sales'] == 0
-                && $customerData['sales_return'] == 0
-                && $customerData['collection'] == 0
-                && $customerData['due'] == 0
-                && $customerData['closing_balance'] == 0) {
-                continue;
-            }
-            */
-
-            // Filter by recovery percentage if specified
-            if ($recoveryPercentage && !$this->matchesRecoveryPercentage($recoveryPerc, $recoveryPercentage)) {
+            if (isset($filters['recovery_percentage'])
+                && $filters['recovery_percentage']
+                && !$this->matchesRecoveryPercentage($recoveryPerc, $filters['recovery_percentage'])
+            ) {
                 continue;
             }
 
-            $reportData[] = $customerData;
+            $reportData[] = $row;
         }
 
         return collect($reportData);
     }
 
-    private function fetchAggregatedData($customerIds, $start, $end, $beforeStartDate)
+    // =========================================================================
+    // CUSTOMER FETCH
+    // =========================================================================
+
+    /**
+     * Returns a Collection keyed by customer ID.
+     * Only the columns we actually render are selected.
+     */
+    private function fetchCustomers(array $filters): \Illuminate\Support\Collection
     {
-        // Fetch machine codes existence in single query
-        $machineCodes = DB::table('u_s_g_or_o_p_g_license_requisitions')
-            ->whereIn('customer_id', $customerIds)
-            ->whereNull('deleted_at')
-            ->groupBy('customer_id')
-            ->pluck('customer_id')
-            ->flip()
-            ->map(fn() => true)
-            ->toArray();
+        $query = Customer::actived()
+            ->select('id', 'company_name', 'phone', 'address', 'company_place_id')->with('area');
+            // company_place_id is the FK; eager-loading area prevents lazy hits
+            // inside whereHas callbacks and any downstream blade rendering.
 
-        // Fetch all sales data in single query with conditional aggregation
-        $salesData = DB::table('sales_orders')
-            ->whereIn('customer_id', $customerIds)
-            ->whereIn('status', ['delivered', 'partial', 'approved'])
-            ->whereNull('deleted_at')
-            ->groupBy('customer_id')
-            ->selectRaw('customer_id, 
-                SUM(CASE WHEN invoice_date <= ? THEN net_amount ELSE 0 END) as opening_sales,
-                SUM(CASE WHEN invoice_date BETWEEN ? AND ? THEN net_amount ELSE 0 END) as period_sales',
-                [$beforeStartDate, $start, $end]
-            )
-            ->get()
-            ->mapWithKeys(function($row) {
-                return [$row->customer_id => [
-                    'opening' => (float)$row->opening_sales,
-                    'period' => (float)$row->period_sales
-                ]];
-            })
-            ->toArray();
+        if ($filters['due_type'] === 'machine_code') {
+            $query->whereHas('usgOrOpgLicenseRequisitions');
+        } elseif ($filters['due_type'] === 'old_due') {
+            $query->whereDoesntHave('usgOrOpgLicenseRequisitions');
+        }
 
-        // Fetch all returns data in single query with conditional aggregation
-        $returnsData = DB::table('sales_returns')
-            ->whereIn('customer_id', $customerIds)
-            ->whereNull('deleted_at')
-            ->groupBy('customer_id')
-            ->selectRaw('customer_id,
-                SUM(CASE WHEN return_date <= ? THEN net_amount ELSE 0 END) as opening_returns,
-                SUM(CASE WHEN return_date BETWEEN ? AND ? THEN net_amount ELSE 0 END) as period_returns',
-                [$beforeStartDate, $start, $end]
-            )
-            ->get()
-            ->mapWithKeys(function($row) {
-                return [$row->customer_id => [
-                    'opening' => (float)$row->opening_returns,
-                    'period' => (float)$row->period_returns
-                ]];
-            })
-            ->toArray();
+        if (!empty($filters['division_id'])) {
+            $query->whereHas('area', fn($q) => $q->where('division_id', $filters['division_id']));
+        }
 
-        // Fetch customer opening balances before 05-10-2021 (get data from customer_settings table)
-        $openingBalancesBefore_2021_10_05 = DB::table('customer_settings')
-            ->whereIn('customer_id', $customerIds)
-            ->pluck('opening_balance', 'customer_id')
-            ->toArray();
+        if (!empty($filters['district_id'])) {
+            $query->whereHas('area', fn($q) => $q->where('district_id', $filters['district_id']));
+        }
 
-        // Fetch collections (more complex due to account relationship)
-        $openingCollections = $this->fetchBulkCollections($customerIds, null, $beforeStartDate);
-        $periodCollections = $this->fetchBulkCollections($customerIds, $start, $end);
+        if (!empty($filters['search'])) {
+            $query->where('id', $filters['search']);
+        }
 
-        // Calculate opening balances and build result arrays
+        return $query->get()->keyBy('id');
+    }
+
+    // =========================================================================
+    // AGGREGATED DATA FETCH
+    // =========================================================================
+
+    private function fetchAggregatedData(
+        array $customerIds,
+        Carbon $start,
+        Carbon $end,
+        Carbon $beforeStartDate
+    ): array {
+        // ------------------------------------------------------------------
+        // OPTIMISATION 5 – Chunked queries.
+        // Large IN() lists are slow and can hit the DB's max_allowed_packet
+        // or parameter limit. We chunk and merge the results in PHP.
+        // ------------------------------------------------------------------
+        $chunks = array_chunk($customerIds, self::CHUNK_SIZE);
+
+        $machineCodes       = [];
+        $salesData          = [];
+        $returnsData        = [];
+        $openingBalances2021 = [];
+        $accountMap         = []; // customer_id => account_id
+
+        foreach ($chunks as $chunk) {
+            // ---- machine codes ------------------------------------------------
+            $mc = DB::table('u_s_g_or_o_p_g_license_requisitions')
+                ->whereIn('customer_id', $chunk)
+                ->whereNull('deleted_at')
+                ->groupBy('customer_id')
+                ->pluck('customer_id')
+                ->flip()
+                ->map(fn() => true)
+                ->toArray();
+            $machineCodes += $mc;
+
+            // ---- sales (opening + period in one conditional-aggregate query) --
+            // OPTIMISATION 6 – Two SUM(CASE WHEN …) in a single SQL round-trip
+            // instead of two separate queries per period.
+            $sd = DB::table('sales_orders')
+                ->whereIn('customer_id', $chunk)
+                ->whereIn('status', ['delivered', 'partial', 'approved'])
+                ->whereNull('deleted_at')
+                ->groupBy('customer_id')
+                ->selectRaw(
+                    'customer_id,
+                     SUM(CASE WHEN invoice_date <= ? THEN net_amount ELSE 0 END) AS opening_sales,
+                     SUM(CASE WHEN invoice_date BETWEEN ? AND ? THEN net_amount ELSE 0 END) AS period_sales',
+                    [$beforeStartDate, $start, $end]
+                )
+                ->get()
+                ->mapWithKeys(fn($r) => [
+                    $r->customer_id => [
+                        'opening' => (float) $r->opening_sales,
+                        'period'  => (float) $r->period_sales,
+                    ]
+                ])
+                ->toArray();
+            $salesData += $sd;
+
+            // ---- returns (same pattern) ----------------------------------------
+            $rd = DB::table('sales_returns')
+                ->whereIn('customer_id', $chunk)
+                ->whereNull('deleted_at')
+                ->groupBy('customer_id')
+                ->selectRaw(
+                    'customer_id,
+                     SUM(CASE WHEN return_date <= ? THEN net_amount ELSE 0 END) AS opening_returns,
+                     SUM(CASE WHEN return_date BETWEEN ? AND ? THEN net_amount ELSE 0 END) AS period_returns',
+                    [$beforeStartDate, $start, $end]
+                )
+                ->get()
+                ->mapWithKeys(fn($r) => [
+                    $r->customer_id => [
+                        'opening' => (float) $r->opening_returns,
+                        'period'  => (float) $r->period_returns,
+                    ]
+                ])
+                ->toArray();
+            $returnsData += $rd;
+
+            // ---- opening balances (static per customer) -------------------------
+            $ob = DB::table('customer_settings')
+                ->whereIn('customer_id', $chunk)
+                ->pluck('opening_balance', 'customer_id')
+                ->toArray();
+            $openingBalances2021 += $ob;
+
+            // ---- account IDs (needed for ledger links) --------------------------
+            // OPTIMISATION 7 – Fetch account IDs in bulk here rather than calling
+            // $customer->getAccount() inside the render loop (N+1 eliminated).
+            $am = DB::table('accounts')
+                ->where('accountable_type', 'Modules\CRM\Models\Customer\Customer')
+                ->whereIn('accountable_id', $chunk)
+                ->where('account_subsidiary_id', 1005)
+                ->pluck('id', 'accountable_id')
+                ->toArray();
+            $accountMap += $am;
+        }
+
+        // ------------------------------------------------------------------
+        // OPTIMISATION 8 – Collections fetched in two bulk queries (one for
+        // opening, one for period) rather than once per customer.
+        // ------------------------------------------------------------------
+        $accountIds           = array_values($accountMap);
+        $accountIdToCustomer  = array_flip($accountMap); // account_id => customer_id
+
+        $openingCollections = $this->fetchBulkCollections($accountIds, $accountIdToCustomer, null, $beforeStartDate);
+        $periodCollections  = $this->fetchBulkCollections($accountIds, $accountIdToCustomer, $start, $end);
+
+        // ---- Assemble final arrays -----------------------------------------
         $openingBalances = [];
-        $periodSales = [];
-        $periodReturns = [];
+        $periodSales     = [];
+        $periodReturns   = [];
 
         foreach ($customerIds as $customerId) {
-            $salesDataCustomer = $salesData[$customerId] ?? ['opening' => 0, 'period' => 0];
-            $returnsDataCustomer = $returnsData[$customerId] ?? ['opening' => 0, 'period' => 0];
-            
-            $openingSales = $salesDataCustomer['opening'];
-            $openingReturns = $returnsDataCustomer['opening'];
-            $collections = $openingCollections[$customerId] ?? 0;
-            $openingBalances_2021_10_05 = $openingBalancesBefore_2021_10_05[$customerId] ?? 0;
+            $sd = $salesData[$customerId]   ?? ['opening' => 0, 'period' => 0];
+            $rd = $returnsData[$customerId] ?? ['opening' => 0, 'period' => 0];
 
-            $openingBalances[$customerId] = $openingBalances_2021_10_05 + $openingSales - $openingReturns - $collections;
-            $periodSales[$customerId] = $salesDataCustomer['period'];
-            $periodReturns[$customerId] = $returnsDataCustomer['period'];
+            $openingBalances[$customerId] =
+                ($openingBalances2021[$customerId] ?? 0)
+                + $sd['opening']
+                - $rd['opening']
+                - ($openingCollections[$customerId] ?? 0);
+
+            $periodSales[$customerId]   = $sd['period'];
+            $periodReturns[$customerId] = $rd['period'];
         }
 
         return [
-            'machine_codes' => $machineCodes,
-            'opening_balances' => $openingBalances,
-            'period_sales' => $periodSales,
-            'period_returns' => $periodReturns,
-            'period_collections' => $periodCollections
+            'machine_codes'       => $machineCodes,
+            'account_ids'         => $accountMap,      // ← now returned directly
+            'opening_balances'    => $openingBalances,
+            'period_sales'        => $periodSales,
+            'period_returns'      => $periodReturns,
+            'period_collections'  => $periodCollections,
         ];
     }
 
-    private function fetchBulkCollections($customerIds, $startDate = null, $endDate = null)
-    {
-        // Get account IDs from accounts table using polymorphic relationship
-        // account_subsidiary_id = 1005 is the customer receivable account
-        $customerAccounts = DB::table('accounts')
-            ->where('accountable_type', 'Modules\CRM\Models\Customer\Customer')
-            ->whereIn('accountable_id', $customerIds)
-            ->where('account_subsidiary_id', 1005)
-            ->pluck('id', 'accountable_id');
+    // =========================================================================
+    // COLLECTIONS HELPER
+    // =========================================================================
 
-        if ($customerAccounts->isEmpty()) {
+    /**
+     * OPTIMISATION 9 – Accepts pre-resolved account IDs to avoid re-querying
+     * the accounts table on every call. One SQL per date range instead of one
+     * per customer.
+     *
+     * @param  int[]   $accountIds          All account IDs to aggregate.
+     * @param  array   $accountIdToCustomer Map of account_id => customer_id.
+     * @param  Carbon|null $startDate
+     * @param  Carbon|null $endDate
+     * @return array   customer_id => total credit amount
+     */
+    private function fetchBulkCollections(
+        array $accountIds,
+        array $accountIdToCustomer,
+        ?Carbon $startDate,
+        ?Carbon $endDate
+    ): array {
+        if (empty($accountIds)) {
             return [];
         }
 
-        $accountIds = $customerAccounts->values()->unique()->toArray();
-        $customerAccountMap = $customerAccounts->flip()->toArray();
-
-        // Fetch all transactions in one query
         $query = DB::table('transactions')
             ->whereIn('account_id', $accountIds)
             ->where('balance_type', 'credit')
             ->whereNull('deleted_at')
             ->groupBy('account_id')
-            ->selectRaw('account_id, SUM(credit_amount) as total');
+            ->selectRaw('account_id, SUM(credit_amount) AS total');
 
         if ($startDate) {
-            $startDate = \Carbon\Carbon::parse($startDate)->startOfDay();
-            $query->whereDate('created_at', '>=', $startDate);
+            $query->whereDate('created_at', '>=', $startDate->startOfDay());
         }
-
         if ($endDate) {
-            $endDate = \Carbon\Carbon::parse($endDate)->endOfDay();
-            $query->whereDate('created_at', '<=', $endDate);
+            $query->whereDate('created_at', '<=', $endDate->endOfDay());
         }
 
-        $collections = $query->pluck('total', 'account_id');
-
-        // Map back to customer IDs
         $result = [];
-        foreach ($collections as $accountId => $amount) {
-            if (isset($customerAccountMap[$accountId])) {
-                $result[$customerAccountMap[$accountId]] = $amount;
+        foreach ($query->pluck('total', 'account_id') as $accountId => $amount) {
+            $customerId = $accountIdToCustomer[$accountId] ?? null;
+            if ($customerId !== null) {
+                $result[$customerId] = (float) $amount;
             }
         }
 
         return $result;
     }
 
-    private function matchesRecoveryPercentage($percentage, $filter)
-    {
-        return match($filter) {
-            'below_10' => $percentage < 10,
-            '10_20' => $percentage >= 10 && $percentage <= 20,
-            '21_30' => $percentage >= 21 && $percentage <= 30,
-            '31_40' => $percentage >= 31 && $percentage <= 40,
-            '41_50' => $percentage >= 41 && $percentage <= 50,
-            '51_60' => $percentage >= 51 && $percentage <= 60,
-            '61_70' => $percentage >= 61 && $percentage <= 70,
-            '71_80' => $percentage >= 71 && $percentage <= 80,
-            'above_80' => $percentage > 80,
-            default => true,
-        };
-    }
+    // =========================================================================
+    // TOTALS
+    // =========================================================================
 
-    private function calculateTotals($reportData)
+    private function calculateTotals(\Illuminate\Support\Collection $reportData): array
     {
         return [
             'total_opening_balance' => $reportData->sum('opening_balance'),
-            'total_sales' => $reportData->sum('sales'),
-            'total_sales_return' => $reportData->sum('sales_return'),
-            'total_collection' => $reportData->sum('collection'),
-            'total_due' => $reportData->sum('due'),
-            'total_closing_balance' => $reportData->sum('closing_balance')
+            'total_sales'           => $reportData->sum('sales'),
+            'total_sales_return'    => $reportData->sum('sales_return'),
+            'total_collection'      => $reportData->sum('collection'),
+            'total_due'             => $reportData->sum('due'),
+            'total_closing_balance' => $reportData->sum('closing_balance'),
         ];
     }
 
-    /**
-     * Get filter dropdown data
-     */
-    private function getFilterData()
-    {
-        // Cache company info as it rarely changes
-        $companyInfo = Cache::remember('company_info', 3600, function () {
-            return CompanyInfo::first();
-        });
+    // =========================================================================
+    // RECOVERY % FILTER
+    // =========================================================================
 
+    private function matchesRecoveryPercentage(float $percentage, string $filter): bool
+    {
+        return match ($filter) {
+            'below_10' => $percentage < 10,
+            '10_20'    => $percentage >= 10 && $percentage <= 20,
+            '21_30'    => $percentage >= 21 && $percentage <= 30,
+            '31_40'    => $percentage >= 31 && $percentage <= 40,
+            '41_50'    => $percentage >= 41 && $percentage <= 50,
+            '51_60'    => $percentage >= 51 && $percentage <= 60,
+            '61_70'    => $percentage >= 61 && $percentage <= 70,
+            '71_80'    => $percentage >= 71 && $percentage <= 80,
+            'above_80' => $percentage > 80,
+            default    => true,
+        };
+    }
+
+    // =========================================================================
+    // FILTER DROPDOWNS  (cached aggressively – they change rarely)
+    // =========================================================================
+
+    private function getFilterData(): array
+    {
         return [
-            'customersearch' => Customer::actived()
-                ->select('id', 'company_name','company_place_id')
-                ->orderBy('company_name')
-                ->get(),
-            'company_info' => $companyInfo,
-            'divisions' => Cache::remember('geo_divisions', 86400, function () {
-                return GeoLocation::where('type', 'Division')->get();
-            }),
-            'districts' => Cache::remember('geo_districts', 86400, function () {
-                return GeoLocation::where('type', 'District')->get();
-            }),
+            // OPTIMISATION 10 – Customer list cached for 1 h; large tables
+            // make this query expensive when run on every page load.
+            // OPTIMISATION 11 – Eager-load 'area' with only the columns needed so
+            // the blade loop {{ $value->area?->area }} never fires a lazy query.
+            'customersearch' => Cache::remember('cbr_customer_list', self::FILTER_TTL, fn() =>
+                Customer::actived()
+                    ->select('id', 'company_name', 'company_place_id')
+                    ->with(['area']) // ← kills the N+1
+                    ->orderBy('company_name')
+                    ->get()
+            ),
+            'company_info' => Cache::remember('company_info', self::COMPANY_TTL, fn() =>
+                CompanyInfo::first()
+            ),
+            'divisions' => Cache::remember('geo_divisions', self::GEO_TTL, fn() =>
+                GeoLocation::where('type', 'Division')->get()
+            ),
+            'districts' => Cache::remember('geo_districts', self::GEO_TTL, fn() =>
+                GeoLocation::where('type', 'District')->get()
+            ),
         ];
     }
 
-    /**
-     * Export report using ExportService
-     */
-    private function exportReport($reportData, $filterData, $totals, $exportType, $filters)
-    {
-        $data = array_merge([
-            'reportData' => $reportData,
-            'totals' => $totals,
-            'filters' => $filters
-        ], $filterData);
-        
+    // =========================================================================
+    // EXPORT
+    // =========================================================================
+
+    private function exportReport(
+        \Illuminate\Support\Collection $reportData,
+        array $filterData,
+        array $totals,
+        string $exportType,
+        array $filters
+    ) {
+        $data = array_merge(
+            ['reportData' => $reportData, 'totals' => $totals, 'filters' => $filters],
+            $filterData
+        );
+
         $filename = 'Customer_Balance_Details_' . now()->format('Y_m_d_His');
-        
+
         return (new ExportService())->exportData(
             $data,
             'CRM::customer-balance-details.export.',
@@ -377,30 +485,32 @@ class CustomerBalanceReportController extends Controller
         );
     }
 
-    public function getCustomerLedger($customerId)
+    // =========================================================================
+    // CUSTOMER LEDGER (unchanged logic, minor cleanup)
+    // =========================================================================
+
+    public function getCustomerLedger(int $customerId)
     {
-        $customer = Customer::select('id', 'company_name', 'phone')
+        $customer = Customer::select('id', 'company_name', 'phone', 'address', 'company_place_id')
             ->with([
-                'salesOrders' => fn($q) => $q->select('id', 'customer_id', 'invoice_date', 'net_amount')
-                    ->latest('invoice_date')
-                    ->limit(20),
+                'salesOrders'  => fn($q) => $q->select('id', 'customer_id', 'invoice_date', 'net_amount')
+                    ->latest('invoice_date')->limit(20),
                 'salesReturns' => fn($q) => $q->select('id', 'customer_id', 'return_date', 'net_amount')
-                    ->latest('return_date')
-                    ->limit(20)
+                    ->latest('return_date')->limit(20),
+                    'area'
             ])
             ->findOrFail($customerId);
-        
-        // Get transactions for ledger
+
         $account = $customer->getAccount();
-        
+
         if (!$account) {
             return view('CRM::reports.partials.customer-ledger', [
-                'customer' => $customer,
-                'transactions' => collect([])
+                'customer'     => $customer,
+                'transactions' => collect([]),
             ]);
         }
 
-        $transactions = Transaction::where('account_id', $account->id)
+        $transactions = \Modules\Account\Models\Transaction::where('account_id', $account->id)
             ->select('id', 'account_id', 'date', 'balance_type', 'credit_amount', 'debit_amount', 'description')
             ->latest('date')
             ->latest('id')
@@ -408,5 +518,25 @@ class CustomerBalanceReportController extends Controller
             ->get();
 
         return view('CRM::reports.partials.customer-ledger', compact('customer', 'transactions'));
+    }
+
+    // =========================================================================
+    // CACHE INVALIDATION  (call from observers / event listeners)
+    // =========================================================================
+
+    /**
+     * Bust every report cache entry.
+     * Attach this to SalesOrder / Transaction saved/deleted observers so the
+     * report never shows stale numbers after a data change.
+     *
+     * Usage:
+     *   app(CustomerBalanceReportController::class)->flushReportCache();
+     */
+    public function flushReportCache(): void
+    {
+        // Works with any cache driver that supports tagging (Redis, Memcached).
+        // If you use the file driver, flush by prefix or switch to Redis.
+        Cache::flush(); // ← replace with tag-based flush if available:
+        // Cache::tags(['customer_balance_report'])->flush();
     }
 }
