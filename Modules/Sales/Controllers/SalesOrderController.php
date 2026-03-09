@@ -96,7 +96,7 @@ class SalesOrderController extends Controller
         // });
         // dd($data['customers']);
         $data['couriers'] = Courier::get();
-        $data['references'] = SalesOrder::select('id', 'customer_id', 'sales_order_id', 'invoice_date')->get();
+        // $data['references'] = SalesOrder::select('id', 'customer_id', 'sales_order_id', 'invoice_date')->get();
         $data['areas'] = Area::select('id', 'area')->get();
         $data['banks'] = Bank::get();
         $data['branches'] = BankBranch::get();
@@ -111,6 +111,12 @@ class SalesOrderController extends Controller
 
         $branches = BankBranch::where('bank_id', $request->id)->get();
         return response()->json($branches);
+    }
+
+    public function getReferences(Request $request)
+    {
+        $references = SalesOrder::select('id', 'customer_id', 'sales_order_id', 'invoice_date')->get();
+        return response()->json($references);
     }
 
     /**
@@ -329,7 +335,6 @@ class SalesOrderController extends Controller
         $data['areas'] = Area::where('id', $salesOrder->customer->company_place_id)->get();
         $data['services'] = Service::all();
         $data['banks'] = Bank::get();
-        $data['references'] = SalesOrder::get();
 
         return view("Sales::sales-order.edit", $data);
     }
@@ -524,7 +529,6 @@ class SalesOrderController extends Controller
         $data['areas'] = Area::where('id', $salesOrder->customer->company_place_id)->get();
         $data['services'] = Service::all();
         $data['banks'] = Bank::get();
-        $data['references'] = SalesOrder::get();
         return view('Sales::sales-order.product-free-sales-invoice', $data);
     }
 
