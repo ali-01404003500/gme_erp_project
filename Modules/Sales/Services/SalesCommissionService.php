@@ -34,13 +34,27 @@ class SalesCommissionService
         $brokerCommissions = BrokerCommission::where('broker_id', $brokerId)->get()->keyBy('percentage_type');
 
         foreach ($salesOrder->details as $detail) {
-            $productTagId = optional($detail->product)->product_tag_id;
-            $amount = $detail->amount - $detail->total_discount ?? 0;
+            
+            $fixedProductCommission = BrokerCommission::where('broker_id', $brokerId)->first();
 
-            if ($brokerCommissions->has($productTagId)) {
-                $percentage = $brokerCommissions[$productTagId]->percentage ?? 0;
-                $commission += ($percentage / 100) * $amount;
-                $commissionableAmount += $amount;
+            if($fixedProductCommission->fixed_type == $detail->product_id)
+            {
+                $productTagId = $fixedProductCommission->fixed_type;
+                $amount = $detail->amount - $detail->total_discount ?? 0; 
+                
+                $commission += $detail->quantity *  $fixedProductCommission->fixed;
+                $commissionableAmount += $amount; 
+            }
+            else
+            {
+                $productTagId = optional($detail->product)->product_tag_id;
+                $amount = $detail->amount - $detail->total_discount ?? 0;
+
+                if ($brokerCommissions->has($productTagId)) {
+                    $percentage = $brokerCommissions[$productTagId]->percentage ?? 0;
+                    $commission += ($percentage / 100) * $amount;
+                    $commissionableAmount += $amount;
+                }
             }
         }
 
