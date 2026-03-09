@@ -286,7 +286,7 @@ class EMIEntryController extends Controller
 
     public function emiCollection()
     {
-        $customers = Customer::all();
+        $customers = Customer::select('id','company_name', 'address', 'phone')->get();
         return view('Account::emi-entries.collection', compact('customers'));
     }
 

@@ -88,12 +88,12 @@ class SalesOrderController extends Controller
     public function create(Request $request)
     {
 
-        $data['products'] = cache()->remember('sales_order_products', 3600, function () {
-            return ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        });
-        $data['customers'] = cache()->remember('sales_order_customers', 3600, function () {
-            return Customer::activeCustomers()->select('id', 'company_name', 'company_place_id', 'status')->with('area')->get();
-        });
+        // $data['products'] = cache()->remember('sales_order_products', 3600, function () {
+        //     return ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
+        // });
+        // $data['customers'] = cache()->remember('sales_order_customers', 3600, function () {
+        //     return Customer::activeCustomers()->select('id', 'company_name', 'company_place_id', 'status')->with('area')->get();
+        // });
         // dd($data['customers']);
         $data['couriers'] = Courier::get();
         $data['references'] = SalesOrder::select('id', 'customer_id', 'sales_order_id', 'invoice_date')->get();
