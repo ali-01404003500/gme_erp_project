@@ -58,6 +58,7 @@ class BrokerService
     // $request->back_image = $this->uploadFile($request->back_image, 'brokers/back_image');
 
 
+   $commissionType = in_array(1, $request->commission_type ?? []) || in_array(2, $request->commission_type ?? []) ? 1 : 0;
 
     $broker = Broker::create([
         'broker_id' => $request->broker_id,
@@ -73,7 +74,7 @@ class BrokerService
         'back_image' => $request->back_image ?? null,
         'present_address' => $request->present_address,
         'permanent_address' => $request->permanent_address,
-        'commission_type' => $request->commission_type,
+        'commission_type' => $commissionType,
         'division_id' => $request->division_id,
         'district_id' => $request->district_id,
         'thana_id' => $request->thana_id,
@@ -125,27 +126,34 @@ class BrokerService
         }
     }
 
+ 
+
+
     // Add commission details for the broker
-    if ($request->commission_type == 1 && $request->has('percentage_type')) {
+    if (in_array(1, $request->commission_type ?? []) && $request->has('percentage_type')){
         foreach ($request->percentage_type as $key => $percentageType) {
             if ($percentageType != null) {
                 BrokerCommission::create([
-                    'commission_type' => $request->commission_type,
+                    'commission_type' => 1,
                     'broker_id' => $broker->id,
                     'percentage_type' => $percentageType,
                     'percentage' => $request->percentage[$key] ?? null,
                 ]);
             }
         }
-    } elseif ($request->commission_type == 2) {
-        if ($request->filled('fixed_type') && $request->filled('fixed')) {
-            BrokerCommission::create([
-                'commission_type' => $request->commission_type,
-                'broker_id' => $broker->id,
-                'fixed_type' => $request->fixed_type,
-                'fixed' => $request->fixed,
-            ]);
-        }
+    }
+    if (in_array(2, $request->commission_type ?? []) && $request->has('fixed_type')) {
+
+        foreach ($request->fixed_type as $key => $fixedType) {
+            if ($fixedType != null) {
+                BrokerCommission::create([
+                    'commission_type' => 2,
+                    'broker_id' => $broker->id,
+                    'fixed_type' => $fixedType,
+                    'fixed' => $request->fixed[$key] ?? null,
+                ]);
+            }
+        } 
     }
 
     return $broker;
@@ -166,7 +174,8 @@ public function update($request, $brokerId)
     // if(isset($request->back_image))
     // $request->back_image = $this->uploadFile($request->back_image, 'brokers/front_image/back_image');
 
-    
+    $commissionType = in_array(1, $request->commission_type ?? []) || in_array(2, $request->commission_type ?? []) ? 1 : 0;
+
     $broker->update([
         'broker_id' => $request->broker_id,
         'broker_name' => $request->broker_name,
@@ -181,7 +190,7 @@ public function update($request, $brokerId)
         'back_image' => $request->back_image ?? null,
         'present_address' => $request->present_address,
         'permanent_address' => $request->permanent_address,
-        'commission_type' => $request->commission_type,
+        'commission_type' => $commissionType,
         'division_id' => $request->division_id,
         'district_id' => $request->district_id,
         'thana_id' => $request->thana_id,
@@ -249,32 +258,51 @@ public function update($request, $brokerId)
             }
         }
     }
-
+ 
     // Update or add commission details for the broker
-    if ($request->commission_type == 1 && $request->has('percentage_type')) {
-        $broker->brokerCommission()->delete();
+    if (in_array(1, $request->commission_type ?? []) && $request->has('percentage_type')) {  
+        $broker->brokerCommission()->where('commission_type', 1)->delete();
 
         foreach ($request->percentage_type as $key => $percentageType) {
             if ($percentageType != null) {
                 BrokerCommission::create([
-                    'commission_type' => $request->commission_type,
+                    'commission_type' => '1',
                     'broker_id' => $broker->id,
                     'percentage_type' => $request->percentage_type[$key],
-                    'percentage' => $request->percentage[$key] ?? null,
+                    'percentage' => $request->percentage[$key] ?? 0,
                 ]);
             }
         }
-    } elseif ($request->commission_type == 2) {
-        $broker->brokerCommission()->delete();
+    } 
+    if (in_array(2, $request->commission_type ?? []) ) {  
+        $broker->brokerCommission()->where('commission_type', 2)->delete();
 
-        if ($request->filled('fixed_type') && $request->filled('fixed')) {
-            BrokerCommission::create([
-                'commission_type' => $request->commission_type,
-                'broker_id' => $broker->id,
-                'fixed_type' => $request->fixed_type,
-                'fixed' => $request->fixed,
-            ]);
+        foreach ($request->fixed_type as $key => $fixedType) { 
+
+            if ($key == 0) {
+                if ($fixedType != null && $request->fixed[$key] != 0) { 
+                    BrokerCommission::create([
+                        'commission_type' => '3',
+                        'broker_id' => $broker->id,
+                        'fixed_type' => $request->fixed_type[$key],
+                        'fixed' => $request->fixed[$key] ?? 0,
+                    ]);
+                }
+            }
+            else
+            {
+                if ($fixedType != null && $request->fixed[$key] != 0) { 
+                BrokerCommission::create([
+                    'commission_type' => '2',
+                    'broker_id' => $broker->id,
+                    'fixed_type' => $request->fixed_type[$key],
+                    'fixed' => $request->fixed[$key] ?? 0,
+                ]);
+            }
+            }
+            
         }
+ 
     }
 
     return $broker;

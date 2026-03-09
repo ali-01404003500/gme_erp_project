@@ -3,7 +3,7 @@
 namespace Modules\CRM\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
-
+use App\Services\AutocompleteService;
 use Modules\Inventory\Models\Settings\Tag;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -14,6 +14,7 @@ use Modules\CRM\Models\Customer\BrokerCommission;
 use Modules\CRM\Models\Customer\BrokerCustomerAttached;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\CRM\Services\Customer\BrokerService;
+use Modules\Inventory\Models\ProductCatalog;
 
 class BrokerController extends Controller
 {
@@ -77,6 +78,10 @@ class BrokerController extends Controller
      */
     public function store(Request $request)
     {   
+
+   
+
+
         // dd(request()->all());
         $validatedData = $request->validate([
             'broker_name' => 'required|string|max:255',
@@ -85,7 +90,8 @@ class BrokerController extends Controller
             'alternative_phone' => 'nullable|string|max:20',
             'dob' => 'required|string', // You might need to adjust this based on your date format
             'gender' => 'required', 
-            'commission_type' => 'required|integer',
+            'commission_type' => 'required|array',
+            'commission_type.*' => 'integer',
             'division_id' => 'required',
             'district_id' => 'required',
             'thana_id' => 'required',
@@ -97,11 +103,12 @@ class BrokerController extends Controller
             'back_image' => 'nullable',
             'broker_id' => 'nullable',
             // Validation for Broker Commission Table
+            'broker_commission.*.commission_type' => 'required|array',
             'broker_commission.*.commission_type' => 'required|integer',
-            'broker_commission.*.percentage_type' => 'nullable|integer',
-            'broker_commission.*.fixed_type' => 'nullable|integer',
-            'broker_commission.*.fixed' => 'nullable|integer',
-            'broker_commission.*.percentage' => 'nullable|integer',
+            'broker_commission.*.percentage_type' => 'nullable|string',
+            'broker_commission.*.fixed_type' => 'nullable|string',
+            'broker_commission.*.percentage' => 'nullable|numeric|min:0',
+            'broker_commission.*.fixed' => 'nullable|numeric|min:0',
             // Validation for Broker Customer Attached Table
             'broker_customers.*.customer_id' => 'required|exists:customers,id',
             'broker_customers.*.status' => 'required|integer',
@@ -219,7 +226,8 @@ class BrokerController extends Controller
     {
         $data['broker'] = $broker;
         $data['customers'] = Customer::activeCustomers()->get();
-        $data['percentageTypes'] = Tag::all();
+        $data['percentageTypes'] = Tag::all();  
+      //  dd($data);
         return view("CRM::broker.edit", $data);
     }
 
@@ -236,7 +244,8 @@ class BrokerController extends Controller
             'alternative_phone' => 'nullable|string|max:20',
             'dob' => 'required|string', // You might need to adjust this based on your date format
             'gender' => 'required', 
-            'commission_type' => 'required|integer',
+            'commission_type' => 'required|array',
+            'commission_type.*' => 'integer',
             'division_id' => 'required',
             'district_id' => 'required',
             'thana_id' => 'required',
@@ -249,11 +258,12 @@ class BrokerController extends Controller
             'broker_id' => 'nullable',
 
             // Validation for Broker Commission Table
+            'broker_commission.*.commission_type' => 'required|array',
             'broker_commission.*.commission_type' => 'required|integer',
-            'broker_commission.*.percentage_type' => 'nullable|integer',
-            'broker_commission.*.fixed_type' => 'nullable|integer',
-            'broker_commission.*.fixed' => 'nullable|integer',
-            'broker_commission.*.percentage' => 'nullable|integer',
+            'broker_commission.*.percentage_type' => 'nullable|string',
+            'broker_commission.*.fixed_type' => 'nullable|string',
+            'broker_commission.*.percentage' => 'nullable|numeric|min:0',
+            'broker_commission.*.fixed' => 'nullable|numeric|min:0', 
             // Validation for Broker Customer Attached Table
             'broker_customers.*.customer_id' => 'required|exists:customers,id',
             'broker_customers.*.status' => 'required|integer',
@@ -413,4 +423,19 @@ class BrokerController extends Controller
 
         return redirect()->route('crm.brokers.index')->with('warning', 'Broker denied successfully.');
     }
+
+
+    public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->productSearch(
+            ProductCatalog::class,
+            ['name','model'],
+            $request->search,
+            ['id', 'name','model','product_brand_id'],
+            30
+        ); 
+        return response()->json($data);
+    }
+
 }

@@ -10,7 +10,7 @@ class AutocompleteService
         string $model,
         array $searchColumns,
         string $searchValue,
-        array $displayColumns = ['id', 'name'],
+        array $displayColumns = ['id', 'company_name','company_place_id','phone','customer_type','address'],
         int $limit = 10,
         array $extraConditions = []
     ) {
@@ -45,10 +45,10 @@ class AutocompleteService
 
                     'company_name'  => $item->{$displayColumns[1]}, 
                     'area'  => $item->area?->area, 
-                    'phone'  => $item->{$displayColumns[3]??'phone'}, 
-                    'customer_type'  => $item->{$displayColumns[4]??'customer_type'}, 
-                    'address'  => $item->{$displayColumns[5]??'address'}, 
-                ];
+                    'phone'  => $item->{$displayColumns[3]}, 
+                    'customer_type'  => $item->{$displayColumns[4]}, 
+                    'address'  => $item->{$displayColumns[5]}, 
+                ];  
             });
  
     }

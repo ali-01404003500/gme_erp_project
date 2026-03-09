@@ -115,28 +115,12 @@ class OnlineDepositVerificationService
             'account_id' => $onlineDepositVerification->bankAccount->getAccount()->id,
             'balance_type' => 'debit',
             'invoice_no' => $onlineDepositVerification->source->collection_id, 
-            'debit_amount' => $onlineDepositVerification->amount-$onlineDepositVerification->charge,
+            'debit_amount' => $onlineDepositVerification->amount,
             'credit_amount' => 0,
-            'description' => 'Collection Payment',
+            'description' => "Collection through Online Deposit",
             'transaction_date' => $onlineDepositVerification->deposit_date,
         ]);
-
-        if($onlineDepositVerification->charge > 0) {
-
-            $bankChargeAccount = Account::where('name', 'MFS Charge Expense')->first()->id; // Bank Charge Expense account
-            $onlineDepositVerification->transactions()->create([
-                'account_id' => $bankChargeAccount,
-                'balance_type' => 'debit',
-                'invoice_no' => $onlineDepositVerification->source->collection_id, 
-                'debit_amount' => $onlineDepositVerification->charge,
-                'credit_amount' => 0,
-                'description' => 'Collection Charge',
-                'transaction_date' => $onlineDepositVerification->deposit_date,
-            ]);
-
-        }
-        
-    
+ 
         //credit
         $onlineDepositVerification->transactions()->create([
             'account_id' => $customerReceivableAccount->id,
@@ -144,9 +128,35 @@ class OnlineDepositVerificationService
             'invoice_no' => $onlineDepositVerification->source->collection_id, 
             'debit_amount' => 0,
             'credit_amount' => $onlineDepositVerification->amount,
-            'description' => 'Collection Created',
+            'description' => "Collection through Online Deposit",
             'transaction_date' => $onlineDepositVerification->deposit_date,
         ]);
+
+        if($onlineDepositVerification->charge > 0) 
+        { 
+            //debit 
+            $onlineDepositVerification->transactions()->create([
+                'account_id' => $customerReceivableAccount->id,
+                'balance_type' => 'debit',
+                'invoice_no' => $onlineDepositVerification->source?->collection_id, 
+                'debit_amount' => $onlineDepositVerification->charge,
+                'credit_amount' => 0,
+                'description' => "Collection through Online Deposit",
+                'transaction_date' => $onlineDepositVerification->transaction_date,
+            ]);
+ 
+            //credit
+            $bankChargeAccount = Account::where('account_number', '201401')->first()->id; // Bank Charge Expense account
+            $onlineDepositVerification->transactions()->create([
+                'account_id' => $bankChargeAccount,
+                'balance_type' => 'credit',
+                'invoice_no' => $onlineDepositVerification->source?->collection_id, 
+                'debit_amount' => 0,
+                'credit_amount' => $onlineDepositVerification->charge,
+                'description' => "Collection through Online Deposit",
+                'transaction_date' => $onlineDepositVerification->transaction_date,
+            ]); 
+        }
  
     }
 

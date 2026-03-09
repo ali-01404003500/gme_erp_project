@@ -278,6 +278,14 @@
                                             if ($transaction->transactionable) {
                                                 $particulars = class_basename($transaction->transactionable_type);
                                             }
+
+                                            if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='debit')
+                                                $particulars = 'MFS Charge';
+                                            else if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='credit')
+                                                $particulars = 'Collection';
+                                            else if($transaction->transactionable_type=='Modules\Sales\Models\ShipmentVerify' && $transaction->balance_type=='debit')
+                                                $particulars = 'Courier Charge';
+
                                         @endphp
 
                                         <tr>
@@ -510,7 +518,7 @@
                                     </td>
                                     <td>{{ $cheque['cheque_type'] }}</td>
                                     <td class="text-center">
-@php
+                                                    @php
                                                         $documents = is_string($cheque['document'])
                                                             ? json_decode($cheque['document'], true)
                                                             : $cheque['document'];

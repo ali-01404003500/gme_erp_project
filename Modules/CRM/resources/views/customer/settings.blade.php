@@ -53,6 +53,10 @@
             color: #ffffff;
             /* Text color */
         }
+
+        .modal-lg {
+            max-width: 90%;
+        }
     </Style>
     <div class="container-fluid">
         <div class="row" id="title">
@@ -670,7 +674,7 @@
                     <!-- Modal Structure -->
                     <div class="modal fade inputForm-modal" id="editModal" tabindex="-1" role="dialog"
                         aria-labelledby="editModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-md" role="document">
+                        <div class="modal-dialog modal-lg modal-fullscreen-sm-down modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-header" id="editModalLabel">
                                     <h5 class="modal-title">Edit</h5>
@@ -774,53 +778,112 @@
                     var broker = response;
 
                     console.log(broker);
+  
+                    if (broker.broker_commission && broker.broker_commission.length > 0) 
+                    {
+                        percentageRows = broker.broker_commission
+                            .filter(item => Number(item.commission_type) === 1) // only commission_type 1
+                            .map(item => createPercentageRow(item, percentageTypes))
+                            .join('');
+                    } else {
+                        // Optionally, create empty row if no data
+                        percentageRows = createPercentageRow({}, percentageTypes);
+                    }
 
-                    var percentageRows = broker.broker_commission && broker.broker_commission.length > 0 ?
-                        broker.broker_commission.map(item => createPercentageRow(item, percentageTypes)).join(
-                            '') :
-                        createPercentageRow({}, percentageTypes);
+                    if (broker.broker_commission && broker.broker_commission.length > 0) 
+                    {
+                        fixedRows = broker.broker_commission
+                            .filter(item => Number(item.commission_type) === 3) // only commission_type 1
+                            .map(item => showFixedRow(item, percentageTypes))
+                            .join('');
+                    } 
+                    else {
+                        // Optionally, create empty row if no data
+                        fixedRows = createFixedRow({}, percentageTypes);
+                    }
 
-                    var commissionTypeHtml = createCommissionTypeHtml(broker.commission_type, percentageTypes,
-                        broker.broker_commission, broker);
+                    if (broker.broker_commission && broker.broker_commission.length > 0) 
+                    {
+                        fixedProductRows = broker.broker_commission
+                            .filter(item => Number(item.commission_type) === 2) // only commission_type 2
+                            .map(item => showFixedProductRow(item, percentageTypes))
+                            .join('');
+                    } 
+                    else {
+                        // Optionally, create empty row if no data
+                        fixedProductRows = createFixedProductRow({}, percentageTypes);
+                    }
+
+
+                    var commissionTypeHtmlPercentage = createCommissionTypeHtmlPercentage(broker.commission_type, percentageTypes,broker.broker_commission, broker);
+                    var commissionTypeHtmlFixed = createCommissionTypeHtmlFixed(broker.commission_type, percentageTypes,broker.broker_commission, broker);
+                   
                     var route = "{{ route('crm.update-broker-details', ':ID') }}";
                     route = route.replace(':ID', broker.id);
 
                     var brokerDetails = `
-            <form id="brokerForm" action="${route}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-sm-5 text-right">
-                            <label class="col-sm-12 control-label">Commission Type</label>
-                        </div>
-                        <div class="col-sm-7">
-                            <div>
-                                ${commissionTypeHtml}
-                            </div>
-                            <input type="hidden" name="broker_id" value="${broker.id}">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group" id="commission_percentage" style="display: ${broker.commission_type == 1 ? 'block' : 'none'};">
-                    <table class="table table-bordered broker-percentage-table">
-                        <thead>
-                            <tr>
-                                <th>Percentage Type</th>
-                                <th>Percentage %</th>
-                                <th><button class="btn btn-success btn-xs" onclick="addBrokerPercentageRow()" type="button"><i class="fa fa-plus"></i></button></th>
-                            </tr>
-                        </thead>
-                        <tbody>${percentageRows}</tbody>
-                    </table>
-                </div>
-                <div class="form-group" id="commission_fixed" style="display: ${broker.commission_type == 2 ? 'block' : 'none'};">
-                    ${createFixedTypeHtml(broker.broker_commission ? broker.broker_commission[0] : {})}
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </div>
-            </form>
-        `;
+                        <form id="brokerForm" action="${route}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="row col-sm-6" style="border-right:1px solid">
+                                        <div class="col-sm-5 text-right">
+                                            <label class="col-sm-12 control-label">Commission Type</label>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <div>
+                                                ${commissionTypeHtmlPercentage}
+                                            </div>
+                                            <input type="hidden" name="broker_id" value="${broker.id}">
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-6">
+                                        <div class="col-sm-12">
+                                            <div>
+                                                ${commissionTypeHtmlFixed}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-6" style="border-right:1px solid">
+                                        <div class="form-group" id="commission_percentage" style="">
+                                            <table class="table table-bordered broker-percentage-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Percentage Type</th>
+                                                        <th>Percentage %</th>
+                                                        <th><button class="btn btn-success btn-xs" onclick="addBrokerPercentageRow()" type="button"><i class="fa fa-plus"></i></button></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>${percentageRows}</tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row col-sm-6">
+                                        <div class="form-group" id="commission_fixed" style="">
+                                            <table class="table table-bordered broker-fixed-table" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="60%">Product Name</th>
+                                                        <th width="30%">Amount</th>
+                                                        <th width="10%"><button class="btn btn-success btn-xs" onclick="addBrokerFixedRow()" type="button"><i class="fa fa-plus"></i></button></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody> 
+                                                    ${fixedRows} 
+                                                    ${fixedProductRows} 
+                                                </tbody>
+                                            </table> 
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row"> 
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div> 
+                                </div> 
+                            </div> 
+                        </form>
+                    `;
 
                     document.getElementById('brokerDetails').innerHTML = brokerDetails;
                     $('#editModal').modal('show');
@@ -858,7 +921,7 @@
             return `
             <tr>
                 <td>
-                    <select name="percentage_type[]" class="form-control">
+                    <select name="percentage_type[]" class="form-control percentage_type">
                         <option value="">Select Type</option>
                         ${percentageTypes.map(percentageType => `
                                             <option value="${percentageType.id}" ${percentageType.id == item.percentage_type?.id ? 'selected' : ''}>${percentageType.name}</option>
@@ -871,51 +934,127 @@
         `;
         }
 
-        function createCommissionTypeHtml(commissionType, percentageTypes, brokerCommission, broker) {
+        function showFixedRow(item,percentageTypes) {
+         
             return `
-            <label><input name="commission_type" type="radio" value="0" class="ace" ${broker.commission_type == 0 ? 'checked' : ''} onchange="changeCommissionType(this)"> N/A</label>
-            <label><input name="commission_type" type="radio" value="1" class="ace" ${broker.commission_type == 1 ? 'checked' : ''} onchange="changeCommissionType(this)"> Percentage</label>
-            <label><input name="commission_type" type="radio" value="2" class="ace" ${broker.commission_type == 2 ? 'checked' : ''} onchange="changeCommissionType(this)"> Fixed</label>
-        `;
+                <tr>
+                    <td>
+                        <select class="form-control fixed_type" name="fixed_type[]">
+                            <option value="">Select Type</option>
+                            <option value="1" ${percentageTypes?.fixed_type ?? '' == 1 ? 'selected' : ''}>Invoice Wise</option>
+                            <option value="2" ${percentageTypes?.fixed_type ?? '' == 2 ? 'selected' : ''}>Monthly</option>
+                            <option value="3" ${percentageTypes?.fixed_type ?? '' == 3 ? 'selected' : ''}>Yearly</option>
+                            <option value="4" ${percentageTypes?.fixed_type ?? '' == 4 ? 'selected' : ''}>Festival-Eid</option>
+                            <option value="5" ${percentageTypes?.fixed_type ?? '' == 5 ? 'selected' : ''}>Festival-Durga Puja</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control input-sm" name="fixed[]" value="${percentageTypes?.fixed ?? item?.fixed ?? ''}" placeholder="Fixed"></td>
+                    <td><button type="button" class="btn btn-danger btn-xs" onclick="deleteFixedRow(this)"><i class="fa fa-trash"></i></button></td>
+                </tr>  
+            `;
+        }
+
+        function createFixedRow(item,percentageTypes) {
+         
+            return `
+                <tr>
+                    <td>
+                        <select class="form-control fixed_type" name="fixed_type[]">
+                            <option value="">Select Type</option>
+                            <option value="1">Invoice Wise</option>
+                            <option value="2">Monthly</option>
+                            <option value="3">Yearly</option>
+                            <option value="4">Festival-Eid</option>
+                            <option value="5">Festival-Durga Puja</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control input-sm" name="fixed[]" value="0" placeholder="Fixed"></td>
+                    <td><button type="button" class="btn btn-danger btn-xs" onclick="deleteFixedRow(this)"><i class="fa fa-trash"></i></button></td>
+                </tr>  
+            `;
+        }
+
+        function createFixedProductRow(item,products) {   
+            return `
+                <tr>
+                    <td>
+                        <select class="form-control borker_product_ids fixed_type" name="fixed_type[]">
+                            <option value=""  >--Select Product--</option> 
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control input-sm" name="fixed[]" value="0" placeholder="Fixed"></td>
+                    <td><button type="button" class="btn btn-danger btn-xs" onclick="deleteFixedRow(this)"><i class="fa fa-trash"></i></button></td>
+                </tr>  
+            `;
+        }
+
+        function showFixedProductRow(item,products) {   
+            return `
+                <tr>
+                    <td>
+                        <select class="form-control fixed_type" name="fixed_type[]">
+                            <option value="${item.fixed_type}"  >${ item.product.name }</option> 
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control input-sm" name="fixed[]" value="${products?.fixed ?? item?.fixed ?? ''}" placeholder="Fixed"></td>
+                    <td><button type="button" class="btn btn-danger btn-xs" onclick="deleteFixedRow(this)"><i class="fa fa-trash"></i></button></td>
+                </tr>  
+            `;
+        } 
+
+        function createCommissionTypeHtmlPercentage(commissionType, percentageTypes, brokerCommission, broker) {
+            return `
+
+            <input class="form-check-input ace" type="checkbox" name="commission_type[]" value="0" id="commission_n_a" 
+            ${broker.commission_type == 0 ? 'checked' : ''} onchange="changeCommissionType(this)" >
+            <label class="form-check-label" for="commission_n_a">
+                N/A
+            </label>
+
+            <input class="form-check-input ace" type="checkbox" name="commission_type[]" value="1" id="commission_percentage"
+                ${broker.commission_type == 1 ? 'checked' : ''} onchange="changeCommissionType(this)">
+            <label class="form-check-label" for="commission_percentage">
+            Percentage
+            </label>
+            `;
+        }
+        function createCommissionTypeHtmlFixed(commissionType, percentageTypes, brokerCommission, broker) {
+            return `
+            <input class="form-check-input ace" type="checkbox" name="commission_type[]" value="2" id="commission_fixed"
+                ${broker.commission_type == 1 ? 'checked' : ''} onchange="changeCommissionType(this)" >
+            <label class="form-check-label" for="commission_fixed">
+                Fixed
+            </label>`;
         }
 
         function createFixedTypeHtml(commission) {
             return `
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group mb-25">
-                        <label for="Fixed" class="color-dark fs-14 fw-500">Fixed Type</label>
-                        <select class="form-control" name="fixed_type">
+                <tr>
+                    <td>
+                        <select class="form-control" name="fixed_type[]">
                             <option value="1" ${commission?.fixed_type == 1 ? 'selected' : ''}>Invoice Wise</option>
                             <option value="2" ${commission?.fixed_type == 2 ? 'selected' : ''}>Monthly</option>
                             <option value="3" ${commission?.fixed_type == 3 ? 'selected' : ''}>Yearly</option>
                             <option value="4" ${commission?.fixed_type == 4 ? 'selected' : ''}>Festival-Eid</option>
                             <option value="5" ${commission?.fixed_type == 5 ? 'selected' : ''}>Festival-Durga Puja</option>
                         </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group mb-25">
-                        <label for="Fixed" class="color-dark fs-14 fw-500">Amount</label>
-                        <input type="number" class="form-control" name="fixed" value="${commission?.fixed || ''}" placeholder="Fixed">
-                    </div>
-                </div>
-            </div>
-        `;
+                    </td>
+                    <td><input type="text" class="form-control input-sm" name="fixed[]" value="${commission?.fixed || ''}" placeholder="Fixed"></td>
+                    <td><button type="button" class="btn btn-danger btn-xs" onclick="deleteFixedRow(this)"><i class="fa fa-trash"></i></button></td>
+                </tr>  
+            `;
         }
 
-        function changeCommissionType(radio) {
-            if (radio?.value == '1') {
-                $('#commission_percentage').show();
-                $('#commission_fixed').hide();
-            } else if (radio?.value == '2') {
-                $('#commission_percentage').hide();
-                $('#commission_fixed').show();
-            } else {
-                $('#commission_percentage').hide();
-                $('#commission_fixed').hide();
-
-            }
+        function changeCommissionType(el) {
+            if($(el).val() == "0" && $(el).is(":checked")){
+                // hide sections
+                $("#commission_percentage, #commission_fixed").prop("checked", false);
+                $(".broker-percentage-table, .broker-fixed-table").hide();
+            } else { 
+                // show sections
+                $("#commission_percentage, #commission_fixed").prop("checked", true); 
+                $(".broker-percentage-table, .broker-fixed-table").show();
+            } 
         }
 
         function addPercentageRow() {
@@ -929,8 +1068,93 @@
             var table = document.querySelector('.broker-percentage-table tbody');
             var newRow = document.createElement('tr');
             newRow.innerHTML = createPercentageRow({}, percentageTypes);
-            table.appendChild(newRow);
+            table.appendChild(newRow);  
+            duplicateCheck('percentage_type');
         }
+       
+
+        function addBrokerFixedRow() {
+
+            var tableBody = document.querySelector('.broker-fixed-table tbody');
+  
+            var table = document.querySelector('.broker-fixed-table tbody');
+            var newRow = document.createElement('tr');
+            
+             var rows = table.querySelectorAll('tr');
+
+            if(rows.length === 0){
+                newRow.innerHTML = createFixedRow({}, percentageTypes);
+            }else{
+                newRow.innerHTML = createFixedProductRow({}, percentageTypes);
+            }
+
+            table.appendChild(newRow);
+
+            // Attach TomSelect only to the select in this new row
+            const productSelectEl = newRow.querySelector('.borker_product_ids');
+            if(productSelectEl){
+                new TomSelect(productSelectEl, {
+                    valueField: "id",
+                    labelField: "text",
+                    searchField: [],
+                    load: function(query, callback){
+                        if(!query.length || query.length < 2) return callback();
+
+                        $.ajax({
+                            url: "{{ route('crm.autocomplete.products') }}",
+                            type: "GET",
+                            data: { search: query },
+                            success: function(res){
+                                productSelectEl.tomselect.clearOptions();
+                                callback(res.map(item => ({ id: item.id, text: item.label })));
+                            },
+                            error: function(){
+                                callback();
+                            }
+                        });
+                    }
+                });
+            }
+            duplicateCheck('fixed_type');
+        }
+         
+       function deleteFixedRow(object) {
+            var row = $(object).closest('tr');
+            var table = row.closest('tbody').find('tr'); // rows in this tbody
+            var rowIndex = table.index(row); // 0-based index
+
+           if(rowIndex === 0){
+                // First row → clear inputs/selects but do NOT remove
+                row.find('input').val('');
+
+                row.find('select').each(function(){
+                    if(this){
+                        this.selectedIndex = 0; // select first option
+
+                        if(this.tomselect){
+                            this.tomselect.setValue(this.options[0].value); // TomSelect first option
+                        }
+                    }
+                });
+            } else {
+                // Other rows → remove if more than 1 row exists
+                if(table.length > 1){
+                    row.remove();
+                } else {
+                    // fallback: clear if only one row left
+                    row.find('input').val('');
+                    row.find('select').each(function(){
+                        if(this){
+                            this.value = "";
+                            if(this.tomselect){
+                                this.tomselect.clear();
+                            }
+                        }
+                    });
+                }
+            }
+        }
+ 
 
         $(document).ready(function() {
             changeCommissionType($('input[name="commission_type"]:checked')[0]);
@@ -940,7 +1164,9 @@
         });
     </script>
     <script>
-        var percentageTypes = @json($percentageTypes);
+        var percentageTypes = @json($percentageTypes); 
+        var products = @json($products); 
+        
     </script>
     </script>
     <script>
@@ -1042,8 +1268,38 @@
                     $('#na').prop('checked', false);
                 }
                 toggleSections();
-            });
+            }); 
+            
+
         });
+
+        function duplicateCheck(el)
+        {
+            $("."+el).on("change", function() {
+                const selectedValue = $(this).val();
+                if(!selectedValue) return;
+
+                const allSelected = $("."+el).map(function(){
+                    return $(this).val();
+                }).get();
+
+                const duplicateCount = allSelected.filter(v => v === selectedValue).length;
+
+                if(duplicateCount > 1){
+                    // Inject error message inside modal-body
+                    const errorHtml = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> This item is already selected in another row.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+
+                    $("#brokerDetails").prepend(errorHtml); // show on top of modal content
+
+                    $(this).val(""); // reset current select
+                }
+            });
+        }
     </script>
     <script>
         // function addPercentageRow() {
@@ -1165,7 +1421,7 @@
                     table.rows[i].cells[0].innerHTML = i + 1;
                 }
             }
-
+ 
             window.handleProductTagChange = handleProductTagChange;
             window.addProductTag = addProductTag;
             window.deleteRow = deleteRow;

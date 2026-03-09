@@ -13,7 +13,9 @@ use Modules\Account\Models\EMIEntryDetail;
 use Modules\Account\Models\Payment;
 use Modules\Account\Models\Setup\Bank;
 use Modules\Account\Models\Setup\BankBranch;
+use Modules\Account\Models\Supplier;
 use Modules\Account\Services\ChequeVerificationService;
+use Modules\CRM\Models\Customer\Broker;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\HRMS\Models\Employee;
 use Modules\Purchase\Models\Vendor;
@@ -78,9 +80,19 @@ class CollectionService
             case 'vendor':
                 $from = Vendor::find($data['collection_from']);
                 break;
+            case 'supplier':
+                $from = Supplier::find($data['collection_from']);
+                break;
+            case 'broker':
+                $from = Broker::find($data['collection_from']);
+                break;
+            case 'employee':
+                $from = Employee::find($data['collection_from']);
+                break; 
             default:
                 # code...
-                break;
+                break; 
+
         }
         //   dd($from, $data['collection_type'], $data['collection_from']);
 

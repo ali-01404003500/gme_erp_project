@@ -856,6 +856,7 @@ class AccountGroupSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1,
             ],
+
             //Capital Account(liabilities)
             [
                 'id' => 2021,
@@ -1342,22 +1343,10 @@ class AccountGroupSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1
 
-            ],
+            ], 
             [
-                'id' => 5063,
-                'name' => 'MFS Charge Expense',
-                'account_group_id' => 5,
-                'account_control_id' => 5060,
-                'branch_id' => 1,
-                'status' => 1,
-                'is_deletable' => 0,
-                'created_by' => 1,
-                'updated_by' => 1
-
-            ],
-            [
-                'id' => 5064,
-                'name' => 'Bank Charge Expense',
+                'id' => 5065,
+                'name' => 'Bank Transaction Charge',
                 'account_group_id' => 5,
                 'account_control_id' => 5060,
                 'branch_id' => 1,
@@ -1653,6 +1642,28 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'account_number' => '2500',
             ],
+            [
+                'name' => 'MFS Charge Liability',
+                'account_group_id' => 2,
+                'account_control_id' => 2010,
+                'account_subsidiary_id' => 2014,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'account_number' => '201401', 
+            ],
+            [
+                'name' => 'Bank Charge Liability',
+                'account_group_id' => 2,
+                'account_control_id' => 2010,
+                'account_subsidiary_id' => 2014,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0, 
+                'account_number' => '201402',
+
+            ],
+
 
             // Equity
             [
@@ -1864,6 +1875,15 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'is_deletable' => 0,
                 'account_number' => '506401',
+            ],
+            [
+                'name'=>'Bank Transaction Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'account_subsidiary_id' => 5065,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '506501',
             ]
         ];
 
