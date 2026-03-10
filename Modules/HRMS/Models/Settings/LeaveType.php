@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\HRMS\Models\Settings;
 
 use App\Models\BaseModel;
@@ -10,18 +9,21 @@ use Modules\HRMS\Models\LeaveApplication;
 
 class LeaveType extends BaseModel
 {
-    use HasFactory;
-    use AutoCreateUpdateAndHistory;
-    use SoftDeletes;
+    use HasFactory, AutoCreateUpdateAndHistory, SoftDeletes;
 
     public $deletePrevent = ['leaveApplications'];
 
-
     protected $guarded = [];
 
-    
-    public function leaveApplications() {
+    // Boolean fields casting
+    protected $casts = [
+        'is_maternity'         => 'boolean',
+        'is_unpaid'            => 'boolean',
+        'is_partially_balance' => 'boolean',
+    ];
+
+    public function leaveApplications()
+    {
         return $this->hasMany(LeaveApplication::class, 'leave_type_id');
     }
-
 }

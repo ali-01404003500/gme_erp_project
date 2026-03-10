@@ -1,11 +1,10 @@
 <?php
-
 namespace Modules\HRMS\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Modules\HRMS\Models\LeaveAdjustment;
 use Modules\HRMS\Services\LeaveAdjustmentService;
-use Illuminate\Http\Request;
 
 class LeaveAdjustmentController extends Controller
 {
@@ -15,12 +14,12 @@ class LeaveAdjustmentController extends Controller
      *
      * @var LeaveAdjustmentService
      */
-    private $service; 
-    function __construct(LeaveAdjustmentService $service)
+    private $service;
+    public function __construct(LeaveAdjustmentService $service)
     {
         $this->service = $service;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -54,7 +53,7 @@ class LeaveAdjustmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $data['leaveAdjustment'] = $this->service->show($id);
 

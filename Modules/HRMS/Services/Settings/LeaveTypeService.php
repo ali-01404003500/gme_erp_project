@@ -1,16 +1,15 @@
 <?php
-
 namespace Modules\HRMS\Services\Settings;
 
 use Modules\HRMS\Models\Settings\LeaveType;
 
 class LeaveTypeService
 {
-    
-    public function getAll(int $limit = 20) {
-        return LeaveType::query()->paginate($limit);
+    public function getAll(int $limit = 20)
+    {
+        return LeaveType::query()->latest()->paginate($limit);
     }
-    
+
     public function store(array $data)
     {
         return LeaveType::create($data);
@@ -24,9 +23,8 @@ class LeaveTypeService
 
     public function delete(LeaveType $leaveType)
     {
-        $leaveType->delete();
+        return $leaveType->delete();
     }
-
     public function show($id)
     {
         return LeaveType::findOrFail($id);
