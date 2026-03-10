@@ -13,9 +13,9 @@ use Modules\Sales\Models\SalesOrder;
 
 class TargetService
 {
-    /**
+    /**============================================
      * Get all employees for dropdown
-     */
+     ============================================*/
     public function getAllEmployees()
     {
         return Employee::select('id', 'full_name as display_name')
@@ -59,7 +59,7 @@ class TargetService
                 continue;
             }
 
-            // ---------> Target Calculation
+            // ============================================> Target Calculation
             $totalRangeTarget = 0;
             $tempDate         = clone $startDateTime;
             while ($tempDate <= $endDateTime) {
@@ -77,7 +77,7 @@ class TargetService
                 }
             }
 
-            // --------> Achieved Sales
+            // ============================================> Achieved Sales
             $salesOrders  = SalesOrder::where('user_ref_id', $employee->id)
                 ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
                     $q->whereHas('product.tag', function ($q) use ($targetTagName) {
@@ -91,7 +91,7 @@ class TargetService
             $salesOrderIds = $salesOrders->pluck('id')->toArray();
             $achieved      = (float) ($salesDetails->sum('amount') - $salesDetails->sum('total_discount'));
 
-            // --------> Product Costing
+            // ============================================> Product Costing
             $totalcostPerStock = SalesOrder::where('status', 'delivered')
                 ->whereIn('id', $salesOrderIds)
                 ->with(['delivery' => function ($q) use ($targetTagName) {
@@ -109,7 +109,7 @@ class TargetService
                 }
             }
 
-            // --------> Collection
+            // ============================================> Collection
             $paidOrders = SalesOrder::where('user_ref_id', $employee->id)
                 ->where('paid_status', 'paid')
                 ->with(['salesOrderDetails' => function ($q) use ($targetTagName) {
@@ -123,7 +123,7 @@ class TargetService
             $paidSalesDetails = $paidOrders->pluck('salesOrderDetails')->flatten();
             $totalCollection  = (float) ($paidSalesDetails->sum('amount') - $paidSalesDetails->sum('total_discount'));
 
-            // --------> Salary Expense
+            // ============================================> Salary Expense
             $monthlyGross = (float) EmployeeSalary::where('employee_id', $employee->id)
                 ->where('status', 1)
                 ->where('effective_date', '<=', $endDateTime->format('Y-m-d'))
@@ -132,7 +132,7 @@ class TargetService
 
             $salaryExpense = $monthlyGross * $monthsInRange;
 
-            // --------> TA & DA calculation
+            // ============================================> TA & DA calculation
             $bills = BillsAndAllowance::where('employee_id', $employee->id)
                 ->where('status', 'team_leader_check')
                 ->with(['transportExpenses', 'generalExpenses'])
@@ -152,7 +152,7 @@ class TargetService
                 });
             }
 
-            // --------> Commission
+            // ============================================> Commission
             $totalCommission = 0;
             if (! empty($salesOrderIds)) {
                 $totalCommission = SalesCommission::whereIn('sales_order_id', $salesOrderIds)
@@ -186,17 +186,17 @@ class TargetService
         return $results;
     }
 
-    /**
+    /**============================================
      * Get all targets for setting index
-     */
+     ============================================*/
     public function getAllTargets()
     {
         return Target::with('employee')->orderBy('year', 'desc')->get();
     }
 
-    /**
+    /**============================================
      * Store multiple targets
-     */
+     ============================================*/
     public function storeMultipleTargets(array $targetsData)
     {
         return DB::transaction(function () use ($targetsData) {
@@ -230,9 +230,9 @@ class TargetService
         });
     }
 
-    /**
+    /**============================================
      * Delete target by ID
-     */
+     ============================================*/
     public function deleteTarget($id)
     {
         return Target::findOrFail($id)->delete();

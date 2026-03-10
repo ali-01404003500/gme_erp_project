@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->nullable();
+             $table->foreignId('holiday_id')->nullable()->constrained('holidays')
+             ->onDelete('cascade');
 
             $table->tinyInteger('status')->default(1);
             $table->softDeletes();
