@@ -237,6 +237,7 @@
         'hrm-settings-menu-title'=>'Settings',
         'hrm-settings-leave-types-menu-title'=>'Leave Type',
         'hrm-settings-shift-menu-title'=>'Shift',
+        'hrm-settings-hotspot-menu-title'=>'Hotspot Setup',
         'hrm-settings-holiday-menu-title'=>'Holiday',
         'hrm-settings-salary-menu-title'=>'Salary Setup',
         'hrm-settings-noticeboard-menu-title'=>'Notice board',

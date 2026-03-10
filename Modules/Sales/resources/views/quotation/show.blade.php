@@ -350,8 +350,17 @@
                                 '<br>Manufacturer: ' .
                                 optional(optional($quotationDetail->product->brand)->supplier)->company_name .
                                 '</div>';
-                            $descLength = strlen($description);
-                            $parted = splitHtmlString($description, 1700);
+                            // 2. Initialize Paginator
+                        $paginator = new Modules\Sales\Services\HTMLPaginatorService(600); // 1000px height per page
+
+                        // 3. Split Content
+                        $pages = $paginator->paginate($description);
+
+                        // 4. Loop through pages
+                        $parted = [];
+                        foreach ($pages as $page) {
+                            $parted[] = $page;
+                        }
                         @endphp
                         <tr style="page-break-inside: avoid;">
                             <td style="border: 1px solid black; text-align: center;">{{ $key + 1 }}</td>

@@ -28,6 +28,7 @@ use Modules\HRMS\Controllers\Settings\DepartmentController;
 use Modules\HRMS\Controllers\Settings\DesignationController;
 use Modules\HRMS\Controllers\Settings\ExpenseTypeController;
 use Modules\HRMS\Controllers\Settings\HolidayController;
+use Modules\HRMS\Controllers\Settings\HotspotController;
 use Modules\HRMS\Controllers\Settings\LeaveTypeController;
 use Modules\HRMS\Controllers\Settings\NoticeTypeController;
 use Modules\HRMS\Controllers\Settings\SalarySetupController;
@@ -90,6 +91,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('designations', DesignationController::class)->except(['show', 'edit', 'create']);
         Route::resource('salary-setups', SalarySetupController::class);
         Route::resource('appraisal-policies', AppraisalPolicyController::class)->except(['show', 'edit', 'create']);
+        Route::resource('hotspots', HotspotController::class)->except(['show', 'edit', 'create']);
     });
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {
         Route::resource('kpi-setups', KpiSetupController::class);

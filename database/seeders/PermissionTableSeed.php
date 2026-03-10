@@ -613,6 +613,32 @@ class PermissionTableSeed extends Seeder
                 'key' => 'hrm.settings.shifts',
             ],
 
+            // Settings: Hotspots
+            [
+                'name' => 'Hotspots List',
+                'slug' => 'hrm.settings.hotspots.index',
+                'description' => 'Hotspots list permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Create Hotspot',
+                'slug' => 'hrm.settings.hotspots.create',
+                'description' => 'Hotspot create permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Update',
+                'slug' => 'hrm.settings.hotspots.update',
+                'description' => 'Hotspot update permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Delete',
+                'slug' => 'hrm.settings.hotspots.destroy',
+                'description' => 'Hotspot delete permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+
             // Settings: Holidays
             [
                 'name' => 'Holidays List',
