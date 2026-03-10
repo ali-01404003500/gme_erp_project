@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::get('sales-orders-product-free-sales-invoice/view/{id}', [SalesOrderController::class, 'viewProductFreeSalesInvoice'])->name("sales-orders.product-free-sales-invoice.view");
     Route::get('sales-orders-autocomplete-customers', [SalesOrderController::class, 'customerAutocomplete']) ->name('sales-orders-autocomplete.customers');
     Route::get('sales-orders-autocomplete-products', [SalesOrderController::class, 'productAutocomplete']) ->name('sales-orders-autocomplete.products');
+    Route::get('sales-orders-references', [SalesOrderController::class, 'getReferences'])->name('sales-orders.references');
 
     // Sales Order Import Routes
     Route::group(['prefix' => 'sales-order-import'], function () {

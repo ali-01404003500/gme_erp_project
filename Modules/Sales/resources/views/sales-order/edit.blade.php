@@ -150,14 +150,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="reference_no">Reference No </label>
-                                                            <select name="reference_id" id="reference_no" class="form-control tom-select">
+                                                            <select name="reference_id" id="reference_no" class="form-control tom-select" data-default-value="{{ $salesOrder->reference_id ?? '' }}">
                                                                 <option value="">Choose Reference No</option>
-                                                                @foreach ($references as $reference)
-                                                                    <option value="{{ $reference->id }}"
-                                                                        {{ old('reference_id', $salesOrder->reference_id) == $reference->id ? 'selected' : '' }} data-customer_id="{{ $reference->customer_id }}">
-                                                                        {{ $reference->sales_order_id }} ({{  $reference->invoice_date }})
-                                                                    </option>
-                                                                @endforeach
                                                             </select>
                                                         </div>
                                                     </div>
@@ -654,9 +648,45 @@
 </script>
     <script>
         $(document).ready(function () {
+            let referencesLoaded = false;
+            
             function toggleReferenceSection() {
                 if ($('#free_sales').is(':checked')) {
                     $('#reference_section').show();
+                    
+                    // Load references via AJAX if not already loaded
+                    if (!referencesLoaded) {
+                        const referenceSelect = $('#reference_no');
+                        const referenceTomSelect = referenceSelect[0]?.tomselect;
+                        const defaultValue = referenceSelect.data('default-value');
+                        
+                        if (referenceTomSelect) {
+                            $.ajax({
+                                url: "{{ route('sales.sales-orders.references') }}",
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function (response) {
+                                    response.forEach(function (ref) {
+                                        referenceTomSelect.addOption({
+                                            value: ref.id,
+                                            text: ref.sales_order_id + ' (' + ref.invoice_date + ')',
+                                            customer_id: ref.customer_id
+                                        });
+                                    });
+                                    
+                                    // Set default value if exists
+                                    if (defaultValue && referenceTomSelect.options[defaultValue]) {
+                                        referenceTomSelect.setValue(defaultValue);
+                                    }
+                                    
+                                    referencesLoaded = true;
+                                },
+                                error: function (xhr) {
+                                    console.error('Error loading references:', xhr);
+                                }
+                            });
+                        }
+                    }
                 } else {
                     $('#reference_section').hide();
                 }
@@ -679,22 +709,18 @@
             const referenceTomSelect = referenceSelect[0].tomselect;
             const customerTomSelect = customerSelect[0].tomselect;
 
-            // Store original options
-            const originalReferenceOptions = referenceTomSelect.options;
-
-            // Function to filter references
-
             function filterReferences() {
                 const customerId = customerSelect.val();
                 const currentRefValue = referenceTomSelect.getValue();
 
+                // Get all available options from TomSelect
+                const allOptions = referenceTomSelect.options;
+                
                 referenceTomSelect.clearOptions();
 
+                for (const key in allOptions) {
+                    const option = allOptions[key];
 
-                for (const key in originalReferenceOptions) {
-                    const option = originalReferenceOptions[key];
-                    // console.log({option});
-                    
                     if (option.customer_id == customerId) {
                         referenceTomSelect.addOption(option);
                     }

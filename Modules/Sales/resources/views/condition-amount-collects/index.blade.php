@@ -48,7 +48,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                            <table id="zero-config" class="table dt-table-hover" style="width:100%" data-page='@include('utils.table_paginate', ['data' => $conditionAmountCollects])'>
                                 <thead>
                                     <tr>
                                         <th class="text-center no-content" style="width: 3%">
@@ -144,9 +144,9 @@
                                     </tfoot>
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-end mt-3">
+                            {{-- <div class="d-flex justify-content-end mt-3">
                                 {{ $conditionAmountCollects->links() }}
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>

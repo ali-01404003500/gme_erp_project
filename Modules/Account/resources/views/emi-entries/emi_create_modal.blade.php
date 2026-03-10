@@ -22,13 +22,13 @@
                                     <select name="customer_id" id="customer_select_id"
                                         class="form-control tom-select required" onchange="onChangeCustomer(this)" required>
                                         <option value="">{{ __('Select Customer') }}</option>
-                                        @foreach ($customers as $customer)
+                                        {{-- @foreach ($customers as $customer)
                                             <option value="{{ $customer->id }}"
                                                 {{ old('customer_id') == $customer->id ? 'selected' : '' }}
                                                 data-phone="{{ $customer->phone }}" data-address="{{ $customer->address }}">
                                                 {{ $customer->company_name??$customer->name }}
                                             </option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
                             </div>
