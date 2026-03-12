@@ -442,7 +442,7 @@ public function PDF(Request $request)
     $options->set('isRemoteEnabled', true);
     $options->set('isHtml5ParserEnabled', true);
     $options->set('defaultFont', 'DejaVu Sans'); // Supports Unicode/Bangla if needed
-
+    return $html;
     $dompdf = new Dompdf($options);
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');

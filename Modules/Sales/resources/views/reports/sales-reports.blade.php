@@ -234,9 +234,7 @@
                                                 $invoiceType = $item['invoice_type'];
                                                 $invoiceStatus = $item['invoice_status'];
                                                 // Calculate the actual row number considering pagination
-                                                $rowNumber =
-                                                    ($reportData->currentPage() - 1) * $reportData->perPage() +
-                                                    $loop->iteration;
+                                                $rowNumber = ($reportData->currentPage() - 1) * $reportData->perPage() + $loop->iteration;
                                             @endphp
                                             <tr class="{{ $invoiceType == 'Sales Return' ? 'table-warning' : '' }}">
                                                 <td class="text-center">{{ $rowNumber }}</td>
@@ -348,7 +346,7 @@
                                                     @endif
                                                 </td>
                                                 <td><!-- Updated commitment date column in the table body -->
-                                                
+
                                                     @if(isset($item['commitment_date']) && $item['commitment_date'])
                                                         {{ \Carbon\Carbon::parse($item['commitment_date'])->format('Y-m-d') }}
                                                     @else
@@ -427,15 +425,17 @@
                             </div>
 
                             <!-- Pagination -->
+                            @if(method_exists($reportData, 'links'))
                             <div class="mt-3 d-flex justify-content-between align-items-center">
                                 <div class="text-muted">
                                     Showing {{ $reportData->firstItem() ?? 0 }} to {{ $reportData->lastItem() ?? 0 }} of
-                                    {{ $reportData->total() }} entries
+                                    {{ $reportData->total() ?? 0 }} entries
                                 </div>
                                 <div>
                                     {{ $reportData->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
