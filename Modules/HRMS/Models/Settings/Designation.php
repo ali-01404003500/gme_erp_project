@@ -30,5 +30,4 @@ class Designation extends BaseModel
         return $this->belongsTo(Designation::class,'designation_id');
     }
 
-    
 }
