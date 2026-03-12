@@ -29,4 +29,6 @@ class Designation extends BaseModel
     public function approver(){
         return $this->belongsTo(Designation::class,'designation_id');
     }
+
+    
 }
