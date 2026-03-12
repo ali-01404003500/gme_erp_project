@@ -447,6 +447,26 @@
                 </li>
             @endif
 
+            {{-- ===================== Attendance Policies Menu ===================== --}}
+            @if (hasPermission('hrm.settings.attendance-policies.index'))
+                <li class="has-subchild {{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'open' : '' }}">
+                    <a href="#" class="{{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-clock"></span> {{-- Clock icon for attendance --}}
+                        <span class="menu-text">Attendance Settings</span>
+                        <span class="toggle-icon"></span>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('hrm.settings.attendance-policies.index') }}"
+                                class="{{ request()->routeIs('hrm.settings.attendance-policies.index') ? 'active' : '' }}">
+                                <span class="nav-icon fas fa-calendar-check" style="margin-right: 21px;"></span>
+                                Attendance Policy
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+
             @if (hasPermission('hrm.jobs.*'))
                 <li
                     class="has-subchild {{ request()->routeIs('hrm.jobs.*') || request()->routeIs('hrm.job-templates.*') || request()->routeIs('hrm.job-applications.*') ? 'open' : '' }}">
