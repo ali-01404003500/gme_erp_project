@@ -51,11 +51,11 @@ class SalesCommissionController extends Controller
         if (!$broker) {
             return view('Sales::sales-commissions.create', $data);
         }
-
+ 
         // Percentage Based
         if ($brokerCommissionType == 1) {
             $commissions = BrokerCommission::where('broker_id', $broker->id)->get()->keyBy('percentage_type');
-
+ 
             $query = SalesOrder::with(['details.product', 'customer'])
                 ->where('status', 'delivered')
                 ->whereIn('customer_id', $data['customerAttached']->pluck('customer_id')->toArray());
@@ -75,27 +75,53 @@ class SalesCommissionController extends Controller
                 $totalInvoiceCommission = 0;
                 $totalAmount = 0;
                 $invoiceBreakdown = [];
+                //dd($invoice->details);
+                foreach ($invoice->details as $detail) { 
+                    $fixedProductCommission = BrokerCommission::where('broker_id', $broker->id)->first();
 
-                foreach ($invoice->details as $detail) {
-                    $productTagId = optional($detail->product)->product_tag_id;
-                    // dd($detail);
-                    $amount = $detail->amount - $detail->total_discount ?? 0;
-
-                    if ($commissions->has($productTagId)) {
+                    if($fixedProductCommission->fixed_type == $detail->product_id)
+                    {
+                        $productTagId = $fixedProductCommission->fixed_type;
+                        $amount = $detail->amount - $detail->total_discount ?? 0;
+ 
                         $commission = $commissions->get($productTagId); 
-                        $commissionAmount = ($commission->percentage / 100) * $amount;
+                        $commissionAmount = $detail->quantity *  $fixedProductCommission->fixed;
 
                         $invoiceBreakdown[] = [
                             'product_id' => $detail->product_id,
                             'product_tag_id' => $productTagId,
                             'amount' => $amount,
-                            'percentage' => $commission->percentage,
+                            'percentage' => $fixedProductCommission->fixed,
                             'commission_amount' => $commissionAmount,
                         ];
 
                         $totalInvoiceCommission += $commissionAmount;
                         $totalAmount += $amount;
+                        
                     }
+                    else
+                    {
+                        $productTagId = optional($detail->product)->product_tag_id;
+                        $amount = $detail->amount - $detail->total_discount ?? 0;
+                       
+                        if ($commissions->has($productTagId)) {
+                            $commission = $commissions->get($productTagId); 
+                            $commissionAmount = ($commission->percentage / 100) * $amount;
+
+                            $invoiceBreakdown[] = [
+                                'product_id' => $detail->product_id,
+                                'product_tag_id' => $productTagId,
+                                'amount' => $amount,
+                                'percentage' => $commission->percentage,
+                                'commission_amount' => $commissionAmount,
+                            ];
+
+                            $totalInvoiceCommission += $commissionAmount;
+                            $totalAmount += $amount;
+                        } 
+                    }
+ 
+                   
                 }
                 // dd($invoice->customer->customerSetting->pluck('customerSettingDiscounts')->toArray());
                 if ($totalInvoiceCommission > 0) {
@@ -121,8 +147,8 @@ class SalesCommissionController extends Controller
             $fixedCommission = BrokerCommission::where('broker_id', $broker->id)->first();
             $from = $request->filled('from') ? Carbon::parse($request->from)->startOfMonth() : now()->startOfYear();
             $to = $request->filled('to') ? Carbon::parse($request->to)->endOfMonth() : now()->endOfYear();
-
-            switch ($fixedCommission?->fixed_type) {
+ 
+            switch ($fixedCommission?->fixed_type) { 
                 case 1: // Invoice-wise
                     $query = SalesOrder::with(['details.product', 'customer'])
                         ->where('status', 'delivered')
@@ -246,7 +272,9 @@ class SalesCommissionController extends Controller
                 }
 
                 $data['festivalCommission'] = $festivalCommission;
-                break;
+            break;
+ 
+
             }
         }
 
@@ -257,20 +285,20 @@ class SalesCommissionController extends Controller
      * Store a newly created resource in storage.
      */
    public function store(Request $request)
-{
-    $request->validate([
-        'broker_id' => 'required|exists:brokers,id',
-    ]);
+    {
+        $request->validate([
+            'broker_id' => 'required|exists:brokers,id',
+        ]);
 
-    if (!$request->has('id') || empty($request->id) || !is_array($request->id)) {
-        return redirect()->back()->with('error', 'At least one commission must be checked.');
+        if (!$request->has('id') || empty($request->id) || !is_array($request->id)) {
+            return redirect()->back()->with('error', 'At least one commission must be checked.');
+        }
+
+        $this->service->storeCommissions($request->broker_id, $request->id, $request->broker_bank_id);
+
+        return redirect()->route('sales.sales-commissions.create', ['broker_id' => $request->broker_id])
+            ->with('success', 'Commissions stored successfully.');
     }
-
-    $this->service->storeCommissions($request->broker_id, $request->id, $request->broker_bank_id);
-
-    return redirect()->route('sales.sales-commissions.create', ['broker_id' => $request->broker_id])
-        ->with('success', 'Commissions stored successfully.');
-}
 
 
     public function verify(Request $request)
