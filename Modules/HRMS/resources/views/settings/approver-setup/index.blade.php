@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layout.app')    
 
 @section('title', 'Employee Approver Management')
 
@@ -17,12 +17,12 @@
                         {{-- 1. Main Employee Selection --}}
                         <div class="row mb-4">
 
-                            <div class="col-md-12">
+                            <div class="col-md-12 justify-content-center">
 
                                 <form action="{{ route('hrm.settings.employee-approvers.store') }}" method="POST">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-5 offset-md-3">
                                             <!-- Step 1: Select Employee -->
                                             <div class="form-group">
                                                 <label class="form-label fw-bold">Select Employee <span
@@ -33,7 +33,7 @@
                                                     @foreach ($employees as $emp)
                                                         <option value="{{ $emp->id }}"
                                                             @if (request()->input('employee_id') == $emp->id) selected @endif>
-                                                            {{ $emp->full_name }} ({{ $emp->epf_number ?? 'N/A' }})
+                                                            {{ $emp->full_name }} 
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -43,34 +43,35 @@
 
 
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-5 offset-md-3">
                                             <div class="form-group">
                                                 <label class="form-label fw-bold">Select Approver From Here <span
                                                         class="text-danger">*</span></label>
                                                 <select class="form-select tom-select" id="approver-select"
                                                     name="approver_id">
-                                                    <option value="">-- Select Employee --</option>
+                                                    <option value="">-- Select Approver --</option>
                                                     @foreach ($employees as $emp)
-                                                        <option value="{{ $emp->id }}" data-designation="designation"
-                                                            data-epf_number = "{{ $emp->epf_number }}">
-                                                            {{ $emp->full_name }} ({{ $emp->epf_number ?? 'N/A' }})
+                                                        <option value="{{ $emp->id }}" data-designation="{{ $emp->employementDetail->designation->name }}">
+                                                            {{ $emp->full_name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3 d-flex align-items-end">
-                                            <button class="btn btn-xs btn-primary" id="add-new-approver" type="button">Add
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button class="btn btn-xs btn-primary mt-3" id="add-new-approver" type="button">Add
                                                 New</button>
                                         </div>
 
-                                        <div class="col-md-12">
+                                    
+
+                                        <div class="col-md-12 mt-5">
                                             <table class="table" id="approver-table">
                                                 <thead>
                                                     <tr>
                                                         <th>Hiarachy</th>
-                                                        <th>Approver Code</th>
+                                                        {{-- <th>Approver Code</th> --}}
                                                         <th>Approver Name</th>
                                                         <th>Designation</th>
                                                         <th>Action</th>
@@ -85,14 +86,15 @@
                                                                     name="approver_update_id[]"
                                                                     value="{{ $approver->id }}">
                                                                 {{ $approver->hierarchy_level }}</td>
-                                                            <td>{{ $approver->approver->full_name }}</td>
+
+                                                            {{-- <td>{{ $approver->approver->epf_number }}</td> --}}
                                                             <td>
                                                                 {{ $approver->approver->full_name }}
                                                                 <input type="hidden" class="approver_ids"
                                                                     name="approver_ids[]"
                                                                     value="{{ $approver->approver_id }}">
                                                             </td>
-                                                            <td>{{ $approver->approver->full_name }}</td>
+                                                            <td>{{ $approver->approver->employementDetail->designation->name ?? 'N/A' }}</td>
 
                                                             <td><button class="btn btn-danger remove"
                                                                     type="button">Remove</button></td>
@@ -146,28 +148,30 @@
                 $("#add-new-approver").click(function() {
                     //handle add button
                     const approverSelect = $("#approver-select").val()
-                    if (!approverSelect) {
-                        toastr.error('Please select an Approver First');
+                    const employeeSelect = $("#employeeSelect").val()
 
+                  if (!approverSelect || !employeeSelect) {
+                        toastr.error('Please select both Approver and Employee');
+                        
                         return
                     }
+
                     const approverOption = $("#approver-select").find('option:selected');
                     const approverId = approverSelect;
                     if ($('.approver_ids[value=\'' + approverId + '\']').length > 0) {
-                        toastr.error('This Employee already added');
+                        toastr.error('Approver already added');
 
                         return
 
                     }
                     const name = approverOption.text();
                     const designation = approverOption.data('designation');
-                    const epfNumber = approverOption.data('epf_number');
+                    // const epfNumber = approverOption.data('epf_number');
                     const approverTable = $("#approver-table");
                     approverTable.find('tbody').append($(`
 
                                                  <tr>
-                                                    <td>${ approverTable.find('tbody tr').length+1}</td>
-                                                    <td>${epfNumber}</td>
+                                                    <td>${ approverTable.find('tbody tr').length+1}</td>                                                    
                                                     <td>
                                                         ${name}
                                                         <input type="hidden" class="approver_ids" name="approver_ids[]" value="${approverId}">
@@ -182,6 +186,7 @@
 
                 })
 
+                // Another function
                 $('#employeeSelect').on("change", function() {
                     const employeeId = $(this).val()
                     if (employeeId) {
@@ -189,7 +194,8 @@
                     }
                 })
 
-
+                
+                //Another Function
                 $(document).on("click", ".remove", function() {
                     const row = $(this).closest('tr');
                     row.remove();
