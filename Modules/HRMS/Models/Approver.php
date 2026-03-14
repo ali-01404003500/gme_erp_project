@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\HRMS\Models\Settings\Designation;
 
 class Approver extends BaseModel
 {
@@ -21,6 +22,7 @@ public function employee(){
 public function approver(){
     return $this->belongsTo(Employee::class,'approver_id');
 }
+
 
    
 }

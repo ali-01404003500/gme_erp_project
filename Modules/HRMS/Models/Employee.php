@@ -36,7 +36,10 @@ class Employee extends BaseModel
         return $this->hasMany(Approver::class,'employee_id');
     }
 
-    
+    // public function designation(){
+    //     return $this->hasOne(Designation::class,'designation_id');
+    // }
+
     
 
     public function user()

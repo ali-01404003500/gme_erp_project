@@ -24,7 +24,6 @@ class EmployeeApproverController extends Controller
 
 
         $employees = Employee::where('status', 1)->orderBy('full_name')->get(['id', 'full_name', 'epf_number']);
-
         $approvers = Approver::where('employee_id', $employeeId)->orderBy('hierarchy_level')->get();
 
         return view('HRMS::settings.approver-setup.index', compact(
