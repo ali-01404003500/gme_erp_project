@@ -42,19 +42,19 @@
                                 <div class="row mb-4">
                                     <div class="col-md-4 mt-4"  @if(!isset($salesOrder->service_id)) style="display:none;" @endif>
                                         <div class="form-group">
-                                            <label for="service_id">Service Token ID <span class="text-danger">*</span></label>
-                                           <select name="service_id" id="service_id" class="form-control tom-select"
-                                            @if(!isset($selected_service_id)) disabled @endif>
-                                            <option value="">Choose Service Token ID</option>
-                                            @foreach ($services as $service)
-                                                <option value="{{ $service->id }}"
-                                                    data-customer-id="{{ @$service->serviceTokens->first()->customer_id }}"
-                                                    data-customer-name="{{ @$service->serviceTokens->first()->customer->company_name }}"
-                                                    {{ (old('service_id', $salesOrder->service_id) == $service->id ) ? 'selected' : '' }}>
-                                                    {{ $service->service_unique_id }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                            <label for="service_id">Service Token ID <span class="text-danger">*</span></label> 
+                                            <select name="service_id" id="service_id" class="form-control tom-select"
+                                                @if(!isset($selected_service_id)) disabled @endif>
+                                                <option value="">Choose Service Token ID</option>
+                                                @foreach ($services as $service)
+                                                    <option value="{{ $service->id }}"
+                                                        data-customer-id="{{ @$service->serviceTokens->first()->customer_id }}"
+                                                        data-customer-name="{{ @$service->serviceTokens->first()->customer->company_name }}"
+                                                        {{ (old('service_id', $salesOrder->service_id) == $service->id ) ? 'selected' : '' }}>
+                                                        {{ $service->service_unique_id }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
 
@@ -76,7 +76,7 @@
                                     <div class="col-md-6 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
-                                            <select name="customer_id" id="customer_id" class="form-control tom-select">
+                                            {{-- <select name="customer_id" id="customer_id" class="form-control tom-select">
                                                 <option value="">Choose Customer</option>
                                                 @foreach ($customers as $customer)
                                                     <option value="{{ $customer->id }}"
@@ -85,6 +85,12 @@
                                                        
                                                     </option>
                                                 @endforeach
+                                            </select> --}}
+
+                                            <select name="customer_id" id="customer_id" class="form-control"> 
+                                                <option value="{{ $salesOrder->customer->id }}" selected>
+                                                    {{ $salesOrder->customer->company_name }} - {{ $salesOrder->customer->area->area ?? '' }} 
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -144,14 +150,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="reference_no">Reference No </label>
-                                                            <select name="reference_id" id="reference_no" class="form-control tom-select">
+                                                            <select name="reference_id" id="reference_no" class="form-control tom-select" data-default-value="{{ $salesOrder->reference_id ?? '' }}">
                                                                 <option value="">Choose Reference No</option>
-                                                                @foreach ($references as $reference)
-                                                                    <option value="{{ $reference->id }}"
-                                                                        {{ old('reference_id', $salesOrder->reference_id) == $reference->id ? 'selected' : '' }} data-customer_id="{{ $reference->customer_id }}">
-                                                                        {{ $reference->sales_order_id }} ({{  $reference->invoice_date }})
-                                                                    </option>
-                                                                @endforeach
                                                             </select>
                                                         </div>
                                                     </div>
@@ -179,7 +179,7 @@
                                                                 <tr>
                                                                     <td>
                                                                         {{-- <input type="text" name="product_ids[]" id="product_id" class="form-control product_ids" placeholder="Product Name"> --}}
-                                                                        <select name="product_ids[]"
+                                                                        {{-- <select name="product_ids[]"
                                                                             class="form-control product_ids to-select">
                                                                             <option value="">Choose Product</option>
                                                                             @foreach ($products as $product)
@@ -187,7 +187,13 @@
                                                                                     {{ $product->name }}</option>
                                                                             @endforeach
 
-                                                                        </select>
+                                                                        </select> --}}
+
+                                                                        <select name="product_ids[]" class="form-control product_ids to-select">
+                                                                            <option value="{{ $salesOrderDetail->product_id}}" selected>
+                                                                                {{ $salesOrderDetail->product->name }}
+                                                                            </option> 
+                                                                        </select> 
                                                                         <input type="hidden" name="sales_order_detail_id[]" value="{{ $salesOrderDetail->id }}">
                                                                     </td>
                                                                     <td>
@@ -642,9 +648,45 @@
 </script>
     <script>
         $(document).ready(function () {
+            let referencesLoaded = false;
+            
             function toggleReferenceSection() {
                 if ($('#free_sales').is(':checked')) {
                     $('#reference_section').show();
+                    
+                    // Load references via AJAX if not already loaded
+                    if (!referencesLoaded) {
+                        const referenceSelect = $('#reference_no');
+                        const referenceTomSelect = referenceSelect[0]?.tomselect;
+                        const defaultValue = referenceSelect.data('default-value');
+                        
+                        if (referenceTomSelect) {
+                            $.ajax({
+                                url: "{{ route('sales.sales-orders.references') }}",
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function (response) {
+                                    response.forEach(function (ref) {
+                                        referenceTomSelect.addOption({
+                                            value: ref.id,
+                                            text: ref.sales_order_id + ' (' + ref.invoice_date + ')',
+                                            customer_id: ref.customer_id
+                                        });
+                                    });
+                                    
+                                    // Set default value if exists
+                                    if (defaultValue && referenceTomSelect.options[defaultValue]) {
+                                        referenceTomSelect.setValue(defaultValue);
+                                    }
+                                    
+                                    referencesLoaded = true;
+                                },
+                                error: function (xhr) {
+                                    console.error('Error loading references:', xhr);
+                                }
+                            });
+                        }
+                    }
                 } else {
                     $('#reference_section').hide();
                 }
@@ -667,22 +709,18 @@
             const referenceTomSelect = referenceSelect[0].tomselect;
             const customerTomSelect = customerSelect[0].tomselect;
 
-            // Store original options
-            const originalReferenceOptions = referenceTomSelect.options;
-
-            // Function to filter references
-
             function filterReferences() {
                 const customerId = customerSelect.val();
                 const currentRefValue = referenceTomSelect.getValue();
 
+                // Get all available options from TomSelect
+                const allOptions = referenceTomSelect.options;
+                
                 referenceTomSelect.clearOptions();
 
+                for (const key in allOptions) {
+                    const option = allOptions[key];
 
-                for (const key in originalReferenceOptions) {
-                    const option = originalReferenceOptions[key];
-                    // console.log({option});
-                    
                     if (option.customer_id == customerId) {
                         referenceTomSelect.addOption(option);
                     }
@@ -1020,16 +1058,13 @@
             rowTemplate.find('.discount_type_input').val('');
             rowTemplate.find('.to-select option:selected').removeAttr('selected');
             rowTemplate.find('#remove_row').removeClass('disabled').removeAttr('disabled');
+            rowTemplate.find('.product_ids option').remove(); 
 
 
             $("#product_info_table tbody tr:first-child").find('.to-select').each(function() {
                     new TomSelect(this, {});
             });
-
-
-          
-
-            
+ 
             
             function updatePaidStatus() {
                 // This function will calculate the paid status based on payment information
@@ -1065,18 +1100,18 @@
                 // Update the hidden paid_status field
                 $("#paid_status").val(paidStatus);
             }
-
-
-            $("#add_row").click(function() {
+ 
+            $("#add_row").click(function () {
                 const newRow = rowTemplate.clone();
-                newRow.find('.to-select').each(function() {
-                    new TomSelect(this, {});
-                });
+                
                 // Reset discount_type field in new row
                 newRow.find('.discount_type_input').val('');
                 $("#product_info_table tbody").append(newRow);
+
+                prouctAutocompleteLoad(newRow);
             });
 
+            
             $("#product_info_table tbody").on("keyup change", "#quantity, #price, #unit_discount", function() {
                 calculateTotals();
                 updatePaidStatus();
@@ -1575,7 +1610,105 @@
             // });
                 $('input[name="payments_due_amount"]').trigger('change');
             @endif
+
+
+            
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ request('customer_id') }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+
+
+            const productSelect = new TomSelect(".product_ids", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('product_ids'))
+                productSelect.addOption({
+                    id: "{{ request('product_ids') }}",
+                    text: "{{ request('product_ids') }}"
+                });
+                productSelect.setValue("{{ request('product_ids') }}");
+            @endif
         });
+    function prouctAutocompleteLoad(row){
+        const p = $(row).find(".product_ids");
+        const productSelect = new TomSelect(p[0], {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('product_ids'))
+            productSelect.addOption({
+                id: "{{ request('product_ids') }}",
+                text: "{{ request('product_ids') }}"
+            });
+            productSelect.setValue("{{ request('product_ids') }}");
+        @endif
+    }
     </script>
 
     @stack('script')

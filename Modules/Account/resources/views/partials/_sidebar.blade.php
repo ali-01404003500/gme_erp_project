@@ -318,6 +318,35 @@
                     </a>
                 </li>
             @endif
+            @if (hasPermission('account.online-deposit-verifications.index'))
+                <li>
+                    <a href="{{ route('account.online-deposit-verifications.index') }}"
+                        class="{{ request()->routeIs('account.online-deposit-verifications.index') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-receipt"></span>
+                        {{ t_('online deposit verifications') }}
+                    </a>
+                </li>
+            @endif
+
+            @if (hasPermission('account.mfs-verifications.index'))
+                <li>
+                    <a href="{{ route('account.mfs-verifications.index') }}"
+                        class="{{ request()->routeIs('account.mfs-verifications.index') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-receipt"></span>
+                        {{ t_('mfs verifications') }}
+                    </a>
+                </li>
+            @endif
+
+            @if (hasPermission('account.fund-transfers.index'))
+                <li>
+                    <a href="{{ route('account.fund-transfers.index') }}"
+                        class="{{ request()->routeIs('account.fund-transfers.index') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-receipt"></span>
+                        {{ t_('fund transfer') }}
+                    </a>
+                </li>
+            @endif
 
 
 
@@ -400,10 +429,33 @@
                                     {{ t_('menu.petty-cash-payments') }}
                                 </a>
                             </li>
-                        @endif
+                        @endif 
+
+                        @if (hasPermission('account.payments.loan-payment.index'))
+                            <li>
+                                <a href="{{ route('account.payments.loan-payment.index') }}"
+                                    class="{{ request()->routeIs('account.payments.loan-payment.*') ? 'active' : '' }}">
+                                    <span class="nav-icon fas fa-coins"></span>
+                                    {{ t_('menu.loan-payment') }}
+                                </a>
+                            </li>
+                        @endif 
+
+                        @if (hasPermission('account.payments.payment-verifications.index'))
+                            <li>
+                                <a href="{{ route('account.payments.payment-verifications.index') }}"
+                                    class="{{ request()->routeIs('account.payments.payment-verifications*') ? 'active' : '' }}">
+                                    <span class="nav-icon fas fa-coins"></span>
+                                    {{ t_('menu.payment-verifications') }}
+                                </a>
+                            </li>
+                        @endif 
+                        
                     </ul>
                 </li>
             @endif
+
+         
 
 
             @if (hasPermission('account.vendor-bills.*'))

@@ -38,15 +38,10 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="invoice_id">Invoice Id<span class="text-danger">*</span></label>
-                                        <select name="invoice_id" id="invoice_id" class="form-control tom-select">
-                                            <option value="">Choose Invoice Id</option>
-                                            @foreach ($invoices as $invoice)
-                                                <option value="{{ $invoice->id }}"
-                                                    {{ old('invoice_id', request()->invoice_id) == $invoice->id ? 'selected' : '' }}>
-                                                    {{ $invoice->sales_order_id}}-{{ optional($invoice->customer)->company_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <select name="invoice_id" id="invoice_id" class="form-control">
+                                            <option value="" >Select Invoice</option>
+                                        </select>  
+                                        <input type="hidden" id="invoice_number" name="invoice_number" readonly>
                                     </div>
                                     <div class="col-md-1">
                                         <label for="invoice_id"></label>
@@ -70,7 +65,7 @@
                                     <div class="col-md-4 mt-4">
                                         <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
                                         <input type="hidden" name="sales_order_id" id="sales_order_id" class="form-control" @if (request()->has('invoice_id')) value="{{ optional($salesOrder)->id ?? '' }}" @endif>
-                                        <input type="hidden" name="customer_id" id="customer_id" class="form-control"  @if (request()->has('invoice_id')) value="{{ optional($salesOrder)->customer_id ?? '' }}" @endif>
+                                        <input type="hidden" name="customer_id" id="customer_id" class="form-control d-none"  @if (request()->has('invoice_id')) value="{{ optional($salesOrder)->customer_id ?? '' }}" @endif>
                                         <input type="text" name="customer_name" id="customer_name" class="form-control"
                                             @if (request()->has('invoice_id')) value="{{ optional($salesOrder)->customer->company_name ?? '' }}" @endif
                                             readonly>
@@ -128,12 +123,10 @@
                                                                         <select name="product_ids[]"
                                                                             class="form-control product_ids to-select">
                                                                             <option value="">Choose Product</option>
-                                                                            @foreach ($products as $product)
-                                                                                <option value="{{ $product->id }}" @if($salesOrderDetail->product_id == $product->id) selected @endif>
-                                                                                    {{ $product->name }}</option>
-                                                                            @endforeach
-
-                                                                        </select>
+                                                                                <option value="{{ $salesOrderDetail->product_id}}" selected>
+                                                                                    {{ $salesOrderDetail->product->name }}
+                                                                                </option> 
+                                                                            </select>
                                                                         <input type="hidden" name="sales_order_detail_id[]" value="{{ $salesOrderDetail->id }}">
                                                                     </td>
                                                                     <td>
@@ -466,7 +459,7 @@ function clearFields() {
         rowTemplate.find('input').val('');
         rowTemplate.find('.to-select option:selected').removeAttr('selected');
         rowTemplate.find('#remove_row').removeClass('disabled').removeAttr('disabled');
-
+        rowTemplate.find('.product_ids option').remove(); 
 
         $("#product_info_table tbody tr:first-child").find('.to-select').each(function() {
                 new TomSelect(this, {});
@@ -511,13 +504,15 @@ function clearFields() {
             $("#net_amount").val(totalAmount - totalDiscount);
         }
 
-        $("#add_row").click(function() {
+        $("#add_row").click(function () {
             const newRow = rowTemplate.clone();
-            newRow.find('.to-select').each(function() {
-                new TomSelect(this, {});
-            });
+            
+            // Reset discount_type field in new row 
             $("#product_info_table tbody").append(newRow);
+
+            prouctAutocompleteLoad(newRow);
         });
+        
 
         $("#product_info_table tbody").on("keyup change", "#quantity, #price, #unit_discount", function() {
             calculateTotals();
@@ -571,8 +566,85 @@ function clearFields() {
                 $(this).removeClass('is-invalid');
             }
 
-        })
+        }) 
+
+        const invoiceIdSelect = new TomSelect("#invoice_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.invoice') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        invoiceIdSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label, number: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            },
+            onChange: function(value) { 
+                if (!value) return; 
+                let selected = this.options[value]; 
+                $('#invoice_number').val(selected.text);
+            }
+        }); 
+
+        @if(request('invoice_id') && request('invoice_number'))
+            invoiceIdSelect.addOption({
+                id: "{{ request('invoice_id') }}",          // submit value
+                text: "{{ request('invoice_number') }}"     // display label
+            });
+
+            invoiceIdSelect.setValue("{{ request('invoice_id') }}"); // MUST be ID
+        @endif
+
+
+        
+        
     });
+
+    function prouctAutocompleteLoad(row){
+        const p = $(row).find(".product_ids");
+        const productSelect = new TomSelect(p[0], {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('product_ids'))
+            productSelect.addOption({
+                id: "{{ request('product_ids') }}",
+                text: "{{ request('product_ids') }}"
+            });
+            productSelect.setValue("{{ request('product_ids') }}");
+        @endif
+    }
+
+    
 </script>
 
     <script>
@@ -667,7 +739,10 @@ function clearFields() {
                     // Show error message
                     showToast('error', 'An error occurred while fetching sales discount.');
                 }
+ 
+                
         }
+         
     </script>
 
 

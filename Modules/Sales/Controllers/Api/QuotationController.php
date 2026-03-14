@@ -61,7 +61,7 @@ class QuotationController extends Controller
      */
     public function create()
     {
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::get();
@@ -230,7 +230,7 @@ class QuotationController extends Controller
     public function edit(Quotation $quotation)
     {
         $data['quotation'] = $quotation;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::get();
@@ -243,7 +243,7 @@ class QuotationController extends Controller
     {
         $quotation = $this->service->show($id);
         $data['quotation'] = $quotation;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::get();

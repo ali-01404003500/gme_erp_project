@@ -32,7 +32,6 @@
                             @endif
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -138,7 +137,7 @@
                                 @foreach ($employees as $employee)
                                     <tr>
                                         <td>{{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration  }}</td>
-                                        <td>{{ $employee->employementDetail->card_no }}</td>
+                                        <td>{{ $employee->employementDetail?->card_no }}</td>
                                         <td>
                                             <a class="text-dark fw-500" href="{{ route('hrm.employees.show', $employee->id) }}">
                                                 {{ $employee->full_name }}
@@ -147,9 +146,8 @@
                                         {{-- <td>{{ $employee->full_name }}</td> --}}
                                         <td>{{ $employee->employementDetail->department->name ?? 'N/A' }}</td>
                                         <td>{{ $employee->employementDetail->designation->name ?? 'N/A' }}</td>
-                                        
                                         <td>{{ $employee->date_of_birth }}</td>
-                                        <td>{{ $employee->employementDetail->date_of_joining }}</td>
+                                        <td>{{ $employee->employementDetail?->date_of_joining }}</td>
                                         <td>{{ $employee->email_address }}</td>
                                         <td>{{ $employee->personal_mobile }}</td>
                                         <td>{{ $employee->status == 1 ? 'Active' : 'Inactive' }}</td>

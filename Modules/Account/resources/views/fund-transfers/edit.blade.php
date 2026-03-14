@@ -1,212 +1,246 @@
+ <!-- resources/views/i-o-u-requisition/i-o-u-requisition-entries/create.blade.php -->
+@section('title', 'Edit Fund Transfer')
+@section('description', 'Submit a Edit Fund Transfer')
 @extends('layout.app')
-@section('title', 'Fund Transfer Edit')
-@section('page-header')
-    <i class="fa fa-list"></i> Fund Transfer Edit
-@stop
-@push('style')
-    <link rel="stylesheet" href="{{ asset('assets/css/chosen.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datepicker3.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('assets/custom_css/chosen-required.css') }}"/>
-    <style>
-        td {
-            padding-bottom: 3px !important;
-            padding-top: 3px !important;
-        }
-    </style>
-@endpush
-
 @section('content')
-    <div class="row">
-        <div class="col-sm-10 col-sm-offset-1">
-
-        <x-error-alart />
-
-        <!-- heading -->
-            <div class="widget-box widget-color-white ui-sortable-handle clearfix" id="widget-box-7">
-                <div class="widget-header widget-header-small">
-                    <h3 class="widget-title smaller text-primary">
-                        @yield('page-header')
-                    </h3>
-
-                    <div class="widget-toolbar border smaller" style="padding-right: 0 !important">
-                        <div class="pull-right tableTools-container" style="margin: 0 !important">
-                            <div class="dt-buttons btn-overlap btn-group">
-                                <a href="{{ route('account.fund-transfers.index') }}"
-                                   class="dt-button btn btn-white btn-info btn-bold" title="List" data-toggle="tooltip"
-                                   tabindex="0" aria-controls="dynamic-table">
-                                    <span>
-                                        <i class="fa fa-list bigger-110"></i>
-                                    </span>
-                                </a>
-                            </div>
+<div class="container-fluid">
+    <div class="social-dash-wrap">
+        <!-- Breadcrumb -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-main">
+                    <div class="breadcrumb-action justify-content-center flex-wrap">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="las la-home"></i> Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('account.fund-transfers.index') }}">{{ trans('menu.fund-transfer-list') }}</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ trans('menu.edit-fund-transfers') }}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="breadcrumb-main__wrapper">
+                        <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
+                            <a href="{{ route('account.fund-transfers.index') }}" class="btn btn-outline-secondary btn-sm">
+                                <i class="las la-arrow-left fs-16"></i> Back
+                            </a>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="space"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="text-capitalize breadcrumb-title">{{ trans('menu.update-fund-transfers') }}</h4>
+            </div>
 
-                <!-- INPUTS -->
-                <form action="{{route('account.fund-transfers.update', $fundTransfer->id)}}" method="post">
-                    @csrf @method('PUT')
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body"> 
+                        <form method="POST" action="{{ route('account.fund-transfers.update', $fundTransfer->id) }}" enctype="multipart/form-data">
+                            @csrf 
+                            @method('PUT')
+                            <div class="row g-3">
 
-                    <div class="row" style="width: 100%; margin: 0 0 20px !important;">
-                        <div class="col-sm-12 px-4">
-
-
-                        <!-- Date -->
-                        @include('Account::includes.inputs.date-field', ['name' => 'date', 'is_required' => 'required', 'value' => $fundTransfer->date])
-
-                        <!-- From Account -->
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3" for="account_id">
-                                    <b>
-                                        From Account <sup class="text-danger">*</sup>
-                                        <span class="text-success">(<span
-                                                class="from-text-account-balance">0</span>)</span>
-                                    </b>
-                                </label>
-
-                                <div class="col-sm-9">
-                                    <select id="from_account_id" name="from_account_id"
-                                            class="chosen-select-100-percent" data-placeholder="- Select Account -"
-                                            onchange="onChangeAccountId(this)" required>
-                                        <option value=""></option>
-
-                                        @foreach($accounts as $account)
-                                            <option value="{{ $account->id }}"
-                                                    data-balance="{{ $account->balance ?? 0 }}"
-                                                {{ oldSelect('account_id', $account->id) }}
-                                                {{ $account->id == $fundTransfer->from_account_id ? 'selected' : '' }}>
-                                                {{ $account->name }}
-                                            </option>
-                                        @endforeach
+                                <!-- Type -->
+                                <div class="col-md-4">
+                                    <label for="transfer_type" class="form-label">Transfer Type <span class="text-danger">*</span></label>
+                                    <select name="transfer_type" id="transfer_type" class="form-control tom-select" required>
+                                        <option value="">Select Type</option>
+                                        <option value="bank_to_bank" {{ $fundTransfer->transfer_type == 'bank_to_bank' ? 'selected' : '' }} >Bank to Bank</option>
+                                        <option value="bank_to_cash" {{ $fundTransfer->transfer_type == 'bank_to_cash' ? 'selected' : '' }}>Bank to Cash</option>
+                                        <option value="cash_to_bank" {{ $fundTransfer->transfer_type == 'cash_to_bank' ? 'selected' : '' }}>Cash to Bank</option>
+                                        <option value="bkash_to_bank" {{ $fundTransfer->transfer_type == 'bkash_to_bank' ? 'selected' : '' }}>Bkash to Bank</option> 
                                     </select>
                                 </div>
-                            </div>
 
-                            <!-- To Account -->
-                            <div class="form-group row">
-                                <label class="control-label col-sm-3" for="account_id">
-                                    <b>
-                                        To Account <sup class="text-danger">*</sup>
-                                        <span class="text-success">(<span
-                                                class="to-text-account-balance">0</span>)</span>
-                                    </b>
-                                </label>
+                                <!-- status -->
+                                <input type="hidden" name="status" id="status" value="{{ $fundTransfer->status}}" > 
 
-                                <div class="col-sm-9">
-                                    <select id="to_account_id" name="to_account_id"
-                                            class="chosen-select-100-percent" data-placeholder="- Select Account -"
-                                            onchange="onChangeAccountId(this)" required>
-                                        <option value=""></option>
+                                <!-- Date -->
+                                <div class="col-md-4">
+                                    <label for="transfer_date" class="form-label">Date <span class="text-danger">*</span></label>
+                                    <input type="text" name="transfer_date" id="transfer_date" class="form-control flatdate" value="{{ $fundTransfer->transfer_date }}" required readonly>
+                                </div>
+                                
 
-                                        @foreach($accounts as $account)
-                                            <option value="{{ $account->id }}"
-                                                    data-balance="{{ $account->balance ?? 0 }}"
-                                                {{ oldSelect('account_id', $fundTransfer->to_account_id) }}
-                                                {{ $account->id == $fundTransfer->to_account_id ? 'selected' : '' }}>
-                                                {{ $account->name }}
-                                            </option>
-                                        @endforeach
+                                <!-- Sender A/C -->
+                                <div class="col-4">
+                                    <label class="form-label">Sender A/C</label>
+                                    <select name="transfer_from" id="transfer_from" class="form-control tom-select" required>
+                                        <option value="">Sender A/C</option>
+                                  
                                     </select>
                                 </div>
+
+                                <!-- Receiver A/C -->
+                                <div class="col-4">
+                                    <label class="form-label">Receiver A/C</label>
+                                    <select name="transfer_to" id="transfer_to" class="form-control tom-select" required>
+                                        <option value="">Receiver A/C</option>
+                                    
+                                    </select>
+                                </div>
+
+                                <!-- Cheque Date -->
+                                <div class="col-md-4 cheque">
+                                    <label for="cheque_date" class="form-label">Cheque Date</label>
+                                    <input type="text" name="cheque_date" id="cheque_date" class="form-control flatdate" value="{{ $fundTransfer->cheque_date }}" readonly>
+                                </div>
+
+                                <!-- Cheque No -->
+                                <div class="col-md-4 cheque">
+                                    <label for="cheque_no" class="form-label">Cheque No</label>
+                                    <input type="text" name="cheque_no" id="cheque_no" class="form-control" value="{{ $fundTransfer->cheque_no }}">
+                                </div> 
+
+                                <!-- Amount -->
+                                <div class="col-md-4">
+                                    <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
+                                    <input type="number" step="1000" name="amount" id="amount" class="form-control" value="{{ $fundTransfer->amount }}" required>
+                                </div>
+
+                                <!-- Charge -->
+                                <div class="col-md-4">
+                                    <label for="charge" class="form-label">Charge <span class="text-danger"></span></label>
+                                    <input type="number" name="charge" id="charge" class="form-control" value="{{ $fundTransfer->charge }}">
+                                </div>
+
+                                <!-- Remarks -->
+                                <div class="col-md-4">
+                                    <label for="remarks" class="form-label">Remarks <span class="text-danger">*</span></label>
+                                    <input type="text" name="remarks" id="remarks" class="form-control" value="{{ $fundTransfer->remarks }}" required>
+                                </div>
+                                
+                                <!-- Remarks -->
+                                <div class="col-md-4">
+                                    <label for="attachments" class="form-label">Attachment</label> 
+                                    <x-file-uploader  name="attachments" :value="$fundTransfer->attachments"
+                                            id="attachments" />
+                                </div>
+ 
                             </div>
 
+                            <!-- Action Buttons -->
+                            <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                <div class="btn-group">
 
-                            <!-- Description -->
-                        @include('Account::includes.inputs.input-field', ['name' => 'description', 'is_required' => 1, 'value' => $fundTransfer->description])
+                                    @if(hasPermission('account.fund-transfers.verify') && $fundTransfer->status=='pending')
+                                        <button type="submit" class="btn btn-sm btn-success save-btn" >
+                                            <i class="fa fa-save"></i> Update
+                                        </button>
+                                    @endif
+                                    @if(hasPermission('account.fund-transfers.verify') && request()->input('action')=='verify')
+                                        <button type="submit" class="btn btn-sm btn-warning save-btn" id="action_verify">
+                                            <i class="fa fa-check"></i>Update & Verify
+                                        </button>
+                                    @endif
+                                    @if(hasPermission('account.fund-transfers.approve')&& request()->input('action')=='approve')
+                                        <button type="submit" class="btn btn-sm btn-success save-btn" id="action_approve">
+                                            <i class="fa fa-check"></i>Update & Approve
+                                        </button>
+                                    @endif
+                                    @if((hasPermission('account.fund-transfers.verify') || hasPermission('account.fund-transfers.approve') ) && request()->filled('action'))
+                                        <button type="submit" class="btn btn-sm btn-danger save-btn" id="action_deny">
+                                            <i class="fa fa-times"></i>Deny
+                                        </button>
+                                    @endif
 
-                        <!-- Reference -->
-                        @include('Account::includes.inputs.input-field', ['name' => 'reference', 'value' => $fundTransfer->reference])
-
-                        <!-- Amount -->
-                        @include('Account::includes.inputs.input-field', ['name' => 'amount', 'is_number' => true, 'is_required' => 1, 'value' => $fundTransfer->amount])
-
-                        <!-- Submit -->
-                            <button class="btn btn-primary btn-sm pull-right save-btn" disabled><i
-                                    class="fa fa-save"></i> Save
-                            </button>
-                        </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
-
+                </div>
             </div>
         </div>
     </div>
-
-
+</div>
 @endsection
 
-@section('js')
-    <script src="{{ asset('assets/js/chosen.jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap-datepicker.min.js') }}"></script>
-    
-    
-    <script src="{{ asset('assets/custom_js/chosen-box.js') }}"></script>
-    <script src="{{ asset('assets/custom_js/date-picker.js') }}"></script>
+@section('page_scripts')
+  
+<script>
+$(document).ready(function() {
 
-    <script>
-        const saveButton = $('.save-btn');
+    $('#transfer_type').on('change', function() {
 
-        const fromAccountId = $('#from_account_id');
-        const toAccountId = $('#to_account_id');
-        const amount = $('#amount');
+        let transferType = $(this).val();
+        
+        const transferFromTomSelect = $("#transfer_from").prop('tomselect');
+        const transferToTomSelect = $("#transfer_to").prop('tomselect');
 
-        $(document).ready(function () {
-            fromAccountId.change(function () {
-                let balance = Number($(this).find('option:selected').data('balance'));
+        if(transferType != '') {
+          
+            if(transferType=="bkash_to_bank" || transferType=="cash_to_bank") 
+                $(".cheque").addClass('d-none');
+            else
+                $(".cheque").removeClass('d-none');
 
-                if ($(this).val() == '{{$fundTransfer->from_account_id}}')
-                    balance += {{$fundTransfer->amount}};
+            $.ajax({
+                url: "{{ route('account.fund-transfers.getAccounts') }}",
+                type: "GET",
+                data: {
+                    transfer_type: transferType
+                },
+                success: function(response) {
+                    transferFromTomSelect.clear();
+                    transferFromTomSelect.clearOptions();
+                    if (response.sender_accounts && response.sender_accounts.length > 0) {
+                        // The controller should return an array of objects with 'id' and 'name'
+                        response.sender_accounts.forEach(function(item) {
+                            transferFromTomSelect.addOption({
+                                value: item.id,
+                                text: item.account_name
+                            });
+                        });
+                        let transferFrom = @json($fundTransfer->transfer_from);
 
-                $('.from-text-account-balance').text(Number(balance).toFixed())
-            })
+                        if (transferFrom) {
+                            transferFromTomSelect.setValue(transferFrom);
+                        }
+                    }
 
-            toAccountId.change(function () {
-                let balance = Number($(this).find('option:selected').data('balance'));
+                    if (response.receiver_accounts && response.receiver_accounts.length > 0) {
+                        transferToTomSelect.clear();
+                        transferToTomSelect.clearOptions();
+                        // The controller should return an array of objects with 'id' and 'name'
+                        response.receiver_accounts.forEach(function(item) {
+                            transferToTomSelect.addOption({
+                                value: item.id,
+                                text: item.account_name
+                            });
+                        });
+                        let transferTo = @json($fundTransfer->transfer_to);
 
-                if ($(this).val() == '{{$fundTransfer->from_account_id}}')
-                    balance -= {{$fundTransfer->amount}};
-
-                $('.to-text-account-balance').text(Number(balance).toFixed())
-            })
-
-            amount.keyup(function () {
-                const fromAccountBalance = Number($('.from-text-account-balance').text());
-
-                if (Number($(this).val()) > fromAccountBalance) {
-                    $(this).val(fromAccountBalance);
-                    showAlertMessage('Insufficient balance!', 3000);
+                        if (transferTo) {
+                            transferToTomSelect.setValue(transferTo);
+                        }
+                    }
+                     
+                     
                 }
-            })
-
-            fromAccountId.trigger('change');
-            toAccountId.trigger('change');
-        });
-
-        $('#balance_type').change(checkSaveButton)
-
-        $('#date').change(checkSaveButton)
-
-        $('#description').keyup(checkSaveButton)
-
-        function checkSaveButton() {
-            saveButton.attr('disabled', false)
-
-            if ($('#date').val() == '') {
-                saveButton.attr('disabled', true)
-            }
-
-            if ($('#description').val() == '') {
-                saveButton.attr('disabled', true)
-            }
+            });
         }
+   
 
-        function onChangeAccountId(el) {
-            if (fromAccountId.val() == toAccountId.val() && fromAccountId.val() != '') {
-                showAlertMessage('Select different account!', 3000);
-                $(el).val('').trigger('chosen:updated');
-            }
-        }
-    </script>
+    });
+    $('#transfer_type').trigger('change');
+ 
+    $('#action_verify').click(function() {
+        $("#status").val("verified");
+    });
+
+    $('#action_approve').click(function() {
+        $("#status").val("approved");
+    });
+
+    $('#action_deny').click(function() {
+        $("#status").val("denied");
+    });
+
+  
+ 
+});
+</script>
+
 @endsection

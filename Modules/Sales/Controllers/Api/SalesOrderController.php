@@ -456,7 +456,7 @@ class SalesOrderController extends Controller
         return response()->json(["count" => $this->service->countTotalSales(), "current_month" => $this->service->countTotalSalesCurrentMonth(), "previous_month" => $this->service->countTotalSalesPreviousMonth()]);
     }
 
-//get all sales order with ids
+    //get all sales order with ids
     public function getAllSalesOrder()
     {
         $request = request();

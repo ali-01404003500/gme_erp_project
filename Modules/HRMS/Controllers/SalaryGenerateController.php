@@ -23,29 +23,28 @@ class SalaryGenerateController extends Controller
      *
      * @var SalaryGenerateService
      */
-    private $service; 
+    private $service;
     private $transactionService;
     function __construct(SalaryGenerateService $service, AccountTransactionService $transactionService)
     {
         $this->service = $service;
         $this->transactionService = $transactionService;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
 
-     public function payrolls(){
+    public function payrolls()
+    {
         $data['payrolls'] = Payroll::latest()
-        ->searchByFields(['department_id','year_month'])	
-        ->paginate(20);
+            ->searchByFields(['department_id', 'year_month'])
+            ->paginate(20);
         $data['departments'] = Department::where('status', 1)->get();
 
 
         return view("HRMS::payroll.salary-generates.payrolls", $data);
-    
-
-     }
+    }
     public function index()
     {
         $data['salaryGenerates'] = $this->service->getAll();
@@ -69,16 +68,18 @@ class SalaryGenerateController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        $salaries = EmployeeSalary::whereRaw(DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME) == 'pgsql'
-            ? "to_char(effective_date, 'YYYY-MM') <= ?"
-            : "DATE_FORMAT(effective_date, '%Y-%m') <= ?"
-        , $request->year_month)
+        $salaries = EmployeeSalary::whereRaw(
+            DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME) == 'pgsql'
+                ? "to_char(effective_date, 'YYYY-MM') <= ?"
+                : "DATE_FORMAT(effective_date, '%Y-%m') <= ?",
+            $request->year_month
+        )
             ->latest('effective_date')
             ->whereHas('employee', function ($q) use ($request) {
                 $q->whereDoesntHave('salaryGenerates', function ($q) use ($request) {
                     $q->where('year_month', $request->year_month);
                 });
-                
+
                 if ($request->department_id != null) {
                     $q->whereHas('employementDetails', function ($q) use ($request) {
                         $q->where('department_id', $request->department_id);
@@ -90,7 +91,7 @@ class SalaryGenerateController extends Controller
             ->unique('employee_id');
 
         $data = [];
-        if($salaries->count() == 0) {
+        if ($salaries->count() == 0) {
             return redirect()->route('hrm.payrolls')->with('error', 'No employee found or salary already generated for this month.');
         }
         foreach ($salaries as $salary) {
@@ -116,7 +117,7 @@ class SalaryGenerateController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $data['salaryGenerate'] = $this->service->show($id);
 
@@ -139,7 +140,7 @@ class SalaryGenerateController extends Controller
     public function update(Request $request, SalaryGenerate $salaryGenerate)
     {
         $validate = $request->validate([
-           'employee_id' => 'required|integer|exists:employees,id',
+            'employee_id' => 'required|integer|exists:employees,id',
             'basic' => 'required|numeric',
             'house_rent' => 'required|numeric',
             'medical' => 'nullable|numeric',
@@ -182,26 +183,26 @@ class SalaryGenerateController extends Controller
     public function paid(Request $request, $id)
     {
         DB::beginTransaction();
-    
+
         $salaryGenerate = SalaryGenerate::find($id);
         $salaryGenerate->status = 'Paid';
         $salaryGenerate->pay_date = date('Y-m-d');
-    
+
         $salaryGenerate->salaryGeneratePayments()->create([
             'amount' => $salaryGenerate->net_earning,
             'pay_date' => date('Y-m-d'),
         ]);
         $salaryGenerate->save();
-        
+
         $creditAccountId = $request->credit_account_id;
         $this->makeTransaction($salaryGenerate, $creditAccountId, $salaryGenerate->net_earning);
-    
+
         DB::commit();
         return redirect()->back()->with('success', 'Salary paid successfully');
     }
-    
 
-   
+
+
     public function partiallyPaid(Request $request, $id)
     {
         DB::beginTransaction();
@@ -224,71 +225,71 @@ class SalaryGenerateController extends Controller
         return redirect()->back()->with('success', 'Salary partially paid successfully.');
     }
 
-  
+
 
 
     public function paidAll(Request $request)
     {
         DB::beginTransaction();
-    
+
         $ids = $request->input('id');
         $status = $request->input('status');
         $creditAccountId = $request->credit_account_id;
-    
+
         SalaryGenerate::whereIn('id', $ids)->update([
             'status' => $status,
             'pay_date' => date('Y-m-d')
         ]);
-    
+
         foreach ($ids as $id) {
             $salaryGenerate = SalaryGenerate::find($id);
-            
+
             $totalPaidAmount = $salaryGenerate->salaryGeneratePayments()->sum('amount') ?? 0;
             $remainingAmount = $salaryGenerate->net_earning - $totalPaidAmount;
-    
+
             if ($remainingAmount > 0) {
                 $salaryGenerate->salaryGeneratePayments()->create([
                     'amount' => $remainingAmount,
                     'pay_date' => date('Y-m-d'),
                 ]);
-    
+
                 // Call transaction function inside the loop with correct amount
                 $this->makeTransaction($salaryGenerate, $creditAccountId, $remainingAmount);
             }
         }
-    
+
         DB::commit();
         return response()->json(['message' => 'Salaries updated successfully!']);
     }
-    
+
     public function partiallyPaidAll(Request $request)
     {
         DB::beginTransaction();
-    
+
         $ids = $request->input('id');
         $status = $request->input('status');
-        $amount = $request->input('amount');        
+        $amount = $request->input('amount');
         $creditAccountId = $request->credit_account_id;
-    
+
         SalaryGenerate::whereIn('id', $ids)->update([
             'status' => $status,
             'pay_date' => date('Y-m-d'),
         ]);
-    
+
         foreach ($ids as $id) {
             $salaryGenerate = SalaryGenerate::find($id);
-            
+
             if ($amount > 0) {
                 $salaryGenerate->salaryGeneratePayments()->create([
                     'amount' => $amount,
                     'pay_date' => date('Y-m-d'),
                 ]);
-    
+
                 // Call transaction function inside the loop with correct amount
                 $this->makeTransaction($salaryGenerate, $creditAccountId, $amount);
             }
         }
-    
+
         DB::commit();
         return response()->json(['message' => 'Salaries updated successfully!']);
     }
@@ -299,7 +300,7 @@ class SalaryGenerateController extends Controller
         $transactionable_id = $salaryGenerate->id;
         $invoice_no = $salaryGenerate->id;
 
-        $invoice_link = $invoice_no ;
+        $invoice_link = $invoice_no;
         $description = 'Salary Payment';
 
         $this->transactionService->storeTransaction(
@@ -326,6 +327,4 @@ class SalaryGenerateController extends Controller
             $description
         );
     }
-
-    
 }

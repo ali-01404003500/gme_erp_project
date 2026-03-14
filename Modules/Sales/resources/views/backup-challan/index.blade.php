@@ -45,15 +45,10 @@
                                 <div class="col-sm-12">
                                     <table class="table table-bordered">
                                         <tr>
-                                            <td class="text-center">
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select"
+                                            <td class="text-start">
+                                                <select name="customer_id" id="customer_id" class="form-control"
                                                     data-placeholder="Select Customer">
-                                                    <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ optional($value)->company_name }}</option>
-                                                    @endforeach
+                                                    <option value="">Select Customer</option>
                                                 </select>
                                             </td>
                                             <td>
@@ -283,5 +278,44 @@
 @endsection
 @section('page_scripts')
 
+    <script>
+        $(".datePicker").datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+        });
 
+
+        $(document).ready(function () {
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.text, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ request('customer_id') }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+        }); 
+    </script>
 @endSection

@@ -27,6 +27,8 @@ use Modules\Account\Controllers\InvoiceWisePaymentController;
 use Modules\Account\Controllers\IOURequisition\IOURequisitionEntryController;
 use Modules\Account\Controllers\JournalVoucherController;
 use Modules\Account\Controllers\MakePayment\PaymentController;
+use Modules\Account\Controllers\MFSVerificationController;
+use Modules\Account\Controllers\OnlineDepositVerificationController;
 use Modules\Account\Controllers\Payments\BrokerPaymentController;
 use Modules\Account\Controllers\Payments\MakePaymentController;
 use Modules\Account\Controllers\Payments\PettyCashPaymentController;
@@ -44,6 +46,10 @@ use Modules\Account\Controllers\UnitController;
 use Modules\Account\Controllers\VendorBill\GeneratedVendorBillController;
 use Modules\Account\Controllers\VendorBill\VendorBillSettingController;
 use Modules\Account\Models\Payments\CustomerPayment;
+use Modules\Account\Controllers\Payments\LoanPaymentController;
+use Modules\Account\Controllers\PaymentVerificationController;
+use Modules\Account\Models\MFSVerification;
+use Modules\Account\Models\OnlineDepositVerification;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.'], function () {
 
@@ -82,6 +88,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     Route::group(['prefix' => 'collections', 'as' => 'collections.'], function () {
         Route::resource('collections', CollectionController::class);
         Route::resource('invoice-wise-collections', InvoiceWiseCollectionController::class);
+        Route::get('collections-autocomplete-customers', [CollectionController::class, 'customerAutocomplete']) ->name('collections-autocomplete.customers');
     });
 
     Route::group(['prefix' => 'payments', 'as' => 'payments.'], function () {
@@ -94,7 +101,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
         Route::get('broker-payments-deny/{id}', [BrokerPaymentController::class, 'deny'])->name('broker-payments.deny');
 
         Route::resource('invoice-wise-payments', InvoiceWisePaymentController::class);
-
+    
         Route::post('invoice-wise-payments/{invoiceWisePayment}/approve', [InvoiceWisePaymentController::class, 'approve'])
             ->name('invoice-wise-payments.approve');
 
@@ -104,19 +111,34 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
             Route::get('/', [PettyCashPaymentController::class, 'index'])
                 ->name('index');
 
+            // List of approved petty cash for payment
+            Route::get('list', [PettyCashPaymentController::class, 'list'])
+                ->name('list');
+
             // View details of a petty cash for payment
-            Route::get('/details/{id}', [PettyCashPaymentController::class, 'details'])
+            Route::get('details', [PettyCashPaymentController::class, 'details'])
                 ->name('details');
 
+            // View details of a petty cash for payment
+            Route::get('show', [PettyCashPaymentController::class, 'showDetails'])
+                ->name('show-details');
+
             // Process payment
-            Route::post('/process/{id}', [PettyCashPaymentController::class, 'processPayment'])
+            Route::post('/process', [PettyCashPaymentController::class, 'processPayment'])
                 ->name('process');
 
             // Show payment receipt
             Route::get('/receipt/{id}', [PettyCashPaymentController::class, 'showReceipt'])
                 ->name('receipt');
         });
+
+        Route::get('loan-payment/index', [LoanPaymentController::class, 'index'])->name('loan-payment.index'); 
+        Route::get('loan-payment/{id}/payment', [LoanPaymentController::class, 'payment']) ->name('loan-payment.payment');
+
+        Route::get('payment-verifications/index', [PaymentVerificationController::class, 'index'])->name('payment-verifications.index'); 
+        Route::post('payment-verifications/{id}/update', [PaymentVerificationController::class, 'update'])->name('payment-verifications.update');  
     });
+
 
     Route::get('/get-accounts-by-type', [CollectionController::class, 'getAccountsByType'])->name('get-accounts-by-type');
     Route::get('/get-ballance', [CollectionController::class, 'getBallance'])->name('get-ballance');
@@ -148,12 +170,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     //     Route::resource('customer-payments', CustomerPaymentController::class);
     //     Route::resource('supplier-payments', SupplierPaymentController::class);
     // });
-
-    Route::resource('fund-transfers', FundTransferController::class);
-    Route::post('fund-transfers/{fundTransfer}/approve', [FundTransferController::class, 'approveFundTransfer'])->name('fund-transfers.approve.update');
-
-
-
+    
+ 
+    Route::resource('fund-transfers', FundTransferController ::class); 
+    Route::get('fund-transfers-get-accounts', [FundTransferController::class, 'getAccount'])->name('fund-transfers.getAccounts');
+    
     Route::group(['prefix' => 'reports'], function () {
 
 
@@ -254,10 +275,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     Route::resource('cheque-verifications', ChequeVerificationController::class);
     Route::post('cheque-verifications/deposit/{id}', [ChequeVerificationController::class, 'deposit'])->name('cheque-verifications.deposit');
     Route::post('cheque-verifications/cash/{id}', [ChequeVerificationController::class, 'cash'])->name('cheque-verifications.cash');
+    Route::get('cheque-verifications/return/{id}', [ChequeVerificationController::class, 'chequeReturn'])->name('cheque-verifications.return');
 
     Route::post('cheque-verifications/status/{id}', [ChequeVerificationController::class, 'updateStatus'])->name('cheque-verifications.status');
 
-
+    
+    Route::resource('online-deposit-verifications', OnlineDepositVerificationController::class); 
+    Route::post('online-deposit-verifications/status/{id}', [OnlineDepositVerificationController::class, 'updateStatus'])->name('online-deposit-verifications.update-status');
+ 
+    Route::resource('mfs-verifications', MFSVerificationController::class);
+    Route::post('mfs-verifications/status/{id}', [MFSVerificationController::class, 'updateStatus'])->name('mfs-verifications.update-status');
 
 
 

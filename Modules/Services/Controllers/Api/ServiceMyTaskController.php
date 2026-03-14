@@ -487,7 +487,7 @@ class ServiceMyTaskController extends Controller
         $data['serviceMyTasks'] = ServicePendingToken::where('status', 'pending')->whereHas('serviceMyTask', function ($query) {
             $query->where('status', 'approved');
         })->get();
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         return view('Services::service-my-task.solution-verification', $data);
     }
 
@@ -535,8 +535,8 @@ class ServiceMyTaskController extends Controller
         // $data['customers'] = Customer::activeCustomers()->get();
 
         // $data['serviceMyTasks'] = $this->service->getAll();
-        // $data['products'] = ProductCatalog::all();
-        // $data['productCatalogs'] = ProductCatalog::all();
+        // $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
+        // $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         // $data['BillingProducts'] = ProductCatalog::whereIn('name', ['Service Charge (IN HOUSE)', 'Service Charge With (TA) (DA)', 'Service Charge On Call'])->get();
         // $data['banks'] = Bank::all();
         $data['pendingServiceTokens'] = ServiceToken::with("engineerAssign.engineers")->whereIn('action', ['Pending', 'Live'])->where('customer_id', $data['serviceToken']->customer_id)->get();

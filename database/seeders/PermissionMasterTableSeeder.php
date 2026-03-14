@@ -17,6 +17,14 @@ class PermissionMasterTableSeeder extends Seeder
     public function run()
     {
         $data = [
+
+            //dashboard
+            [
+                'title' => 'Dashboard',
+                'description' => "Dashboard for user or admin ",
+                'key' => 'dashboard', 
+            ],
+
             [
                 'title' => 'Access Control',
                 'description' => "Permission of Add, Remove, Update, Delete Users",
@@ -175,6 +183,12 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'hrm.settings',
             ],
             [
+                'title' => 'Hotspots',
+                'description' => 'Permission of Add, Remove, Update, Delete Hotspots',
+                'key' => 'hrm.settings.hotspots',
+                'parent_key' => 'hrm.settings',
+            ],
+            [
                 'title' => 'Holidays',
                 'description' => 'Permission of Add, Remove, Update, Delete Holidays',
                 'key' => 'hrm.settings.holidays',
@@ -329,6 +343,13 @@ class PermissionMasterTableSeeder extends Seeder
                 'title' => 'Daily Calls',
                 'description' => 'Permission of Add, Remove, Update, Delete Daily Calls',
                 'key' => 'crm.daily-calls',
+                'parent_key' => 'crm',
+            ],
+            //daily-Credit-calls
+            [
+                'title' => 'Daily Credit Calls',
+                'description' => 'Permission of Add, Legal, Show Daily Credit Calls',
+                'key' => 'crm.daily-credit-calls',
                 'parent_key' => 'crm',
             ],
             //Reports
@@ -796,6 +817,20 @@ class PermissionMasterTableSeeder extends Seeder
             ],
 
             [
+                'title' => 'Online Deposit Verifications',
+                'description' => 'Permission of Approve or Deny Online Deposit Verifications',
+                'key' => 'account.online-deposit-verifications',
+                'parent_key' => 'accounts',
+            ],
+
+            [
+                'title' => 'Mfs Verifications',
+                'description' => 'Permission of Approve or Deny Mfs Verifications',
+                'key' => 'account.mfs-verifications',
+                'parent_key' => 'accounts',
+            ],
+
+            [
                 'title' => 'EMI Entries',
                 'description' => 'Permission of Add, Remove, Update, Delete EMI Entries',
                 'key' => 'account.emi-entries',
@@ -878,12 +913,28 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'account.payments',
             ],
 
-            //Petty Cash Payments
+            //TA/DA Payments
             [
-                'title' => 'Petty Cash Payments',
-                'description' => 'Permission of Add, Remove, Update, Delete Petty Cash Payments',
+                'title' => 'TA/DA Payments',
+                'description' => 'Permission of Add, Remove, Update, Delete TA/DA Payments',
                 'key' => 'account.payments.petty-cash-payments',
                 'parent_key' => 'account.payments',
+            ],
+
+            //Loan Payments
+            [
+                'title' => 'Loan Payments',
+                'description' => 'Permission of Add, Remove, Update, Delete Loan Payments',
+                'key' => 'account.payments.loan-payment',
+                'parent_key' => 'account.payments',
+            ],
+
+            //Loan Payments
+            [
+                'title' => 'Fund Transfer',
+                'description' => 'Permission of Add, Remove, Update, Delete, Verify, Approve Fund Transfer',
+                'key' => 'account.fund-tranfers',
+                'parent_key' => 'accounts',
             ],
 
             //Vendor Bills
@@ -1133,6 +1184,8 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'sales_target.settings.achievement-based-salary-policy',
                 'parent_key' => 'sales_target.settings',
             ],
+
+            
         ];
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0');

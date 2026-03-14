@@ -12,7 +12,8 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        {{ trans('Delivery Details') }}</li>
+                                        {{ trans('Delivery Details') }}
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
@@ -31,65 +32,71 @@
                             <form action="{{ route('sales.deliveries.update', request()->delivery_id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
-                                <input type="hidden" name="sales_type" class="sales_type" value="{{ @$source->sales_type }}">
+                                <input type="hidden" name="sales_type" class="sales_type"
+                                    value="{{ @$source->sales_type }}">
                                 <div class="row mb-4">
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="sales_order_id">Sales Order ID</label>
-                                            <input type="text" name="sales_order_id" class="form-control" id="sales_order_id" readonly value="{{ $source->sales_order_id }}">
+                                            <input type="text" name="sales_order_id" class="form-control"
+                                                id="sales_order_id" readonly value="{{ $source->sales_order_id }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="customer_name">Customer Name</label>
-                                            <input type="text" name="customer_name" class="form-control" id="customer_name" readonly value="{{ $source->customer->company_name }}">
+                                            <input type="text" name="customer_name" class="form-control" id="customer_name"
+                                                readonly value="{{ $source->customer->company_name }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="address">Address</label>
-                                            <input type="text" name="address" class="form-control" id="address" readonly value="{{ $source->customer->address }}">
+                                            <input type="text" name="address" class="form-control" id="address" readonly
+                                                value="{{ $source->customer->address }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="phone">Phone No</label>
-                                            <input type="text" name="phone" class="form-control" id="phone" readonly value="{{ $source->customer->phone }}">
+                                            <input type="text" name="phone" class="form-control" id="phone" readonly
+                                                value="{{ $source->customer->phone }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="service_unique_id">Service ID</label>
-                                            <input type="text" name="service_unique_id" class="form-control" id="service_unique_id" readonly value="{{ @$source->service->service_unique_id }}">
+                                            <input type="text" name="service_unique_id" class="form-control"
+                                                id="service_unique_id" readonly
+                                                value="{{ @$source->service->service_unique_id }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="invoice_date">Invoice Date</label>
-                                            <input type="text" name="invoice_date" class="form-control" id="invoice_date" readonly value="{{ $source->invoice_date }}">
+                                            <input type="text" name="invoice_date" class="form-control" id="invoice_date"
+                                                readonly value="{{ $source->invoice_date }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="sold_by">Sold By</label>
-                                            <input type="text" name="sold_by" class="form-control" id="sold_by" readonly value="{{ $source->createdBy->name }}">
+                                            <input type="text" name="sold_by" class="form-control" id="sold_by" readonly
+                                                value="{{ $source->createdBy->name }}">
                                         </div>
                                     </div>
 
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="arranged_by">Arranged By</label>
-                                            <select name="arranged_by" id="arranged_by" class="form-control tom-select">
-                                                <option value="">{{ __('Select Employee') }}</option>
-                                                @foreach ($employees as $employee)
-                                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
-                                                @endforeach
+                                            <select name="arranged_by" id="arranged_by" class="form-control">
+                                                <option value="">{{ __('Select Employee') }}</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -97,11 +104,8 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="checked_by">Checked By</label>
-                                            <select name="checked_by" id="checked_by" class="form-control tom-select">
-                                                <option value="">{{ __('Select Employee') }}</option>
-                                                @foreach ($employees as $employee)
-                                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
-                                                @endforeach
+                                            <select name="checked_by" id="checked_by" class="form-control">
+                                                <option value="">{{ __('Select Employee') }}</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -109,7 +113,9 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="carton_no">Carton No</label>
-                                            <input type="text" name="carton_no" class="form-control" id="carton_no" value="0" required>
+  
+                                            <input type="text" name="carton_no" class="form-control" id="carton_no"
+                                                value="0" required>
                                         </div>
                                     </div>
 
@@ -133,15 +139,15 @@
                                             <tbody id="productTable">
                                                 @foreach ($source->details as $key => $detail)
                                                     @php
-                                                    // dd($detail->quantity, $previousDeliveries);
-                                                    $deliveredQty = $previousDeliveries
-                                                        ->flatMap(function ($delivery) {
-                                                            return $delivery->deliveryDetails;
-                                                        })
-                                                        ->where('product_id', $detail->product_id)
-                                                        ->sum('quantity');
+                                                        // dd($detail->quantity, $previousDeliveries);
+                                                        $deliveredQty = $previousDeliveries
+                                                            ->flatMap(function ($delivery) {
+                                                                return $delivery->deliveryDetails;
+                                                            })
+                                                            ->where('product_id', $detail->product_id)
+                                                            ->sum('quantity');
 
-                                                    $remainingQty = $detail->quantity - $deliveredQty;
+                                                        $remainingQty = $detail->quantity - $deliveredQty;
                                                     @endphp
                                                     <tr id="product_{{ $detail->product_id }}">
                                                         <td>
@@ -150,15 +156,13 @@
                                                                 value="{{ $detail->product_id }}">
                                                             @if (old('serial_no')[$detail->product_id] ?? null)
                                                                 @foreach (old('serial_no')[$detail->product_id] as $value)
-                                                                    <input type="hidden"
-                                                                        name="serial_no[{{ $detail->product_id }}][]"
+                                                                    <input type="hidden" name="serial_no[{{ $detail->product_id }}][]"
                                                                         value="{{ $value }}">
                                                                 @endforeach
                                                             @endif
                                                             @if (old('lot_no')[$detail->product_id] ?? null)
                                                                 @foreach (old('lot_no')[$detail->product_id] as $value)
-                                                                    <input type="hidden"
-                                                                        name="lot_no[{{ $detail->product_id }}][]"
+                                                                    <input type="hidden" name="lot_no[{{ $detail->product_id }}][]"
                                                                         value="{{ $value }}">
                                                                 @endforeach
                                                             @endif
@@ -189,8 +193,7 @@
                                                         <td>
                                                             {{-- add button --}}
                                                             <div class="btn-group btn-group-sm">
-                                                                <button type="button"
-                                                                    class="btn btn-secondary btn-xs btn-add"
+                                                                <button type="button" class="btn btn-secondary btn-xs btn-add"
                                                                     data-bs-toggle="modal"
                                                                     data-limit="{{ numberFormat($detail->quantity) }}"
                                                                     data-bs-target="#select-product-stock-modal"
@@ -239,7 +242,7 @@
         </div>
 
 
-    @endsection
+@endsection
 
     @section('page_scripts')
         <script>
@@ -254,38 +257,38 @@
             function calculateTotalLotQuantity() {
                 var totalQuantity = 0;
                 var inputsQuantity = $('#select-product-stock-modal input[name="quantity"]');
-                inputsQuantity.each(function() {
+                inputsQuantity.each(function () {
                     totalQuantity += parseInt($(this).val() != '' ? $(this).val() : 0);
                 })
 
                 return totalQuantity
             }
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // select all
-                $(document).on('click', '.btn-add', function() {
+                $(document).on('click', '.btn-add', function () {
                     const currentRow = $(this).closest('tr');
                     $("#select-product-stock-modal").find('.modal-body').loadWithSpinner($(this).data('url'),
-                        function() {
+                        function () {
                             // select checked after load
                             const selectedSerials = currentRow.find('input[name^="serial_no"]');
 
-                            selectedSerials.each(function() {
+                            selectedSerials.each(function () {
                                 const value = $(this).val();
                                 $("#select-product-stock-modal .serial_no[value='" + value + "']")
-                                    .each(function() {
+                                    .each(function () {
                                         $(this).closest('tr').find('input[name="stock_id"]')
                                             .prop('checked', true);
                                     })
                             });
                             const selectedLots = currentRow.find('input[name^="lot_no"]');
-                            selectedLots.each(function() {
+                            selectedLots.each(function () {
                                 const value = $(this).val();
                                 console.log({
                                     selectLots: value
                                 });
                                 $("#select-product-stock-modal .lot_no[value='" + value + "']")
-                                    .each(function() {
+                                    .each(function () {
                                         // console.log({currentRowQ:currentRow.find('input[name^="quantity"]')});
                                         $(this).closest('tr').find('input[name="quantity"]')
                                             .val(currentRow.find('input[name^="lots_quantity"]')
@@ -297,7 +300,7 @@
                     $("#select-product-stock-modal").data("limit", $(this).data('limit'));
                 });
 
-                $(document).on('click', '#select-product-stock-modal input[name="stock_id"]', function() {
+                $(document).on('click', '#select-product-stock-modal input[name="stock_id"]', function () {
                     var totalQuantity = calculateTotalSerialQuantity();
                     var limit = $("#select-product-stock-modal").data("limit");
                     console.log(totalQuantity + ' ' + limit);
@@ -307,7 +310,7 @@
                     }
                 });
 
-                $(document).on("input", "#select-product-stock-modal input[name='quantity']", function() {
+                $(document).on("input", "#select-product-stock-modal input[name='quantity']", function () {
                     var totalQuantity = calculateTotalLotQuantity();
                     var limit = Number($("#select-product-stock-modal").data("limit"));
                     var inputQuantity = Number($(this).val());
@@ -336,7 +339,7 @@
 
 
 
-                $(document).on('click', '#select-product-stock-modal #save', function() {
+                $(document).on('click', '#select-product-stock-modal #save', function () {
                     var selectedProducts = $('input[name="stock_id"]:checked');
                     var inputsQuantity = $('#select-product-stock-modal input[name="quantity"]');
                     var serial_no = [];
@@ -345,13 +348,13 @@
                     var quantities = [];
                     var product_ids = [];
                     if (selectedProducts.length != 0) {
-                        selectedProducts.each(function() {
+                        selectedProducts.each(function () {
                             serial_no.push($(this).closest('tr').find('input.serial_no').val());
                             product_ids.push($(this).val());
                         });
                     }
                     if (inputsQuantity.length != 0) {
-                        inputsQuantity.each(function() {
+                        inputsQuantity.each(function () {
                             if ($(this).val() != 0) {
                                 product_ids.push($(this).closest('tr').find('input.product_id').val());
                                 lot_no.push($(this).closest('tr').find('input.lot_no').val());
@@ -378,7 +381,7 @@
                         product_ids.forEach((product_id, index) => {
                             $(`#productTable tr#product_${product_id} td:first`).append(
                                 `<input type="hidden" name="serial_no[${product_id}][]" value="${serial_no[index]}">`
-                                );
+                            );
                         });
                         $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(
                             selectedProducts.length);
@@ -390,10 +393,10 @@
                         product_ids.forEach((product_id, index) => {
                             $(`#productTable tr#product_${product_id} td:first`).append(
                                 `<input type="hidden" name="lot_no[${product_id}][]" value="${lot_no[index]}">`
-                                );
+                            );
                             $(`#productTable tr#product_${product_id} td:first`).append(
                                 `<input type="hidden" name="lots_quantity[${product_id}][]" value="${quantities[index]}">`
-                                );
+                            );
                         });
                         $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(quantities
                             .reduce((a, b) => a + b, 0));
@@ -425,8 +428,8 @@
                         // Validate that quantity is not greater than remaining quantity
                         // console.log({qty, remainingQty});
                         const is_partial = salesType == 'partial_sales' ? true : false;
-                        
-                        if ((!is_partial && qty != remainingQty) || (is_partial && (qty > remainingQty )) ) {
+
+                        if ((!is_partial && qty != remainingQty) || (is_partial && (qty > remainingQty))) {
                             row.find('input[name^="quantity"]').addClass('is-invalid');
                             toastr.error('Quantity should be less than or equal to Remaining Quantity');
                             isValid = false;
@@ -435,18 +438,83 @@
                         totalQty += qty;
 
                         row.find('input[name^="quantity"]').addClass('is-valid');
-                        console.log({salesType, qty, remainingQty})
+                        console.log({ salesType, qty, remainingQty })
                     });
-                    if(totalQty == 0){
+                    if (totalQty == 0) {
                         isValid = false;
                         toastr.error('Quantity should be greater than 0');
                     }
                     // console.log('isValid: ' , isValid);
-                    
+
                     return isValid;
                 });
 
+                const checkbySelect = new TomSelect("#checked_by", {
+                    valueField: "id",
+                    labelField: "text",
+                    searchField: [], 
+                    load: function(query, callback) {
+
+                        if (!query.length || query.length < 2) return callback();
+
+                        $.ajax({
+                            url: "{{ route('sales.sales-orders-autocomplete.employees') }}",
+                            type: "GET",
+                            data: { search: query },
+                            success: function(res) {
+                                checkbySelect.clearOptions();
+                                callback(res.map(item => ({ id: item.id, text: item.label })));
+                            },
+                            error: function() {
+                                callback();
+                            }
+                        });
+                    }
+                }); 
+
+                @if(request('checked_by'))
+                    checkbySelect.addOption({
+                        id: "{{ request('checked_by') }}",
+                        text: "{{ request('checked_by') }}"
+                    });
+                    checkbySelect.setValue("{{ request('checked_by') }}");
+                @endif
+
+
+                const arrangebySelect = new TomSelect("#arranged_by", {
+                    valueField: "id",
+                    labelField: "text",
+                    searchField: [], 
+                    load: function(query, callback) {
+
+                        if (!query.length || query.length < 2) return callback();
+
+                        $.ajax({
+                            url: "{{ route('sales.sales-orders-autocomplete.employees') }}",
+                            type: "GET",
+                            data: { search: query },
+                            success: function(res) {
+                                arrangebySelect.clearOptions();
+                                callback(res.map(item => ({ id: item.id, text: item.label })));
+                            },
+                            error: function() {
+                                callback();
+                            }
+                        });
+                    }
+                }); 
+
+                @if(request('arranged_by'))
+                    arrangebySelect.addOption({
+                        id: "{{ request('arranged_by') }}",
+                        text: "{{ request('arranged_by') }}"
+                    });
+                    arrangebySelect.setValue("{{ request('arranged_by') }}");
+                @endif
+
+                
             });
         </script>
 
     @endsection
+ 

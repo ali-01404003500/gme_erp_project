@@ -1,13 +1,14 @@
 {{-- resources/views/Account/payments/petty-cash-payments/details-modal.blade.php --}}
-<form method="POST" action="{{ route('account.payments.petty-cash-payments.process', $billsAndAllowance->id) }}" id="paymentForm">
+<form method="POST" action="{{ route('account.payments.petty-cash-payments.process') }}" id="paymentForm">
     @csrf
-
+    <input type="hidden" name="ids" value="{{ request()->ids }}" >
     <div class="row mb-3">
-        <div class="col-md-6"><strong>Employee:</strong> {{ $billsAndAllowance->employee->full_name }}</div>
+        <div class="col-md-6"><strong>Employee:</strong> {{ $billsAndAllowance->first()->employee->full_name }}</div>
         <div class="col-md-6"><strong>Type:</strong>
-            @if($billsAndAllowance->transportExpenses->count() && $billsAndAllowance->generalExpenses->count())
+            @if($billsAndAllowance->pluck('transportExpenses')->flatten()->count()  && $billsAndAllowance->pluck('generalExpenses')->flatten()->count())
+            
                 Transport & General (PCB)
-            @elseif($billsAndAllowance->transportExpenses->count())
+            @elseif($billsAndAllowance->pluck('transportExpenses')->flatten()->count() )
                 Transport (PCB)
             @else
                 General (PCB)
@@ -15,28 +16,37 @@
         </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <label><strong>Apply to All Account Head:</strong></label>
-            <select class="tom-select form-select global-account-head w-100" data-placeholder="Apply same account head to all rows">
-                <option value="">-- Apply to All --</option>
-                @foreach(\Modules\Account\Models\Account::orderBy('name')->get() as $acc)
-                    <option value="{{ $acc->id }}">{{ $acc->name }} ({{ $acc->account_number }})</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
+   
 
     <!-- Transport Expenses -->
-    @if($billsAndAllowance->transportExpenses->count())
+    @if($billsAndAllowance->pluck('transportExpenses')->flatten()->count())
+         <div class="row mb-4"> 
+            <div class="col-9 "></div>
+            <div class="col-3 "> 
+                <label><strong>Apply to All Transport Expense Account Head</strong></label>
+                <select class="tom-select form-select global-transport-account-head w-100" data-placeholder="Apply same account head to all transport expense rows">
+                    <option value="">-- Apply to All --</option> 
+                    @foreach(\Modules\Account\Models\Account::where('account_group_id', 5)->orderBy('name')->get() as $acc)
+                        <option value="{{ $acc->id }}">{{ $acc->name }} ({{ $acc->account_number }})</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
         <h5>Transport Expenses</h5>
         <div class="table-responsive mb-4">
             <table class="table table-bordered table-sm">
                 <thead class="table-light">
-                    <tr><th>SL</th><th>Transport Name</th><th>Remarks</th><th>Doc</th><th>Amount</th><th>Approved Amount</th><th>Account Head</th></tr>
+                    <tr><th>SL</th><th>Transport Name</th><th>Remarks</th><th>Doc</th><th>Request Amount</th><th>Approved Amount</th><th>Account Head</th></tr>
                 </thead>
                 <tbody>
-                    @foreach($billsAndAllowance->transportExpenses as $i => $e)
+                    @php
+                        $tReqAmt = $tApvAmt = 0;
+                    @endphp
+                    @foreach($billsAndAllowance->pluck('transportExpenses')->flatten() as $i => $e)
+                    @php
+                        $tReqAmt += $e->amount;
+                        $tApvAmt += $e->final_approved_amount;
+                    @endphp
                         <tr>
                             <td>{{ $i + 1 }}</td>
                             <td>{{ $e->transportType->name ?? 'Transport' }}</td>
@@ -48,9 +58,9 @@
                             <td>{{ number_format($e->amount) }}</td>
                             <td class="text-success fw-bold">{{ number_format($e->final_approved_amount ?? 0) }}</td>
                             <td width="250">
-                                <select name="account_heads[transport_{{ $e->id }}]" class="tom-select form-select individual-account-head" required>
+                                <select name="account_heads[transport_{{ $e->id }}]" class="transport-tom-select form-select individual-transport-account-head" required>
                                     <option value="">Select Account</option>
-                                    @foreach(\Modules\Account\Models\Account::orderBy('name')->get() as $acc)
+                                    @foreach(\Modules\Account\Models\Account::where('account_group_id', 5)->orderBy('name')->get() as $acc)
                                         <option value="{{ $acc->id }}" {{ $e->account_head_id == $acc->id ? 'selected' : '' }}>
                                             {{ $acc->name }} ({{ $acc->account_number }})
                                         </option>
@@ -60,20 +70,46 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfooter>
+                    <tr>
+                        <td colspan="4">Total</td>
+                        <td>{{$tReqAmt}}</td>
+                        <td>{{$tApvAmt}}</td>
+                    </tr>
+                </tfooter>
             </table>
         </div>
     @endif
 
     <!-- General Expenses -->
-    @if($billsAndAllowance->generalExpenses->count())
+    @if($billsAndAllowance->pluck('generalExpenses')->flatten()->count())
+        <div class="row mb-4"> 
+            <div class="col-9 "></div>
+            <div class="col-3 ">
+                <label><strong>Apply to All General Expense Account Head</strong></label>
+                <select class="tom-select form-select global-general-account-head w-100" data-placeholder="Apply same account head to all general expense rows">
+                    <option value="">-- Apply to All --</option>
+                    @foreach(\Modules\Account\Models\Account::where('account_group_id', 5)->orderBy('name')->get() as $acc)
+                        <option value="{{ $acc->id }}">{{ $acc->name }} ({{ $acc->account_number }})</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
         <h5>General Expenses</h5>
         <div class="table-responsive mb-4">
             <table class="table table-bordered table-sm">
                 <thead class="table-light">
-                    <tr><th>SL</th><th>Expense Name</th><th>Remarks</th><th>Doc</th><th>Amount</th><th>Approved Amount</th><th>Account Head</th></tr>
+                    <tr><th>SL</th><th>Expense Name</th><th>Remarks</th><th>Doc</th><th>Request Amount</th><th>Approved Amount</th><th>Account Head</th></tr>
                 </thead>
                 <tbody>
-                    @foreach($billsAndAllowance->generalExpenses as $i => $e)
+                    @php
+                        $gReqAmt = $gApvAmt = 0;
+                    @endphp
+                    @foreach($billsAndAllowance->pluck('generalExpenses')->flatten() as $i => $e)
+                    @php
+                        $gReqAmt += $e->amount;
+                        $gApvAmt += $e->final_approved_amount;
+                    @endphp
                         <tr>
                             <td>{{ $i + 1 }}</td>
                             <td>{{ $e->expenseType->name ?? 'General' }}</td>
@@ -85,9 +121,9 @@
                             <td>{{ number_format($e->amount) }}</td>
                             <td class="text-success fw-bold">{{ number_format($e->final_approved_amount ?? 0) }}</td>
                             <td width="250">
-                                <select name="account_heads[general_{{ $e->id }}]" class="tom-select  form-select individual-account-head" required>
+                                <select name="account_heads[general_{{ $e->id }}]" class="general-tom-select  form-select individual-general-account-head" required>
                                     <option value="">Select Account</option>
-                                    @foreach(\Modules\Account\Models\Account::orderBy('name')->get() as $acc)
+                                    @foreach(\Modules\Account\Models\Account::where('account_group_id', 5)->orderBy('name')->get() as $acc)
                                         <option value="{{ $acc->id }}" {{ $e->account_head_id == $acc->id ? 'selected' : '' }}>
                                             {{ $acc->name }} ({{ $acc->account_number }})
                                         </option>
@@ -97,13 +133,20 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfooter>
+                    <tr>
+                        <td colspan="4">Total</td>
+                        <td>{{$gReqAmt}}</td>
+                        <td>{{$gApvAmt}}</td>
+                    </tr>
+                </tfooter>
             </table>
         </div>
     @endif
 
     @php
-        $total = $billsAndAllowance->transportExpenses->sum('final_approved_amount') +
-                 $billsAndAllowance->generalExpenses->sum('final_approved_amount');
+        $total = $billsAndAllowance->pluck('transportExpenses')->flatten()->sum('final_approved_amount') +
+                $billsAndAllowance->pluck('generalExpenses')->flatten()->sum('final_approved_amount');
     @endphp
 
     <div class="alert alert-info">
@@ -119,8 +162,8 @@
                             <div class="row text-center">
                                 <div class="col-md-2">
                                     <div class="signature-box">
-                                         <div class="mt-2">{{ @$billsAndAllowance->createdBy->name ?? $billsAndAllowance->employee->full_name }}</div>
-                                        <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->created_at)) }}</small>
+                                         <div class="mt-2">{{ @$billsAndAllowance->first()->createdBy->name ?? $billsAndAllowance->first()->employee->full_name }}</div>
+                                        <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->first()->created_at)) }}</small>
                                         <div class="signature-line">________________</div>
                                         <strong>Prepared By</strong>
                                        
@@ -129,9 +172,9 @@
 
                                 <div class="col-md-3">
                                     <div class="signature-box">
-                                        @if($billsAndAllowance->checkedByTeamLeader)
-                                            <div class="mt-2">{{ $billsAndAllowance->checkedByTeamLeader->name }}</div>
-                                            <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->checked_by_team_leader_date)) }}</small>
+                                        @if($billsAndAllowance->first()->checkedByTeamLeader)
+                                            <div class="mt-2">{{ $billsAndAllowance->first()->checkedByTeamLeader->name }}</div>
+                                            <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->first()->checked_by_team_leader_date)) }}</small>
                                         @endif
                                         <div class="signature-line">________________</div>
                                         <strong>Checked By (Team Leader)</strong>
@@ -141,9 +184,9 @@
 
                                 <div class="col-md-3">
                                     <div class="signature-box">
-                                         @if($billsAndAllowance->checkedByAccounts)
-                                            <div class="mt-2">{{ $billsAndAllowance->checkedByAccounts->name }}</div>
-                                            <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->checked_by_accounts_date)) }}</small>
+                                         @if($billsAndAllowance->first()->checkedByAccounts)
+                                            <div class="mt-2">{{ $billsAndAllowance->first()->checkedByAccounts->name }}</div>
+                                            <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->first()->checked_by_accounts_date)) }}</small>
                                         @endif
                                         <div class="signature-line">________________</div>
                                         <strong>Checked By (HR/Accounts)</strong>
@@ -153,9 +196,9 @@
 
                                 <div class="col-md-2">
                                     <div class="signature-box">
-                                         @if($billsAndAllowance->finalApprovedBy)
-                                            <div class="mt-2">{{ $billsAndAllowance->finalApprovedBy->name }}</div>
-                                            <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->final_approved_date)) }}</small>
+                                         @if($billsAndAllowance->first()->finalApprovedBy)
+                                            <div class="mt-2">{{ $billsAndAllowance->first()->finalApprovedBy->name }}</div>
+                                            <small class="text-muted">{{ date('d-M-y', strtotime($billsAndAllowance->first()->final_approved_date)) }}</small>
                                         @endif
                                         <div class="signature-line">________________</div>
                                         <strong>Approved By</strong>

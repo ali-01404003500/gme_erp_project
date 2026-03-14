@@ -45,15 +45,11 @@
                                     <div class="col-sm-12">
                                         <table class="table table-bordered">
                                             <tr>
-                                                <td  width="30%">
-                                                    <select name="company_name" id="company_name" class="form-control tom-select"
+                                                <td  width="30%"> 
+
+                                                    <select name="company_name" id="company_name" class="form-control"
                                                         data-placeholder="Select Customer">
-                                                        <option value=""></option>
-                                                        @foreach ($customersearch as $key => $value)
-                                                            <option {{ request('company_name') == $value->company_name ? 'selected' : '' }}
-                                                                value="{{ $value->company_name }}">
-                                                                {{ $value->company_name }}</option>
-                                                        @endforeach
+                                                        <option value=""></option> 
                                                     </select>
                                                 </td>
                                                 <td class="text-center" width="20%">
@@ -318,6 +314,41 @@ function rejectConfirm(e) {
 $(document).ready(function () {
     $(".approval-confirm-customer").on("click", approvalConfirm);
     $(".reject-confirm-customer").on("click", rejectConfirm);
+  
+
+    const companySelect = new TomSelect("#company_name", {
+        valueField: "id",
+        labelField: "text",
+        searchField: [], 
+        load: function(query, callback) {
+
+            if (!query.length || query.length < 2) return callback();
+
+            $.ajax({
+                url: "{{ route('crm.autocomplete.customers') }}",
+                type: "GET",
+                data: { search: query },
+                success: function(res) {
+                    companySelect.clearOptions();
+                    callback(res.map(item => ({ id: item.text, text: item.label })));
+                },
+                error: function() {
+                    callback();
+                }
+            });
+        }
+    });
+ 
+
+
+    @if(request('company_name'))
+        companySelect.addOption({
+            id: "{{ request('company_name') }}",
+            text: "{{ request('company_name') }}"
+        });
+        companySelect.setValue("{{ request('company_name') }}");
+    @endif
+
 });
 
 </script>

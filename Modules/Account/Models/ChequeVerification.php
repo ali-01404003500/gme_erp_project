@@ -54,4 +54,10 @@ class ChequeVerification extends BaseModel
         return $this->belongsTo(User::class, 'deposited_by');
 
     }
+
+    public function chequeDishonorSummaries()
+    {
+        return $this->hasMany(ChequeDishonorSummary::class,'cheque_verification_id');
+    }
+     
 }

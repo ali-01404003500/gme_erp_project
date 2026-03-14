@@ -45,20 +45,23 @@
                                             <option value="">Select Sender</option>
                                             @foreach($employees as $employee)
                                                 <option value="{{ $employee->id }}" {{ (old('from_employee_id') ?? ($currentEmployee->id ?? '')) == $employee->id ? 'selected' : '' }}>
-                                                    {{ $employee->full_name }} ({{ $employee->employee_id }})
+                                                    {{ $employee->full_name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     @else
-                                        <input type="hidden" name="from_employee_id" value="{{ $currentEmployee->id ?? '' }}">
+                                        <input type="hidden" name="from_employee_id" id="from_employee_id" value="{{ $currentEmployee->id ?? '' }}">
                                         <input type="text" class="form-control" value="{{ $currentEmployee->full_name ?? Auth::user()->name }} (Current User)" readonly>
-                                        @if(isset($currentEmployee) && $currentEmployee->getAccount())
+                                        <!-- @if(isset($currentEmployee) && $currentEmployee->getAccount())
                                             <small class="text-info">Current Balance: {{ number_format($currentEmployee->getAccount()->balance, 2) }}</small>
-                                        @endif
+                                        @endif -->
                                     @endif
                                     @error('from_employee_id')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
+                                    <div id="current_balance_container" style="display: none;">
+                                        <small class="text-info">Current Balance: <span id="from_employee_balance">0.00</span></small>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-6 form-group">
@@ -68,7 +71,7 @@
                                         @foreach($employees as $employee)
                                             @if(isset($currentEmployee) && $employee->id == $currentEmployee->id) @continue @endif
                                             <option value="{{ $employee->id }}" {{ old('to_employee_id') == $employee->id ? 'selected' : '' }}>
-                                                {{ $employee->full_name }} ({{ $employee->employee_id }})
+                                                {{ $employee->full_name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -112,4 +115,38 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('page_scripts')
+    <script>
+        $(document).ready(function() {
+            // Function to fetch balance
+            function fetchBalance(employee_id) {
+                if (employee_id) {
+                    $.ajax({
+                        url: "{{ route('account.get-ballance') }}",
+                        type: 'GET',
+                        data: { account_id: employee_id, type: 'employee' },
+                        success: function(response) {
+                            $('#from_employee_balance').text(response.balance);
+                            $('#current_balance_container').show();
+                        }
+                    });
+                } else {
+                    $('#current_balance_container').hide();
+                }
+            }
+
+            // Trigger on change
+            $('#from_employee_id').on('change', function() {
+                fetchBalance($(this).val());
+            });
+
+            // Trigger on load if value exists
+            var initial_id = $('#from_employee_id').val();
+            if (initial_id) {
+                fetchBalance(initial_id);
+            }
+        });
+    </script>
 @endsection

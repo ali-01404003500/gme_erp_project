@@ -69,6 +69,13 @@ class Payment extends BaseModel
         return $this->morphOne(ChequeVerification::class, 'source', 'source_type', 'source_id');
     }
 
+    public function onlineDepositVerification(){
+        return $this->morphOne(OnlineDepositVerification::class, 'source', 'source_type', 'source_id');
+    }
+
+    public function mfsVerification(){
+        return $this->morphOne(MFSVerification::class, 'source', 'source_type', 'source_id');
+    }
 
 
 }

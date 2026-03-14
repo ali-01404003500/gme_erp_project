@@ -92,9 +92,8 @@
         'task-menu-title'=>'Task App',
 
         'bookmark-menu-title'=>'Bookmarks',
-
-        
-
+ 
+       
         'broker-list-menu-title' => 'Broker List',
         'broker-create-menu-title' => 'Broker Create',
         'update-broker-menu-title' => 'Update Broker',
@@ -238,6 +237,7 @@
         'hrm-settings-menu-title'=>'Settings',
         'hrm-settings-leave-types-menu-title'=>'Leave Type',
         'hrm-settings-shift-menu-title'=>'Shift',
+        'hrm-settings-hotspot-menu-title'=>'Hotspot Setup',
         'hrm-settings-holiday-menu-title'=>'Holiday',
         'hrm-settings-salary-menu-title'=>'Salary Setup',
         'hrm-settings-noticeboard-menu-title'=>'Notice board',
@@ -579,4 +579,9 @@
 
         'sales_target' => 'Sales Target',
         'sales_target Settings' => 'Sales Target Settings',
+
+        'fund-transfers-list' => 'Fund Transfer List',
+        'create-fund-transfer' => 'Create Fund Transfer',
+        'create-fund-transfers' => 'Create Fund Transfer',
+
     ];

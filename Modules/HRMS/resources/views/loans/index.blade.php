@@ -83,6 +83,7 @@
                                         <th>Remaining Balance</th>
                                         <th>Start From</th>
                                         <th>Payment Date</th>
+                                        <th>Remarks</th>
                                         <th>Status</th>
                                         <th class="no-content">Actions</th>
                                     </tr>
@@ -99,6 +100,7 @@
                                             <td>{{ $loan->start_month }}</td>
                                             <td>{{ $loan->payment_date ? \Carbon\Carbon::parse($loan->payment_date)->format('d M Y') : '-' }}
                                             </td>
+                                            <td>{{ $loan->remarks }}</td>
                                             <td>
                                                 @if ($loan->status == 'pending')
                                                     <span class="badge badge-round  badge-warning">Pending</span>
@@ -106,6 +108,8 @@
                                                     <span class="badge badge-round  badge-success">Approved</span>
                                                 @elseif ($loan->status == 'deny')
                                                     <span class="badge badge-round badge-danger">Denied</span>
+                                                @elseif ($loan->status == 'paid')
+                                                    <span class="badge badge-round badge-primary">Paid</span>
                                                 @else
                                                     <span class="badge badge-round  badge-secondary">Unknown</span>
                                                 @endif

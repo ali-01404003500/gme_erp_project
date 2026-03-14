@@ -69,7 +69,7 @@ class Customer extends BaseModel
         'supplier',
         'backupChallan',
         // 'quotation',
-        'salesOrder',
+        'salesOrder', 
         'salesRequisition',
         'shipmentVerify',
         'serviceToken',
@@ -501,5 +501,11 @@ class Customer extends BaseModel
         $user->roles()->syncWithoutDetaching([Role::where('slug', 'customer')->first()->id]);
         InvalidateAuthUserCashe($user->id);
         return $user;
+    }
+
+    public function getNameAttribute()
+    { 
+        $area = optional($this->area)->area ?? null; 
+        return "{$this->company_name} - {$area}";
     }
 }

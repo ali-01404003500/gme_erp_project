@@ -1,9 +1,11 @@
 <?php
 
 namespace Modules\CRM\Controllers\Customer;
+
 use App\Http\Controllers\Controller;
 
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use Modules\HRMS\Models\Employee;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Inventory\Models\Settings\Tag;
@@ -147,7 +149,6 @@ class CustomerController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
-
     }
     public function approve($id)
     {
@@ -203,7 +204,7 @@ class CustomerController extends Controller
         }
         // dd($data['customer']);
         $data['customerRatings'] = CustomerRating::all();
-        $data['percentageTypes'] = Tag::all();
+        $data['percentageTypes'] = Tag::all(); 
         $data['brokers'] = Broker::activeBrokers()->get();
 
         $data['products'] = ProductCatalog::with('tag')->get();
@@ -211,7 +212,7 @@ class CustomerController extends Controller
     }
     public function getBrokerDetails(Request $request)
     {
-        $broker = Broker::with(['brokerCommission', 'brokerCommission.PercentageType'])->find($request->id);
+        $broker = Broker::with(['brokerCommission', 'brokerCommission.PercentageType','brokerCommission.product'])->find($request->id);
         return response()->json($broker);
     }
     public function customerSettingStore($id, Request $request)
@@ -236,35 +237,65 @@ class CustomerController extends Controller
     }
 
     public function updateBrokerWithSettings(Request $request)
-    {
-        $brokerCommission = BrokerCommission::where("broker_id", $request->broker_id)->delete();
+    { 
+       
         $broker = Broker::find($request->broker_id);
-
+        $commissionType = in_array(1, $request->commission_type ?? []) || in_array(2, $request->commission_type ?? []) ? 1 : 0;
         $broker->update([
-            "commission_type" => $request->commission_type
+            "commission_type" => $commissionType
         ]);
 
-        if ($request->commission_type == 1 && $request->has('percentage_type')) {
+         // Update or add commission details for the broker
+        if (in_array(1, $request->commission_type ?? []) && $request->has('percentage_type')) {   
+            $brokerCommission = BrokerCommission::where("broker_id", $request->broker_id)
+                ->where('commission_type', 1)
+                ->delete();
+                
             foreach ($request->percentage_type as $key => $percentageType) {
                 if ($percentageType != null) {
                     BrokerCommission::create([
-                        'commission_type' => $request->commission_type,
+                        'commission_type' => '1',
                         'broker_id' => $request->broker_id,
                         'percentage_type' => $percentageType,
                         'percentage' => $request->percentage[$key] ?? null,
                     ]);
                 }
+            } 
+        } 
+
+        if (in_array(2, $request->commission_type ?? []) ) {  
+            $brokerCommission = BrokerCommission::where("broker_id", $request->broker_id)
+                ->whereIn('commission_type', ['2','3'])
+                ->delete();
+
+            foreach ($request->fixed_type as $key => $fixedType) { 
+
+                if ($key == 0) {
+                    if ($fixedType != null && $request->fixed[$key] != 0) { 
+                        BrokerCommission::create([
+                            'commission_type' => '3',
+                            'broker_id' => $request->broker_id,
+                            'fixed_type' => $request->fixed_type[$key],
+                            'fixed' => $request->fixed[$key] ?? 0,
+                        ]);
+                    }
+                }
+                else
+                {
+                    if ($fixedType != null && $request->fixed[$key] != 0) { 
+                    BrokerCommission::create([
+                        'commission_type' => '2',
+                        'broker_id' => $request->broker_id,
+                        'fixed_type' => $request->fixed_type[$key],
+                        'fixed' => $request->fixed[$key] ?? 0,
+                    ]);
+                }
+                }
+                
             }
-        } elseif ($request->commission_type == 2) {
-            if ($request->filled('fixed_type') && $request->filled('fixed')) {
-                BrokerCommission::create([
-                    'commission_type' => $request->commission_type,
-                    'broker_id' => $request->broker_id,
-                    'fixed_type' => $request->fixed_type,
-                    'fixed' => $request->fixed,
-                ]);
-            }
+    
         }
+
 
         return response()->json(['success' => true, 'message' => 'Broker Commission updated successfully.']);
     }
@@ -528,4 +559,19 @@ class CustomerController extends Controller
         return redirect()->route('crm.customers.index')->with('success', 'Customer imported successfully.');
     }
 
+
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {
+
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $data = $autocompleteService->search(
+            Customer::class,
+            ['company_name','address','phone'],
+            $request->search,
+            ['id', 'company_name','company_place_id'],
+            10
+        ); 
+        return response()->json($data);
+    }
 }

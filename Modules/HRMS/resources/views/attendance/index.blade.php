@@ -67,7 +67,7 @@
                                                 </select>
                                             </td>
                                             <td width="30%">
-                                                <div class="input-daterange input-group">
+                                                 <div class="input-daterange input-group">
                                                     <input type="text" class="form-control datePicker" name="from"
                                                         value="{{ request('from') }}" autocomplete="off"
                                                         placeholder="From" />
@@ -174,6 +174,10 @@
                                                 <span class="badge badge-round badge-success">
                                                     {{ $value->attendance_type }}   
                                                 </span>
+                                                @elseif ($value->attendance_type == 'Pending')
+                                                    <span class="badge badge-round badge-warning">
+                                                        {{ $value->attendance_type }}
+                                                    </span>
                                                 @elseif ($value->attendance_type == 'Absent')
                                                 <span class="badge badge-round badge-danger">
                                                     {{ $value->attendance_type }}
@@ -199,20 +203,30 @@
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
-                                                   
+
+                                                    @if ($value->attendance_type == 'Pending' && hasPermission('hrm.attendances.update'))
+                                                        <form action="{{ route('hrm.attendances.approve', $value->id) }}" method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="btn btn-outline-success" title="Approve">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
+
                                                     @if (hasPermission('hrm.attendances.update'))
                                                         <a class="btn btn-outline-warning"
-                                                            href="{{ route('hrm.attendances.edit', $value->id) }}" title="Edit"title="Edit">
+                                                            href="{{ route('hrm.attendances.edit', $value->id) }}" title="Edit">
                                                                 <i class="far fa-edit"></i></a>
                                                     @endif
 
                                                     @if (hasPermission('hrm.attendances.destroy'))
                                                     <button type="button"
                                                         data-action="{{ route('hrm.attendances.destroy', $value->id) }}"
-                                                        class="btn btn-outline-danger delete-confirm" title="Delete" title="Delete"><i
+                                                        class="btn btn-outline-danger delete-confirm" title="Delete"><i
                                                             class="far fa-trash-alt"></i></button>
                                                     @endif
-                                                   
+
                                                 </div>
                                             </td>
                                         </tr>

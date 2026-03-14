@@ -61,7 +61,7 @@ class Employee extends BaseModel
     {
         return $this->hasMany(EmployeeDocuments::class, 'employee_id');
     }
-    
+
     public function employeeFamilyContact()
     {
         return $this->hasMany(EmployeeFamilyContact::class, 'employee_id');
@@ -158,6 +158,17 @@ class Employee extends BaseModel
         return $account;
     }
 
+    public function getCashAccount()
+    {
+        $bankAccount = $this->bankAccount()->first();
+        if ($bankAccount == null) {
+            $this->createBankAccount();
+            $this->load('bankAccount');
+            return $this->bankAccount;
+        }
+        return $bankAccount;
+    }
+
 
 
     // ============================================
@@ -224,6 +235,7 @@ class Employee extends BaseModel
     // LOAN ACCOUNTS (1015)
     // ============================================
 
+    
     public function getLoanReceivableAccount()
     {
         $account = $this->accounts()->where('account_subsidiary_id', 1015)->first();
@@ -272,12 +284,43 @@ class Employee extends BaseModel
         }
         $this->accounts()->create([
             "name" => "Staff Advance - " . $this->full_name,
+            "account_number" => '1022' . $this->id,
+            "account_group_id" => 1,
+            "account_control_id" => 1000,
+            "account_subsidiary_id" => 1022,
+            "opening_balance" => "0.00",
+            "remarks" => "A Staff IOU account is created for " . $this->full_name,
+            "is_deletable" => 0,
+        ]);
+    }
+ 
+    // ============================================
+    // STAFF LOAN ACCOUNTS (2008)
+    // ============================================
+
+    public function getStaffLoanAccount()
+    {
+        $account = $this->accounts()->where('account_subsidiary_id', 2008)->first();
+        if ($account == null) {
+            $this->createStaffLoanAccount();
+            $this->load('accounts');
+        }
+        return $this->accounts()->where('account_subsidiary_id', 2008)->first();
+    }
+
+    public function createStaffLoanAccount()
+    {
+        if ($this->accounts->where('account_subsidiary_id', 2008)->first() != null) {
+            return;
+        }
+        $this->accounts()->create([
+            "name" => "Staff Loan - " . $this->full_name,
             "account_number" => '2008' . $this->id,
-            "account_group_id" => 2,
+            "account_group_id" => 1,
             "account_control_id" => 2000,
             "account_subsidiary_id" => 2008,
             "opening_balance" => "0.00",
-            "remarks" => "A Staff Advance account is created for " . $this->full_name,
+            "remarks" => "A Staff Loan account is created for " . $this->full_name,
             "is_deletable" => 0,
         ]);
     }
@@ -371,9 +414,17 @@ class Employee extends BaseModel
         if ($employee) {
             return $employee->getAccount();
         }
-
     }
 
+<<<<<<< HEAD
   
 
 }
+=======
+
+    public function designation()
+    {
+        return $this->belongsTo(\Modules\HRMS\Models\Settings\Designation::class, 'designation_id');
+    }
+}
+>>>>>>> 37752bb94c44fb43cee669cfaa4007fff48d1acd

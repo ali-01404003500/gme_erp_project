@@ -642,6 +642,39 @@ class AccountGroupSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1
             ],
+            [
+                'id' => 1021,
+                'name' => 'Staff Loan',
+                'account_group_id' => 1,
+                'account_control_id' => 1000,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 1,
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
+            [
+                'id' => 1022,
+                'name' => 'Staff IOU',
+                'account_group_id' => 1,
+                'account_control_id' => 1000,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 1,
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
+            [
+                'id' => 1023,
+                'name' => 'Tax Receivable',
+                'account_group_id' => 1,
+                'account_control_id' => 1000,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 1,
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
 
 
             //Fixed Asset
@@ -757,17 +790,6 @@ class AccountGroupSeeder extends Seeder
                 'updated_by' => 1
             ],
             [
-                'id' => 2008,
-                'name' => 'Staff Advance',
-                'account_group_id' => 2,
-                'account_control_id' => 2000,
-                'branch_id' => 1,
-                'status' => 1,
-                'is_deletable' => 0,
-                'created_by' => 1,
-                'updated_by' => 1
-            ],
-            [
                 'id' => 2009,
                 'name' => 'Employee Cash',
                 'account_group_id' => 1,
@@ -834,6 +856,7 @@ class AccountGroupSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1,
             ],
+
             //Capital Account(liabilities)
             [
                 'id' => 2021,
@@ -1285,6 +1308,17 @@ class AccountGroupSeeder extends Seeder
                 'updated_by' => 1
 
             ],
+            [
+                'id' => 5054,
+                'name' => 'Operating Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5050,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
+            ],
             //Financial Expense
             [
                 'id' => 5061,
@@ -1309,7 +1343,20 @@ class AccountGroupSeeder extends Seeder
                 'created_by' => 1,
                 'updated_by' => 1
 
+            ], 
+            [
+                'id' => 5065,
+                'name' => 'Bank Transaction Charge',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
+
             ],
+
             //Indirect Expense
             [
                 'id' => 5071,
@@ -1521,6 +1568,15 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'account_number' => '1800',
             ],
+            [
+                'name' => 'AIT Receivable',
+                'account_group_id' => 1,
+                'account_control_id' => 1000,
+                'account_subsidiary_id' => 1023,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '102301',
+            ],
 
             // Liabilities
             [
@@ -1551,6 +1607,15 @@ class AccountGroupSeeder extends Seeder
                 'account_number' => '2200',
             ],
             [
+                'name' => 'AIT Payable',
+                'account_group_id' => 2,
+                'account_control_id' => 2010,
+                'account_subsidiary_id' => 2012,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '201201',
+            ],
+            [
                 'name' => 'Tax Payable',
                 'account_group_id' => 2,
                 'account_control_id' => 2010,
@@ -1577,6 +1642,28 @@ class AccountGroupSeeder extends Seeder
                 'is_deletable' => 0,
                 'account_number' => '2500',
             ],
+            [
+                'name' => 'MFS Charge Liability',
+                'account_group_id' => 2,
+                'account_control_id' => 2010,
+                'account_subsidiary_id' => 2014,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'account_number' => '201401', 
+            ],
+            [
+                'name' => 'Bank Charge Liability',
+                'account_group_id' => 2,
+                'account_control_id' => 2010,
+                'account_subsidiary_id' => 2014,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0, 
+                'account_number' => '201402',
+
+            ],
+
 
             // Equity
             [
@@ -1752,6 +1839,51 @@ class AccountGroupSeeder extends Seeder
                 'branch_id' => 1,
                 'is_deletable' => 0,
                 'account_number' => '5800',
+            ],
+            [
+                'name' => 'Waiver',
+                'account_group_id' => 5,
+                'account_control_id' => 5050,
+                'account_subsidiary_id' => 5053,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '505301',
+            ],
+            [
+                'name' => 'Bad Debt Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5050,
+                'account_subsidiary_id' => 5054,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '505401',
+            ],
+            [
+                'name' => 'MFS Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'account_subsidiary_id' => 5063,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '506301',
+            ],
+            [
+                'name'=>'Bank Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'account_subsidiary_id' => 5064,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '506401',
+            ],
+            [
+                'name'=>'Bank Transaction Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'account_subsidiary_id' => 5065,
+                'branch_id' => 1,
+                'is_deletable' => 0,
+                'account_number' => '506501',
             ]
         ];
 

@@ -70,7 +70,7 @@ class ServiceQuotationController extends Controller
      */
     public function create(Request $request)
     {
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['services'] = Service::all();
         $data['customers'] = Customer::get();
         $data['selected_service_id'] = $request->service_id; // pass selected service id from query parameter
@@ -176,7 +176,7 @@ class ServiceQuotationController extends Controller
     public function edit(ServiceQuotation $quotation)
     {
         $data['quotation'] = $quotation;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
 
         return view("Services::quotation.edit", $data);
@@ -186,7 +186,7 @@ class ServiceQuotationController extends Controller
     {
         $quotation = $this->service->show($id);
         $data['quotation'] = $quotation;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         ;
 

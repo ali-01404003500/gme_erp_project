@@ -26,7 +26,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // Get all employees for the target achievement filter
+        $employees = Employee::all();
+
+        return view('home', compact('employees'));
     }
 
     public function myProfile()
@@ -78,7 +81,13 @@ class HomeController extends Controller
                 }
                 $collectionService->storeFromJsonFile();
                 break;
-
+            case  'MFS Collection':
+                $mfsVerificationService = app(\Modules\Account\Services\MFSVerificationService::class);
+                if ($useDirectData) {
+                    return $mfsVerificationService->handleDirectImport( $request->input('data'));
+                }
+                $mfsVerificationService->storeFromJsonFile();
+                break;
             case 'Supplier Payment':
                 $paymentService = new \Modules\Account\Services\Payments\MakePaymentService();
                 if ($useDirectData) {

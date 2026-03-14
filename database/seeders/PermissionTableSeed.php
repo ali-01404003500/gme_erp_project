@@ -27,6 +27,23 @@ class PermissionTableSeed extends Seeder
          * key: every permission part of permission master. key is the master key that holding all permission
          */
         $permissions = [
+
+
+            //dashboard   
+            [
+                'name' => 'Admin Dashboard',
+                'description' => 'Permission to view admin dashboard',
+                'slug' => 'dashboard.admin',
+                'key' => 'dashboard',
+            ],
+            [
+                'name' => 'User Dashboard',
+                'description' => 'Permission to view user dashboard',
+                'slug' => 'dashboard.user',
+                'key' => 'dashboard',
+            ],
+
+
             // Users Crud
             [
                 'name' => 'Create Role',
@@ -350,59 +367,66 @@ class PermissionTableSeed extends Seeder
                 'key' => 'hrm.noticeboards'
             ],
 
-            //Petty Cash
+            //TA/DA
             [
-                'name' => 'Petty Cash List',
+                'name' => 'TA/DA List',
                 'slug' => 'hrm.bills.index',
-                'description' => 'Petty Cash list permission',
+                'description' => 'TA/DA list permission',
                 'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Create Petty Cash',
+                'name' => 'Create TA/DA',
                 'slug' => 'hrm.bills.create',
-                'description' => 'Petty Cash create permission',
+                'description' => 'TA/DA create permission',
                 'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash Update',
+                'name' => 'TA/DA Update',
                 'slug' => 'hrm.bills.update',
-                'description' => 'Petty Cash update permission',
+                'description' => 'TA/DA update permission',
                 'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash View',
+                'name' => 'TA/DA View',
                 'slug' => 'hrm.bills.show',
-                'description' => 'Petty Cash show permission',
+                'description' => 'TA/DA show permission',
                 'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash Delete',
+                'name' => 'TA/DA Delete',
                 'slug' => 'hrm.bills.destroy',
-                'description' => 'Petty Cash delete permission',
+                'description' => 'TA/DA delete permission',
                 'key' => 'hrm.bills'
             ],
             [
-                'name' => 'Petty Cash Team Leader Verify',
+                'name' => 'TA/DA Team Leader Verify',
                 'slug' => 'hrm.bills.team_leader_verify',
-                'description' => 'Petty Cash team leader verify permission',
+                'description' => 'TA/DA team leader verify permission',
                 'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash HR/Accounts Verify',
+                'name' => 'TA/DA HR/Accounts Verify',
                 'slug' => 'hrm.bills.accounts_verify',
-                'description' => 'Petty Cash HR/accounts verify permission',
+                'description' => 'TA/DA HR/accounts verify permission',
                 'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Petty Cash Final Approve',
+                'name' => 'TA/DA Final Approve',
                 'slug' => 'hrm.bills.final_approve',
-                'description' => 'Petty Cash final approve permission',
+                'description' => 'TA/DA final approve permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA Verify',
+                'slug' => 'hrm.bills.verify',
+                'description' => 'TA/DA Verification List',
                 'key' => 'hrm.bills'
             ],
 
@@ -587,6 +611,32 @@ class PermissionTableSeed extends Seeder
                 'slug' => 'hrm.settings.shifts.destroy',
                 'description' => 'Shift delete permission',
                 'key' => 'hrm.settings.shifts',
+            ],
+
+            // Settings: Hotspots
+            [
+                'name' => 'Hotspots List',
+                'slug' => 'hrm.settings.hotspots.index',
+                'description' => 'Hotspots list permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Create Hotspot',
+                'slug' => 'hrm.settings.hotspots.create',
+                'description' => 'Hotspot create permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Update',
+                'slug' => 'hrm.settings.hotspots.update',
+                'description' => 'Hotspot update permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Delete',
+                'slug' => 'hrm.settings.hotspots.destroy',
+                'description' => 'Hotspot delete permission',
+                'key' => 'hrm.settings.hotspots',
             ],
 
             // Settings: Holidays
@@ -1334,6 +1384,39 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Daily Call delete permission',
                 'key' => 'crm.daily-calls'
             ],
+
+            //daily-credit-calls
+            [
+                'name' => 'Create Daily Credit Call',
+                'slug' => 'crm.daily-credit-calls.create',
+                'description' => 'Daily Credit Call create permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+            [
+                'name' => 'Daily Credit Call List',
+                'slug' => 'crm.daily-Credit-calls.index',
+                'description' => 'Daily Credit Call list permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+
+            [
+                'name' => 'Daily Credit Call View',
+                'slug' => 'crm.daily-credit-calls.show',
+                'description' => 'Daily Credit Call show permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+            [
+                'name' => 'Credit Legal Task Assign',
+                'slug' => 'crm.daily-credit-calls.legal',
+                'description' => 'Credit Legal Task Assign permission',
+                'key' => 'crm.daily-credit-calls'
+            ],
+
+
+
 
             //brands
             [
@@ -2581,6 +2664,10 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Shipments verifes access permission',
                 'key' => 'sales.shipment-verifies'
             ],
+            
+
+
+
             //sales.condition-amount-collects
 
             [
@@ -3182,6 +3269,94 @@ class PermissionTableSeed extends Seeder
             ],
 
 
+             //account.online-deposit-verifications.check
+            [
+                'name' => 'Online Deposit Verifications List',
+                'slug' => 'account.online-deposit-verifications.index',
+                'description' => 'Online deposit verifications list permission',
+                'key' => 'account.online-deposit-verifications'
+            ], 
+            [
+                'name' => 'Online Deposit Checking Check',
+                'slug' => 'account.online-deposit-verifications.check',
+                'description' => 'Online deposit verifications check permission',
+                'key' => 'account.online-deposit-verifications'
+            ],
+            [
+                'name' => 'Online Deposit Check Verifications Verify',
+                'slug' => 'account.online-deposit-verifications.check-verification',
+                'description' => 'Online deposit check Verifications  permission',
+                'key' => 'account.online-deposit-verifications'
+            ],
+
+
+            //account.mfs-verifications.check
+            [
+                'name' => 'MFS Verifications List',
+                'slug' => 'account.mfs-verifications.index',
+                'description' => 'MFS verifications list permission',
+                'key' => 'account.mfs-verifications'
+            ], 
+            [
+                'name' => 'MFS Checking Check',
+                'slug' => 'account.mfs-verifications.check',
+                'description' => 'MFS verifications check permission',
+                'key' => 'account.mfs-verifications'
+            ],
+            [
+                'name' => 'MFS Check Verifications Verify',
+                'slug' => 'account.mfs-verifications.check-verification',
+                'description' => 'MFS check Verifications  permission',
+                'key' => 'account.mfs-verifications'
+            ],
+
+                //account.fund transfer
+                [
+                    'name'=> 'Fund Transfer List',
+                    'slug'=> 'account.fund-tranfers.index',
+                    'description'=> 'Fund Transfer list permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Create',
+                    'slug'=> 'account.fund-tranfers.create',
+                    'description'=> 'Fund Transfer Create permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Edit',
+                    'slug'=> 'account.fund-tranfers.edit',
+                    'description'=> 'Fund Transfer Edit permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Delete',
+                    'slug'=> 'account.fund-tranfers.delete',
+                    'description'=> 'Fund Transfer delete permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+    
+                [
+                    'name'=> 'Fund Transfer Verify',
+                    'slug'=> 'account.fund-tranfers.verify',
+                    'description'=> 'Fund Transfer verify permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer Approve',
+                    'slug'=> 'account.fund-tranfers.approve',
+                    'description'=> 'Fund Transfer approve permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+                [
+                    'name'=> 'Fund Transfer View',
+                    'slug'=> 'account.fund-tranfers.view',
+                    'description'=> 'Fund Transfer View permission',
+                    'key'=> 'account.fund-tranfers'
+                ],
+
+
+
             //default-payable-receivables
             //  [
             //     'name'=> 'Default Payable Receivables List',
@@ -3564,18 +3739,39 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Broker payments verify permission',
                 'key' => 'account.payments.broker-payments'
             ],
-            //Petty Cash Payments   
+            //TA/DA Payments   
             [
-                'name' => 'Petty Cash Payments List',
+                'name' => 'TA/DA Payments List',
                 'slug' => 'account.payments.petty-cash-payments.index',
-                'description' => 'Petty Cash payments list permission',
+                'description' => 'TA/DA payments list permission',
                 'key' => 'account.payments.petty-cash-payments'
             ],
             [
-                'name' => 'Create Petty Cash Payments',
+                'name' => 'Create TA/DA Payments',
                 'slug' => 'account.payments.petty-cash-payments.create',
-                'description' => 'Petty Cash payments create permission',
+                'description' => 'TA/DA payments create permission',
                 'key' => 'account.payments.petty-cash-payments'
+            ],
+            [
+                'name' => 'TA/DA Payment View',
+                'slug' => 'account.payments.petty-cash-payments.show',
+                'description' => 'TA/DA payments view permission',
+                'key' => 'account.payments.petty-cash-payments'
+            ],
+
+
+            //Loan Payments   
+            [
+                'name' => 'Loan Payments List',
+                'slug' => 'account.payments.loan-payment.index',
+                'description' => 'Loan payments list permission',
+                'key' => 'account.payments.loan-payment'
+            ],
+            [
+                'name' => 'Loan Payments',
+                'slug' => 'account.payments.loan-payment.payment',
+                'description' => 'Loan payments create permission',
+                'key' => 'account.payments.loan-payment'
             ],
 
             //Vender bill settings account.vendor-bills.settings
@@ -4046,6 +4242,13 @@ class PermissionTableSeed extends Seeder
                 'name' => 'Cash Transfer Delete',
                 'slug' => 'account.cash-transfers.destroy',
                 'description' => 'Cash Transfer delete permission',
+                'key' => 'account.cash-transfers'
+            ],
+            //confirm cash transfer
+            [
+                'name' => 'Cash Transfer Confirm',
+                'slug' => 'account.cash-transfers.confirm',
+                'description' => 'Cash Transfer confirm permission',
                 'key' => 'account.cash-transfers'
             ],
 
@@ -4704,6 +4907,9 @@ class PermissionTableSeed extends Seeder
                 'slug' => 'sales_target.settings.achievement-based-salary-policy.show',
                 'key' => 'sales_target.settings.achievement-based-salary-policy',
             ],
+
+
+           
 
         ];
 

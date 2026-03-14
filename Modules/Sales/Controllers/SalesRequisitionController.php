@@ -65,7 +65,7 @@ class SalesRequisitionController extends Controller
      */
     public function create()
     {
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::get();
@@ -124,7 +124,7 @@ class SalesRequisitionController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer',
             'payments_branch_id' => 'nullable|array',
@@ -149,9 +149,9 @@ class SalesRequisitionController extends Controller
             'payments_advance_amount' => 'nullable|numeric'
         ]);
 
-    
+
         // dd($validate);
-        $result = $this->service->store($validate, $salesRequisitionDetails, $salesOrderShipments, $payments );
+        $result = $this->service->store($validate, $salesRequisitionDetails, $salesOrderShipments, $payments);
         return redirect()->route('sales.sales-requisitions.edit', $result['salesRequisition']->id)->with('success', 'SalesRequisition created successfully.');
     }
 
@@ -197,11 +197,11 @@ class SalesRequisitionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit( $id)
+    public function edit($id)
     {
         $salesRequisition = $this->service->show($id);
         $data['salesRequisition'] = $salesRequisition;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::where('id', $salesRequisition->customer->company_place_id)->get();
@@ -246,7 +246,7 @@ class SalesRequisitionController extends Controller
 
         $payments = $request->validate([
             'payments_pay_mode' => 'nullable|array',
-            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
             'payments_bank_id' => 'nullable|array',
             'payments_bank_id.*' => 'nullable|integer',
             'payments_branch_id' => 'nullable|array',
@@ -300,7 +300,7 @@ class SalesRequisitionController extends Controller
         return redirect()->route('sales.sales-requisitions.index')->with('success', 'SalesRequisition deleted successfully.');
     }
 
-    
+
     public function saveToSalesOrder($id)
     {
         $salesRequisition = SalesRequisition::find($id);
@@ -308,5 +308,5 @@ class SalesRequisitionController extends Controller
         // dd($orders);
         return redirect()->route('sales.sales-orders.edit', $orders->id)->with('success', 'SalesRequisition converted to SalesOrder successfully.');
     }
-    
+
 }

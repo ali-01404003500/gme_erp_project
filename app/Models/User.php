@@ -75,22 +75,30 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
+    // public function customer()
+    // {
+    //     return $this->belongsTo(Customer::class, 'email', 'phone');
+    // }
+
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'email', 'phone');
+        return $this->hasOne(\Modules\CRM\Models\Customer\Customer::class, 'user_ref_id', 'id')
+            ->where('email', $this->email)
+            ->where('phone', $this->phone);
     }
 
     public function branch()
     {
-        return $this->belongsTo(Branch::class, );
+        return $this->belongsTo(Branch::class,);
     }
-    public function company(){
+    public function company()
+    {
         $company = CompanyInfo::first();
         return $company;
-     }
+    }
 
 
-     // Add methods required by JWTSubject
+    // Add methods required by JWTSubject
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -98,8 +106,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return [
-           
-        ];
+        return [];
     }
 }

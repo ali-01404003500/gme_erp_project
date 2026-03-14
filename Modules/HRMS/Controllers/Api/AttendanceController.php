@@ -86,17 +86,17 @@ class AttendanceController extends Controller
     }
     /**
      * Handle check-in and check-out requests from the mobile app.
-     * 
+     *
      * This endpoint expects the following parameters:
      *  - latitude: The latitude of the employee's current location.
      *  - longitude: The longitude of the employee's current location.
      *  - remarks: An optional string containing any additional remarks.
-     * 
+     *
      * The endpoint will return a JSON response with the following structure:
      *  - data: The Attendance object that was created or updated.
      *  - status: A boolean indicating whether the request was successful.
      *  - message: A string containing a message about the result of the request.
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -111,6 +111,33 @@ class AttendanceController extends Controller
         $currentTime = date('H:i');
         $yearStart = Carbon::now()->startOfYear()->format('Y-m-d');
 
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+
+        // Get employee's branch
+        $employee = Employee::with('employementDetail.branch')->find($employeeId);
+        $branchId = $employee->employementDetail?->branch_id ?? null;
+
+        // Check if location is within any active hotspot of the employee's branch
+        $isWithinHotspot = true; // Default to true (auto-present if no hotspots)
+        $hotspotsConfigured = false;
+        if ($branchId && $latitude && $longitude) {
+            $hotspots = \Modules\HRMS\Models\Settings\Hotspot::where('branch_id', $branchId)
+                ->where('status', 1)
+                ->get();
+
+            if ($hotspots->isNotEmpty()) {
+                $hotspotsConfigured = true;
+                $isWithinHotspot = false;
+                foreach ($hotspots as $hotspot) {
+                    if ($hotspot->isWithinRadius($latitude, $longitude)) {
+                        $isWithinHotspot = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         $attendance = Attendance::where('employee_id', $employeeId)
             ->whereDate('date', $today)
             ->first();
@@ -122,44 +149,43 @@ class AttendanceController extends Controller
                 'date'               => $today,
                 'check_in_date'      => $today,
                 'check_in_time'      => $currentTime,
-                'check_in_latitude'  => $request->input('latitude'),
-                'check_in_longitude' => $request->input('longitude'),
+                'check_in_latitude'  => $latitude,
+                'check_in_longitude' => $longitude,
                 'remarks'            => $request->input('remarks', 'Check-in recorded'),
-                'shift_id'           => $request->input('shift_id')?? 10000,
+                'shift_id'           => $request->input('shift_id') ?? 10000,
+                'attendance_type'    => $isWithinHotspot ? 'Present' : 'Pending',
             ]);
             return response()->json([
                 'data'    => $this->service->getAttendanceMetrics($employeeId, $yearStart, $today),
                 'status'  => 201,
-                'message' => 'Check-in recorded.'
+                'message' => $isWithinHotspot ? 'Check-in recorded.' : 'Check-in recorded. Location outside hotspot - pending approval.'
             ]);
         } else {
-            if(!$attendance->check_in_time) {
+            if (!$attendance->check_in_time) {
                 // First request of the day: record check-in
                 $attendance->update([
                     'check_in_date'      => $today,
                     'check_in_time'      => $currentTime,
-                    'check_in_latitude'  => $request->input('latitude'),
-                    'check_in_longitude' => $request->input('longitude'),
+                    'check_in_latitude'  => $latitude,
+                    'check_in_longitude' => $longitude,
                     'remarks'            => $request->input('remarks', $attendance->remarks . ' | Check-in recorded'),
-                    'attendance_type'    => 'Present',
-                    'shift_id'           => $request->input('shift_id')?? 10000,
-
+                    'attendance_type'    => $isWithinHotspot ? 'Present' : 'Pending',
+                    'shift_id'           => $request->input('shift_id') ?? 10000,
                 ]);
                 return response()->json([
                     'data'    => $this->service->getAttendanceMetrics($employeeId, $yearStart, $today),
                     'status'  => 200,
-                    'message' => 'Check-in recorded.'
+                    'message' => $isWithinHotspot ? 'Check-in recorded.' : 'Check-in recorded. Location outside hotspot - pending approval.'
                 ]);
-            }else if (!$attendance->check_out_time) {
+            } else if (!$attendance->check_out_time) {
                 // Last request of the day: record check-out
                 $attendance->update([
                     'check_out_date'      => $today,
                     'check_out_time'      => $currentTime,
-                    'check_out_latitude'  => $request->input('latitude'),
-                    'check_out_longitude' => $request->input('longitude'),
+                    'check_out_latitude'  => $latitude,
+                    'check_out_longitude' => $longitude,
                     'remarks'             => $request->input('remarks', $attendance->remarks . ' | Check-out recorded'),
-                    'shift_id'           => $request->input('shift_id')?? 10000,
-
+                    'shift_id'            => $request->input('shift_id') ?? 10000,
                 ]);
                 return response()->json([
                     'data'    => $this->service->getAttendanceMetrics($employeeId, $yearStart, $today),

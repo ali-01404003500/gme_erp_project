@@ -16,58 +16,86 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
-
     use AuthenticatesUsers;
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
+
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
-
-    /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function showLoginForm()
     {
-
         $title = 'Login';
         $description = 'Login to your account';
 
         return view('auth.login', compact('title', 'description'));
     }
 
-    function authenticated(Request $request, $user)
+    /**
+     * IMPORTANT: Only allow active users to login (Web)
+     */
+    protected function credentials(Request $request)
+    {
+        $field = $this->username();
+
+        return [
+            $field => $request->input('email'),
+            'password' => $request->password,
+            'user_status' => 'active', // change to 1 if numeric
+        ];
+    }
+
+    /**
+     * Custom failed login message (Inactive check)
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        $field = $this->username();
+
+        $user = User::where($field, $request->input('email'))->first();
+
+        // User not found
+        if (!$user) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => ['This username/email does not exist.'],
+            ]);
+        }
+
+        // Password incorrect
+        if (!\Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'password' => ['Incorrect password.'],
+            ]);
+        }
+
+        // Account inactive
+        if ($user->user_status != 'active') {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => ['Your account is inactive. Please contact admin.'],
+            ]);
+        }
+
+        // Default fallback
+        throw \Illuminate\Validation\ValidationException::withMessages([
+            'email' => [trans('auth.failed')],
+        ]);
+    }
+
+    /**
+     * After login success
+     */
+    protected function authenticated(Request $request, $user)
     {
         Cache::put('user-is-online-' . $user->id, true, 43200);
+
         $generalNotificationService = new GeneralNotificationService();
         $generalNotificationService->updateNotificationCount($user->id);
     }
 
-
+    /**
+     * Login field detection (email or employee_full_id)
+     */
     public function username()
     {
         if (is_numeric(request()->email)) {
@@ -76,14 +104,8 @@ class LoginController extends Controller
         return 'email';
     }
 
-
-
-
     /**
-     * Log the user out of the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Logout (Web)
      */
     public function logout(Request $request)
     {
@@ -96,25 +118,29 @@ class LoginController extends Controller
             if (count($parts) >= 4 && $parts[3] == 'em') {
                 $path = '/em';
             }
+
             $this->guard()->logout();
 
             $request->session()->invalidate();
-
             $request->session()->regenerateToken();
 
-            return $this->loggedOut($request) ?: redirect($path);
-        } catch (\Throwable $th) {
+            return redirect($path);
 
-            return redirect()->route('login')->withError('Login Season Tiemed Out!');
+        } catch (\Throwable $th) {
+            return redirect()->route('login')->withError('Login Session Timed Out!');
         }
     }
 
     private function removeUserFromCache()
     {
-        Cache::clear('logged-in-users-' . auth()->id());
+        Cache::forget('logged-in-users-' . auth()->id());
     }
 
-
+    /**
+     * ============================
+     * API LOGIN (JWT)
+     * ============================
+     */
 
     public function verifyResetPasswordToken(Request $request)
     {
@@ -153,17 +179,37 @@ class LoginController extends Controller
         return redirect()->route('login')->with('success', 'Password Reset Successful. Please Login!');
     }
 
+    public function loginApi(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
 
-    public function loginApi(Request $request){
-        $credentials = $request->only('email', 'password');
+        // $field = is_numeric($request->email) ? 'employee_full_id' : 'email';
 
-        // Use JWTAuth::attempt() to generate the token
+        // $user = User::where($field, $request->email)->first();
+
+        // if (!$user) {
+        //     return response()->json(['error' => 'User not found'], 404);
+        // }
+
+        // if ($user->user_status != 'active') {
+        //     return response()->json(['error' => 'Account is inactive'], 403);
+        // }
+
+        // $credentials = [
+        //     $field => $request->email,
+        //     'password' => $request->password,
+        // ];
+
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        
+
         $this->authenticated($request, auth()->user());
         InvalidateAuthUserCashe(auth()->user()->id);
+
         return $this->respondWithToken($token);
     }
 
@@ -172,9 +218,7 @@ class LoginController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            // 'expires_in'   => Auth::factory()->getTTL() * 60
-            'user'   => auth()->user()
-
+            'user'         => auth()->user()
         ]);
     }
 

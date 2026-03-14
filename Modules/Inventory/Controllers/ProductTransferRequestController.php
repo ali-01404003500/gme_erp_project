@@ -84,7 +84,7 @@ class ProductTransferRequestController extends Controller
         $data['productTypes'] = ProductType::query()->where('status', 1)->get();
         $data['units'] = Unit::all();
         $data['products'] = Product::all();
-        $data['productCatalogs'] = ProductCatalog::all();
+        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
 
         return view('Inventory::product-transfer-requests.create', $data);
@@ -183,7 +183,7 @@ class ProductTransferRequestController extends Controller
         $data['productTypes'] = ProductType::query()->where('status', 1)->get();
         $data['units'] = Unit::all();
         $data['products'] = Product::all();
-        $data['productCatalogs'] = ProductCatalog::all();
+        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         //
         return view("Inventory::product-transfer-requests.edit", $data);

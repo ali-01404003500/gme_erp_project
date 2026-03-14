@@ -98,6 +98,7 @@
                                     </ul>
                                 </li>
                         @endif
+                        
     
                     </ul>
                 </li>
@@ -324,6 +325,14 @@
                                   <span class="nav-icon nav-icon fas fa-calendar-alt"
                                       style="margin-right: 21px;"></span>
                                   {{ t_('menu.hrm-settings-shift-menu-title') }}</a>
+                          </li>
+                      @endif
+                      @if (hasPermission('hrm.settings.hotspots.index'))
+                          <li><a href="{{ route('hrm.settings.hotspots.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.hotspots.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-map-marked-alt"
+                                      style="margin-right: 21px;"></span>
+                                  {{ t_('menu.hrm-settings-hotspot-menu-title') }}</a>
                           </li>
                       @endif
                       @if (hasPermission('hrm.settings.holidays.index'))

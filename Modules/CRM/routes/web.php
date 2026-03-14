@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\CRM\Controllers\Customer\BrokerController;
 use Modules\CRM\Controllers\Customer\CustomerController;
 use Modules\CRM\Controllers\Customer\DailyCallController;
+use Modules\CRM\Controllers\Customer\DailyCreditCallController;
 use Modules\CRM\Controllers\Customer\Settings\CustomerRatingController;
 use Modules\CRM\Controllers\Customer\Settings\CustomerShippingController;
 use Modules\CRM\Controllers\Customer\Settings\CustomerTypeController;
@@ -29,7 +30,10 @@ Route::group(['middleware'=>'auth', 'prefix' => 'crm', 'as' => 'crm.'],function 
     Route::post('update-broker-details/{id}', [CustomerController::class, 'updateBrokerWithSettings'])->name('update-broker-details');
 
     Route::get('customer-count', [CustomerController::class, 'countCustomer'])->name('customer.count');
-    Route::get('get-customers', [CustomerController::class, 'getCustomers'])->name('get-customers');
+    Route::get('get-customers', [CustomerController::class, 'getCustomers'])->name('get-customers');    
+    Route::get('autocomplete-customers', [CustomerController::class, 'customerAutocomplete']) ->name('autocomplete.customers');
+    Route::get('autocomplete-products', [BrokerController::class, 'productAutocomplete']) ->name('autocomplete.products');
+
 
     /* Customer Type */
     Route::resource('customer-types', CustomerTypeController::class);
@@ -52,7 +56,11 @@ Route::group(['middleware'=>'auth', 'prefix' => 'crm', 'as' => 'crm.'],function 
 
     Route::resource('daily-calls', DailyCallController::class);
 
-     Route::prefix('reports')->name('reports.')->group(function () {
+    Route::resource('daily-credit-calls', DailyCreditCallController::class);
+    Route::get('daily-credit-calls-legal', [DailyCreditCallController::class, 'legal'])->name('daily-credit-calls.legal');
+    Route::post('daily-credit-calls-legal', [DailyCreditCallController::class, 'legalStore'])->name('daily-credit-calls.legalStore');
+
+    Route::prefix('reports')->name('reports.')->group(function () {
 
         Route::get('customer-machine-code', [CustomerMachineCodeReportController::class, 'index'])->name('customer-machine-code');
         Route::get('customer-balance-details', [CustomerBalanceReportController::class, 'index'])
