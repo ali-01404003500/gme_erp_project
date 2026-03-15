@@ -65,7 +65,7 @@ class SalesRequisitionController extends Controller
      */
     public function create()
     {
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::get();
@@ -201,7 +201,7 @@ class SalesRequisitionController extends Controller
     {
         $salesRequisition = $this->service->show($id);
         $data['salesRequisition'] = $salesRequisition;
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::where('id', $salesRequisition->customer->company_place_id)->get();

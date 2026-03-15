@@ -70,7 +70,7 @@ class IssueProductController extends Controller
         $data['units'] = Unit::all();
         $data['products'] = Product::all();
         $data['branches'] = Branch::query()->get();
-        $data['productCatalogs'] = ProductCatalog::all();
+        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['productTypes'] = ProductType::all();
 
         return view('Inventory::issue-products.create', $data);

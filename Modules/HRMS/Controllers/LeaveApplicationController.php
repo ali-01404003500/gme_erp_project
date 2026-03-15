@@ -14,6 +14,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Modules\HRMS\Models\ApprovalRequest;
+use Modules\HRMS\Models\LeaveStatus;
+
 class LeaveApplicationController extends Controller
 {
 
@@ -42,7 +45,7 @@ class LeaveApplicationController extends Controller
     {
         $data['employees'] = Employee::all();
         $data['leaveTypes'] = LeaveType::all();
-        $data['leaveApplications'] = $this->service->getAll();
+        $data['leaveApplications'] = $this->service->getAll(); 
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
@@ -70,7 +73,7 @@ class LeaveApplicationController extends Controller
      */
     public function create()
     {
-        $data['employees'] = Employee::all();
+        $data['employees'] = Employee::where('status', 1)->get();;
 
         $data['leaveTypes'] = LeaveType::all();
         
@@ -80,26 +83,69 @@ class LeaveApplicationController extends Controller
     public function getLeaveResponse(Request $request){
         $employee   = $request->employee;
         $leave_type = $request->leave_type;
+ 
+        $leaveTypeWiseBalance = LeaveStatus::where('employee_id', $employee)->where('leave_type', $leave_type) ->where('is_active', 1)->first();
+        $leaveTaken =  LeaveApplication::query()->where('employee_id', $employee)->where('leave_type_id', $leave_type)->where('approved_by', '!=', null)->get()->sum('day_count');
 
-        $companyLeaveType   = LeaveType::query()->find($leave_type);
+        $data['leaveTypeWiseBalance'] =  $leaveTypeWiseBalance;
 
-        $balance =  LeaveApplication::query()->where('employee_id', $employee)->where('leave_type_id', $leave_type)->where('approved_by', '!=', null)->get()->sum('day_count');
-
-        $data['companyLeaveType'] =  $companyLeaveType;
-
-        $data['leaveBalance'] = $companyLeaveType->total_day - $balance??0;
+        $data['leaveBalance'] = $leaveTypeWiseBalance->remaining_balance - $leaveTaken??0;
 
         return response()->json($data);
     }
 
     public function recommended(Request $request, $id){
-       LeaveApplication::find($id)->update([
-        'recommended_by' => auth()->user()->id,
-        'recommended_comments' => $request->recommended_comments,
-        'status' => 'recommended',
-    ]);
+        
+        $approval = ApprovalRequest::find($id);
 
-    return redirect()->route('hrm.leaves.index')->with('success', 'LeaveApplication updated successfully.');
+        $leave = LeaveApplication::find($approval->reference_id);
+
+        if($leave->current_level != $approval->level){ 
+            return redirect()->route('hrm.leaves.index')->with('success', 'Invalid approval step.');
+        }
+
+        $approval->update([
+            'status'=>'approved',
+            'remarks'=>$request->remarks,
+            'approved_at'=>now()
+        ]);
+
+        $nextStep = ApprovalRequest::where('reference_id',$leave->id)
+            ->where('reference_type',LeaveApplication::class)
+            ->where('level','>', $approval->level)
+            ->orderBy('level')
+            ->first();
+
+        if($nextStep){
+
+            $leave->update([
+                'current_level'=>$nextStep->level,
+                'status'=>'recomended'
+            ]);
+
+        }else{
+
+            $leave->update([
+                'status'=>'approved'
+            ]);
+
+        } 
+        return redirect()->route('hrm.leaves.index')->with('success', 'LeaveApplication updated successfully.');
+    }
+ 
+
+    public function reject(Request $request, $id){
+
+        $approval = ApprovalRequest::findOrFail($id);
+
+        $approval->update([
+            'status'=>'rejected'
+        ]);
+
+        $approval->reference->update([
+            'status'=>'rejected'
+        ]);
+        return redirect()->route('hrm.leaves.index')->with('success', 'LeaveApplication updated successfully.');
     }
 
     public function approved(Request $request, $id){
@@ -117,9 +163,9 @@ class LeaveApplicationController extends Controller
      */
     public function store(Request $request)
     {
-        $from_date = Carbon::createFromFormat('m/d/Y', $request->from_date)->format('Y-m-d');
+        $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
         $request->merge(['from_date' => $from_date]);
-        $to_date = Carbon::createFromFormat('m/d/Y', $request->to_date)->format('Y-m-d');
+        $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
         $request->merge(['to_date' => $to_date]);
            
     
@@ -130,7 +176,7 @@ class LeaveApplicationController extends Controller
             'from_date_leave_count' => 'required',
             'to_date' => 'nullable|date_format:Y-m-d',
             'to_date_leave_count' => 'required',
-            'day_count' => 'required|integer',
+            'day_count' => 'required',
             'remarks' => 'required|string',
             'file_uploads' => 'nullable|array|min:1',
             'file_uploads.*' => 'nullable|mimes:doc,docx,pdf,jpg,jpeg,png|max:20480',
@@ -152,7 +198,7 @@ class LeaveApplicationController extends Controller
      */
     public function show( $id)
     {
-        $data['leaveApplication'] = $this->service->show($id);
+        $data['leave'] = $this->service->show($id);
 
         return view("HRMS::leave.show", $data);
     }
@@ -174,9 +220,9 @@ class LeaveApplicationController extends Controller
      */
     public function update(Request $request, $id)
     {  
-        $from_date = Carbon::createFromFormat('m/d/Y', $request->from_date)->format('Y-m-d');
+        $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
         $request->merge(['from_date' => $from_date]);
-        $to_date = Carbon::createFromFormat('m/d/Y', $request->to_date)->format('Y-m-d');
+        $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
         $request->merge(['to_date' => $to_date]);
 
         $leaveApplication = LeaveApplication::find($id);
@@ -187,7 +233,7 @@ class LeaveApplicationController extends Controller
         'from_date_leave_count' => 'required',
         'to_date' => 'nullable|date_format:Y-m-d',
         'to_date_leave_count' => 'required',
-        'day_count' => 'required|integer',
+        'day_count' => 'required',
         'remarks' => 'required|string',
         'file_uploads' => 'nullable|array|min:1',
         'file_uploads.*' => 'string',

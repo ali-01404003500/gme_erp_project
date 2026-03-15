@@ -13,7 +13,9 @@ use Modules\Account\Models\EMIEntryDetail;
 use Modules\Account\Models\Payment;
 use Modules\Account\Models\Setup\Bank;
 use Modules\Account\Models\Setup\BankBranch;
+use Modules\Account\Models\Supplier;
 use Modules\Account\Services\ChequeVerificationService;
+use Modules\CRM\Models\Customer\Broker;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\HRMS\Models\Employee;
 use Modules\Purchase\Models\Vendor;
@@ -78,9 +80,19 @@ class CollectionService
             case 'vendor':
                 $from = Vendor::find($data['collection_from']);
                 break;
+            case 'supplier':
+                $from = Supplier::find($data['collection_from']);
+                break;
+            case 'broker':
+                $from = Broker::find($data['collection_from']);
+                break;
+            case 'employee':
+                $from = Employee::find($data['collection_from']);
+                break; 
             default:
                 # code...
-                break;
+                break; 
+
         }
         //   dd($from, $data['collection_type'], $data['collection_from']);
 
@@ -224,7 +236,7 @@ class CollectionService
         // dd($collection->payments);
         $collection->transactions()->delete();
 
-        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI'])->sum('amount');
+        $chequeAndEmiAmount = $collection->payments()->whereIn('pay_mode', ['Cheque', 'EMI','Online Deposit','bKash'])->sum('amount');
 
         $receivableCreditAmount = $collection->total_amount - $chequeAndEmiAmount;
 
@@ -258,7 +270,58 @@ class CollectionService
                         // dd($payment->chequeVerification,  $cheqye, get_class($payment), $payment);
                     }
                     //  dd($payment->chequeVerification, $payment, get_class($payment));
-                } else if ($payment->pay_mode == 'EMI') {
+                }  
+                else if ($payment->pay_mode == 'Online Deposit') {
+                    // Online Deposit entry
+                    if ($payment->onlineDepositVerification) {
+                        // update
+                        $payment->onlineDepositVerification()->update([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank->id, 
+                            'deposit_date' => $payment->date,
+                            'amount' => $payment->amount,
+                        ]);
+                    } else {
+                        $payment->onlineDepositVerification()->create([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank_id,  
+                            'deposit_date' => $payment->date,
+                            'amount' => $payment->amount,
+                            "document" => $payment->attachments,
+                            "remarks" => $payment->remarks,
+                        ]);
+                        $payment->load('onlineDepositVerification');
+                          
+                    }
+                   
+                } 
+                else if ($payment->pay_mode == 'bKash') {
+                    // bKash
+                    if ($payment->mfsVerification) {
+                        // update
+                        $payment->mfsVerification()->update([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank->id, 
+                            'transaction_no' => $payment->transaction_no,
+                            'transaction_date' => $payment->date,
+                            'amount' => $payment->amount,
+                        ]);
+                    } else {
+                        $payment->mfsVerification()->create([
+                            'customer_id' => $collection->collectionFrom->id,
+                            'head_id' => $payment->bank_id, 
+                            'transaction_no' => $payment->transaction_id,
+                            'transaction_date' => $payment->date,
+                            'amount' => $payment->amount,
+                            "document" => $payment->attachments,
+                            "remarks" => $payment->remarks,
+                        ]);
+                        $payment->load('mfsVerification');
+                          
+                    }
+                   
+                }
+                else if ($payment->pay_mode == 'EMI') {
                     // emi update
                     if ($payment->bank) {
                         // dd($collection->source,$payment->bank);
@@ -286,7 +349,7 @@ class CollectionService
 
         // dd($collection->payments);
         foreach ($collection->payments as $payment) {
-            if (in_array($payment->pay_mode, ['Cheque', 'EMI'])) {
+            if (in_array($payment->pay_mode, ['Cheque', 'EMI','Online Deposit','bKash'])) {
                 continue;
             }
             if (in_array($payment->pay_mode, ['AIT', 'Waiver', 'Waiver Bad Debt'])) {
@@ -617,24 +680,20 @@ class CollectionService
         // Process each payment entry
         foreach ($jsonData['payments'] as $payment) {
             // Payment mode validation
-            $validModes = ['Cash', 'Cheque', 'Online Deposit', 'bKash', 'Nagad', 'Rocket', 'Card', 'EMI', 'Card Payment', 'AIT', 'Waiver'];
+            $validModes = ['Cash', 'Cheque', 'Online Deposit', 'bKash', 'Nagad', 'Rocket', 'Card', 'EMI', 'Card Payment', 'AIT', 'Waiver', 'Waiver Bad Debt'];
             if (!in_array($payment['pay_mode'], $validModes)) {
                 throw new \Exception("Invalid payment mode: {$payment['pay_mode']}");
             }
             // dd( $payment);
 
             // Map bank references
-            $bankId = $payment['pay_mode'] === 'Cheque'
+            $bankId = $payment['bank_name'] ?? null ? ($payment['pay_mode'] === 'Cheque'
                 ? ($banks[$payment['bank_name']] ?? null)
-                : ($accounts[$payment['bank_name']] ?? null);
+                : ($accounts[$payment['bank_name']] ?? null)) : null;
 
-            $branchId = $payment['branch_name']
-                ? ($branches[$payment['branch_name']] ?? throw new \Exception("Branch not found: {$payment['branch_name']}"))
-                : null;
+            $branchId = $payment['branch_name'] ?? null ? ($branches[$payment['branch_name']] ?? throw new \Exception("Branch not found: {$payment['branch_name']}")) : null;
 
-            $emiId = $payment['pay_mode'] === 'EMI'
-                ? ($emis[$payment['bank_name']] ?? throw new \Exception("EMI reference not found: {$payment['bank_name']}"))
-                : null;
+            $emiId = $payment['pay_mode'] === 'EMI' ?? null ? ($emis[$payment['bank_name']] ?? throw new \Exception("EMI reference not found: {$payment['bank_name']}")) : null;
 
             // Add to payments array
             $payments['payments_pay_mode'][] = $payment['pay_mode'];
@@ -768,7 +827,7 @@ class CollectionService
 
                 $savedCount++;
             } catch (\Exception $e) {
-                $errors[] = "Row " . ($index + 1) . ": " . $e->getMessage();
+                $errors[] = "Row " . ($index + 1) . ": " . $e->getMessage() . " files: " . $e->getFile() . " Line: " . $e->getLine();
             }
         }
 

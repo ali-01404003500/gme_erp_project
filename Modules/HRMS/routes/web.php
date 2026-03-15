@@ -23,6 +23,7 @@ use Modules\HRMS\Controllers\Kpi\ResponsibilityEntryController;
 use Modules\HRMS\Controllers\Kpi\ScoreWiseSuggestionController;
 use Modules\HRMS\Controllers\LeaveAdjustmentController;
 use Modules\HRMS\Controllers\LeaveApplicationController;
+use Modules\HRMS\Controllers\LeaveApproverController;
 use Modules\HRMS\Controllers\LeaveEligibleEmployeeController;
 use Modules\HRMS\Controllers\LeaveGroupController;
 use Modules\HRMS\Controllers\LeaveSalaryDeductionPolicyController;
@@ -73,7 +74,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
     Route::get('get-leave-response', [LeaveApplicationController::class, 'getLeaveResponse'])->name('get.leave.response');
     Route::put('leaves-recommended/{id}', [LeaveApplicationController::class, 'recommended'])->name('leaves.recommended');
-    Route::put('leaves-approved/{id}', [LeaveApplicationController::class, 'approved'])->name('leaves.approved');
+    Route::put('leaves-reject/{id}', [LeaveApplicationController::class, 'reject'])->name('leaves.reject');
+
+
 
     Route::resource('bills', BillsAndAllowanceController::class);
 
@@ -89,6 +92,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
         Route::resource('leave-types', LeaveTypeController::class)->except(['show', 'edit', 'create']);
+        Route::resource('leave-types', LeaveTypeController::class)->except(['destroy']);
         Route::resource('shifts', ShiftController::class)->except(['show', 'edit', 'create']);
         Route::resource('holidays', HolidayController::class);
         Route::resource('notice-types', NoticeTypeController::class)->except(['show', 'edit', 'create']);
@@ -107,6 +111,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('leave-years', LeaveYearController::class);
         Route::resource('leave-statuses', LeaveStatusController::class);
         Route::get('hrm/settings/leave-statuses/get-balance', [LeaveStatusController::class, 'getEmployeeBalance'])->name('leave-statuses.get-balance');
+        Route::get('hrm/settings/leave-statuses/get-balance', [LeaveStatusController::class, 'getEmployeeBalance'])->name('leave-statuses.get-balance');
+
+        // Route::resource('leave-statuses', LeaveStatusController::class);
         Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class);
         Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
         Route::resource('leave-salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
@@ -142,16 +149,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::get('monthly-attendance-report', [AttendanceReportController::class, 'monthlyReport'])->name('monthly-attendance-report');
     });
 
-// routes/web.php
+    // routes/web.php
 
     Route::group(['prefix' => 'settings', 'as' => 'settings.', 'middleware' => ['web', 'auth']], function () {
 
-        Route::prefix('employee-approvers')->name('employee-approvers.')->group(function () {
-            Route::get('/', [EmployeeApproverController::class, 'index'])->name('index');
-            Route::post('/search', [EmployeeApproverController::class, 'searchApprovers'])->name('search');
-            Route::post('/store', [EmployeeApproverController::class, 'store'])->name('store');
-            Route::delete('/destroy', [EmployeeApproverController::class, 'destroy'])->name('destroy');
-            Route::get('/current/{employeeId}', [EmployeeApproverController::class, 'getCurrentApprovers'])->name('current');
+        Route::prefix('leave-approvers')->name('leave-approvers.')->group(function () {
+            Route::get('/', [LeaveApproverController::class, 'index'])->name('index');
+            Route::post('/search', [LeaveApproverController::class, 'searchApprovers'])->name('search');
+            Route::post('/store', [LeaveApproverController::class, 'store'])->name('store');
+            Route::delete('/destroy', [LeaveApproverController::class, 'destroy'])->name('destroy');
+            Route::get('/current/{employeeId}', [LeaveApproverController::class, 'getCurrentApprovers'])->name('current');
         });
     });
 

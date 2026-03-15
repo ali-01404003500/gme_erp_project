@@ -811,6 +811,20 @@ class PermissionMasterTableSeeder extends Seeder
             ],
 
             [
+                'title' => 'Online Deposit Verifications',
+                'description' => 'Permission of Approve or Deny Online Deposit Verifications',
+                'key' => 'account.online-deposit-verifications',
+                'parent_key' => 'accounts',
+            ],
+
+            [
+                'title' => 'Mfs Verifications',
+                'description' => 'Permission of Approve or Deny Mfs Verifications',
+                'key' => 'account.mfs-verifications',
+                'parent_key' => 'accounts',
+            ],
+
+            [
                 'title' => 'EMI Entries',
                 'description' => 'Permission of Add, Remove, Update, Delete EMI Entries',
                 'key' => 'account.emi-entries',

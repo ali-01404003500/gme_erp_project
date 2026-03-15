@@ -15,7 +15,18 @@
                             <li class="breadcrumb-item active">TA/DA List for Payment</li>
                         </ol>
                     </nav>
+                    <div class="breadcrumb-main__wrapper">
+                        <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
+                            @if (hasPermission('account.payments.petty-cash-payments.list'))
+                            <a href="{{ route('account.payments.petty-cash-payments.list') }}" class="btn px-20 btn-primary btn-sm">
+                                <i class="las la-list fs-16"></i>List
+                            </a>
+                            @endif 
+                        </div>
+
+                    </div>
                 </div>
+                
             </div>
         </div>
 

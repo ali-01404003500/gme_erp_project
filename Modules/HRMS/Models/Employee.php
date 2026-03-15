@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
-use Modules\HRMS\Models\Approver;
+use Modules\HRMS\Models\ApproverStep;
 use Modules\HRMS\Models\Kpi\Assessment;
 use Modules\HRMS\Models\Settings\Designation;
 // use Modules\Inventory\Models\Settings\Approver;
@@ -30,7 +30,7 @@ class Employee extends BaseModel
 
     public function approvers()
     {
-        return $this->hasMany(Approver::class, 'employee_id');
+        return $this->hasMany(ApproverStep::class, 'employee_id');
     }
 
     public function user()
@@ -147,6 +147,19 @@ class Employee extends BaseModel
         }
         return $account;
     }
+
+    public function getCashAccount()
+    {
+        $bankAccount = $this->bankAccount()->first();
+        if ($bankAccount == null) {
+            $this->createBankAccount();
+            $this->load('bankAccount');
+            return $this->bankAccount;
+        }
+        return $bankAccount;
+    }
+
+
 
     // ============================================
     // SALARY ACCOUNTS (5041, 2002)
@@ -288,14 +301,17 @@ class Employee extends BaseModel
             return;
         }
         $this->accounts()->create([
-            "name"                  => "Staff Loan - " . $this->full_name,
-            "account_number"        => '1021' . $this->id,
-            "account_group_id"      => 1,
-            "account_control_id"    => 1000,
-            "account_subsidiary_id" => 1021,
-            "opening_balance"       => "0.00",
-            "remarks"               => "A Staff Loan account is created for " . $this->full_name,
-            "is_deletable"          => 0,
+
+            "name" => "Staff Loan - " . $this->full_name,
+            "account_number" => '2008' . $this->id,
+            "account_group_id" => 1,
+            "account_control_id" => 2000,
+            "account_subsidiary_id" => 2008,
+            "opening_balance" => "0.00",
+            "remarks" => "A Staff Loan account is created for " . $this->full_name,
+            "is_deletable" => 0,
+
+
         ]);
     }
 

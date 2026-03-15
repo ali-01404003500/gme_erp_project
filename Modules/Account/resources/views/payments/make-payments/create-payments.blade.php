@@ -17,12 +17,12 @@
                         </div>
                         <div class="breadcrumb-main__wrapper">
                             <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
-                                {{-- @if (hasPermission('account.payments.create'))
-                                <a href="{{ route('account.payments.create') }}" class="btn px-20 btn-primary btn-sm">
-                                    <i class="las la-plus fs-16"></i>Add New
+                               @if (hasPermission('account.payments.make-payments.index'))
+                                <a href="{{ route('account.payments.make-payments.index') }}" class="btn px-20 btn-primary btn-sm">
+                                    <i class="las la-list fs-16"></i>List
                                 </a>
                                 @endif
-                                <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
+                                 {{-- <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
                                     class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
                                     <i class="las la-file-pdf fs-16"></i> PDF
                                 </a> --}}
@@ -91,14 +91,7 @@
                                         <div class="form-group gap-2 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary" id="save"
                                                 data-bs-dismiss="modal">{{ trans('Save') }}</button>
-                                            @if(hasPermission('account.payments.make-payments.verify'))
-                                            <button type="submit" class="btn btn-warning" id="save-verify"
-                                                data-bs-dismiss="modal">{{ trans('Save and Verify') }}</button>
-                                            @endif
-                                            @if(hasPermission('account.payments.make-payments.approve'))
-                                            <button type="submit" class="btn btn-success" id="save-approved"
-                                                data-bs-dismiss="modal">{{ trans('Save and Approved') }}</button>
-                                            @endif
+                                           
                                         </div>
                                     </div>
 

@@ -444,10 +444,13 @@
                 const account_id = $('#input-account').val();
                 const branch_name = $('#input-branch option:selected').text();
                 const branch_id = $('#input-branch').val();
+  
+                const customer_id = $('#customer_id').val() || $("#customer_id option:selected").val() || $("#collectionFrom option:selected").val();
+                const customer_name = $("#customer_id option:selected").text() || $("#collectionFrom option:selected").text();
+                const customer_phone = $("#customer_phone").val() || '';
+                const customer_address = $("#customer_address").val() || '';
 
-                const customer_id = $('#customer_id').val() || $("#collectionFrom option:selected").val();
-
-                console.log({ customer_id });
+                //console.log({ customer_id });
 
                 const txn = $('#input-txn').val();
                 const date = $('#input-date').val();
@@ -481,7 +484,7 @@
                 }
 
                 if (payMode === 'EMI') {
-                    openEmiCreateModal(customer_id, amount)
+                    openEmiCreateModal(customer_id, customer_name, customer_phone, customer_address, amount)
                         .then((response) => {
                             // console.log({id: response.data?.eMIEntry});
 

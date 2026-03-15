@@ -4,6 +4,7 @@ namespace Modules\Licenses\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Services\AutocompleteService;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Licenses\Models\DongleOrSerialEntry;
 use Modules\Licenses\Services\DongleOrSerialEntryService;
@@ -22,6 +23,7 @@ class DongleOrSerialEntryController extends Controller
     function __construct(DongleOrSerialEntryService $service)
     {
         $this->service = $service;
+        $this->middleware('permited')->except(['productAutocomplete','customerAutocomplete']);
     }
 
     /**
@@ -143,5 +145,33 @@ class DongleOrSerialEntryController extends Controller
         return redirect()->route('licenses.dongle-or-serial-entries.index')->with('success', 'DongleOrSerialEntry deleted successfully.');
     }
 
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    { 
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $data = $autocompleteService->customerSearch(
+            Customer::class,
+            ['company_name','address','phone'],
+            $request->search,
+            ['id', 'company_name','company_place_id', 'phone', 'customer_type', 'address'],
+            30
+        ); 
+
+        
+        return response()->json($data);
+    }
+
+    public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->productSearch(
+            ProductCatalog::class,
+            ['name','model'],
+            $request->search,
+            ['id', 'name','model','product_brand_id'],
+            30
+        ); 
+        return response()->json($data);
+    }
     
 }

@@ -30,6 +30,15 @@ class TargetController extends Controller
     public function create()
     {
         $employees = $this->targetService->getAllEmployees();
+
+        $employees = Employee::where('status', 1)
+        ->whereHas('employementDetail', function ($q) {
+            $q->whereIn('department_id', [5,6])
+              ->where('status', 1);
+        })
+        ->get();
+
+
         return view('SalesTarget::settings.target.create', compact('employees'));
     }
 

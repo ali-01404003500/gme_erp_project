@@ -5,6 +5,7 @@ namespace Modules\Sales\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use Modules\Inventory\Models\Product;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Sales\Models\Courier;
@@ -22,6 +23,7 @@ use Modules\CRM\Models\Customer\CustomerSetting;
 use Modules\LocationManager\Models\Area;
 use Modules\Sales\Models\FreeSalesInvoice;
 use Illuminate\Support\Facades\Session;
+use Modules\HRMS\Models\Employee;
 use Modules\Services\Models\Service;
 
 class SalesOrderController extends Controller
@@ -44,7 +46,7 @@ class SalesOrderController extends Controller
         $this->service = $service;
         $this->generalNotificationService = $generalNotificationService;
 
-        $this->middleware('permited')->except(['getCustomerSetting', 'getSalesDiscount', 'countSalesOrder', 'countTotalSales', 'calculateDiscountForProducts']);
+        $this->middleware('permited')->except(['getCustomerSetting', 'getSalesDiscount', 'countSalesOrder', 'countTotalSales', 'calculateDiscountForProducts','invoiceAutocomplete','employeeAutocomplete','productAutocomplete','customerAutocomplete']);
         $this->middleware('permitedSlug:dashboard')->only(['countSalesOrder', 'countTotalSales']);
 
     }
@@ -86,15 +88,20 @@ class SalesOrderController extends Controller
     public function create(Request $request)
     {
 
-        $data['products'] = ProductCatalog::all();
-        $data['customers'] = Customer::activeCustomers()->get();
+        // $data['products'] = cache()->remember('sales_order_products', 3600, function () {
+        //     return ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
+        // });
+        // $data['customers'] = cache()->remember('sales_order_customers', 3600, function () {
+        //     return Customer::activeCustomers()->select('id', 'company_name', 'company_place_id', 'status')->with('area')->get();
+        // });
+        // dd($data['customers']);
         $data['couriers'] = Courier::get();
-        $data['references'] = SalesOrder::get();
-        $data['areas'] = Area::get();
+        // $data['references'] = SalesOrder::select('id', 'customer_id', 'sales_order_id', 'invoice_date')->get();
+        $data['areas'] = Area::select('id', 'area')->get();
         $data['banks'] = Bank::get();
         $data['branches'] = BankBranch::get();
-        $data['services'] = Service::all();
         $data['selected_service_id'] = $request->service_id;
+        $data['services'] = $request->service_id ? Service::with(['serviceTokens.customer.area'])->get() : [];
 
         return view('Sales::sales-order.create', $data);
     }
@@ -104,6 +111,12 @@ class SalesOrderController extends Controller
 
         $branches = BankBranch::where('bank_id', $request->id)->get();
         return response()->json($branches);
+    }
+
+    public function getReferences(Request $request)
+    {
+        $references = SalesOrder::select('id', 'customer_id', 'sales_order_id', 'invoice_date')->get();
+        return response()->json($references);
     }
 
     /**
@@ -316,13 +329,12 @@ class SalesOrderController extends Controller
         // dd($salesOrder);
         $data['salesOrder'] = $salesOrder;
         //
-        $data['products'] = ProductCatalog::all();
+        $data['products'] = ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
         $data['customers'] = Customer::activeCustomers()->get();
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::where('id', $salesOrder->customer->company_place_id)->get();
         $data['services'] = Service::all();
         $data['banks'] = Bank::get();
-        $data['references'] = SalesOrder::get();
 
         return view("Sales::sales-order.edit", $data);
     }
@@ -517,7 +529,6 @@ class SalesOrderController extends Controller
         $data['areas'] = Area::where('id', $salesOrder->customer->company_place_id)->get();
         $data['services'] = Service::all();
         $data['banks'] = Bank::get();
-        $data['references'] = SalesOrder::get();
         return view('Sales::sales-order.product-free-sales-invoice', $data);
     }
 
@@ -567,4 +578,62 @@ class SalesOrderController extends Controller
             return redirect()->back()->with('error', 'Failed to save free sales invoice: ' . $e->getMessage())->withInput();
         }
     }
-}
+
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    { 
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $data = $autocompleteService->customerSearch(
+            Customer::class,
+            ['company_name','address','phone'],
+            $request->search,
+            ['id', 'company_name','company_place_id', 'phone', 'customer_type', 'address'],
+            30
+        ); 
+
+        
+        return response()->json($data);
+    }
+
+    public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->productSearch(
+            ProductCatalog::class,
+            ['name','model'],
+            $request->search,
+            ['id', 'name','model','product_brand_id'],
+            30
+        ); 
+        return response()->json($data);
+    }
+    public function employeeAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            Employee::class,
+            ['full_name'],
+
+            $request->search,
+            ['id', 'full_name'],
+            20,
+            ['status' => '1']
+        ); 
+        return response()->json($data);
+    }
+
+    public function invoiceAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            SalesOrder::class,
+            ['sales_order_id'],
+
+            $request->search,
+            ['id', 'sales_order_id'],
+            20
+        ); 
+        return response()->json($data);
+    }
+    
+} 

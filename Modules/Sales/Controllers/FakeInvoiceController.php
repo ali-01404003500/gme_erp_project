@@ -45,7 +45,7 @@ class FakeInvoiceController extends Controller
     {
         $data['invoices'] = SalesOrder::get();
         $data['customers'] = Customer::activeCustomers()->get();
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
 
         $data['salesOrder'] = SalesOrder::find($request->invoice_id);
         return view('Sales::fake-invoices.create', $data);
@@ -106,7 +106,7 @@ class FakeInvoiceController extends Controller
     {
         $data['fakeInvoice'] = $fakeInvoice;
         $data['customers'] = Customer::activeCustomers()->get();
-        $data['products'] = ProductCatalog::all();
+        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
        
         return view("Sales::fake-invoices.edit", $data);
     }

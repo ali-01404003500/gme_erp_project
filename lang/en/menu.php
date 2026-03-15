@@ -583,5 +583,6 @@
 
         'fund-transfers-list' => 'Fund Transfer List',
         'create-fund-transfer' => 'Create Fund Transfer',
+        'create-fund-transfers' => 'Create Fund Transfer',
 
     ];

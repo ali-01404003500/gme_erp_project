@@ -198,14 +198,7 @@
                                                             <i class="fas fa-user-check"></i>
                                                         </a>
                                                     @endif
-
-                                                    @if ($payment->status == 'verified' && hasPermission('account.payments.make-payments.approve'))
-                                                        <a class="btn btn-outline-success" title="Approve"
-                                                            href="{{ route('account.payments.make-payments.edit', $payment->id) }}?form_type=approve">
-                                                            <i class="fas fa-check-circle"></i>
-                                                        </a>
-                                                    @endif
-
+ 
                                                     @if (hasPermission('account.payments.make-payments.show'))
                                                         <a class="btn btn-outline-primary"
                                                             href="{{ route('account.payments.make-payments.show', $payment->id) }}">

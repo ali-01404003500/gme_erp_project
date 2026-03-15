@@ -95,11 +95,8 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="arranged_by">Arranged By</label>
-                                            <select name="arranged_by" id="arranged_by" class="form-control tom-select">
-                                                <option value="">{{ __('Select Employee') }}</option>
-                                                @foreach ($employees as $employee)
-                                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
-                                                @endforeach
+                                            <select name="arranged_by" id="arranged_by" class="form-control">
+                                                <option value="">{{ __('Select Employee') }}</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -107,11 +104,8 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="checked_by">Checked By</label>
-                                            <select name="checked_by" id="checked_by" class="form-control tom-select">
-                                                <option value="">{{ __('Select Employee') }}</option>
-                                                @foreach ($employees as $employee)
-                                                    <option value="{{ $employee->id }}">{{ $employee->name }}</option>
-                                                @endforeach
+                                            <select name="checked_by" id="checked_by" class="form-control">
+                                                <option value="">{{ __('Select Employee') }}</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -119,10 +113,7 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="carton_no">Carton No</label>
-
-                                            <input type="text" name="carton_no" class="form-control" id="carton_no"
-                                                value="0">
-
+  
                                             <input type="text" name="carton_no" class="form-control" id="carton_no"
                                                 value="0" required>
                                         </div>
@@ -458,7 +449,72 @@
                     return isValid;
                 });
 
+                const checkbySelect = new TomSelect("#checked_by", {
+                    valueField: "id",
+                    labelField: "text",
+                    searchField: [], 
+                    load: function(query, callback) {
+
+                        if (!query.length || query.length < 2) return callback();
+
+                        $.ajax({
+                            url: "{{ route('sales.sales-orders-autocomplete.employees') }}",
+                            type: "GET",
+                            data: { search: query },
+                            success: function(res) {
+                                checkbySelect.clearOptions();
+                                callback(res.map(item => ({ id: item.id, text: item.label })));
+                            },
+                            error: function() {
+                                callback();
+                            }
+                        });
+                    }
+                }); 
+
+                @if(request('checked_by'))
+                    checkbySelect.addOption({
+                        id: "{{ request('checked_by') }}",
+                        text: "{{ request('checked_by') }}"
+                    });
+                    checkbySelect.setValue("{{ request('checked_by') }}");
+                @endif
+
+
+                const arrangebySelect = new TomSelect("#arranged_by", {
+                    valueField: "id",
+                    labelField: "text",
+                    searchField: [], 
+                    load: function(query, callback) {
+
+                        if (!query.length || query.length < 2) return callback();
+
+                        $.ajax({
+                            url: "{{ route('sales.sales-orders-autocomplete.employees') }}",
+                            type: "GET",
+                            data: { search: query },
+                            success: function(res) {
+                                arrangebySelect.clearOptions();
+                                callback(res.map(item => ({ id: item.id, text: item.label })));
+                            },
+                            error: function() {
+                                callback();
+                            }
+                        });
+                    }
+                }); 
+
+                @if(request('arranged_by'))
+                    arrangebySelect.addOption({
+                        id: "{{ request('arranged_by') }}",
+                        text: "{{ request('arranged_by') }}"
+                    });
+                    arrangebySelect.setValue("{{ request('arranged_by') }}");
+                @endif
+
+                
             });
         </script>
 
     @endsection
+ 

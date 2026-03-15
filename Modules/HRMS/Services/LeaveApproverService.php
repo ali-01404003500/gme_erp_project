@@ -3,14 +3,14 @@
 namespace Modules\HRMS\Services;
 
 use Illuminate\Support\Facades\DB;
-use Modules\HRMS\Models\Approver;
+use Modules\HRMS\Models\ApproverStep;
 use Modules\HRMS\Models\Employee;
 
-class ApproverService
+class LeaveApproverService
 {
     public function getAvailableApprovers($employeeId, $search = null)
     {
-        $existingApproverIds = Approver::where('employee_id', $employeeId)
+        $existingApproverIds = ApproverStep::where('employee_id', $employeeId)
             ->pluck('approver_id')
             ->toArray();
 
@@ -32,7 +32,7 @@ class ApproverService
 
     public function getCurrentApprovers($employeeId)
     {
-        return Approver::with('approver.designation')
+        return ApproverStep::with('approver.designation')
             ->where('employee_id', $employeeId)
             ->orderBy('hierarchy_level')
             ->get();
@@ -43,14 +43,15 @@ class ApproverService
         DB::beginTransaction();
         try {
             foreach ($approvers['approver_ids'] as $key=> $approver_ids) {
-                Approver::where('employee_id', $approvers['employee_id'])
+                ApproverStep::where('employee_id', $approvers['employee_id'])
                 ->whereNotIn('id', $approvers['approver_update_id']??[])
                 ->delete();
            
-                Approver::updateOrCreate([
+                ApproverStep::updateOrCreate([
                     'id'=> $approvers['approver_update_id'][ $key]??null,
                 ],[
                     'hierarchy_level'=>$key + 1,
+                    'workflow_id'=> 1,
                     'employee_id' =>  $approvers['employee_id'],
                     'approver_id' =>$approver_ids,
                 ]);
@@ -65,7 +66,7 @@ class ApproverService
 
     public function removeApproverById($id)
     {
-        $approver = Approver::find($id);
+        $approver = ApproverStep::find($id);
         if ($approver) {
             $empId = $approver->employee_id;
             $approver->delete();
@@ -75,7 +76,7 @@ class ApproverService
 
     private function reorderHierarchy($employeeId)
     {
-        $approvers = Approver::where('employee_id', $employeeId)->orderBy('hierarchy_level')->get();
+        $approvers = ApproverStep::where('employee_id', $employeeId)->orderBy('hierarchy_level')->get();
         foreach ($approvers as $index => $approver) {
             $approver->update(['hierarchy_level' => $index + 1]);
         }

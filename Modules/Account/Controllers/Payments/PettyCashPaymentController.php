@@ -32,6 +32,15 @@ class PettyCashPaymentController extends Controller
 
         
     }
+    public function list(Request $request)
+    {
+        $data['pettyCashList'] = $this->service->getPaymentList($request);
+        $data['employees'] = Employee::all();
+        
+        return view("Account::payments.petty-cash-payments.list", $data);
+
+        
+    }
 
     /**
      * Show petty cash details for payment
@@ -53,6 +62,23 @@ class PettyCashPaymentController extends Controller
         return view("Account::payments.petty-cash-payments.details-modal", $data);
     }
 
+
+    public function showDetails(Request $request)
+    {
+        $data['billsAndAllowance'] = $this->service->getDetailsForPayment(json_decode($request->ids)); 
+        $data['company_info'] = CompanyInfo::first();
+        
+        // If it's an AJAX request, return JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'data' => $data['billsAndAllowance'],
+                'html' => view('Account::payments.petty-cash-payments.list-details-modal', $data)->render()
+            ]);
+        }
+         
+        return view("Account::payments.petty-cash-payments.list-details-modal", $data);
+    }
     /**
      * Process payment for petty cash
      */
@@ -67,7 +93,7 @@ class PettyCashPaymentController extends Controller
 
             $this->service->processPayment(json_decode($request->ids), $validate);
             
-            return redirect()->route('account.payments.petty-cash-payments.index')
+            return redirect()->route('account.payments.petty-cash-payments.list')
                 ->with('success', 'Payment processed successfully.');
         // } catch (\Exception $e) {
         //     return redirect()->back()

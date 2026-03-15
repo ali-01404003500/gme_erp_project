@@ -72,16 +72,10 @@
                                                     </div>
                                                 </td>
 
-                                                <td class="text-center">
+                                                <td class="text-start">
                                                     <select name="customer_name" id="customer_name"
-                                                        class="tom-select  input-sm" data-placeholder="Select Customer">
-                                                        <option value=""></option>
-                                                        @foreach ($quotations as $quotation)
-                                                            <option
-                                                                {{ request('customer_name') == $quotation->customer_name ? 'selected' : '' }}
-                                                                value="{{ $quotation->customer_name }}">
-                                                                {{ $quotation->customer_name }}</option>
-                                                        @endforeach
+                                                        class=" input-sm" data-placeholder="Select Customer">
+                                                        <option value="">Select Customer</option> 
                                                     </select>
                                                 </td>
 
@@ -189,7 +183,7 @@
                                                     @if ($quotation->status == 1)
                                                         @if (hasPermission('sales.quotations.sales.order'))
                                                             @if ($quotation->status == 1)
-                                                                <a class="btn btn-outline-secondary"
+                                                                <a class="btn btn-outline-secondary create-order-btn"
                                                                     href="{{ route('sales.quotations.sales.order', $quotation->id) }}"
                                                                     title="Create Sales Order"><i
                                                                         class="fas fa-cart-plus"></i></a>
@@ -233,5 +227,77 @@
             format: 'dd-mm-yyyy',
             autoclose: true
         });
+
+
+        $(document).ready(function () {
+
+            $('.create-order-btn').on('click', function(e){
+
+                e.preventDefault();
+
+                let url = $(this).attr('href');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are going to create a Sales Order.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Create it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        Swal.fire({
+                            title: 'Created!',
+                            text: 'Sales Order is being generated.',
+                            icon: 'success',
+                            timer: 1200,
+                            showConfirmButton: false
+                        });
+
+                        setTimeout(function(){
+                            window.location.href = url;
+                        }, 1200);
+                    }
+
+                });
+
+            });
+
+            
+            const companySelect = new TomSelect("#customer_name", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('customer_name'))
+                companySelect.addOption({
+                    id: "{{ request('customer_name') }}",
+                    text: "{{ request('customer_name') }}"
+                });
+                companySelect.setValue("{{ request('customer_name') }}");
+            @endif
+        }); 
     </script>
 @endSection

@@ -27,6 +27,8 @@ use Modules\Account\Controllers\InvoiceWisePaymentController;
 use Modules\Account\Controllers\IOURequisition\IOURequisitionEntryController;
 use Modules\Account\Controllers\JournalVoucherController;
 use Modules\Account\Controllers\MakePayment\PaymentController;
+use Modules\Account\Controllers\MFSVerificationController;
+use Modules\Account\Controllers\OnlineDepositVerificationController;
 use Modules\Account\Controllers\Payments\BrokerPaymentController;
 use Modules\Account\Controllers\Payments\MakePaymentController;
 use Modules\Account\Controllers\Payments\PettyCashPaymentController;
@@ -45,6 +47,9 @@ use Modules\Account\Controllers\VendorBill\GeneratedVendorBillController;
 use Modules\Account\Controllers\VendorBill\VendorBillSettingController;
 use Modules\Account\Models\Payments\CustomerPayment;
 use Modules\Account\Controllers\Payments\LoanPaymentController;
+use Modules\Account\Controllers\PaymentVerificationController;
+use Modules\Account\Models\MFSVerification;
+use Modules\Account\Models\OnlineDepositVerification;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.'], function () {
 
@@ -83,6 +88,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
     Route::group(['prefix' => 'collections', 'as' => 'collections.'], function () {
         Route::resource('collections', CollectionController::class);
         Route::resource('invoice-wise-collections', InvoiceWiseCollectionController::class);
+        Route::get('collections-autocomplete-customers', [CollectionController::class, 'customerAutocomplete']) ->name('collections-autocomplete.customers');
     });
 
     Route::group(['prefix' => 'payments', 'as' => 'payments.'], function () {
@@ -105,9 +111,17 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
             Route::get('/', [PettyCashPaymentController::class, 'index'])
                 ->name('index');
 
+            // List of approved petty cash for payment
+            Route::get('list', [PettyCashPaymentController::class, 'list'])
+                ->name('list');
+
             // View details of a petty cash for payment
             Route::get('details', [PettyCashPaymentController::class, 'details'])
                 ->name('details');
+
+            // View details of a petty cash for payment
+            Route::get('show', [PettyCashPaymentController::class, 'showDetails'])
+                ->name('show-details');
 
             // Process payment
             Route::post('/process', [PettyCashPaymentController::class, 'processPayment'])
@@ -120,6 +134,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
 
         Route::get('loan-payment/index', [LoanPaymentController::class, 'index'])->name('loan-payment.index'); 
         Route::get('loan-payment/{id}/payment', [LoanPaymentController::class, 'payment']) ->name('loan-payment.payment');
+
+        Route::get('payment-verifications/index', [PaymentVerificationController::class, 'index'])->name('payment-verifications.index'); 
+        Route::post('payment-verifications/{id}/update', [PaymentVerificationController::class, 'update'])->name('payment-verifications.update');  
     });
 
 
@@ -262,7 +279,12 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
 
     Route::post('cheque-verifications/status/{id}', [ChequeVerificationController::class, 'updateStatus'])->name('cheque-verifications.status');
 
-
+    
+    Route::resource('online-deposit-verifications', OnlineDepositVerificationController::class); 
+    Route::post('online-deposit-verifications/status/{id}', [OnlineDepositVerificationController::class, 'updateStatus'])->name('online-deposit-verifications.update-status');
+ 
+    Route::resource('mfs-verifications', MFSVerificationController::class);
+    Route::post('mfs-verifications/status/{id}', [MFSVerificationController::class, 'updateStatus'])->name('mfs-verifications.update-status');
 
 
 

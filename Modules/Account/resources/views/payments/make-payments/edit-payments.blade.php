@@ -106,15 +106,7 @@
                                     <input type="hidden" name="status" id="status">
                                     <div class="form-group gap-2 d-flex justify-content-end">
                                         <button type="submit" class="btn btn-primary" id="save">{{ trans('Save') }}</button>
-                                        @if(request()->form_type == 'verify')
-                                            <button type="submit" class="btn btn-warning" id="save-verify">{{ trans('Save and Verify') }}</button>
-                                        @endif
-                                        @if(request()->form_type == 'approve')
-                                            <button type="submit" class="btn btn-success" id="save-approved">{{ trans('Save and Approved') }}</button>
-                                        @endif
-                                        @if(request()->form_type == 'verify' || request()->form_type == 'approve')
-                                            <button type="submit" class="btn btn-outline-danger" id="save-denied">{{ trans('Save and Denied') }}</button>
-                                        @endif
+                                       
                                     </div>
                                 </div>
                             </div>

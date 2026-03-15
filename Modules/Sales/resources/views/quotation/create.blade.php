@@ -39,18 +39,8 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
-                                            <select name="customer_name" id="customer_id"
-                                                class="form-control customer-select">
+                                            <select name="customer_name" id="customer_id" class="form-control"> 
                                                 <option value="">Choose Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->company_name }}"
-                                                        data-id="{{ $customer->id }}"
-                                                        {{ old('customer_name') == $customer->company_name ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}@if ($customer->area != null)
-                                                            ({{ $customer->area->area }})
-                                                        @endif
-                                                    </option>
-                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -130,13 +120,10 @@
                                                                     <tr>
                                                                         <td>
                                                                             <select name="product_ids[]"
-                                                                                class="form-control product_ids to-select">
-                                                                                <option value="">Choose Product</option>
-                                                                                @foreach ($products as $product)
-                                                                                    <option value="{{ $product->id }}"
-                                                                                        {{ old('product_ids')[$key] == $product->id ? 'selected' : '' }}>
-                                                                                        {{ $product->name }}</option>
-                                                                                @endforeach
+                                                                                class="form-control product_ids">
+                                                                                <option value="{{old('product_ids')[$key] }}" selected>
+                                                                                    {{ old('product_ids')[$key]->product->name }}
+                                                                                </option>
                                                                             </select>
                                                                         </td>
                                                                         <td>
@@ -170,12 +157,8 @@
                                                                 <tr>
                                                                     <td>
                                                                         <select name="product_ids[]"
-                                                                            class="form-control product_ids to-select">
+                                                                            class="form-control product_ids">
                                                                             <option value="">Choose Product</option>
-                                                                            @foreach ($products as $product)
-                                                                                <option value="{{ $product->id }}">
-                                                                                    {{ $product->name }}</option>
-                                                                            @endforeach
                                                                         </select>
                                                                     </td>
                                                                     <td>
@@ -413,7 +396,7 @@
 
         function getCustomerSettings() {
             var id = $("#customer_id option:selected").data("id");
-            clearFields();
+            //clearFields();
             if (id) {
                 $.ajax({
                     url: "{{ route('sales.get.customer.setting') }}?id=" + id,
@@ -536,27 +519,26 @@
                 })
         }
         $(document).ready(function() {
-            $('.customer-select').each(function() {
-                new TomSelect(this, {
-                    create: true,
-                });
-            });
+           
 
             const rowTemplate = $("#product_info_table tbody tr:first-child").clone();
             rowTemplate.find('input').val('');
             rowTemplate.find('.to-select option:selected').removeAttr('selected');
             rowTemplate.find('#remove_row').removeClass('disabled').removeAttr('disabled');
+            rowTemplate.find('.product_ids option').remove(); 
 
             $("#product_info_table tbody tr:first-child").find('.to-select').each(function() {
                 new TomSelect(this, {});
             });
            
-            $("#add_row").click(function() {
+            $("#add_row").click(function () {
                 const newRow = rowTemplate.clone();
-                newRow.find('.to-select').each(function() {
-                    new TomSelect(this, {});
-                });
+                
+                // Reset discount_type field in new row
+                newRow.find('.discount_type_input').val('');
                 $("#product_info_table tbody").append(newRow);
+
+                prouctAutocompleteLoad(newRow);
             });
 
             $("#product_info_table").on("keyup change", "#quantity, #price, #unit_discount", function() {
@@ -583,6 +565,101 @@
 
             // Initial calculation for existing rows
             calculateTotals();
+
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                create: true,
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ 
+                                id: item.text,
+                                text: item.label,
+                                company_name: item.company_name,
+                                area: item.area,
+                                phone: item.phone,
+                                customer_type: item.customer_type,
+                                address: item.address 
+                            })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                },  
+                onChange: function(value) {
+
+                    if (!value) return; 
+                    let selected = this.options[value];
+ 
+                    if (!selected) {  
+                        $('#address').val('');
+                        $('#contact_person_phone').val('');
+                        $('#customer_type').val('').prop('selected', false);
+                        $('#full_address').val('');
+                        return;
+                    }
+ 
+                    $('#address').val(selected.area ?? '');
+                    $('#contact_person_phone').val(selected.phone ?? '');
+                    $('#customer_type').val(selected.customer_type ?? '').prop('selected', true);
+                  
+                    $("#customer_type").each(function() {
+                        this.tomselect.sync();
+                    });
+                    $('#full_address').val(selected.address ?? ''); 
+                    
+                }
+            }); 
+  
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ request('customer_id') }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+
+
+            const productSelect = new TomSelect(".product_ids", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('product_ids'))
+                productSelect.addOption({
+                    id: "{{ request('product_ids') }}",
+                    text: "{{ request('product_ids') }}"
+                });
+                productSelect.setValue("{{ request('product_ids') }}");
+            @endif
         });
     </script>
 
@@ -668,6 +745,42 @@
                 toastr.error(message);
             }
         }
+
+        function prouctAutocompleteLoad(row){
+            const p = $(row).find(".product_ids");
+            const productSelect = new TomSelect(p[0], {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('product_ids'))
+                productSelect.addOption({
+                    id: "{{ request('product_ids') }}",
+                    text: "{{ request('product_ids') }}"
+                });
+                productSelect.setValue("{{ request('product_ids') }}");
+            @endif
+        }
+
+        
 
     </script>
 

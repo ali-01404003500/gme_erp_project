@@ -66,9 +66,9 @@
                                             <div class="col-sm-4 my-1">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Collected From</span>
-                                                    <select name="collection_from" id="collectionFrom" class="form-control tom-select"
-                                                        data-placeholder="Select Account" disabled>
-                                                        <option></option>
+                                                    <select name="collection_from" id="collectionFrom" class="form-control"
+                                                        data-placeholder="Select Account">
+                                                        <option value="">Select Account</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -131,7 +131,7 @@
 @section('page_scripts')
 <script>
     $(document).ready(function() {
-        $('#collectionType').on('change', function() {
+        /*$('#collectionType').on('change', function() {
             var collectionType = $(this).val();
             var collectionFromSelect = $('#collectionFrom');
             var collectionFromTomSelect = collectionFromSelect[0].tomselect;
@@ -170,7 +170,7 @@
                     console.error(xhr.responseText);
                 }
             });
-        });
+        });*/
 
 
        
@@ -224,6 +224,49 @@
                 }
             });
         });
+
+         
+        let collectionType = $('#collectionType').val();
+        const companySelect = new TomSelect("#collectionFrom", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('account.collections.collections-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query,type: collectionType },
+                    success: function(res) {
+                        companySelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        $('#collectionType').on('change', function() {
+
+            collectionType = $(this).val();
+
+            companySelect.clear();
+            companySelect.clearOptions();
+
+        });
+
+
+        @if(request('collectionFrom'))
+            companySelect.addOption({
+                id: "{{ request('collectionFrom') }}",
+                text: "{{ request('collectionFrom') }}"
+            });
+            companySelect.setValue("{{ request('collectionFrom') }}");
+        @endif
 
 
 
