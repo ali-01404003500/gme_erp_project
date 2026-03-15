@@ -23,7 +23,7 @@ class HolidayService
 
             // new fields
            
-            'department' => $data['department'] ?? null,
+            'department_id' => $data['department_id'] ?? null,
         ]);
     }
 
@@ -38,8 +38,7 @@ class HolidayService
             'day_name' => $data['holiday_day_type'] == 2 ? implode(',', $data['day']) : '',
 
             //  new fields
-                
-                'department' => $data['department'] ?? null,
+            'department_id' => $data['department_id'] ?? null,
         ]);
         return $holiday;
     }

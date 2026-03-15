@@ -1,5 +1,6 @@
+@section('title', 'Attendance Policy Edit')
+@section('description', 'Attendance Policy Edit')
 @extends('layout.app')
-
 @section('content')
     <div class="container-fluid mt-4">
         <div class="card border-0 shadow-sm">
@@ -17,42 +18,44 @@
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Policy Name *</label>
                             <input type="text" name="name" class="form-control" value="{{ $policy->name }}" required>
-                        </div>
+                        </div> 
                         <div class="col-md-3">
-                            <label class="form-label small fw-bold">Effective from *</label>
-                            <input type="date" name="effective_from" class="form-control"
-                                value="{{ $policy->effective_from->format('Y-m-d') }}" required>
+                            <label for="effective_from"
+                                class="color-dark fs-14 fw-500 align-center">Effective from</label>
+                            <input type="text" class="form-control flatdate"  value="{{ $policy->effective_from->format('Y-m-d') }}"
+                                name="effective_from" id="effective_from" placeholder="Date" required>
                         </div>
+
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Working Hours *</label>
-                            <input type="text" name="working_hours" class="form-control"
+                            <input type="text" id="working_hours" name="working_hours" class="form-control working_hours"
                                 value="{{ $policy->working_hours }}">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">In time *</label>
-                            <input type="time" name="in_time" class="form-control" value="{{ $policy->in_time }}">
+                            <input type="time" id="in_time" name="in_time" class="form-control in_time" value="{{ $policy->in_time }}">
                         </div>
                     </div>
                     <div class="row g-3 mt-2">
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Delay Buffer time</label>
-                            <input type="text" name="delay_buffer" class="form-control" value="{{ $policy->delay_buffer }}"
+                            <input type="text" id="delay_buffer" name="delay_buffer" class="form-control delay_buffer" value="{{ $policy->delay_buffer }}"
                                 placeholder="00:00">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Ex. Delay Buffer time</label>
-                            <input type="text" name="ex_delay_buffer" class="form-control"
+                            <input type="text" id="ex_delay_buffer" name="ex_delay_buffer" class="form-control ex_delay_buffer"
                                 value="{{ $policy->ex_delay_buffer }}" placeholder="00:00">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Early Out Time</label>
-                            <input type="time" name="early_out_time" class="form-control"
+                            <input type="time" id="early_out_time" name="early_out_time" class="form-control early_out_time"
                                 value="{{ $policy->early_out_time }}">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Break Time (In minutes)</label>
-                            <input type="number" name="break_time" class="form-control" value="{{ $policy->break_time }}">
-                        </div>
+                            <input type="number" id="break_time" name="break_time" class="form-control break_time"  value="{{ $policy->break_time }}">
+                        </div> 
                     </div>
 
                     {{-- Checkboxes --}}
@@ -116,6 +119,7 @@
                                             <select name="days[{{ $day }}][working_type]" class="form-select form-select-sm">
                                                 <option value="Full Day" {{ ($dayData['working_type'] ?? '') == 'Full Day' ? 'selected' : '' }}>Full Day</option>
                                                 <option value="Half Day" {{ ($dayData['working_type'] ?? '') == 'Half Day' ? 'selected' : '' }}>Half Day</option>
+                                                <option value="Weekend" {{ ($dayData['working_type'] ?? '') == 'Weekend' ? 'selected' : '' }}>Weekend</option> 
                                             </select>
                                         </td>
                                     </tr>
@@ -131,4 +135,39 @@
             </div>
         </div>
     </div>
+@endsection
+
+
+<!-- CONTENT AREA -->
+@section('page_scripts')
+
+    <script>
+        $(document).ready(function(e) {
+            $('#working_hours').on('focusout', function() {
+                var value = $(this).val(); // input value
+                $('.working_hours').val(value); // update span text
+            });
+            $('#in_time').on('focusout', function() {
+                var value = $(this).val(); // input value
+                $('.in_time').val(value); // update span text
+            });
+            $('#delay_buffer').on('focusout', function() {
+                var value = $(this).val(); // input value
+                $('.delay_buffer').val(value); // update span text
+            });
+            $('#ex_delay_buffer').on('focusout', function() {
+                var value = $(this).val(); // input value
+                $('.ex_delay_buffer').val(value); // update span text
+            });
+            $('#early_out_time').on('focusout', function() {
+                var value = $(this).val(); // input value
+                $('.early_out_time').val(value); // update span text
+            });
+            $('#break_time').on('focusout', function() {
+                var value = $(this).val(); // input value
+                $('.break_time').val(value); // update span text
+            });
+        });
+ 
+    </script>
 @endsection
