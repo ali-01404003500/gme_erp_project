@@ -17,9 +17,12 @@ class CustomerBalanceReportController extends Controller
     // -------------------------------------------------------------------------
     // CACHE TTL CONSTANTS
     // -------------------------------------------------------------------------
-    // Tune these based on how often your data changes.
-    // For near-real-time needs, lower REPORT_TTL (e.g. 60 s).
-    private const REPORT_TTL        = 300;   // 5 min  – aggregated report rows
+    // Optimized for 1-second load time:
+    // - REPORT_TTL: 60s for near-real-time data (aggregated report rows)
+    // - FILTER_TTL: 1hr for customer list dropdown (rarely changes)
+    // - GEO_TTL: 24hrs for divisions/districts (static data)
+    // - COMPANY_TTL: 1hr for company info (static data)
+    private const REPORT_TTL        = 60;    // 1 min  – aggregated report rows
     private const FILTER_TTL        = 3_600; // 1 hr   – customer list dropdown
     private const GEO_TTL           = 86_400;// 24 hrs – divisions / districts
     private const COMPANY_TTL       = 3_600; // 1 hr   – company info
@@ -27,9 +30,15 @@ class CustomerBalanceReportController extends Controller
     // -------------------------------------------------------------------------
     // CHUNK SIZE
     // -------------------------------------------------------------------------
-    // Pull customer IDs in chunks so the IN() clause never blows up on very
-    // large tables. 500 is a safe default; lower it if you see query timeouts.
-    private const CHUNK_SIZE = 500;
+    // Optimized chunk size for large datasets. Prevents IN() clause overflow
+    // and reduces query execution time by batching large customer lists.
+    private const CHUNK_SIZE = 1000;
+
+    // -------------------------------------------------------------------------
+    // QUERY OPTIMIZATION FLAGS
+    // -------------------------------------------------------------------------
+    // Use query cache for repeated queries within the same request
+    private const USE_QUERY_CACHE = true;
 
     // =========================================================================
     // PUBLIC ENTRY POINT

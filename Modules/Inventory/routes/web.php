@@ -12,6 +12,7 @@ use Modules\Inventory\Controllers\ProductCatalogController;
 use Modules\Inventory\Controllers\ProductPriceListController;
 use Modules\Inventory\Controllers\ProductStockReportController;
 use Modules\Inventory\Controllers\ProductTransferController;
+use Modules\Inventory\Controllers\ProductTransferReceiveController;
 use Modules\Inventory\Controllers\ProductTransferReportController;
 use Modules\Inventory\Controllers\ProductTransferRequestController;
 use Modules\Inventory\Controllers\Settings\ApproverController;
@@ -39,7 +40,11 @@ Route::group(['middleware'=>'auth', 'prefix' => 'inv', 'as' => 'inv.'],function 
 
        /* Product Transfers */
        Route::resource('product-transfers', ProductTransferController::class);
-       
+
+       /* Product Transfer Receives */
+       Route::resource('product-transfer-receives', ProductTransferReceiveController::class);
+       Route::get('product-transfer-receives/approve/{id}', [ProductTransferReceiveController::class, 'approve'])->name('product-transfer-receives.approve');
+
        /*  Offers */
        Route::resource('offers', OfferController::class);
 

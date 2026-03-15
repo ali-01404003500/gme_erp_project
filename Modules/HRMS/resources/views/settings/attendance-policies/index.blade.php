@@ -1,5 +1,7 @@
-@extends('layout.app')
 
+@section('title', 'Attendance Policy List')
+@section('description', 'Attendance Policy List')
+@extends('layout.app')
 @section('content')
     <div class="container-fluid mt-4">
         <div class="card border-0 shadow-sm">

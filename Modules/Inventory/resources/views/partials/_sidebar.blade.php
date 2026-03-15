@@ -105,6 +105,13 @@
                          {{ t_('menu.product-transfer-menu-title') }}</a>
                  </li>
              @endif
+             @if (hasPermission('inv.product-transfer-receives.*'))
+                 <li><a href="{{ route('inv.product-transfer-receives.index') }}"
+                         class="{{ request()->routeIs('inv.product-transfer-receives.*') ? 'active' : '' }}">
+                         <span class="nav-icon fas fa-dolly" style="margin-right: 20px;"></span>
+                         {{ t_('menu.product-transfer-receives-menu-title') }}</a>
+                 </li>
+             @endif
              @if (hasPermission('inv.offers.*'))
                  {{-- <li class="has-subchild {{ request()->routeIs('inv.offers.*') ? 'open' : '' }}">
                  <a href="#" class="{{ request()->routeIs('inv.offers.*') ? 'active' : '' }}">

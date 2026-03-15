@@ -430,6 +430,38 @@
                                     {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
                             </li>
                         @endif
+                      @if (hasPermission('hrm.settings.leave-types.index'))
+                          <li><a href="{{ route('hrm.settings.leave-types.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.leave-types.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-door-open"
+                                      style="margin-right: 21px;"></span>
+                                  {{ t_('menu.hrm-settings-leave-types-menu-title') }}</a>
+                          </li>
+                      @endif
+                      @if (hasPermission('hrm.settings.shifts.index'))
+                          <li><a href="{{ route('hrm.settings.shifts.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-calendar-alt"
+                                      style="margin-right: 21px;"></span>
+                                  {{ t_('menu.hrm-settings-shift-menu-title') }}</a>
+                          </li>
+                      @endif
+                      @if (hasPermission('hrm.settings.hotspots.index'))
+                          <li><a href="{{ route('hrm.settings.hotspots.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.hotspots.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-map-marked-alt"
+                                      style="margin-right: 21px;"></span>
+                                  {{ t_('menu.hrm-settings-hotspot-menu-title') }}</a>
+                          </li>
+                      @endif
+                      @if (hasPermission('hrm.settings.holidays.index'))
+                          <li><a href="{{ route('hrm.settings.holidays.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.holidays.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-umbrella-beach"
+                                      style="margin-right: 21px;"></span>
+                                  {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
+                          </li>
+                      @endif
                         @if (hasPermission('hrm.settings.appraisal-policies.index'))
                             <li><a href="{{ route('hrm.settings.appraisal-policies.index') }}"
                                     class="{{ request()->routeIs('hrm.settings.appraisal-policies.*') ? 'active' : '' }}">
