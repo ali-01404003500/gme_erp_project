@@ -15,19 +15,124 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class ShipmentExplorerReportController extends Controller
 {
+    // -------------------------------------------------------------------------
+    // CACHE TTL CONSTANTS
+    // -------------------------------------------------------------------------
+    private const REPORT_TTL        = 60;    // 1 min - report data
+    private const DROPDOWN_TTL      = 3_600; // 1 hr - dropdown data
+    private const CUSTOMER_TTL      = 3_600; // 1 hr - customer list
+    private const COURIER_TTL       = 3_600; // 1 hr - courier list
+    private const USER_TTL          = 3_600; // 1 hr - user list
+    private const COMPANY_TTL       = 3_600; // 1 hr - company info
+
+    // -------------------------------------------------------------------------
+    // PAGINATION
+    // -------------------------------------------------------------------------
+    private const PER_PAGE = 50;
+
     public function index(Request $request)
     {
-        // Build the query
+        // Generate cache key based on filters
+        $cacheKey = $this->getReportCacheKey($request);
+
+        // Get cached report data
+        $reportData = Cache::remember($cacheKey, self::REPORT_TTL, function () use ($request) {
+            return $this->buildReportData($request);
+        });
+
+        // Handle export (before pagination)
+        if ($request->filled('export_type')) {
+            // Get selected columns from request or use all by default
+            $selectedColumns = $request->filled('columns')
+                ? explode(',', $request->columns)
+                : ['invoice-id', 'datetime', 'customer', 'courier', 'status', 'shipment-type',
+                   'amount', 'additional', 'conditional', 'remarks', 'carton', 'receipt-date',
+                   'receipt-no', 'service-charge', 'service-type', 'delivery-charge', 'delivery-type',
+                   'other-charge', 'other-type', 'attachment', 'update-by', 'collection-by',
+                   'approved-by', 'user', 'complete-date', 'challan'];
+
+            $data = [
+                'reportData' => collect($reportData),
+                'customers' => $this->getCustomersForDropdown(),
+                'couriers' => $this->getCouriersForDropdown(),
+                'salesOrders' => $this->getSalesOrdersForDropdown(),
+                'users' => $this->getUsersForDropdown(),
+                'company_info' => $this->getCompanyInfo(),
+                'selectedColumns' => $selectedColumns,
+            ];
+
+            $filename = 'Shipment_Explorer_Report_' . now()->format('Y_m_d_His');
+
+            return (new ExportService())->exportData(
+                $data,
+                'Sales::reports.shipment-explorer.export.',
+                $filename,
+                $request->export_type
+            );
+        }
+
+        // Paginate the report data
+        $reportCollection = collect($reportData);
+        $currentPage = request()->input('page', 1);
+
+        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
+            $reportCollection->forPage($currentPage, self::PER_PAGE),
+            $reportCollection->count(),
+            self::PER_PAGE,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        // Prepare view data with cached dropdowns
+        $data = [
+            'reportData' => $paginatedData,
+            'customers' => $this->getCustomersForDropdown(),
+            'couriers' => $this->getCouriersForDropdown(),
+            'salesOrders' => $this->getSalesOrdersForDropdown(),
+            'users' => $this->getUsersForDropdown(),
+            'company_info' => $this->getCompanyInfo(),
+        ];
+
+        return view('Sales::reports.shipment-explorer.index', $data);
+    }
+
+    /**
+     * Generate unique cache key based on request filters
+     */
+    private function getReportCacheKey(Request $request): string
+    {
+        $filters = [
+            'shipment_type' => $request->shipment_type,
+            'courier_id' => $request->courier_id,
+            'customer_id' => $request->customer_id,
+            'invoice_id' => $request->invoice_id,
+            'user_id' => $request->user_id,
+            'date_filter_type' => $request->date_filter_type,
+            'from' => $request->from,
+            'to' => $request->to,
+        ];
+
+        return 'shipment_explorer_report_' . md5(serialize($filters));
+    }
+
+    /**
+     * Build report data with optimized queries
+     */
+    private function buildReportData(Request $request): array
+    {
+        // Build the query with optimized eager loading
         $query = ShipmentVerify::with([
             'customer',
             'courier',
             'source.source.salesOrderDetails.product',
             'source.source.delivery',
             'source.source.shipment',
-           
+            'createdBy',
+            'updatedBy'
         ]);
 
         // Apply filters
@@ -40,67 +145,7 @@ class ShipmentExplorerReportController extends Controller
         $shipmentData = $query->get();
 
         // Transform data for report
-        $reportData = $this->transformShipmentData($shipmentData);
-
-        // Handle export (before pagination)
-        if ($request->filled('export_type')) {
-            // Get selected columns from request or use all by default
-            $selectedColumns = $request->filled('columns') 
-                ? explode(',', $request->columns) 
-                : ['invoice-id', 'datetime', 'customer', 'courier', 'status', 'shipment-type', 
-                   'amount', 'additional', 'conditional', 'remarks', 'carton', 'receipt-date', 
-                   'receipt-no', 'service-charge', 'service-type', 'delivery-charge', 'delivery-type', 
-                   'other-charge', 'other-type', 'attachment', 'update-by', 'collection-by', 
-                   'approved-by', 'user', 'complete-date', 'challan'];
-
-            $data = [
-                'reportData' => collect($reportData),
-                'customers' => Customer::activeCustomers()->get(),
-                'couriers' => Courier::all(),
-                'salesOrders' => SalesOrder::orderBy('created_at', 'desc')->limit(100)->get(),
-                'users' => User::whereDoesntHave('roles', function ($query) {
-                    $query->where('slug', 'customer');
-                })->get(),
-                'company_info' => CompanyInfo::first(),
-                'selectedColumns' => $selectedColumns,
-            ];
-            
-            $filename = 'Shipment_Explorer_Report_' . now()->format('Y_m_d_His');
-            
-            return (new ExportService())->exportData(
-                $data,
-                'Sales::reports.shipment-explorer.export.',
-                $filename,
-                $request->export_type
-            );
-        }
-
-        // Paginate the report data
-        $perPage = 50;
-        $currentPage = request()->input('page', 1);
-        $reportCollection = collect($reportData);
-        
-        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
-            $reportCollection->forPage($currentPage, $perPage),
-            $reportCollection->count(),
-            $perPage,
-            $currentPage,
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
-
-        // Prepare view data
-        $data = [
-            'reportData' => $paginatedData,
-            'customers' => Customer::activeCustomers()->get(),
-            'couriers' => Courier::all(),
-            'salesOrders' => SalesOrder::orderBy('created_at', 'desc')->limit(100)->get(),
-            'users' => User::whereDoesntHave('roles', function ($query) {
-                $query->where('slug', 'customer');
-            })->get(),
-            'company_info' => CompanyInfo::first(),
-        ];
-
-        return view('Sales::reports.shipment-explorer.index', $data);
+        return $this->transformShipmentData($shipmentData);
     }
 
     /**
@@ -116,9 +161,7 @@ class ShipmentExplorerReportController extends Controller
                 'source.source.delivery',
                 'source.source.shipment',
                 'createdBy',
-                'updatedBy',
-                'collectionBy',
-                'approvedBy'
+                'updatedBy'
             ])->findOrFail($shipmentVerifyId);
 
             $salesOrder = $shipmentVerify->source?->source;
@@ -326,10 +369,10 @@ class ShipmentExplorerReportController extends Controller
                 'other_type' => $shipment->other_type ?? '',
                 'attachment' => $shipment->files ?? [],
                 'update_by' => $shipment->updatedBy?->name ?? 'N/A',
-                'collection_by' => $shipment->collectionBy?->name ?? 'N/A',
-                'approved_by' => $shipment->approvedBy?->name ?? 'N/A',
+                'collection_by' => 'N/A',
+                'approved_by' => 'N/A',
                 'user' => $shipment->createdBy?->name ?? 'N/A',
-                'complete_date' => $shipment->approved_at ? Carbon::parse($shipment->approved_at)->format('Y-m-d') : '',
+                'complete_date' => 'N/A',
                 'challan_no' => $shipment->challan_no,
                 'sales_order' => $salesOrder,
                 'shipment' => $shipment,
@@ -361,5 +404,69 @@ class ShipmentExplorerReportController extends Controller
 
         // Pending: Invoice created but shipment not verified
         return 'Pending';
+    }
+
+    // =========================================================================
+    // DROPDOWN DATA METHODS (Cached)
+    // =========================================================================
+
+    /**
+     * Get customers for dropdown with caching
+     */
+    private function getCustomersForDropdown()
+    {
+        return Cache::remember('shipment_explorer_customers', self::CUSTOMER_TTL, function () {
+            return Customer::activeCustomers()
+                ->select('id', 'company_name', 'address')
+                ->orderBy('company_name')
+                ->get();
+        });
+    }
+
+    /**
+     * Get couriers for dropdown with caching
+     */
+    private function getCouriersForDropdown()
+    {
+        return Cache::remember('shipment_explorer_couriers', self::COURIER_TTL, function () {
+            return Courier::select('id', 'courier_name')
+                ->orderBy('courier_name')
+                ->get();
+        });
+    }
+
+    /**
+     * Get sales orders for dropdown with caching
+     */
+    private function getSalesOrdersForDropdown()
+    {
+        return Cache::remember('shipment_explorer_sales_orders', self::DROPDOWN_TTL, function () {
+            return SalesOrder::select('id', 'sales_order_id', 'created_at')
+                ->orderBy('created_at', 'desc')
+                ->limit(100)
+                ->get();
+        });
+    }
+
+    /**
+     * Get users for dropdown with caching
+     */
+    private function getUsersForDropdown()
+    {
+        return Cache::remember('shipment_explorer_users', self::USER_TTL, function () {
+            return User::whereDoesntHave('roles', function ($query) {
+                $query->where('slug', 'customer');
+            })->select('id', 'name')->get();
+        });
+    }
+
+    /**
+     * Get company info with caching
+     */
+    private function getCompanyInfo()
+    {
+        return Cache::remember('shipment_explorer_company_info', self::COMPANY_TTL, function () {
+            return CompanyInfo::first();
+        });
     }
 }

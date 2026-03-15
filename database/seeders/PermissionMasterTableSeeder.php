@@ -183,6 +183,12 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'hrm.settings',
             ],
             [
+                'title' => 'Hotspots',
+                'description' => 'Permission of Add, Remove, Update, Delete Hotspots',
+                'key' => 'hrm.settings.hotspots',
+                'parent_key' => 'hrm.settings',
+            ],
+            [
                 'title' => 'Holidays',
                 'description' => 'Permission of Add, Remove, Update, Delete Holidays',
                 'key' => 'hrm.settings.holidays',
