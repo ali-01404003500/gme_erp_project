@@ -35,11 +35,11 @@ class LeaveApproverController extends Controller
     public function store(Request $request)
     {
 
-        // ১. Remove Action
+
 
        $validate = $request->validate([
             'employee_id'=> 'required',
-            'approver_ids.*'=> 'required',  //* ta hocche array. 
+            'approver_ids.*'=> 'required',   
             'approver_update_id.*'=>'nullable'
         ]);
         $result = $this->leaveapproverService->addApprovers( $validate);

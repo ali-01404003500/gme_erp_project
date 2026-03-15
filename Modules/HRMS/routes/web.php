@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\HRMS\Controllers\AttendanceController;
+use Modules\HRMS\Controllers\AttendancePolicyController;
 use Modules\HRMS\Controllers\AttendanceReportController;
 use Modules\HRMS\Controllers\BillsAndAllowanceController;
 use Modules\HRMS\Controllers\CareerController;
@@ -116,6 +117,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class);
         Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
         Route::resource('leave-salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
+        Route::resource('attendance-policies', AttendancePolicyController::class);
     });
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {
         Route::resource('kpi-setups', KpiSetupController::class);
