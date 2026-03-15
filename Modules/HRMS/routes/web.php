@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\Settings\SupervisorController;
 use Illuminate\Support\Facades\Route;
-use Modules\HRMS\Controllers\ApproverSetupController;
 use Modules\HRMS\Controllers\AttendanceController;
 use Modules\HRMS\Controllers\AttendanceReportController;
 use Modules\HRMS\Controllers\BillsAndAllowanceController;
@@ -24,9 +22,15 @@ use Modules\HRMS\Controllers\Kpi\ResponsibilityEntryController;
 use Modules\HRMS\Controllers\Kpi\ScoreWiseSuggestionController;
 use Modules\HRMS\Controllers\LeaveAdjustmentController;
 use Modules\HRMS\Controllers\LeaveApplicationController;
+use Modules\HRMS\Controllers\LeaveEligibleEmployeeController;
+use Modules\HRMS\Controllers\LeaveGroupController;
+use Modules\HRMS\Controllers\LeaveSalaryDeductionPolicyController;
+use Modules\HRMS\Controllers\LeaveStatusController;
+use Modules\HRMS\Controllers\LeaveYearController;
 use Modules\HRMS\Controllers\LoanController;
 use Modules\HRMS\Controllers\NoticeBoardController;
 use Modules\HRMS\Controllers\SalaryGenerateController;
+use Modules\HRMS\Controllers\SalaryGenerationPolicyController;
 use Modules\HRMS\Controllers\Settings\AppraisalPolicyController;
 use Modules\HRMS\Controllers\Settings\DepartmentController;
 use Modules\HRMS\Controllers\Settings\DesignationController;
@@ -37,13 +41,7 @@ use Modules\HRMS\Controllers\Settings\LeaveTypeController;
 use Modules\HRMS\Controllers\Settings\NoticeTypeController;
 use Modules\HRMS\Controllers\Settings\SalarySetupController;
 use Modules\HRMS\Controllers\Settings\ShiftController;
-use Modules\HRMS\Controllers\Settings\SupervisorController as SettingsSupervisorController;
 use Modules\HRMS\Controllers\Settings\TransportTypeController;
-
-
-
-use Modules\HRMS\Models\Loan;
-use Modules\HRMS\Services\Settings\SupervisorService;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], function () {
     /* Employee */
@@ -71,9 +69,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
     Route::resource('leaves', LeaveApplicationController::class);
 
-
-
-
     Route::resource('noticeboards', NoticeBoardController::class);
 
     Route::get('get-leave-response', [LeaveApplicationController::class, 'getLeaveResponse'])->name('get.leave.response');
@@ -87,7 +82,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::put('bills-team-leader-verify', [BillsAndAllowanceController::class, 'teamLeaderVerify'])->name('bills.team-leader-verify');
     Route::put('bills-accounts-verify', [BillsAndAllowanceController::class, 'accountsVerify'])->name('bills.accounts-verify');
     Route::put('bills-final-approve', [BillsAndAllowanceController::class, 'finalApprove'])->name('bills.final-approve');
-   
 
     Route::get('get-bill-response', [BillsAndAllowanceController::class, 'getLeaveResponse'])->name('get.bill.response');
     Route::put('bills-recommended/{id}', [BillsAndAllowanceController::class, 'recommended'])->name('bills.recommended');
@@ -105,6 +99,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('salary-setups', SalarySetupController::class);
         Route::resource('appraisal-policies', AppraisalPolicyController::class)->except(['show', 'edit', 'create']);
 <<<<<<< HEAD
+<<<<<<< HEAD
             // Leave Adjustment route
          Route::resource('leaveAdjustment', LeaveAdjustmentController::class);
 
@@ -113,6 +108,21 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 =======
         Route::resource('hotspots', HotspotController::class)->except(['show', 'edit', 'create']);
 >>>>>>> 37752bb94c44fb43cee669cfaa4007fff48d1acd
+=======
+        // Leave Adjustment route
+        Route::resource('leaveAdjustment', LeaveAdjustmentController::class);
+        // Route::resource('leaveEncashmentProcess', LeaveEncashmentProcessController::class);
+        //approver route
+        Route::resource('leave-groups', LeaveGroupController::class);
+        Route::get('leave-statuses/get-group-details', [LeaveStatusController::class, 'getGroupDetails'])->name('leave-statuses.get-group-details');
+        Route::resource('leave-years', LeaveYearController::class);
+        Route::resource('leave-statuses', LeaveStatusController::class);
+        Route::get('hrm/settings/leave-statuses/get-balance', [LeaveStatusController::class, 'getEmployeeBalance'])->name('leave-statuses.get-balance');
+        // Route::resource('leave-statuses', LeaveStatusController::class);
+        Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class);
+        Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
+        Route::resource('leave-salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
+>>>>>>> 5c8e735f94cfa96793995babf9908b01e272758d
     });
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {
         Route::resource('kpi-setups', KpiSetupController::class);
@@ -146,16 +156,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
 // routes/web.php
 
-Route::group(['prefix' => 'settings', 'as' => 'settings.', 'middleware' => ['web', 'auth']], function () {
-    
-    Route::prefix('employee-approvers')->name('employee-approvers.')->group(function () {
-        Route::get('/', [EmployeeApproverController::class, 'index'])->name('index');
-        Route::post('/search', [EmployeeApproverController::class, 'searchApprovers'])->name('search');
-        Route::post('/store', [EmployeeApproverController::class, 'store'])->name('store');
-        Route::delete('/destroy', [EmployeeApproverController::class, 'destroy'])->name('destroy');
-        Route::get('/current/{employeeId}', [EmployeeApproverController::class, 'getCurrentApprovers'])->name('current');
+    Route::group(['prefix' => 'settings', 'as' => 'settings.', 'middleware' => ['web', 'auth']], function () {
+
+        Route::prefix('employee-approvers')->name('employee-approvers.')->group(function () {
+            Route::get('/', [EmployeeApproverController::class, 'index'])->name('index');
+            Route::post('/search', [EmployeeApproverController::class, 'searchApprovers'])->name('search');
+            Route::post('/store', [EmployeeApproverController::class, 'store'])->name('store');
+            Route::delete('/destroy', [EmployeeApproverController::class, 'destroy'])->name('destroy');
+            Route::get('/current/{employeeId}', [EmployeeApproverController::class, 'getCurrentApprovers'])->name('current');
+        });
     });
-});
 
 });
 
@@ -166,7 +176,4 @@ Route::group(['prefix' => 'carrier', 'as' => 'carrier.'], function () {
     Route::post('{id}/apply', [CareerController::class, 'jobApplicationStore'])->name('apply.store');
 });
 
-
 // Supervisor
-
-

@@ -235,6 +235,8 @@
         'hrm-menu-title'=>'HRMS',
 
         'hrm-settings-menu-title'=>'Settings',
+        'hrm-settings-menu-title2'=>'Salary Settings',
+        'hrm-settings-menu-title3'=>'Deduction ploicy Settings',
         'hrm-settings-leave-types-menu-title'=>'Leave Type',
         'hrm-settings-shift-menu-title'=>'Shift',
         'hrm-settings-hotspot-menu-title'=>'Hotspot Setup',
