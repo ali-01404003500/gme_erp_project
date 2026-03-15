@@ -1,13 +1,14 @@
 <?php
-
 namespace Modules\HRMS\Services;
-use Modules\HRMS\Models\Attendance;
+
 use Carbon\Carbon;
+use Modules\HRMS\Models\Attendance;
 
 class AttendanceService
 {
-    
-    public function getAll(?int $employeeId = null, int $limit = 20) {
+
+    public function getAll(?int $employeeId = null, int $limit = 20)
+    {
         return Attendance::query()
             ->when($employeeId, function ($qr) use ($employeeId) {
                 $qr->where('employee_id', $employeeId);
@@ -21,36 +22,34 @@ class AttendanceService
             })
             ->paginate($limit);
     }
-public function getAllForExport(?int $employeeId = null)
-{
-    return Attendance::query()
-        ->when($employeeId, function ($qr) use ($employeeId) {
-            $qr->where('employee_id', $employeeId);
-        })
-        ->searchByFields(['employee_id'])
-        ->when(request()->filled('from'), function ($qr) {
-            $qr->whereDate('date', '>=', request('from'));
-        })
-        ->when(request()->filled('to'), function ($qr) {
-            $qr->whereDate('date', '<=', request('to'));
-        })
-        ->get(); // IMPORTANT: get(), not paginate()
-}
-
-
-    
-    public function store(array $data)
+    public function getAllForExport(?int $employeeId = null)
     {
-       $result['attendance']= Attendance::create($data);
-
-       return $result;
+        return Attendance::query()
+            ->when($employeeId, function ($qr) use ($employeeId) {
+                $qr->where('employee_id', $employeeId);
+            })
+            ->searchByFields(['employee_id'])
+            ->when(request()->filled('from'), function ($qr) {
+                $qr->whereDate('date', '>=', request('from'));
+            })
+            ->when(request()->filled('to'), function ($qr) {
+                $qr->whereDate('date', '<=', request('to'));
+            })
+            ->get(); // IMPORTANT: get(), not paginate()
     }
 
-    public function update(Attendance $attendance, array $data)
-    {
-        $attendance->update($data);
-        return $attendance;
-    }
+    // public function store(array $data)
+    // {
+    //     $result['attendance'] = Attendance::create($data);
+
+    //     return $result;
+    // }
+
+    // public function update(Attendance $attendance, array $data)
+    // {
+    //     $attendance->update($data);
+    //     return $attendance;
+    // }
 
     public function delete(Attendance $attendance)
     {
@@ -81,50 +80,59 @@ public function getAllForExport(?int $employeeId = null)
         $leaveApplications = \Modules\HRMS\Models\LeaveApplication::where('employee_id', $employeeId)
             ->where(function ($query) use ($yearStart, $today) {
                 $query->whereBetween('from_date', [$yearStart, $today])
-                      ->orWhereBetween('to_date', [$yearStart, $today])
-                      ->orWhere(function ($query) use ($yearStart, $today) {
-                          $query->where('from_date', '<', $yearStart)
-                                ->where('to_date', '>', $today);
-                      });
+                    ->orWhereBetween('to_date', [$yearStart, $today])
+                    ->orWhere(function ($query) use ($yearStart, $today) {
+                        $query->where('from_date', '<', $yearStart)
+                            ->where('to_date', '>', $today);
+                    });
             })
             ->get();
 
         // Calculate attendance metrics
-        $presentDays = $attendances->where('attendance_type', 'Present')->count();
-        $absentDays = $attendances->where('attendance_type', 'Absent')->count();
+        $presentDays       = $attendances->where('attendance_type', 'Present')->count();
+        $absentDays        = $attendances->where('attendance_type', 'Absent')->count();
         $holidayAttendance = $attendances->where('attendance_type', 'Holiday')->count();
         $weekendAttendance = $attendances->where('attendance_type', 'Weekend')->count();
 
         // Calculate late entries (needs shift information, assuming shift relationship is available on Attendance model)
         $lateEntries = $attendances->filter(function ($rec) {
-            if (!$rec->check_in_time || !$rec->shift) return false;
-            $graceTime = $rec->shift->grace_time ?? 0;
-            $checkIn = \Carbon\Carbon::parse($rec->check_in_time);
+            if (! $rec->check_in_time || ! $rec->shift) {
+                return false;
+            }
+
+            $graceTime   = $rec->shift->grace_time ?? 0;
+            $checkIn     = \Carbon\Carbon::parse($rec->check_in_time);
             $shiftInTime = \Carbon\Carbon::parse($rec->shift->in_time);
             return $checkIn->greaterThan($shiftInTime->addMinutes($graceTime));
         })->count();
 
         // Calculate on-time in and out (needs shift information)
         $onTimeIn = $attendances->filter(function ($rec) {
-             if (!$rec->check_in_time || !$rec->shift) return false;
-             $graceTime = $rec->shift->grace_time ?? 0;
-             $checkIn = \Carbon\Carbon::parse($rec->check_in_time);
-             $shiftInTime = \Carbon\Carbon::parse($rec->shift->in_time);
-             return $checkIn->lessThanOrEqualTo($shiftInTime->addMinutes($graceTime));
+            if (! $rec->check_in_time || ! $rec->shift) {
+                return false;
+            }
+
+            $graceTime   = $rec->shift->grace_time ?? 0;
+            $checkIn     = \Carbon\Carbon::parse($rec->check_in_time);
+            $shiftInTime = \Carbon\Carbon::parse($rec->shift->in_time);
+            return $checkIn->lessThanOrEqualTo($shiftInTime->addMinutes($graceTime));
         })->count();
 
         $onTimeOut = $attendances->filter(function ($rec) {
             // Assuming shift has an out_time and there might be a grace period for out as well
             // This logic might need refinement based on actual shift and attendance rules
-            if (!$rec->check_out_time || !$rec->shift || !$rec->shift->out_time) return false;
-            $checkOut = \Carbon\Carbon::parse($rec->check_out_time);
+            if (! $rec->check_out_time || ! $rec->shift || ! $rec->shift->out_time) {
+                return false;
+            }
+
+            $checkOut     = \Carbon\Carbon::parse($rec->check_out_time);
             $shiftOutTime = \Carbon\Carbon::parse($rec->shift->out_time);
             // Assuming on-time out is checking out at or before shift out time (might need adjustment)
             return $checkOut->lessThanOrEqualTo($shiftOutTime);
         })->count();
 
         // Calculate workings days (total days in range minus weekends and holidays)
-        $workings_days = Carbon::parse($yearStart)->diffInDaysFiltered(function(Carbon $date) {
+        $workings_days = Carbon::parse($yearStart)->diffInDaysFiltered(function (Carbon $date) {
             return $date->isWeekday(); // Excludes weekends
         }, Carbon::parse($today));
 
@@ -138,18 +146,18 @@ public function getAllForExport(?int $employeeId = null)
 
         // Calculate remaining leave (requires leave allocation data)
         $remaining_leave = [];
-        $employee = auth()->user()->employee; // Get the employee model
+        $employee        = auth()->user()->employee; // Get the employee model
 
         $leave_types = \Modules\HRMS\Models\Settings\LeaveType::all();
         foreach ($leave_types as $leave_type) {
-            $companyLeaveType = \Modules\HRMS\Models\Settings\LeaveType::query()->find($leave_type->id);
-            $usedLeaves = \Modules\HRMS\Models\LeaveApplication::query()->where('employee_id', auth()->user()->employee->id)->where('leave_type_id', $leave_type->id)->where('approved_by', '!=', null)->get()->sum('day_count');
+            $companyLeaveType  = \Modules\HRMS\Models\Settings\LeaveType::query()->find($leave_type->id);
+            $usedLeaves        = \Modules\HRMS\Models\LeaveApplication::query()->where('employee_id', auth()->user()->employee->id)->where('leave_type_id', $leave_type->id)->where('approved_by', '!=', null)->get()->sum('day_count');
             $remaining_leave[] = [
-                'id' => $leave_type->id,
-                'leave_name' => $leave_type->leave_type_name,
+                'id'                    => $leave_type->id,
+                'leave_name'            => $leave_type->leave_type_name,
                 'no_of_days_allocation' => $companyLeaveType->total_day,
-                'leave_taken' => $usedLeaves ?? 0,
-                'leave_remaining' => $companyLeaveType->total_day - $usedLeaves ?? 0,
+                'leave_taken'           => $usedLeaves ?? 0,
+                'leave_remaining'       => $companyLeaveType->total_day - $usedLeaves ?? 0,
             ];
         }
 
@@ -157,22 +165,22 @@ public function getAllForExport(?int $employeeId = null)
             ->where('date', $today)
             ->first();
 
-        $timezone = new \DateTimeZone('Asia/Dhaka');
+        $timezone         = new \DateTimeZone('Asia/Dhaka');
         $today_attendance = [
-            'check_in' => $attendanceToday && $attendanceToday->check_in_time ? Carbon::parse($attendanceToday->check_in_date . ' ' . $attendanceToday->check_in_time)->setTimezone($timezone) : null,
+            'check_in'  => $attendanceToday && $attendanceToday->check_in_time ? Carbon::parse($attendanceToday->check_in_date . ' ' . $attendanceToday->check_in_time)->setTimezone($timezone) : null,
             'check_out' => $attendanceToday && $attendanceToday->check_out_time ? Carbon::parse($attendanceToday->check_out_date . ' ' . $attendanceToday->check_out_time)->setTimezone($timezone) : null,
         ];
 
         return [
-            'today_attendance' => $today_attendance,
-            'workings_days' => $workings_days,
-            'late_entry' => $lateEntries,
-            'present' => $presentDays,
-            'absent' => $absentDays,
-            'on_time_in' => $onTimeIn,
-            'on_time_out' => $onTimeOut,
-            'leave' => $leaveDaysTaken,
-            'remaining_leave' => $remaining_leave,
+            'today_attendance'   => $today_attendance,
+            'workings_days'      => $workings_days,
+            'late_entry'         => $lateEntries,
+            'present'            => $presentDays,
+            'absent'             => $absentDays,
+            'on_time_in'         => $onTimeIn,
+            'on_time_out'        => $onTimeOut,
+            'leave'              => $leaveDaysTaken,
+            'remaining_leave'    => $remaining_leave,
             'holiday_attendance' => $holidayAttendance,
             'weekend_attendance' => $weekendAttendance,
         ];
@@ -185,12 +193,12 @@ public function getAllForExport(?int $employeeId = null)
             ->whereBetween('date', [$fromDate, $toDate])
             ->orderBy('date', 'asc')
             ->get();
-            // dd($attendances);
+        // dd($attendances);
 
         $jobCardData = $attendances->map(function ($attendance) {
-            $inTime = null;
-            $outTime = null;
-            $overTime = 0;
+            $inTime          = null;
+            $outTime         = null;
+            $overTime        = 0;
             $lateTimeMinutes = 0;
 
             // Calculate In Time
@@ -207,7 +215,7 @@ public function getAllForExport(?int $employeeId = null)
 
             // Calculate Late Time in minutes
             if ($attendance->check_in_time && $attendance->shift) {
-                $graceTime = $attendance->shift->grace_time ?? 0;
+                $graceTime   = $attendance->shift->grace_time ?? 0;
                 $checkInTime = Carbon::parse($attendance->check_in_time);
                 $shiftInTime = Carbon::parse($attendance->shift->in_time);
                 $allowedTime = $shiftInTime->copy()->addMinutes($graceTime);
@@ -228,38 +236,87 @@ public function getAllForExport(?int $employeeId = null)
             }
 
             return [
-                'date' => $attendance->date,
-                'in_time' => $inTime,
-                'out_time' => $outTime,
-                'over_time' => $overTime, // in minutes
-                'late_time' => $lateTimeMinutes, // in minutes
+                'date'            => $attendance->date,
+                'in_time'         => $inTime,
+                'out_time'        => $outTime,
+                'over_time'       => $overTime,
+                'late_time'       => $lateTimeMinutes,
                 'attendance_type' => $attendance->attendance_type,
-                'remarks' => $attendance->remarks,
+                'remarks'         => $attendance->remarks,
             ];
         });
 
         // Calculate summary
         $totalOverTime = $jobCardData->sum('over_time');
         $totalLateTime = $jobCardData->sum('late_time');
-        $totalPresent = $jobCardData->where('attendance_type', 'Present')->count();
-        $totalAbsent = $jobCardData->where('attendance_type', 'Absent')->count();
+        $totalPresent  = $jobCardData->where('attendance_type', 'Present')->count();
+        $totalAbsent   = $jobCardData->where('attendance_type', 'Absent')->count();
 
         return [
-            'employee_id' => $employeeId,
-            'from_date' => $fromDate,
-            'to_date' => $toDate,
+            'employee_id'     => $employeeId,
+            'from_date'       => $fromDate,
+            'to_date'         => $toDate,
             'attendance_list' => $jobCardData,
-            'summary' => [
-                'total_days' => $jobCardData->count(),
-                'total_present' => $totalPresent,
-                'total_absent' => $totalAbsent,
+            'summary'         => [
+                'total_days'              => $jobCardData->count(),
+                'total_present'           => $totalPresent,
+                'total_absent'            => $totalAbsent,
                 'total_over_time_minutes' => $totalOverTime,
-                'total_over_time_hours' => round($totalOverTime / 60, 2),
+                'total_over_time_hours'   => round($totalOverTime / 60, 2),
                 'total_late_time_minutes' => $totalLateTime,
-                'total_late_time_hours' => round($totalLateTime / 60, 2),
-            ]
+                'total_late_time_hours'   => round($totalLateTime / 60, 2),
+            ],
         ];
     }
 
-    
+    // Inside AttendanceService class
+
+    public function store(array $data)
+    {
+        // Automatically determine status before creating
+        $data['attendance_type'] = $this->calculateAttendanceStatus($data);
+        $result['attendance']    = Attendance::create($data);
+        return $result;
+    }
+
+    public function update(Attendance $attendance, array $data)
+    {
+        // Automatically determine status before updating
+        $data['attendance_type'] = $this->calculateAttendanceStatus($data);
+        $attendance->update($data);
+        return $attendance;
+    }
+
+/**
+ * Logic to determine if Present, Late, or Absent
+ */
+    private function calculateAttendanceStatus(array $data): string
+    {
+        // 1. If no check-in time is provided, mark as Absent
+        if (empty($data['check_in_time'])) {
+            return 'Absent';
+        }
+
+        // 2. If no shift is selected, default to Present
+        if (empty($data['shift_id'])) {
+            return 'Present';
+        }
+
+        $shift = \Modules\HRMS\Models\Settings\Shift::find($data['shift_id']);
+        if (! $shift) {
+            return 'Present';
+        }
+
+        $checkIn     = Carbon::parse($data['check_in_time']);
+        $shiftInTime = Carbon::parse($shift->in_time);
+        $graceTime   = $shift->grace_time ?? 0;
+
+        // 3. Late Policy: Check-in > (Shift In + Grace)
+        if ($checkIn->greaterThan($shiftInTime->addMinutes($graceTime))) {
+            return 'Late';
+        }
+
+        return 'Present';
+    }
+
 }

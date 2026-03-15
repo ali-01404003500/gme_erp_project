@@ -11,7 +11,7 @@
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-md-12"> 
+                    <div class="col-md-12">
                         <form action="{{ route('hrm.settings.attendance-policies.index') }}" method="GET"
                             class="d-flex gap-2">
                             <div class="input-group">
@@ -23,7 +23,6 @@
                                     placeholder="Search and press enter">
                             </div>
 
-                          
                             <a href="{{ route('hrm.settings.attendance-policies.index') }}"
                                 class="btn btn-outline-secondary shadow-sm" title="Refresh">
                                 <i class="fas fa-sync-alt"></i>Refresh
@@ -48,10 +47,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($policies as $policy) 
+                            @forelse($policies as $policy)
                                 <tr>
                                     <td class="fw-bold text-secondary">{{ $policy->name }}</td>
-                                    <td>{{ $policy->effective_from->format('d-m-Y') }}</td>
+                                    <td>{{ $policy->effective_from->format('d/m/Y') }}</td>
                                     <td>{{ $policy->in_time }}</td>
                                     <td>{{ $policy->delay_buffer }}</td>
                                     <td>{{ $policy->ex_delay_buffer }}</td>
@@ -65,7 +64,6 @@
                                                 class="text-muted me-3" title="Edit">
                                                 <i class="fas fa-pen"></i>
                                             </a>
-
 
                                             <form action="{{ route('hrm.settings.attendance-policies.destroy', $policy->id) }}"
                                                 method="POST"
