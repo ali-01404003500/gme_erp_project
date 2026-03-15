@@ -350,10 +350,19 @@
                                 '<br>Manufacturer: ' .
                                 optional(optional($quotationDetail->product->brand)->supplier)->company_name .
                                 '</div>';
-                            $descLength = strlen($description);
-                            $parted = splitHtmlString($description, 1700);
+                            // 2. Initialize Paginator
+                        $paginator = new Modules\Sales\Services\HTMLPaginatorService(400); // 1000px height per page
+
+                        // 3. Split Content
+                        $pages = $paginator->paginate($description);
+                         dd($pages);
+                        // 4. Loop through pages
+                        $parted = [];
+                        foreach ($pages as $page) {
+                            $parted[] = $page;
+                        }
                         @endphp
-                        <tr style="page-break-inside: avoid;">
+                        <tr >
                             <td style="border: 1px solid black; text-align: center;">{{ $key + 1 }}</td>
                             <td style="border: 1px solid black;">{!! $parted[0] !!}</td>
                             @if(!$withoutImage)
@@ -414,9 +423,7 @@
 
             <div class="terms page-break">
                 <table class="terms-table">
-                    <tr>
-                        <h3>TERMS & CONDITIONS</h3>
-                    </tr>
+                    <tr><td colspan="7"><h3>TERMS & CONDITIONS</h3></td></tr>
                     <tr>
                         <td width="15%"><strong>Payment</strong></td>
                         <td width="5%">:</td>

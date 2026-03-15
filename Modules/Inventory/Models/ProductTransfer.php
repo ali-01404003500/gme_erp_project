@@ -36,6 +36,9 @@ class ProductTransfer extends BaseModel
         return $this->belongsTo(Branch::class, "source_warehouse_id");
     }
 
-    
+    public function productTransferReceive(){
+        return $this->hasOne(ProductTransferReceive::class, 'product_transfer_id');
+    }
+
 }
 

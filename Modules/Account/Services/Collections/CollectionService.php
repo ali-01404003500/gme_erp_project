@@ -751,9 +751,16 @@ class CollectionService
         // $depositInfo =$depositData;
 
         // Find bank ID by bank name
-        $bankId = null;
+        // dd($depositInfo);
+        // $bankId = null;
         if (isset($depositInfo['bank'])) {
-            $bank = BankAccount::where('account_name', $depositInfo['bank'])->first();
+
+            $search = preg_replace('/\s+/', ' ', trim($depositInfo['bank']));
+
+            $bank = BankAccount::whereRaw(
+                "REGEXP_REPLACE(account_name, '\\\\s+', ' ') LIKE ?",
+                ["%{$search}%"]
+            )->first();
             $bankId = $bank ? $bank->getAccount()->id : null;
         }
 
