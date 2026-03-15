@@ -55,6 +55,11 @@
                                                     <p class="text-danger">{{ $errors->first('employee_id') }}</p>
                                                 @endif
                                             </div>
+                                            <input type="hidden" name="leaveTypeWiseTotalLeave" id="leaveTypeWiseTotalLeave" value="0" >
+                                            <input type="hidden" name="halfDayLeave" id="halfDayLeave" value="0" >
+                                            <input type="hidden" name="simultaneouslyLimit" id="simultaneouslyLimit" value="0" >
+                                            <input type="hidden" name="leaveBalance" id="leaveBalance" value="0" >
+                                
                                         </div>
 
                                         <div class="col-md-6">
@@ -76,34 +81,20 @@
                                         <div class="col-md-6">
                                             <div class="form-group mb-25">
                                                 <label for="from_date"
-                                                    class="color-dark fs-14 fw-500 align-center">From Date: <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control datePicker"  value="{{ old('from_date') }}"
+                                                    class="color-dark fs-14 fw-500 align-center">From Date <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control flatdate"  value="{{ old('from_date') }}"
                                                     name="from_date" id="from_date" placeholder="Date" onchange="getTotalDays()" required>
                                                 @if ($errors->has('from_date'))
                                                     <p class="text-danger">{{ $errors->first('from_date') }}</p>
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-25">
-                                                <label for="from_date_leave_count"
-                                                    class="color-dark fs-14 fw-500 align-center">From date leave count for:<span class="text-danger">*</span></label>
-                                                    <select name="from_date_leave_count" id="from_date_leave_count" class="form-control tom-select" required>
-                                                        <option value="full_day">Full Day</option>
-                                                        <option value="first_half_day">First Half Day</option>
-                                                        <option value="last_half_day">Last Half Day</option>
-                                                    </select>
-                                                @if ($errors->has('from_date_leave_count'))
-                                                    <p class="text-danger">{{ $errors->first('from_date_leave_count') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-6">       
                                             <div class="form-group mb-25">
                                                 <label for="to_date"
-                                                    class="color-dark fs-14 fw-500 align-center">To Date:<span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control datePicker"
+                                                    class="color-dark fs-14 fw-500 align-center">To Date<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control flatdate"
                                                     value="{{ old('to_date') }}" name="to_date" id="to_date"
                                                     placeholder="To Date" onchange="getTotalDays()" required>
                                                 @if ($errors->has('to_date'))
@@ -114,12 +105,27 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group mb-25">
-                                                <label for="to_date_leave_count"
-                                                    class="color-dark fs-14 fw-500 align-center">To date leave count for:<span class="text-danger">*</span></label>
-                                                    <select name="to_date_leave_count" id="to_date_leave_count" class="form-control tom-select required" required>
-                                                        <option value="full_day">Full Day</option>
-                                                        <option value="first_half_day">First Half Day</option>
-                                                        <option value="last_half_day">Last Half Day</option>
+                                                <label for="from_date_leave_count"
+                                                    class="color-dark fs-14 fw-500 align-center">From date leave count for<span class="text-danger">*</span></label>
+                                                    <select name="from_date_leave_count" id="from_date_leave_count" class="form-control tom-select" onchange="getTotalDays()" required > 
+                                                        <option value="first_half">First Half</option>
+                                                        <option value="second_half">Second Half</option>
+                                                    </select>
+                                                @if ($errors->has('from_date_leave_count'))
+                                                    <p class="text-danger">{{ $errors->first('from_date_leave_count') }}</p>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        
+
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-25">
+                                                <label for="to_date_leave_count" 
+                                                    class="color-dark fs-14 fw-500 align-center">To date leave count for<span class="text-danger">*</span></label>
+                                                    <select name="to_date_leave_count" id="to_date_leave_count" class="form-control tom-select required" onchange="getTotalDays()" required> 
+                                                        <option value="first_half">First Half</option>
+                                                        <option value="second_half">Second Half</option>
                                                     </select>
                                                 @if ($errors->has('to_date_leave_count'))
                                                     <p class="text-danger">{{ $errors->first('to_date_leave_count') }}</p>
@@ -128,64 +134,31 @@
                                         </div>
 
 
-                                        <div class="col-md-2 typeWiseData">
+                                        <div class="col-md-6">
                                             <div class="form-group mb-25">
                                                 <label for="total_days"
-                                                    class="color-dark fs-14 fw-500 align-center">Total Days:</label>
-                                                <input type="text" class="form-control text-center"  value="{{ old('total_days') }}"
+                                                    class="color-dark fs-14 fw-500 align-center">Total Days</label>
+                                                <input type="text" class="form-control"  value="{{ old('total_days') }}"
                                                     name="day_count" id="total_days" placeholder="Total Days" readonly>
                                                 @if ($errors->has('total_days'))
                                                     <p class="text-danger">{{ $errors->first('total_days') }}</p>
                                                 @endif
                                             </div>
-                                        </div>
-                                        <div class="col-md-2 typeWiseData">
-                                            <div class="form-group mb-25">
-                                                <label for="companyTotalLeave"
-                                                    class="color-dark fs-14 fw-500 align-center">Total Leave:</label>
-                                                <input type="text" class="form-control text-center"  value="{{ old('companyTotalLeave') }}"
-                                                    name="companyTotalLeave" id="companyTotalLeave" placeholder="Total Leave" readonly>
-                                                @if ($errors->has('companyTotalLeave'))
-                                                    <p class="text-danger">{{ $errors->first('companyTotalLeave') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 typeWiseData">
-                                            <div class="form-group mb-25">
-                                                <label for="LeaveBalance"
-                                                    class="color-dark fs-14 fw-500 align-center">Leave Balance:</label>
-                                                <input type="text" class="form-control text-center"  value="{{ old('leave_balance') }}"
-                                                    name="leave_balance" id="leaveBalance" placeholder="Leave Balance" readonly>
-                                                @if ($errors->has('leave_balance'))
-                                                    <p class="text-danger">{{ $errors->first('leave_balance') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 typeWiseData">
-                                            <div class="form-group mb-25">
-                                                <label for="simultaneouslyLimit"
-                                                    class="color-dark fs-14 fw-500 align-center">Simultaneously Limit:</label>
-                                                <input type="text" class="form-control text-center"  value="{{ old('simultaneouslyLimit') }}"
-                                                    name="simultaneouslyLimit" id="simultaneouslyLimit" placeholder="Simultaneously Limit" readonly>
-                                                @if ($errors->has('simultaneouslyLimit'))
-                                                    <p class="text-danger">{{ $errors->first('simultaneouslyLimit') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="remarks">Remarks:<span class="text-danger">*</span></label>
-                                            <textarea name="remarks" id="remarks" class="form-control"
-                                                placeholder="Remarks.." required>{{ old('remarks') }}</textarea>
-                                        </div>
+                                        </div> 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="image_upload"
-                                                    class="color-dark fs-14 fw-500 align-center">File Uploads : </label>
+                                                    class="color-dark fs-14 fw-500 align-center">File Uploads </label>
                                                 <input type="file"
                                                     class="file-control form-control"
                                                     id="image_upload" name="file_uploads[]"
                                                     multiple>
                                             </div>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label for="remarks">Purpose<span class="text-danger">*</span></label>
+                                            <textarea name="remarks" id="remarks" class="form-control"
+                                                placeholder="Remarks.." required>{{ old('remarks') }}</textarea>
                                         </div>
 
                                     </div>
@@ -206,64 +179,116 @@
 @section('page_scripts')
     <script>
         $('.datePicker').datepicker({
-            format: 'dd-mm-yyyy',
+            format: 'yyyy-mm-dd',
             autoclose: true
         });
-
-        $('#check_in_geolocate').on('click', function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-
-                    $('#check_in_latitude').val(lat);
-                    $('#check_in_longitude').val(lon);
-                })
-            }
-        })
-
-        $('#check_out_geolocate').on('click', function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-
-                    $('#check_out_latitude').val(lat);
-                    $('#check_out_longitude').val(lon);
-                })
-            }
-        })
-
+ 
         function getTotalDays() {
+            // Inputs
             let start = $('#from_date').val();
             let end = $('#to_date').val();
-            let leaveBalance = $('#leaveBalance').val();
-            let simultaneouslyLimit = $('#simultaneouslyLimit').val();
-            console.log( start, end);
 
-            if (start != '' && end != '') {
-                let startDay = new Date(start);
-                let endDay = new Date(end);
+            let leaveBalance = Number($('#leaveBalance').val()) || 0;
+            let simultaneouslyLimit = Number($('#simultaneouslyLimit').val()) || 0;
+            let halfDayLeave = Number($('#halfDayLeave').val()) || 0;
+            let leaveTypeWiseTotalLeave = Number($('#leaveTypeWiseTotalLeave').val()) || 0;
+ 
+            let from_type = $('#from_date_leave_count').val(); 
+            let to_type = $('#to_date_leave_count').val();
 
-                let millisecondsPerDay = 1000 * 60 * 60 * 24;
-                let millisBetween = endDay.getTime() - startDay.getTime();
-                let days = millisBetween / millisecondsPerDay;
 
-                let leave_days = Number((days+1) | 0)
-                if (leaveBalance < leave_days) {
-                    showToast('warning', 'Leave Balance is less than ' + leave_days + ' days');
-                    $("#total_days").val(0);
-                    $("#to_date").val('');
-                } else if (simultaneouslyLimit < leave_days) {
-                    showToast('warning', 'Simultaneously Limit is less than ' + leave_days + ' days');
-                    $("#total_days").val(0);
-                    $("#to_date").val('');
-                } else {
-                    $("#total_days").val(leave_days);
+            if (start !== '' && end !== '') {
+
+                let startDate = new Date(start);
+                let endDate = new Date(end);
+
+                let diffDays = Math.floor((endDate - startDate) / 86400000) + 1;
+
+                let leave_days = 0;
+
+                // Same Day Leave
+                if (diffDays === 1) {
+
+                    if (from_type === 'first_half' && to_type === 'first_half') {
+                        leave_days = 0.5;
+                    }
+                    else if (from_type === 'first_half' && to_type === 'second_half') {
+                        leave_days = 1;
+                    }
+                    else if (from_type === 'second_half' && to_type === 'first_half') {
+                        leave_days = 0;
+                    }
+                    else if (from_type === 'second_half' && to_type === 'second_half') {
+                        leave_days = 0.5;
+                    }
+                    else
+                    {
+                        leave_days = 0;
+                    }
+
                 }
-            }
+
+                // Multiple Days Leave
+                else {
+
+                    let middleDays = diffDays - 2;
+                    if (middleDays < 0) middleDays = 0;
+
+                    let from_value = 1;
+                    let to_value = 1;
+
+                 
+
+                    if (from_type === 'first_half' && to_type === 'first_half') {
+                        from_value = 0.5;
+                    }
+                    if (from_type === 'first_half' && to_type === 'second_half') {
+                        from_value = 1;
+                    }
+                   
+                    if (from_type === 'second_half' && to_type === 'second_half') {
+                        from_value = 0.5;
+                    }
+
+
+                    leave_days = middleDays + from_value + to_value;
+
+                }
+
+                $("#total_days").val(leave_days);
+ 
+
+                // Validation: Leave Balance
+                if (leaveBalance < leave_days) {
+                    showToast('warning', 'Please apply to Leave is less than ' + leaveBalance + ' days');
+                    $("#total_days").val(0);
+                    $("#to_date").val('');
+                    return;
+                }
+
+                // Validation: Simultaneously Limit
+                if (simultaneouslyLimit < leave_days) {
+                    showToast('warning', 'Simultaneously Limit exceed. Please apply to Leave is less than ' + simultaneouslyLimit + ' days');
+                    $("#total_days").val(0);
+                    $("#to_date").val('');
+                    return;
+                }
+
+                // Validation: Leave Type Wise Total Leave
+                if (leaveTypeWiseTotalLeave < leave_days) {
+                    showToast('warning', 'Total leave amount is exceed. Please apply to this leave type is less than ' + leaveTypeWiseTotalLeave + ' days');
+                    $("#total_days").val(0);
+                    $("#to_date").val('');
+                    return;
+                } 
+
+            } else {
+
+                $("#total_days").val(0);
+
+            } 
+            
         }
-        
         function showToast(type, message) {
             // Display toast message
             if (type === 'warning') {
@@ -274,21 +299,20 @@
         }
     </script>
     <script>
-         function loadResponse() {
+        function loadResponse() {
             let employee = $('#employee_id').val();
             let leave_type = $('#leave_type').val();
 
-            if (leave_type != '') {
-                $.get('{{ route('hrm.get.leave.response') }}?employee=' + employee + '&leave_type=' + leave_type, function(res) {
-                        $(".typeWiseData").show();
-                        $("#companyTotalLeave").val(res.companyLeaveType.total_day);
-                        $("#simultaneouslyLimit").val(res.companyLeaveType.simultaneously_limit);
-                        $("#leaveBalance").val(res.leaveBalance);
-                    });
+            if (employee != '' && leave_type != '') {
+                $.get('{{ route('hrm.get.leave.response') }}?employee=' + employee + '&leave_type=' + leave_type, function(res) {    
+                    $("#leaveTypeWiseTotalLeave").val(res.leaveTypeWiseBalance.remaining_balance); 
+                    $("#halfDayLeave").val(res.leaveTypeWiseBalance.half_day); 
+                    $("#simultaneouslyLimit").val(res.leaveTypeWiseBalance.continuous_sanction);
+                    $("#leaveBalance").val(res.leaveBalance);
+                });
             }
         }
-        $(document).ready(function() {
-            $('.typeWiseData').hide();
+        $(document).ready(function() { 
             $('select[name="leave_type"]').change(loadResponse).trigger('change')
         })
     </script>

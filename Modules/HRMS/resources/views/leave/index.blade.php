@@ -104,8 +104,10 @@
                                         <th>To Date</th>
                                         <th>Leave Days</th>
                                         <th>Leave Type</th>
-                                        <th>Created By</th>
-                                        <th>Status</th>
+                                        <th>Purpose</th>
+                                        <th>Documents</th>
+                                        <th>Status</th> 
+                                        <th>Approval Layers</th> 
                                         <th class="no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -114,17 +116,34 @@
                                     @foreach ($leaveApplications as $value)
                                         <tr>
                                             <td class="text-center">{{ ($leaveApplications->currentPage() - 1) * $leaveApplications->perPage() + $loop->iteration  }}</td>
-                                            <td>
-                                                <a
-                                                    href="{{ route('hrm.leaves.show', $value->id) }}">{{ optional($value->employee)->full_name }}</a>
-                                            </td>
+                                            <td>{{ optional($value->employee)->full_name }} </td>
                                             <td>{{ $value->from_date }}</td>
                                             <td>{{ $value->to_date }}</td>
                                             <td>{{ $value->day_count }}</td>
                                             <td><span class="badge badge-round badge-warning">
                                                     {{ $value->leaveType?->leave_type_name }}
                                                 </span></td>
-                                            <td>{{ optional($value->createdBy)->name }}</td>
+                                            <td>{{ $value->remarks }}</td>
+
+                                            <td>
+                                                @if(!empty($value->file_uploads))
+                                                    @php
+                                                        $files = is_array($value->file_uploads) ? $value->file_uploads : json_decode($value->file_uploads, true);
+                                                    @endphp
+
+                                                    @foreach($files as $file)
+                                                        @if(!empty($file))
+                                                            <a href="{{ asset($file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    <span class="text-muted">No files</span>
+                                                @endif
+                                            </td>
+
+                                            
                                             <td>
                                                 @if ($value->status == 'pending')
                                                     <span class="badge badge-round badge-warning">Pending</span>
@@ -136,50 +155,72 @@
                                                     <span class="badge badge-round badge-primary">Recommended</span>
                                                 @endif
                                             </td>
+                                        
+                                            <td>
+                                                <ul>
+                                                    @foreach($value->approvals as $approval)
+                                                        <li>
+                                                            Level {{ $approval->level }}: 
+                                                            {{ $approval->approver->full_name ?? 'N/A' }} - 
+                                                            <strong>{{ ucfirst($approval->status) }}</strong>
+                                                             
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </td>
 
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
-                                                    aria-label="Small button group">
-
-                                                    @if (hasPermission('hrm.leaves.update'))
+                                                    aria-label="Small button group"> 
+                                                    @if (hasPermission('hrm.leaves.update') && $value->status == 'pending')
                                                         <a class="btn btn-outline-warning"
                                                             href="{{ route('hrm.leaves.edit', $value->id) }}"
                                                             title="Edit"><i class="far fa-edit"></i></a>
                                                     @endif
-                                                    @if ($value->status == 'pending')
-                                                        @if (hasPermission('hrm.leaves.recommended'))
+                                                    @foreach($value->approvals as $approval)
+                                                       
+                                                        @if($value->current_level == $approval->level && $approval->status == 'pending' && $approval->approver_id == auth()->user()->employee->id) 
+                                                            <!-- Approve / Reject buttons -->
                                                             <button type="button"
-                                                                data-action="{{ route('hrm.leaves.recommended', $value->id) }}"
-                                                                data-data="{{ $value }}"
-                                                                class="btn btn-outline-primary btn-recommend"
+                                                                data-action="{{ route('hrm.leaves.recommended', $approval->id) }}"
+                                                                data-data="{{ $approval->id }}"
+                                                                class="btn btn-outline-success btn-recommend"
                                                                 data-toggle="tooltip" data-placement="top" title="Recommend"
                                                                 data-bs-toggle="modal" data-bs-target="#recommendModal">
                                                                 <i class="fas fa-check"></i>
                                                             </button>
-                                                        @endif
-                                                    @endif
 
-                                                    @if ($value->status == 'recommended')
-                                                        @if (hasPermission('hrm.leaves.approved'))
                                                             <button type="button"
-                                                                data-action="{{ route('hrm.leaves.approved', $value->id) }}"
-                                                                data-data="{{ $value }}"
-                                                                class="btn btn-outline-primary btn-approved"
-                                                                data-toggle="tooltip" data-placement="top" title="Approve"
-                                                                data-bs-toggle="modal" data-bs-target="#approveModal">
-                                                                <i class="fas fa-check"></i>
-                                                            </button>
+                                                                data-action="{{ route('hrm.leaves.reject', $approval->id) }}"
+                                                                data-data="{{ $approval->id }}"
+                                                                class="btn btn-outline-danger btn-deny"
+                                                                data-toggle="tooltip" data-placement="top" title="Deny"
+                                                                data-bs-toggle="modal" data-bs-target="#denyModal">
+                                                                <i class="fas fa-times"></i>
+                                                            </button> 
                                                         @endif
-                                                    @endif
-                                                    @if (hasPermission('hrm.leaves.destroy'))
+                                                      
+                                                    @endforeach
+
+                                                    @if (hasPermission('hrm.leaves.destroy') && $value->status == 'pending')
                                                         <button type="button"
                                                             data-action="{{ route('hrm.leaves.destroy', $value->id) }}"
                                                             class="btn btn-outline-danger delete-confirm"
                                                             title="Delete"><i class="far fa-trash-alt"></i></button>
                                                     @endif
 
+                                                    @if (hasPermission('hrm.leaves.show'))
+                                                        <button type="button"
+                                                            data-action="{{ route('hrm.leaves.show', $value->id) }}"
+                                                            data-data="{{ $value->id }}"
+                                                            class="btn btn-outline-primary btn-show"
+                                                            data-toggle="tooltip" data-placement="top" title="Show"
+                                                            data-bs-toggle="modal" data-bs-target="#showModal">
+                                                            <i class="fas fa-eye"></i> 
+                                                        </button>
+                                                    @endif
                                                 </div>
-                                            </td>
+                                            </td> 
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -216,7 +257,7 @@
                         <div class="row mb-4">
                             <label class="col-sm-12 col-form-label">Recomended Comments</label>
                             <div class="col-sm-12">
-                                <textarea name="recommended_comments" id="recommended_comments" class="form-control"></textarea>
+                                <textarea name="remarks" id="remarks" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
@@ -225,6 +266,39 @@
                         <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
                             data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary mt-2 mb-2 btn-no-effect">Recommend</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade inputForm-modal" id="denyModal" tabindex="-1" role="dialog"
+        aria-labelledby="denyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header" id="denyModalLabel">
+                    <h5 class="modal-title">Deny </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <form action="" method="post" id="denyForm">
+                    @csrf
+                    @method('put')
+                    <div class="modal-body">
+
+                        <div class="row mb-4">
+                            <label class="col-sm-12 col-form-label">Deny Comments</label>
+                            <div class="col-sm-12">
+                                <textarea name="remarks" id="remarks" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger mt-2 mb-2 btn-no-effect">Deny</button>
                     </div>
                 </form>
             </div>
@@ -263,6 +337,31 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade inputForm-modal" id="showModal" tabindex="-1" role="dialog"
+        aria-labelledby="showModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">  
+                <div class="modal-body"> 
+                    <div id="modalContent"> 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
+                        data-bs-dismiss="modal">Cancel</button> 
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+<style>
+/* Apply to all large modals */
+.modal-lg {
+    max-width: 60%;
+} 
+</style>
 @endsection
 @section('page_scripts')
 
@@ -273,9 +372,43 @@
         });
 
         $(document).ready(function(e) {
-            $(document).on('click', '.btn-recommend', function() {
-                $("#recommendForm").attr("action", $(this).data('action'));
+            $('.btn-recommend').click(function() {
+                // Get dynamic route
+                var actionUrl = $(this).data('action'); 
+
+                // Set form action
+                $('#recommendForm').attr('action', actionUrl);  
+                $('#remarks').val('');
             });
+
+            $('.btn-deny').click(function() {
+                var actionUrl = $(this).data('action');
+                
+                $('#denyForm').attr('action', actionUrl); 
+                $('#denyRemarks').val('');
+            });
+
+            $('.btn-show').click(function() {
+                var actionUrl = $(this).data('action');
+
+                // Open modal
+                $('#modalShow').modal('show');
+
+                // Load Blade page via AJAX
+                $('#modalContent').html('<p class="text-center">Loading...</p>'); // show loader
+                $.ajax({
+                    url: actionUrl,
+                    type: 'GET',
+                    success: function(res) {
+                        $('#modalContent').html(res);
+                    },
+                    error: function(err) {
+                        $('#modalContent').html('<p class="text-danger text-center">Failed to load data.</p>');
+                    }
+                });
+            });
+
+        
         });
 
         $(document).ready(function(e) {

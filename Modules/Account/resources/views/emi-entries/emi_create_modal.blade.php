@@ -18,18 +18,11 @@
                             <!-- Customer Selection -->
                             <div class="col-md-6">
                                 <div class="form-group" style="pointer-events: none; opacity: 0.7;">
-                                    <label for="customer_id">{{ __('Customer') }}<span class="text-danger">*</span>:</label>
-                                    <select name="customer_id" id="customer_select_id"
-                                        class="form-control tom-select required" onchange="onChangeCustomer(this)" required>
-                                        <option value="">{{ __('Select Customer') }}</option>
-                                        {{-- @foreach ($customers as $customer)
-                                            <option value="{{ $customer->id }}"
-                                                {{ old('customer_id') == $customer->id ? 'selected' : '' }}
-                                                data-phone="{{ $customer->phone }}" data-address="{{ $customer->address }}">
-                                                {{ $customer->company_name??$customer->name }}
-                                            </option>
-                                        @endforeach --}}
-                                    </select>
+                                    <label for="customer_name">{{ __('Customer') }}<span class="text-danger">*</span></label> 
+                                    <input type="text" name="customer_name" id="customer_name"
+                                        class="form-control" readonly>
+
+                                    <input type="hidden" name="customer_id" id="customer_select_id">
                                 </div>
                             </div>
 
@@ -44,7 +37,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="address">Company Address<span class="text-danger">*</span>:</label>
+                                    <label for="address">Company Address<span class="text-danger">*</span></label>
                                     <input type="text" name="address" id="emi_address" class="form-control" readonly>
                                 </div>
                             </div>
@@ -66,7 +59,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="emi_amount">{{ __('Total EMI Amount') }}<span
-                                            class="text-danger">*</span>:</label>
+                                            class="text-danger">*</span></label>
                                     <input type="text" name="amount" id="emi_amount" value=""
                                         class="form-control">
                                 </div>
@@ -75,7 +68,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="tenure_type">{{ __('Tenure Type') }}<span
-                                            class="text-danger">*</span>:</label>
+                                            class="text-danger">*</span></label>
                                     <select name="tenure_type" id="tenure_type" class="form-control tom-select">
                                         <option value="">Select Tenure Type</option>
                                         <option value="Months" selected>Months</option>
@@ -88,7 +81,7 @@
 
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="tenure_no">{{ __('Tenure No') }}<span class="text-danger">*</span>:</label>
+                                    <label for="tenure_no">{{ __('Tenure No') }}<span class="text-danger">*</span></label>
                                     <input type="text" name="tenure_no" id="tenure_no" class="form-control"
                                         value="{{ old('tenure_no', 1) }}">
                                 </div>
@@ -96,7 +89,7 @@
 
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="interest_rate">{{ __('Interest Rate') }}:</label>
+                                    <label for="interest_rate">{{ __('Interest Rate') }}</label>
                                     <input type="text" name="interest_rate" id="interest_rate" class="form-control"
                                         value="{{ old('interest_rate', 0) }}">
                                 </div>
@@ -105,7 +98,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="start_date">{{ __('Start Date') }}<span
-                                            class="text-danger">*</span>:</label>
+                                            class="text-danger">*</span></label>
                                     <input type="text" name="start_date" id="start_date" class="form-control flatdate"
                                         value="{{ old('start_date', date('Y-m-d')) }}">
                                 </div>
@@ -142,7 +135,7 @@
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="description" class="text-danger fw-bold">Description:</label>
+                                    <label for="description" class="text-danger fw-bold">Description</label>
                                     <textarea name="description" id="description" class="form-control" cols="30" rows="5">{{ old('description') }}</textarea>
                                 </div>
                             </div>
@@ -351,22 +344,20 @@
     </script>
 
     <script>
-        function openEmiCreateModal(customer_id = null, amount = 0) {
+        function openEmiCreateModal(customer_id = null, customer_name = null, customer_phone = null, customer_address = null, amount = 0) { 
             $('#emiCreateModal').modal('show');
 
             $('#emiCreateModal #customer_select_id').val(customer_id);
-            $('#emiCreateModal #customer_select_id').find('option:selected').prop('selected', true);
-            $('#emiCreateModal #customer_select_id').prop('tomselect')?.sync()
-
-
-
-            $('#emiCreateModal #customer_select_id').trigger('change');
+            $('#emiCreateModal #customer_name').val(customer_name);
+            $('#emiCreateModal #emi_contact_person_phone').val(customer_phone);
+            $('#emiCreateModal #emi_address').val(customer_address);
+             
             $('#emiCreateModal #emi_amount').val(amount).trigger('change');
 
             return new Promise((resolve, reject) => {
                 resolveCallback = resolve;
                 rejectCallback = reject;
-            })
+            }) 
         }
 
 

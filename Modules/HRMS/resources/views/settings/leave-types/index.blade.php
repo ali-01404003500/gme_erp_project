@@ -89,6 +89,14 @@
         </div>
     </div>
 
+    <div class="d-none">
+        <form class="delete-form" action="" method="POST">
+            @csrf
+            @method('DELETE')
+        </form>
+    </div>
+    
+
     {{-- Create Modal --}}
     <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">

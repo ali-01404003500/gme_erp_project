@@ -234,7 +234,7 @@
 
                                                             <div class="form-group mb-0 form-group-calender">
                                                                 <label for="date_of_birth" class="color-dark fs-14 fw-500 align-center">Date of
-                                                                    Birth:</label>
+                                                                    Birth</label>
                                                                 <div class="position-relative">
                                                                     <input type="text"
                                                                         class="form-control form-control-default ip-gray radius-xs b-light px-15 flatdate"

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\HRMS\Models\ApprovalRequest;
 use Modules\HRMS\Models\Settings\LeaveType;
 
 class LeaveApplication extends BaseModel
@@ -40,7 +41,10 @@ class LeaveApplication extends BaseModel
     public function createdBy(){
         return $this->belongsTo(User::class, 'created_by');
     }
-
+    public function approvals()
+    {
+        return $this->morphMany(ApprovalRequest::class, 'reference');
+    }
     public function scopeSearchByFields($query, $filed_names)
     {
         foreach ($filed_names as $key => $filed_name) {
@@ -52,3 +56,4 @@ class LeaveApplication extends BaseModel
 
     }
 }
+ 
