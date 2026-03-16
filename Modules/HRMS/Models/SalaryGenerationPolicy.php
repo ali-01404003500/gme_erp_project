@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\HRMS\Models;
 
 use App\Models\BaseModel;
@@ -10,9 +11,6 @@ class SalaryGenerationPolicy extends BaseModel
 
     protected $table    = 'salary_generation_policies';
     protected $fillable = [
-        'calculation_type',
-        'fixed_days',
-        'is_rounded_salary',
-        'is_salary_end_date_different',
+    
     ];
 }
