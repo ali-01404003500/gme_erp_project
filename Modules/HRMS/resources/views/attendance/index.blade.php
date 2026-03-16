@@ -1,4 +1,4 @@
-@section('title', 'Attendance List')
+ @section('title', 'Attendance List')
 @section('description', 'Attendance List')
 @extends('layout.app')
 @section('content')
@@ -66,27 +66,54 @@
                                                     @endforeach
                                                 </select>
                                             </td>
+ 
                                             <td width="30%">
-                                                 <div class="input-daterange input-group">
-                                                    <input type="text" class="form-control datePicker" name="from"
-                                                        value="{{ request('from') }}" autocomplete="off"
-                                                        placeholder="From" />
+                                                 <div class="input-daterange input-group">  
+                                                    <input type="text" class="form-control flatdate" value="{{ old('from', date('Y-m-d')) }}"
+                                                        name="from" id="from" placeholder="From">
+
                                                     <span class="input-group-text">
                                                         <i class="fa fa-exchange-alt"></i>
                                                     </span>
-
-                                                    <input type="text" class="form-control datePicker" name="to"
-                                                        value="{{ request('to') }}" autocomplete="off" placeholder="To" />
+ 
+                                                    <input type="text" class="form-control flatdate"  value="{{ old('to', date('Y-m-d')) }}"
+                                                        name="to" id="to" placeholder="To">
                                                 </div>
+                                            </td>          
+  
+                                            <td width="20%">
+                                                <select name="department_id" id="department_id" class="tom-select  input-sm"
+                                                    data-placeholder="Select Department">
+                                                    <option value="">Select Department</option>
+                                                    @foreach ($departments as $key => $department)
+                                                        <option {{ request('department_id') == $department->id ? 'selected' : '' }}
+                                                            value="{{ $department->id }}">
+                                                            {{ $department->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </td>
-                                            <td width="20%" class="text-right">
+
+                                            <td width="20%">
+                                                <select name="branch_id" id="branch_id" class="tom-select  input-sm"
+                                                    data-placeholder="Select Branch">
+                                                    <option value="">Select Branch</option>
+                                                    @foreach ($branches as $key => $branch)
+                                                        <option {{ request('branch_id') == $branch->id ? 'selected' : '' }}
+                                                            value="{{ $branch->id }}">
+                                                            {{ $branch->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+
+
+                                            <td width="10%" class="text-right">
                                                 <div class="btn-group btn-corner">
                                                     <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
                                                         Search</button>
                                                     <a href="{{ request()->url() }}" class="btn btn-xs btn-warning"><i
                                                             class="fa fa-refresh"></i> Refresh</a>
                                                 </div>
-                                            </td>
+                                            </td> 
                                         </tr>
                                     </table>
                                 </div>
@@ -95,152 +122,139 @@
                     </div>
                 </div>
                 
+              
                 <div class="col-md-12">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $attendances])'
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>Sl</th>
-                                        <th>Employee</th>
-                                        <th>Date</th>
-                                        <th>Check-In</th>
-                                        <th>Check-Out</th>
-                                        <th>Shift</th>
-                                        <th>Work Duration</th>
-                                        <th>Attended Type</th>
-                                        <th class="no-content">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $shift = \Modules\HRMS\Models\Settings\Shift::where('id', 10000)->first()
-                                    @endphp
+                   <!-- Employee Card --> 
+                   
+                    @foreach($employees->where('status', 1) as $employee)
+                    <div class="card border mb-2">
+                        <!-- Employee Header -->
+                        <div class="card-header d-flex align-items-center justify-content-between employee-header" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#attendance-{{ $employee->id }}" 
+                            style="cursor: pointer;">
+                            
+                            <div class="row col-md-12 my-2 align-items-center">
+                                <!-- Avatar -->
+                                <div class="col-md-1">
+                                    <img src="{{ $employee->photograph ?? '' }}" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                                </div>
 
-                                    @foreach ($attendances as $value)
-                                        <tr>
-                                            <td class="text-center">{{ ($attendances->currentPage() - 1) * $attendances->perPage() + $loop->iteration  }}</td>
-                                            <td>
-                                            {{ @$value->employee->full_name }}
-                                            </td>
-                                            <td>{{ $value->date }}</td>
-                                            <td>
-                                                @if ($value->check_in_date && $value->check_in_time)
-                                                    {{ date('M. d, Y, g:i A', strtotime($value->check_in_date . ' ' . $value->check_in_time)) }}</td>
-                                                @else
-                                                    N/A
-                                                @endif
-                                            <td>
-                                                @if($value->check_out_date && $value->check_out_time)
-                                                    {{ date('M. d, Y, g:i A', strtotime($value->check_out_date . ' ' . $value->check_out_time)) }}
-                                                @else
-                                                    N/A
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($value->shift)
-                                                {{ @$value->shift->shift_name }} ({{ date('h:i A', strtotime(@$value->shift->in_time)) }}-{{ date('h:i A', strtotime(@$value->shift->out_time)) }})
-                                                @else
-                                                 {{ @$shift->shift_name }} ({{ date('h:i A', strtotime(@$shift->in_time)) }}-{{ date('h:i A', strtotime(@$shift->out_time)) }})
-                                                @endif
-                                            </td>
-                                            @php
-                                                $work_duration = 'N/A';
-                                                $late = 0;
+                                <!-- Name & Card No -->
+                                <div class="col-md-2">
+                                    <strong>{{ $employee->full_name }}</strong><br>
+                                    <small>{{ $employee->employementDetail->card_no }}</small>
+                                </div>
 
-                                                if($value->check_in_time && $value->check_out_time){
-                                                    $checkIn = \Carbon\Carbon::parse($value->check_in_time);
-                                                    $checkOut = \Carbon\Carbon::parse($value->check_out_time);
-                                                    $work_duration_hours = $checkIn->diffInHours($checkOut);
-                                                    $work_duration_minutes = $checkIn->diffInMinutes($checkOut) % 60;
-                                                    $work_duration = $work_duration_hours . ' Hours ' . $work_duration_minutes . ' Minutes';
+                                <!-- Designation & Department & Branch -->
+                                <div class="col-md-8">
+                                    <strong>{{ $employee->employementDetail->designation->name ?? '' }}</strong><br>
+                                    <small>{{ $employee->employementDetail->department->name ?? '' }}</small><br>
+                                    <small>{{ $employee->employementDetail->branch->name ?? '' }}</small>
+                                </div>
 
-                                                    $shiftInTime = \Carbon\Carbon::parse($value->shift->in_time ?? $shift->in_time);
-                                                    $graceTime = $value->shift->grace_time ?? $shift->grace_time;
-                                                    $difference = $checkIn->diffInMinutes($shiftInTime);
+                                <!-- Toggle Icon -->
+                                <div class="col-md-1 text-end">
+                                    <i class="fas fa-plus toggle-icon" style="font-size:20px;"></i>
+                                </div>
+                            </div>
+                           
+                        </div>
 
-                                                    $late = max(0, $difference - $graceTime);
-                                                }
-                                            @endphp
-                                            <td> {{$work_duration}} </td> 
+                        <!-- Collapsible Attendance Table -->
+                        <div id="attendance-{{ $employee->id }}" class="collapse">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Attendance Date</th>
+                                                <th>Flag</th>
+                                                <th>In Time</th>
+                                                <th>In Time Remarks</th>
+                                                <th>Out Time</th>
+                                                <th>Out Time Remarks</th>
+                                                <th>Working Hour</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody> 
+                                            @foreach ($period as $date) 
+                                                @php
+                                                    $d = $date->format('Y-m-d');
+                                                    $attendance = $attendancesByEmployee[$employee->id][$d] ?? null; 
+                                                @endphp 
+                                                <tr>
+                                                    <td>{{ $date->format('D') }}, {{ $date->format('d-m-Y') }}</td>
 
-                                            <td>
-                                                @if($late > 0) 
-                                                <span class="badge badge-round badge-warning">
-                                                    Late 
-                                                </span>
-                                                @elseif ($value->attendance_type == 'Present')
-                                                <span class="badge badge-round badge-success">
-                                                    {{ $value->attendance_type }}   
-                                                </span>
-                                                @elseif ($value->attendance_type == 'Pending')
-                                                    <span class="badge badge-round badge-warning">
-                                                        {{ $value->attendance_type }}
-                                                    </span>
-                                                @elseif ($value->attendance_type == 'Absent')
-                                                <span class="badge badge-round badge-danger">
-                                                    {{ $value->attendance_type }}
-                                                </span>
-                                                @elseif ($value->attendance_type == 'Holiday')
-                                                <span class="badge badge-round badge-info">
-                                                    {{ $value->attendance_type }}
-                                                </span>
-                                                @elseif ($value->attendance_type == 'Leave')
-                                                <span class="badge badge-round badge-primary">
-                                                    {{ $value->attendance_type }}
-                                                </span>
-                                                @elseif ($value->attendance_type == 'Weekend')
-                                                <span class="badge badge-round badge-secondary">
-                                                    {{ $value->attendance_type }}
-                                                </span>
-                                                @else
-                                                <span class="badge badge-round badge-dark">
-                                                    {{ $value->attendance_type }}
-                                                @endif
-                                            </td>
-                                                 
-                                            <td class="text-center">
-                                                <div class="btn-group btn-group-sm" role="group"
-                                                    aria-label="Small button group">
+                                                    <td id="flag">{{ $attendance->flag  ?? 'A'}}</td>
 
-                                                    @if ($value->attendance_type == 'Pending' && hasPermission('hrm.attendances.update'))
-                                                        <form action="{{ route('hrm.attendances.approve', $value->id) }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="btn btn-outline-success" title="Approve">
-                                                                <i class="fas fa-check"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endif
+                                                    <td> 
+                                                        <input type="time" class="form-control intimepicker" name="check_in_time"   data-touched="{{ optional($attendance)->check_in_time ? 'true' : 'false' }}" value="{{ $attendance->check_in_time ?? '' }}">
 
-                                                    @if (hasPermission('hrm.attendances.update'))
-                                                        <a class="btn btn-outline-warning"
-                                                            href="{{ route('hrm.attendances.edit', $value->id) }}" title="Edit">
-                                                                <i class="far fa-edit"></i></a>
-                                                    @endif
+                                                        <input type="hidden" class="form-control" name="check_in_date" id="check_in_date" value="{{ $attendance->check_in_date ?? $date->format('Y-m-d') }}"> 
+                                                        <input type="hidden" class="form-control" name="check_in_latitude" id="check_in_latitude" value="{{ $attendance->check_in_latitude ?? 0 }}">
+                                                        <input type="hidden" class="form-control" name="check_in_longitude" id="check_in_longitude" value="{{ $attendance->check_in_longitude ?? 0 }}">
+                                                        <input type="hidden" class="form-control" name="check_out_date" id="check_out_date" value="{{ $attendance->check_out_date ?? $date->format('Y-m-d') }}">
+                                                        <input type="hidden" class="form-control" name="check_out_latitude" id="check_out_latitude" value="{{ $attendance->check_out_latitude ?? 0 }}">
+                                                        <input type="hidden" class="form-control" name="check_out_longitude" id="check_out_longitude" value="{{ $attendance->check_out_longitude ?? 0 }}">
+                                                        <input type="hidden" class="form-control" name="employee_id" id="employee_id" value="{{ $employee->id }}">
+                                                        <input type="hidden" class="form-control" name="date" id="date" value="{{ $attendance->date ?? $date->format('Y-m-d') }}"> 
+                                                        <input type="hidden" class="form-control" name="attendance_id" id="attendance_id" value="{{ $attendance->id ?? '' }}">
+                                                         
+                                                    </td>
 
-                                                    @if (hasPermission('hrm.attendances.destroy'))
-                                                    <button type="button"
-                                                        data-action="{{ route('hrm.attendances.destroy', $value->id) }}"
-                                                        class="btn btn-outline-danger delete-confirm" title="Delete"><i
-                                                            class="far fa-trash-alt"></i></button>
-                                                    @endif
+                                                    <td>
+                                                        <input type="text" class="form-control" name="check_in_remarks" id="check_in_remarks" placeholder="In Remarks" value="{{ $attendance->check_in_remarks ?? '' }}"> 
+                                                    </td>
 
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <div class="d-none">
-                                <form class="delete-form" action="" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
+                                                    <td>
+                                                        <input type="time" class="form-control outtimepicker" name="check_out_time" id="check_out_time"   data-touched="{{ optional($attendance)->check_out_time ? 'true' : 'false' }}" value="{{ $attendance->check_out_time ?? '' }}">
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="text" class="form-control" name="check_out_remarks" id="check_out_remarks" placeholder="Out Remarks" value="{{ $attendance->check_out_remarks ?? '' }}">
+                                                    </td>
+
+                                                    <td>
+                                                        <span class="badge bg-secondary">0:0</span>
+                                                    </td> 
+
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group"
+                                                            aria-label="Small button group">
+                                                            @php
+                                                                $attendanceId = optional($attendance)->id;
+                                                            @endphp
+                                                            @if (hasPermission('hrm.attendances.create') && empty($attendanceId))
+                                                                <button type="button" 
+                                                                class="btn btn-sm btn-success create-attendance"><i class="far fa-save"></i></button>
+                                                            @endif
+
+                                                            @if (hasPermission('hrm.attendances.update') && !empty($attendanceId))
+                                                                <button type="button" 
+                                                                class="btn btn-sm btn-success update-attendance" style="{{ !empty($attendanceId) ? '' : 'display:none;' }}" ><i class="far fa-edit"></i></button>
+                                                            @endif
+
+                                                            @if (hasPermission('hrm.attendances.destroy')) 
+                                                                <button type="button" 
+                                                                class="btn btn-sm btn-danger delete-attendance" ><i class="far fa-trash-alt"></i></button>
+                                                                 
+                                                            @endif
+
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -248,9 +262,338 @@
 @endsection
 @section('page_scripts')
     <script>
-        $(".datePicker").datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true
-        });
+ 
+ 
+        $(document).ready(function() { 
+
+            $('.intimepicker,.outtimepicker').on('click', function() {
+                $(this).data('touched', true);
+            }); 
+           
+
+           
+            $('.employee-header').click(function() {
+                var icon = $(this).find('.toggle-icon');
+                var target = $(this).data('bs-target');
+
+                // Close all other collapses except the one clicked
+                $('.collapse').not(target).collapse('hide');
+
+                // Reset icons of other headers
+                $('.employee-header').not(this).find('.toggle-icon')
+                    .removeClass('fa-minus')
+                    .addClass('fa-plus');
+
+                // Toggle the clicked one
+                $(target).collapse('toggle');
+
+                // Change icon after collapse finishes
+                $(target).off('shown.bs.collapse hidden.bs.collapse'); // remove previous handlers
+                $(target).on('shown.bs.collapse', function() {
+                    icon.removeClass('fa-plus').addClass('fa-minus');
+                });
+                $(target).on('hidden.bs.collapse', function() {
+                    icon.removeClass('fa-minus').addClass('fa-plus');
+                });
+            });
+
+
+            flatpickr(".intimepicker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "h:i K",  // 12-hour format with AM/PM
+                time_24hr: false,     // false → 12-hour clock
+                minuteIncrement: 1,   // 1-minute steps
+                defaultDate: "09:00 AM"
+            });
+
+            flatpickr(".outtimepicker", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "h:i K",  // 12-hour format with AM/PM
+                time_24hr: false,     // false → 12-hour clock
+                minuteIncrement: 1,   // 1-minute steps
+                defaultDate: "05:00 PM"
+            });
+
+            //save attendance data
+            $('.create-attendance').click(function() {
+                var $btn = $(this);
+                var $row = $btn.closest('tr'); 
+               
+                // Collect input values for this row
+                var employee_id = $row.find('input[name="employee_id"]').val();
+                var date = $row.find('input[name="date"]').val();
+ 
+                var check_in_date = $row.find('input[name="check_in_time"]').data('touched') ?$row.find('input[name="check_in_date"]').val() : null;   
+                var check_in_time = $row.find('input[name="check_in_time"]').data('touched') ?$row.find('input[name="check_in_time"]').val() : null; 
+                var check_in_remarks = $row.find('input[name="check_in_remarks"]').val();
+                var check_in_latitude = $row.find('input[name="check_in_latitude"]').val();
+                var check_in_longitude = $row.find('input[name="check_in_longitude"]').val();
+  
+                var check_out_date = $row.find('input[name="check_out_time"]').data('touched') ?$row.find('input[name="check_out_date"]').val() : null;  
+                var check_out_time = $row.find('input[name="check_out_time"]').data('touched') ?$row.find('input[name="check_out_time"]').val() : null; 
+                var check_out_remarks = $row.find('input[name="check_out_remarks"]').val();
+                var check_out_latitude = $row.find('input[name="check_out_latitude"]').val();
+                var check_out_longitude = $row.find('input[name="check_out_longitude"]').val();
+
+                if(!check_in_time)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'In Time can not be null.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    
+                    return false;
+                }
+               
+
+                // Show spinner 
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+ 
+
+                $.ajax({
+                    url: "{{ route('hrm.attendances.store') }}", 
+                    method:  'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",  
+                        employee_id: employee_id,
+                        date: date,
+
+                        check_in_date: check_in_date,
+                        check_in_time: check_in_time,
+                        check_in_remarks: check_in_remarks,
+                        check_in_latitude: check_in_latitude,
+                        check_in_longitude: check_in_longitude, 
+
+                        check_out_date: check_out_date,
+                        check_out_time: check_out_time, 
+                        check_out_remarks: check_out_remarks,
+                        check_out_latitude: check_out_latitude,
+                        check_out_longitude: check_out_longitude
+                       
+                    },
+                    success: function(response) {
+                        if(response.status === 'success'){
+                            // SweetAlert success
+                            Swal.fire({
+                                icon: 'success',
+                                title:  'Saved!',
+                                text: 'Attendance for ' + date + ' has been saved.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // Hide Save button
+                            $btn.hide(); 
+                            $row.find('.update-attendance').show();
+
+                          
+                            $row.find('input[name="attendance_id"]').val(response.attendance_id);
+                            $row.find('#flag').text(response.flag);
+                            
+                            
+                            
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                                timer: 1500
+                            });
+                        }
+                        $btn.html('<i class="far fa-save"></i>');
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while saving!',
+                            timer: 1500
+                        });
+                       $btn.html('<i class="far fa-save"></i>');
+                    }
+                });
+            }); 
+
+
+            //update attendance data
+            $('.update-attendance').click(function() {
+                var $btn = $(this);
+                var $row = $btn.closest('tr'); 
+               
+                // Collect input values for this row
+                var attendance_id = $row.find('input[name="attendance_id"]').val(); 
+                var employee_id = $row.find('input[name="employee_id"]').val();
+                var date = $row.find('input[name="date"]').val();
+
+                var check_in_date = $row.find('input[name="check_in_time"]').data('touched') ?$row.find('input[name="check_in_date"]').val() : null;   
+                var check_in_time = $row.find('input[name="check_in_time"]').data('touched') ?$row.find('input[name="check_in_time"]').val() : null; 
+                var check_in_remarks = $row.find('input[name="check_in_remarks"]').val();
+                var check_in_latitude = $row.find('input[name="check_in_latitude"]').val();
+                var check_in_longitude = $row.find('input[name="check_in_longitude"]').val();
+  
+                var check_out_date = $row.find('input[name="check_out_time"]').data('touched') ?$row.find('input[name="check_out_date"]').val() : null;  
+                var check_out_time = $row.find('input[name="check_out_time"]').data('touched') ?$row.find('input[name="check_out_time"]').val() : null; 
+                var check_out_remarks = $row.find('input[name="check_out_remarks"]').val();
+                var check_out_latitude = $row.find('input[name="check_out_latitude"]').val();
+                var check_out_longitude = $row.find('input[name="check_out_longitude"]').val();
+
+               
+                if(!check_in_time)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'In Time can not be null.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    
+                    return false;
+                }
+               
+                // Show spinner 
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Saving...');
+  
+                var updateRouteTemplate = "{{ route('hrm.attendances.update', ':id') }}"; 
+                var url = updateRouteTemplate.replace(':id', attendance_id);
+                
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}", 
+                        _method: "PUT", 
+                        employee_id: employee_id,
+                        id: attendance_id,
+                        date: date,
+
+                        check_in_date: check_in_date,
+                        check_in_time: check_in_time,
+                        check_in_remarks: check_in_remarks,
+                        check_in_latitude: check_in_latitude,
+                        check_in_longitude: check_in_longitude, 
+
+                        check_out_date: check_out_date,
+                        check_out_time: check_out_time, 
+                        check_out_remarks: check_out_remarks,
+                        check_out_latitude: check_out_latitude,
+                        check_out_longitude: check_out_longitude
+                       
+                    },
+                    success: function(response) {
+                        if(response.status === 'success'){
+                            // SweetAlert success
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated!',
+                                text: 'Attendance for ' + date + ' has been updated.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+ 
+                            // If it was a new save, set the attendance_id for future updates
+                            if(response.attendance_id && !attendance_id){
+                                $row.find('input[name="attendance_id"]').val(response.attendance_id);
+                            }
+                            $row.find('#flag').text(response.flag);
+                            
+                            
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!'
+                            });
+                        }
+                        $btn.html('<i class="far fa-edit"></i>');
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while saving!'
+                        });
+                       $btn.html('<i class="far fa-edit"></i>');
+                    }
+                });
+
+                $btn.prop('disabled', false).html('<i class="far fa-edit"></i>');
+            }); 
+
+
+            $('.delete-attendance').click(function() {
+                var $btn = $(this);
+                var $row = $btn.closest('tr'); 
+               
+                // Collect input values for this row
+                var attendance_id = $row.find('input[name="attendance_id"]').val(); 
+               
+                // Show spinner
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Deleting...');
+  
+                var updateRouteTemplate = "{{ route('hrm.attendances.destroy', ':id') }}"; 
+                var url = updateRouteTemplate.replace(':id', attendance_id);
+                
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}", 
+                        _method: "PUT",  
+                        id: attendance_id
+                       
+                    },
+                    success: function(response) {
+                        if(response.status === 'success'){
+                            // SweetAlert success
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Delete!',
+                                text: 'Attendance for ' + date + ' has been deleted.',
+                                timer: 2500,
+                                showConfirmButton: false
+                            });
+ 
+                            $row.find('input[name="attendance_id"]').val('');
+                            
+                            
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!'
+                            });
+                        }
+                        $btn.html('<i class="far fa-edit"></i>');
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while deleting!'
+                        });
+                       $btn.html('<i class="far fa-edit"></i>');
+                    }
+                }); 
+            }); 
+
+        }); 
+ 
+
+           
+
+
+   
+
+
+         
     </script>
 @endSection

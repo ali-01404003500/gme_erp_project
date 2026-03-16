@@ -19,6 +19,7 @@ class AttendancePolicyService
 
     public function storePolicy(array $data)
     {
+        AttendancePolicy::updated(['status' => 0]);  
         return AttendancePolicy::create($this->formatData($data));
     }
 

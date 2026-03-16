@@ -27,11 +27,11 @@ class Attendance extends BaseModel
 
 
     protected $guarded = [];
-
+ 
     public function employee()
     {
-        return $this->belongsTo(Employee::class);
-    }
+        return $this->belongsTo(Employee::class, 'employee_id');
+    } 
 
     public function createdBy(){
         return $this->belongsTo(User::class, 'created_by');

@@ -3,6 +3,7 @@
 namespace Modules\HRMS\Services;
 use Modules\HRMS\Models\Attendance;
 use Carbon\Carbon;
+use Modules\HRMS\Models\AttendancePolicy;
 
 class AttendanceService
 {
@@ -40,7 +41,7 @@ public function getAllForExport(?int $employeeId = null)
 
     
     public function store(array $data)
-    {
+    { 
        $result['attendance']= Attendance::create($data);
 
        return $result;
@@ -259,6 +260,41 @@ public function getAllForExport(?int $employeeId = null)
                 'total_late_time_hours' => round($totalLateTime / 60, 2),
             ]
         ];
+    }
+    public function calculateAttendanceStatus(array $data)
+    {  
+        $policy = AttendancePolicy::where('effective_from', '<=', $data['date'])
+            ->orderBy('effective_from', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        //  Day-wise Settings parsing (Sat-Thu in_time check)
+        $dayOfWeek      = Carbon::parse($data['date'])->format('l');
+        $policySettings = is_array($policy->day_wise_settings) ? $policy->day_wise_settings : json_decode($policy->day_wise_settings, true);
+
+        $todaySetting = $policySettings[$dayOfWeek] ?? null;
+        $policyInTime = $todaySetting['in_time'] ?? $policy->in_time;
+        $policyOutTime = $todaySetting['out_time'] ?? $policy->out_time;
+        $flag = "";
+ 
+        $policyTime = strtotime($policyInTime);
+        $delayBufferTime = strtotime("+{$todaySetting['delay_buffer']} minutes", $policyTime);
+        $exDelayBufferTime = strtotime("+{$todaySetting['ex_delay_buffer']} minutes", $policyTime);
+
+        $checkIn = $data['check_in_time'];
+
+
+
+        if( $checkIn <=  $policyInTime )
+            $flag = "P";
+        else if( $checkIn >  $policyInTime &&  $checkIn <= $delayBufferTime)
+            $flag = "D";
+        else if( $checkIn >  $policyInTime &&  $checkIn <= $exDelayBufferTime )
+            $flag = "E";
+        else 
+            $flag = "E";  
+ 
+        return $flag;
     }
 
     
