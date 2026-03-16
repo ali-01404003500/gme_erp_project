@@ -6,6 +6,7 @@ use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\HRMS\Models\Employee;
+use Modules\HRMS\Models\Settings\LeaveType;
 
 class LeaveStatus extends BaseModel
 {
@@ -49,4 +50,11 @@ class LeaveStatus extends BaseModel
     {
         return $this->belongsTo(LeaveYear::class, 'leave_year_id');
     }
+
+    public function leaveType()
+    {
+        return $this->belongsTo(LeaveType::class, 'leave_type');
+    }
+
+
 }

@@ -82,21 +82,14 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
-                                            {{-- <select name="customer_id" id="customer_id" class="form-control tom-select">
-                                                <option value="">Choose Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}" 
-                                                        {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->area->area ?? '' }}
-                                                       
-                                                    </option>
-                                                @endforeach
-                                            </select> --}}
-
+                                            <label for="customer_id">Customer Name<span class="text-danger">*</span></label> 
                                             <select name="customer_id" id="customer_id" class="form-control" data-placeholder="Select Customer">
                                                 <option value=""></option> 
                                             </select>
+
+                                            <input type="hidden" name="customer_address"  id="customer_address" value="{{ old('customer_address') }}">
+                                            <input type="hidden" name="customer_phone"  id="customer_phone" value="{{ old('customer_phone') }}">
+                                      
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -1757,8 +1750,8 @@
                     type: "GET",
                     data: { search: query },
                     success: function(res) {
-                        companySelect.clearOptions();
-                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                        companySelect.clearOptions(); 
+                        callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
                     },
                     error: function() {
                         callback();
@@ -1774,6 +1767,18 @@
             });
             companySelect.setValue("{{ request('customer_id') }}");
         @endif
+
+        companySelect.on('change', function(value) {
+            const selected = companySelect.options[value];
+            if (selected) {
+                $('#customer_address').val(selected.address || '');
+                $('#customer_phone').val(selected.phone || '');
+            } else {
+                $('#customer_address').val('');
+                $('#customer_phone').val('');
+            }
+        });
+
 
 
         const productSelect = new TomSelect(".product_ids", {

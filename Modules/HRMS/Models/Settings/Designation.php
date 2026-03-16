@@ -21,13 +21,12 @@ class Designation extends BaseModel
     protected $guarded = [];
     public $deletePrevent = ['designations'];
 
-    //  public function employees()
-    // {
-    //     return $this->hasMany(Employee::class, 'designation_id', 'id');
-    // }
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'designation_id', 'id');
+    }
 
     public function approver(){
         return $this->belongsTo(Designation::class,'designation_id');
     }
-
 }

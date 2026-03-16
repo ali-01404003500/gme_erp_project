@@ -4,17 +4,17 @@ namespace Modules\HRMS\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\HRMS\Models\Approver;
-use Modules\HRMS\Models\Employee;
-use Modules\HRMS\Services\ApproverService;
+use Modules\HRMS\Models\ApproverStep;
+use Modules\HRMS\Models\Employee; 
+use Modules\HRMS\Services\LeaveApproverService;
 
-class EmployeeApproverController extends Controller
+class LeaveApproverController extends Controller
 {
-    protected $approverService;
+    protected $leaveapproverService;
 
-    public function __construct(ApproverService $approverService)
+    public function __construct(LeaveApproverService $leaveapproverService)
     {
-        $this->approverService = $approverService;
+        $this->leaveapproverService = $leaveapproverService;
     }
 
     public function index(Request $request)
@@ -24,9 +24,14 @@ class EmployeeApproverController extends Controller
 
 
         $employees = Employee::where('status', 1)->orderBy('full_name')->get(['id', 'full_name', 'epf_number']);
+<<<<<<< HEAD:Modules/HRMS/Controllers/EmployeeApproverController.php
         $approvers = Approver::where('employee_id', $employeeId)->orderBy('hierarchy_level')->get();
+=======
 
-        return view('HRMS::settings.approver-setup.index', compact(
+        $approvers = ApproverStep::where('employee_id', $employeeId)->orderBy('hierarchy_level')->get();
+>>>>>>> b1b9cebf6fe58048898aac98c75dae7b7ff7f3c7:Modules/HRMS/Controllers/LeaveApproverController.php
+
+        return view('HRMS::settings.leave-approver-setup.index', compact(
             'employees', 'employee','approvers'
         ));
     }
@@ -34,14 +39,14 @@ class EmployeeApproverController extends Controller
     public function store(Request $request)
     {
 
-        // ১. Remove Action
+
 
        $validate = $request->validate([
             'employee_id'=> 'required',
-            'approver_ids.*'=> 'required',  //* ta hocche array. 
+            'approver_ids.*'=> 'required',   
             'approver_update_id.*'=>'nullable'
         ]);
-        $result = $this->approverService->addApprovers( $validate);
+        $result = $this->leaveapproverService->addApprovers( $validate);
 
         if (!$result['success']) {
             return redirect()->back()->with('error', $result['message']);

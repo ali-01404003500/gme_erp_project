@@ -1,6 +1,6 @@
 @extends('layout.app')    
 
-@section('title', 'Employee Approver Management')
+@section('title', 'Leave Approver Setup')
 
 @section('content')
     <div class="container-fluid py-4">
@@ -9,7 +9,7 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-white py-3">
                         <h5 class="mb-0 text-primary">
-                            <i class="fas fa-user-check me-2"></i>Employee Approver Management
+                            <i class="fas fa-user-check me-2"></i>Leave Approver Setup
                         </h5>
                     </div>
 
@@ -19,7 +19,7 @@
 
                             <div class="col-md-12 justify-content-center">
 
-                                <form action="{{ route('hrm.settings.employee-approvers.store') }}" method="POST">
+                                <form action="{{ route('hrm.settings.leave-approvers.store') }}" method="POST">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-5 offset-md-3">
@@ -57,6 +57,7 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-md-8"></div>
 
                                         <div class="col-md-2 d-flex align-items-end">
                                             <button class="btn btn-xs btn-primary mt-3" id="add-new-approver" type="button">Add

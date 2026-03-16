@@ -277,6 +277,7 @@
                         <span class="menu-text">{{ t_('menu.hrm-settings-menu-title') }}</span>
                         <span class="toggle-icon"></span>
                     </a>
+
                     <ul>
                         @if(hasPermission('hrm.settings.departments.index'))
                             <li><a href="{{ route('hrm.settings.departments.index') }}"
@@ -301,10 +302,10 @@
                             </li>
                         @endif
 
-                        @if (hasPermission('hrm.settings.employee-approvers.index'))
+                        @if (hasPermission('hrm.settings.leave-approvers.index'))
                             <li>
-                                <a href="{{ route('hrm.settings.employee-approvers.index') }}"
-                                    class="{{ request()->routeIs('settings.employee-approvers.*') ? 'active' : '' }}">
+                                <a href="{{ route('hrm.settings.leave-approvers.index') }}"
+                                    class="{{ request()->routeIs('settings.leave-approvers.*') ? 'active' : '' }}">
                                     <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
                                     {{ t_('menu.Approver-Setup') }}
                                 </a>
@@ -352,8 +353,97 @@
                         @endif
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                    
 
+=======
+                        {{-- ===================== Attendance Policies Menu ===================== --}}
+                        @if (hasPermission('hrm.settings.attendance-policies.index'))
+                            <li class="has-subchild {{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'open' : '' }}">
+                                <a href="#" class="{{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'active' : '' }}">
+                                    <span class="nav-icon fas fa-clock"></span> {{-- Clock icon for attendance --}}
+                                    <span class="menu-text">Attendance Settings</span>
+                                    <span class="toggle-icon"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('hrm.settings.attendance-policies.index') }}"
+                                            class="{{ request()->routeIs('hrm.settings.attendance-policies.index') ? 'active' : '' }}">
+                                            <span class="nav-icon fas fa-calendar-check" style="margin-right: 21px;"></span>
+                                            Attendance Policy
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
+                        {{-- ===================== Salary Generation Policies Menu ===================== --}}
+                        @if (hasPermission('hrm.settings.salary-generation-policies.index'))
+                            <li
+                                class="has-subchild {{ request()->routeIs('hrm.settings.salary-generation-policies.*') ? 'open' : '' }}">
+                                <a href="#"
+                                    class="{{ request()->routeIs('hrm.settings.salary-generation-policies.*') ? 'active' : '' }}">
+                                    <span class="nav-icon fa fa-cog"></span>
+                                    <span class="menu-text">{{ t_('menu.hrm-settings-menu-title2') }}</span>
+                                    <span class="toggle-icon"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('hrm.settings.salary-generation-policies.index') }}"
+                                            class="{{ request()->routeIs('hrm.settings.salary-generation-policies.index') ? 'active' : '' }}">
+                                            <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
+                                            {{ t_('menu.salary-generation-policies') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
+                        {{-- ===================== Leave Salary Deduction Policies Menu ===================== --}}
+                        @if (hasPermission('hrm.settings.leave-salary-deduction-policies.index'))
+                            <li
+                                class="has-subchild {{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'open' : '' }}">
+                                <a href="#"
+                                    class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'active' : '' }}">
+                                    <span class="nav-icon fa fa-cog"></span>
+                                    <span class="menu-text">{{ t_('menu.hrm-settings-menu-title3') }}</span>
+                                    <span class="toggle-icon"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('hrm.settings.leave-salary-deduction-policies.index') }}"
+                                            class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.index') ? 'active' : '' }}">
+                                            <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
+                                            {{ t_('menu.leave-salary-deduction-policies') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+
+                        @if (hasPermission('hrm.settings.shifts.index'))
+                            <li><a href="{{ route('hrm.settings.shifts.index') }}"
+                                    class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
+                                    <span class="nav-icon nav-icon fas fa-calendar-alt" style="margin-right: 21px;"></span>
+                                    {{ t_('menu.hrm-settings-shift-menu-title') }}</a>
+                            </li>
+                        @endif
+                        @if (hasPermission('hrm.settings.holidays.index'))
+                            <li><a href="{{ route('hrm.settings.holidays.index') }}"
+                                    class="{{ request()->routeIs('hrm.settings.holidays.*') ? 'active' : '' }}">
+                                    <span class="nav-icon nav-icon fas fa-umbrella-beach" style="margin-right: 21px;"></span>
+                                    {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
+                            </li>
+                        @endif
+                      @if (hasPermission('hrm.settings.leave-types.index'))
+                          <li><a href="{{ route('hrm.settings.leave-types.index') }}"
+                                  class="{{ request()->routeIs('hrm.settings.leave-types.*') ? 'active' : '' }}">
+                                  <span class="nav-icon nav-icon fas fa-door-open"
+                                      style="margin-right: 21px;"></span>
+                                  {{ t_('menu.hrm-settings-leave-types-menu-title') }}</a>
+                          </li>
+                      @endif
+>>>>>>> b1b9cebf6fe58048898aac98c75dae7b7ff7f3c7
                       @if (hasPermission('hrm.settings.shifts.index'))
                           <li><a href="{{ route('hrm.settings.shifts.index') }}"
                                   class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
@@ -378,6 +468,7 @@
                                   {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
                           </li>
                       @endif
+<<<<<<< HEAD
 =======
                         @if (hasPermission('hrm.settings.shifts.index'))
                             <li><a href="{{ route('hrm.settings.shifts.index') }}"
@@ -394,6 +485,8 @@
                             </li>
                         @endif
 >>>>>>> 5c8e735f94cfa96793995babf9908b01e272758d
+=======
+>>>>>>> b1b9cebf6fe58048898aac98c75dae7b7ff7f3c7
                         @if (hasPermission('hrm.settings.appraisal-policies.index'))
                             <li><a href="{{ route('hrm.settings.appraisal-policies.index') }}"
                                     class="{{ request()->routeIs('hrm.settings.appraisal-policies.*') ? 'active' : '' }}">
@@ -429,49 +522,6 @@
                                     {{ t_('menu.hrm-settings-transport-types-menu-title') }}</a>
                             </li>
                         @endif
-                    </ul>
-                </li>
-            @endif
-
-
-            {{-- ===================== Salary Generation Policies Menu ===================== --}}
-            @if (hasPermission('hrm.settings.salary-generation-policies.index'))
-                <li class="has-subchild {{ request()->routeIs('hrm.settings.salary-generation-policies.*') ? 'open' : '' }}">
-                    <a href="#" class="{{ request()->routeIs('hrm.settings.salary-generation-policies.*') ? 'active' : '' }}">
-                        <span class="nav-icon fa fa-cog"></span>
-                        <span class="menu-text">{{ t_('menu.hrm-settings-menu-title2') }}</span>
-                        <span class="toggle-icon"></span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="{{ route('hrm.settings.salary-generation-policies.index') }}"
-                                class="{{ request()->routeIs('hrm.settings.salary-generation-policies.index') ? 'active' : '' }}">
-                                <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
-                                {{ t_('menu.salary-generation-policies') }}
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            @endif
-
-            {{-- ===================== Leave Salary Deduction Policies Menu ===================== --}}
-            @if (hasPermission('hrm.settings.leave-salary-deduction-policies.index'))
-                <li
-                    class="has-subchild {{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'open' : '' }}">
-                    <a href="#"
-                        class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'active' : '' }}">
-                        <span class="nav-icon fa fa-cog"></span>
-                        <span class="menu-text">{{ t_('menu.hrm-settings-menu-title3') }}</span>
-                        <span class="toggle-icon"></span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="{{ route('hrm.settings.leave-salary-deduction-policies.index') }}"
-                                class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.index') ? 'active' : '' }}">
-                                <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
-                                {{ t_('menu.leave-salary-deduction-policies') }}
-                            </a>
-                        </li>
                     </ul>
                 </li>
             @endif

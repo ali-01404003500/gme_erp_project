@@ -72,7 +72,7 @@ class LeaveTypeController extends Controller
     }
 
     public function destroy(LeaveType $leaveType)
-    {
+    { 
         try {
             $leaveType->delete();
             return redirect()->route('hrm.settings.leave-types.index')->with('success', 'Leave Type deleted successfully.');
