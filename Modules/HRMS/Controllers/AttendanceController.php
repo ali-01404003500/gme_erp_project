@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\HRMS\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -7,16 +6,13 @@ use App\Models\AccessControl\Branch;
 use App\Models\AccessControl\CompanyInfo;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Illuminate\Http\Request;
 use Modules\HRMS\Models\Attendance;
 use Modules\HRMS\Models\Employee;
-use Modules\HRMS\Services\AttendanceService;
-use Illuminate\Http\Request;
-use Dompdf\Dompdf;
-use Dompdf\Options;
-use Modules\HRMS\Models\AttendancePolicy;
 use Modules\HRMS\Models\Settings\Department;
 use Modules\HRMS\Models\Settings\Holiday;
 use Modules\HRMS\Models\Settings\Shift;
+use Modules\HRMS\Services\AttendanceService;
 use Modules\Inventory\Services\ExportService;
 
 class AttendanceController extends Controller
@@ -27,42 +23,40 @@ class AttendanceController extends Controller
      *
      * @var AttendanceService
      */
-    private $service; 
-    function __construct(AttendanceService $service)
+    private $service;
+    public function __construct(AttendanceService $service)
     {
         $this->service = $service;
     }
-    
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $data['employees'] = Employee::query() 
+        $data['employees'] = Employee::query()
             ->when(request()->filled('employee_id'), function ($q) {
                 $q->where('id', request('employee_id'));
-            }) 
+            })
             ->when(request()->filled('department_id'), function ($q) {
                 $q->whereHas('employementDetail', function ($qr) {
                     $qr->where('department_id', request('department_id'));
                 });
-            }) 
+            })
             ->when(request()->filled('branch_id'), function ($q) {
                 $q->whereHas('employementDetail', function ($qr) {
                     $qr->where('branch_id', request('branch_id'));
                 });
-            }) 
-            ->with('employementDetail') 
+            })
+            ->with('employementDetail')
             ->get();
 
-        $data['departments'] = Department::whereIn('status', [1])->orderBy('code', 'asc')->get(); 
-        $data['branches'] = Branch::whereIn('branch_type_id', [1, 2])->get(); 
+        $data['departments']  = Department::whereIn('status', [1])->orderBy('code', 'asc')->get();
+        $data['branches']     = Branch::whereIn('branch_type_id', [1, 2])->get();
         $data['company_info'] = CompanyInfo::first();
- 
- 
+
         $from = request('from') ? Carbon::createFromFormat('Y-m-d', request('from'))->format('Y-m-d') : date('Y-m-01');
         $to   = request('to') ? Carbon::createFromFormat('Y-m-d', request('to'))->format('Y-m-d') : date('Y-m-d');
-
 
         $data['period'] = CarbonPeriod::create($from, $to);
 
@@ -72,11 +66,9 @@ class AttendanceController extends Controller
         // Optional: group attendances by employee and date for easier lookup in Blade
         $data['attendancesByEmployee'] = $data['attendances']
             ->groupBy('employee_id')
-            ->map(function($employeeAttendances) {
-                return $employeeAttendances->keyBy('date'); 
+            ->map(function ($employeeAttendances) {
+                return $employeeAttendances->keyBy('date');
             });
-
-
 
         // EXPORT
         if ($request->filled('export_type')) {
@@ -103,13 +95,12 @@ class AttendanceController extends Controller
         return view("HRMS::attendance.index", $data);
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        $data['shifts'] = Shift::where('status', 1)->get();
+        $data['shifts']    = Shift::where('status', 1)->get();
         $data['employees'] = Employee::all();
         return view('HRMS::attendance.create', $data);
     }
@@ -121,66 +112,63 @@ class AttendanceController extends Controller
     {
         // dd($request->all());
         $validate = $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'date' => 'required',
-            
-            'check_in_date' => 'nullable',
-            'check_in_time' => 'nullable',
-            'check_in_remarks' => 'nullable', 
-            'check_in_latitude' => 'nullable',
-            'check_in_longitude' => 'nullable',
+            'employee_id'         => 'required|exists:employees,id',
+            'date'                => 'required',
 
-            'check_out_date' => 'nullable',
-            'check_out_time' => 'nullable',
-            'check_out_remarks' => 'nullable',
-            'check_out_latitude' => 'nullable',
+            'check_in_date'       => 'nullable',
+            'check_in_time'       => 'nullable',
+            'check_in_remarks'    => 'nullable',
+            'check_in_latitude'   => 'nullable',
+            'check_in_longitude'  => 'nullable',
+
+            'check_out_date'      => 'nullable',
+            'check_out_time'      => 'nullable',
+            'check_out_remarks'   => 'nullable',
+            'check_out_latitude'  => 'nullable',
             'check_out_longitude' => 'nullable',
-            'attendance_type' => 'nullable', 
+            'attendance_type'     => 'nullable',
 
-            
         ]);
 
         // Convert 12-hour inputs to 24-hour TIME format
-        if (!empty($validate['check_in_time'])) {
-            $validate['check_in_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_in_time'])
+        if (! empty($validate['check_in_time'])) {
+            $validate['check_in_time'] = Carbon::createFromFormat('h:i A', $validate['check_in_time'])
                 ->format('H:i');
         }
 
-        if (!empty($validate['check_out_time'])) {
-            $validate['check_out_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_out_time'])
+        if (! empty($validate['check_out_time'])) {
+            $validate['check_out_time'] = Carbon::createFromFormat('h:i A', $validate['check_out_time'])
                 ->format('H:i');
         }
 
-       
         $validate['attendance_type'] = 'Present';
-        $validate['flag'] = $this->service->calculateAttendanceStatus($validate);
-       
-        try 
+        $validate['flag']            = $this->service->calculateAttendanceStatus($validate);
+
+        try
         {
             $result = $this->service->store($validate);
 
-            if(isset($result['attendance']) && $result['attendance']->id){
+            if (isset($result['attendance']) && $result['attendance']->id) {
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Attendance created successfully.',
+                    'status'        => 'success',
+                    'message'       => 'Attendance created successfully.',
                     'attendance_id' => $result['attendance']->id,
-                    'flag' => $result['attendance']->flag
+                    'flag'          => $result['attendance']->flag,
                 ]);
-            } else { 
+            } else {
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Failed to create attendance. Please try again.',
+                    'status'        => 'success',
+                    'message'       => 'Failed to create attendance. Please try again.',
                     'attendance_id' => $result['attendance']->id,
-                    'flag' => $result['attendance']->flag
+                    'flag'          => $result['attendance']->flag,
                 ]);
             }
 
-        } 
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             // Catch any database or service errors
             return response()->json([
-                'status' => 'error',
-                'message' => 'Error: ' . $e->getMessage()
+                'status'  => 'error',
+                'message' => 'Error: ' . $e->getMessage(),
             ]);
         }
     }
@@ -188,7 +176,7 @@ class AttendanceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $data['attendance'] = $this->service->show($id);
 
@@ -200,9 +188,9 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        $data['shifts'] = Shift::where('status', 1)->get();
+        $data['shifts']     = Shift::where('status', 1)->get();
         $data['attendance'] = $attendance;
-        $data['employees'] = Employee::all();
+        $data['employees']  = Employee::all();
         return view("HRMS::attendance.edit", $data);
     }
 
@@ -212,70 +200,67 @@ class AttendanceController extends Controller
     public function update(Request $request, Attendance $attendance)
     {
         //dd($request->all());
-        $validate = $request->validate([ 
-            'employee_id' => 'required|exists:employees,id',
-            'date' => 'required',
-            
-            'check_in_date' => 'nullable',
-            'check_in_time' => 'nullable',
-            'check_in_remarks' => 'nullable', 
-            'check_in_latitude' => 'nullable',
-            'check_in_longitude' => 'nullable',
+        $validate = $request->validate([
+            'employee_id'         => 'required|exists:employees,id',
+            'date'                => 'required',
 
-            'check_out_date' => 'nullable',
-            'check_out_time' => 'nullable',
-            'check_out_remarks' => 'nullable',
-            'check_out_latitude' => 'nullable',
+            'check_in_date'       => 'nullable',
+            'check_in_time'       => 'nullable',
+            'check_in_remarks'    => 'nullable',
+            'check_in_latitude'   => 'nullable',
+            'check_in_longitude'  => 'nullable',
+
+            'check_out_date'      => 'nullable',
+            'check_out_time'      => 'nullable',
+            'check_out_remarks'   => 'nullable',
+            'check_out_latitude'  => 'nullable',
             'check_out_longitude' => 'nullable',
-            'attendance_type' => 'nullable', 
+            'attendance_type'     => 'nullable',
 
-            
         ]);
 
         // Convert 12-hour inputs to 24-hour TIME format
-        if (!empty($validate['check_in_time'])) {
-            $validate['check_in_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_in_time'])
+        if (! empty($validate['check_in_time'])) {
+            $validate['check_in_time'] = Carbon::createFromFormat('h:i A', $validate['check_in_time'])
                 ->format('H:i');
         }
 
-        if (!empty($validate['check_out_time'])) {
-            $validate['check_out_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_out_time'])
+        if (! empty($validate['check_out_time'])) {
+            $validate['check_out_time'] = Carbon::createFromFormat('h:i A', $validate['check_out_time'])
                 ->format('H:i');
         }
 
-        
         $validate['attendance_type'] = 'Present';
-        $validate['flag'] = $this->service->calculateAttendanceStatus($validate);
-       
-        try 
-        {
-            $result =  $this->service->update($attendance, $validate);
+        $validate['flag']            = $this->service->calculateAttendanceStatus($validate);
 
-            if(isset($result['attendance']) && $result->id){
+        try
+        {
+            $result = $this->service->update($attendance, $validate);
+
+            if (isset($result['attendance']) && $result->id) {
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Attendance Update successfully.',
+                    'status'        => 'success',
+                    'message'       => 'Attendance Update successfully.',
                     'attendance_id' => $result->id,
-                    'flag' => $result->flag
+                    'flag'          => $result->flag,
                 ]);
-            } else { 
+            } else {
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Failed to Update attendance. Please try again.',
+                    'status'        => 'success',
+                    'message'       => 'Failed to Update attendance. Please try again.',
                     'attendance_id' => $result->id,
-                    'flag' => $result->flag
+                    'flag'          => $result->flag,
                 ]);
             }
 
-        } 
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             // Catch any database or service errors
             return response()->json([
-                'status' => 'error',
-                'message' => 'Error: ' . $e->getMessage()
+                'status'  => 'error',
+                'message' => 'Error: ' . $e->getMessage(),
             ]);
         }
- 
+
     }
 
     /**
@@ -287,7 +272,4 @@ class AttendanceController extends Controller
         return redirect()->route('hrm.attendances.index')->with('success', 'Attendance deleted successfully.');
     }
 
-    
-
-    
 }
