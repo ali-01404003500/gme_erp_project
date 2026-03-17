@@ -1,5 +1,5 @@
-@section('title', 'Salary Setup')
-@section('description', 'Salary Setup')
+@section('title', 'Salary Structure')
+@section('description', 'Salary Structure')
 @extends('layout.app')
 @section('content')
     <div class="container-fluid">
@@ -33,7 +33,7 @@
                     <x-error-alart />
                 </div>
                 <div class="card mb-50">
-                    <div class="row justify-content-center" id="justify-content-center">
+                    <div class="row justify-content-center">
                         <div class="col-sm-12">
                             <div class="mt-40 mb-50 p-30">
                                 <form action="{{ $employeeSalary->exists ? route('hrm.employee-salarys.update', $employeeSalary->id) : route('hrm.employee-salarys.store') }}" method="POST" enctype="multipart/form-data">
@@ -41,135 +41,160 @@
                                     @if ($employeeSalary->exists)
                                         @method('PUT')
                                     @endif
-                                    <div class="row">
-                                         <div class="col-md-4">
-                                            <div class="form-group mb-25">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">
-                                                        Employee Name
-                                                    </span>
-                                                    <input type="text" name="employee_name" id="employee_name" class="form-control" value="{{ $employee->full_name }}" readonly>
-                                                    <input type="hidden" name="employee_id" id="employee_id" class="form-control" value="{{ $employee->id }}">
+                                    <div class="row g-3">
+                                        <!-- Left Column -->
+                                        <div class="col-md-6">
+                                            <div class="card p-3">
+                                                <!-- Employee Info -->
+                                                <div class="mb-3">
+                                                    <label class="form-label">Employee Name</label>
+                                                    <input type="text" name="employee_name" class="form-control" value="{{ $employee->full_name }}" readonly>
+                                                    <input type="hidden" name="employee_id" value="{{ $employee->id }}">
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-25">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">
-                                                        Employee Address
-                                                    </span>
-                                                    <input type="text" name="employee_address" id="employee_address" class="form-control" value="{{ $employee->present_address }}" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-25">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">
-                                                        Employee Mobile
-                                                    </span>
-                                                    <input type="text" name="employee_mobile" id="employee_mobile" class="form-control" value="{{ $employee->personal_mobile }}" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-25">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">
-                                                        Effect From
-                                                    </span>
-                                                    <input type="text" name="effective_date" id="effective_date" class="form-control flatdate" value="{{ old('effective_date', date('Y-m-d')) }}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-25">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">
-                                                        Gazette
-                                                    </span>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Salary Group</label>
                                                     <select name="salary_setup_id" id="salary_setup_id" class="form-control tom-select">
-                                                        <option value="">Select Gazette</option>
+                                                        <option value="">Select Salary Group</option>
                                                         @foreach ($salarySetups as $key => $value)
                                                             <option value="{{ $value->id }}" 
                                                                 data-basic="{{ $value->basic }}"
                                                                 data-house_rent="{{ $value->house_rent }}"
                                                                 data-conveyance="{{ $value->conveyance }}"
-                                                                data-is_conveyance_fixed="{{ $value->is_conveyance_fixed }}"
                                                                 data-medical="{{ $value->medical }}"
+                                                                data-entertainment="{{ $value->entertainment }}"
                                                                 data-is_medical_fixed="{{ $value->is_medical_fixed }}"
+                                                                data-leave_fare="{{ $value->leave_fare }}"
+                                                                data-utility="{{ $value->utility }}"
+                                                                data-unkeep="{{ $value->unkeep }}"
                                                                 data-others="{{ $value->others }}"
-                                                                data-is_others_fixed="{{ $value->is_others_fixed }}" {{ old('salary_setup_id', $employeeSalary->salary_setup_id) == $value->id ? 'selected' : ''}}>{{ $value->title }}
-                                                            </option>
+                                                                data-is_house_rent_basic="{{ $value->is_house_rent_basic }}"
+                                                                data-is_conveyance_basic="{{ $value->is_conveyance_basic }}"
+                                                                data-is_medical_basic="{{ $value->is_medical_basic }}"
+                                                                data-is_entertainment_basic="{{ $value->is_entertainment_basic }}"
+                                                                data-is_leave_fare_basic="{{ $value->is_leave_fare_basic }}"
+                                                                data-is_utility_basic="{{ $value->is_utility_basic }}"
+                                                                data-is_unkeep_basic="{{ $value->is_unkeep_basic }}"
+                                                                data-is_others_basics="{{ $value->is_others_basics }}" {{ old('salary_setup_id', $employeeSalary->salary_setup_id) == $value->id ? 'selected' : ''}}>{{ $value->title }}
+                                                            </option>  
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group mb-25">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">
-                                                        Tax 
-                                                    </span>
-                                                    <input type="text" name="tax" id="tax" class="form-control" value="{{ old('tax', number_format($employeeSalary->tax)) }}">
+
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Effect From</label>
+                                                        <input type="text" name="effective_date" class="form-control flatdate" value="{{ old('effective_date', date('Y-m-d')) }}">
+                                                            @error('effective_from')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                    </div> 
+
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Tax</label>
+                                                        <input type="text" name="tax" class="form-control" value="{{ old('tax', number_format($employeeSalary->tax)) }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row g-3 mt-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Is Consolidate <span class="text-danger">*</span></label>
+                                                        <div class="d-flex gap-3">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="is_consolidate" id="consolidate_yes" value="1" 
+                                                                    {{ old('is_consolidate', $employeeSalary->is_consolidate ?? 1) == 1 ? 'checked' : '' }} >
+                                                                <label class="form-check-label">Yes</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="is_consolidate" id="consolidate_no" value="0"
+                                                                    {{ old('is_consolidate', $employeeSalary->is_consolidate ?? 1) == 0 ? 'checked' : '' }}  >
+                                                                <label class="form-check-label">No</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">Payment Type <span class="text-danger">*</span></label>
+                                                        <div class="d-flex gap-3">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="payment_type" value="bank" 
+                                                                    {{ old('payment_type', $employeeSalary->payment_type ?? "bank") == "bank" ? 'checked' : '' }}>
+                                                                <label class="form-check-label">Bank</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="payment_type" value="cash"  
+                                                                    {{ old('payment_type', $employeeSalary->payment_type ?? "bank") == "cash" ? 'checked' : '' }}>
+                                                                <label class="form-check-label">Cash</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                        </div>
 
+                                        <!-- Right Column -->
+                                        <div class="col-md-6">
+                                            <div class="card p-3">
+                                                <label class="form-label">Add Salary Breakup <span class="text-danger">*</span></label>
+                                                <select id="salaryBreakupSelect" class="form-select mb-3">
+                                                    <option value="">Select Salary Breakup</option>
+                                                    <option value="basic">Basic</option>
+                                                    <option value="house_rent">House Rent</option>
+                                                    <option value="conveyance">Conveyance</option>
+                                                    <option value="medical">Medical</option>
+                                                    <option value="entertainment">Entertainment</option>
+                                                    <option value="leave_fare">Leave Fare</option>
+                                                    <option value="utility">Utility</option>
+                                                    <option value="unkeep">Unkeep</option>
+                                                    <option value="others">Others</option>
+                                                </select>
+
+                                                <div class="table-responsive">
+                                                    <table class="table align-middle">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Breakup Name</th>
+                                                                <th>Amount</th>
+                                                                <th>Increase Amount</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="breakupList"></tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- Summary -->
+                                                <div class="row g-2 mt-3">
+                                                    <div class="col-md-3">
+                                                        <label>Salary Amount</label>
+                                                        <input type="text" id="salaryAmount" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-1 d-flex justify-content-center align-items-end">
+                                                        +
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Increased Amount</label>
+                                                        <input type="text" id="totalIncrease" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-1 d-flex justify-content-center align-items-end">
+                                                        =
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label>Total Amount</label>
+                                                        <input type="text" id="gross"  name="gross"  class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="row mt-4">
-                                        <div class="col-md-12">
-                                            <table class="table table-bordered">
-                                                <thead >
-                                                    <tr>
-                                                        <th class="text-center">Basic</th>
-                                                        <th class="text-center">House Rent</th>
-                                                        <th class="text-center">Conveyance</th>
-                                                        <th class="text-center">Medical</th>
-                                                        <th class="text-center">Others</th>
-                                                        <th class="text-center">Gross</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {{-- @dd( old('basic', number_format($employeeSalary->basic))) --}}
-                                                    <tr>
-                                                        <td class="text-center">
-                                                            <input type="number" name="basic" id="basic" value="{{ old('basic', numberFormat($employeeSalary->basic)) }}" class="form-control">
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="number" name="house_rent" id="house_rent" value="{{ old('house_rent', numberFormat($employeeSalary->house_rent)) }}"  class="form-control">
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="number" name="conveyance" id="conveyance" value="{{ old('conveyance', numberFormat($employeeSalary->conveyance)) }}" class="form-control">
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="number" name="medical" id="medical" value="{{ old('medical', numberFormat($employeeSalary->medical)) }}" class="form-control">
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="number" name="others" id="others" value="{{ old('others', numberFormat($employeeSalary->others)) }}" class="form-control">
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <input type="number" name="gross" id="gross" value="{{ old('gross', numberFormat($employeeSalary->gross)) }}" class="form-control">
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-
-
-                                            </table>
-                                        </div>
-                                    </div>
-
+                                   
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         @if($employeeSalary->exists)
-                                        <a href="{{ route('hrm.employee-salarys.create', ['employee_id' => $employeeSalary->employee_id]) }}" 
-                                            class="btn btn-warning btn-sm btn-squared shadow-sm">
-                                            New Add
-                                         </a>                                        @endif
+                                            <a href="{{ route('hrm.employee-salarys.create', ['employee_id' => $employeeSalary->employee_id]) }}" 
+                                                class="btn btn-warning btn-sm btn-squared shadow-sm">
+                                                New Add
+                                            </a>                                        
+                                        @endif
                                         <button type="submit"
                                             class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">{{ $employeeSalary->exists ? 'Update' : 'Submit' }}</button>
                                     </div>
@@ -184,27 +209,51 @@
                                     <tr>
                                         <th class="text-center">Sl</th>
                                         <th class="text-center">Effect From</th>
-                                        <th class="text-center">Basic</th>
-                                        <th class="text-center">House Rent</th>
-                                        <th class="text-center">Conveyance</th>
-                                        <th class="text-center">Medical</th>
-                                        <th class="text-center">Others</th>
-                                        <th class="text-center">Gross</th>
+                                        <th class="text-center">Is Consolidate</th>
+                                        <th class="text-center">Payment Type</th>
+                                        <th class="text-center">Breakup Details</th> 
+                                        <th class="text-center">Total</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Action</th>
-                                    </tr>
+                                    </tr> 
                                 </thead>
                                 <tbody>
                                     @foreach ($employeeSalaries as $key => $value)
-                                        <tr>
+                                        <tr>  
                                             <td class="text-center">{{ $key + 1 }}</td>
                                             <td class="text-center">{{ $value->effective_date }}</td>
-                                            <td class="text-center">{{ number_format($value->basic) }}</td>
-                                            <td class="text-center">{{ number_format($value->house_rent) }}</td>
-                                            <td class="text-center">{{ number_format($value->conveyance) }}</td>
-                                            <td class="text-center">{{ number_format($value->medical) }}</td>
-                                            <td class="text-center">{{ number_format($value->others) }}</td>
-                                            <td class="text-center">{{ number_format($value->gross) }}</td>
+                                            <td class="text-center">{{ $value->is_consolidate == 1 ? 'Yes' : 'No' }}</td>
+                                            <td class="text-center">{{ ucfirst($value->payment_type) }}</td> 
+                                            <td class="text-left">
+                                                @php
+                                                    $fields = [
+                                                        'Basic' => ['amount' => $value->basic, 'increase' => $value->increase_basic],
+                                                        'House Rent' => ['amount' => $value->house_rent, 'increase' => $value->increase_house_rent],
+                                                        'Medical' => ['amount' => $value->medical, 'increase' => $value->increase_medical],
+                                                        'Conveyance' => ['amount' => $value->conveyance, 'increase' => $value->increase_conveyance],
+                                                        'Entertainment' => ['amount' => $value->entertainment, 'increase' => $value->increase_entertainment],
+                                                        'Leave Fare' => ['amount' => $value->leave_fare, 'increase' => $value->increase_leave_fare],
+                                                        'Utility' => ['amount' => $value->utility, 'increase' => $value->increase_utility],
+                                                        'Unkeep' => ['amount' => $value->unkeep, 'increase' => $value->increase_unkeep],
+                                                        'Others' => ['amount' => $value->others, 'increase' => $value->increase_others],
+                                                    ];
+                                                @endphp
+
+                                                @foreach($fields as $label => $data)
+                                                    @if($data['amount'] > 0 || $data['increase'] > 0)
+                                                        <div class="d-flex border-bottom py-1">
+                                                            <div style="width:40%">{{ $label }}</div>
+                                                            <div style="width:30%" class="text-end">
+                                                                {{ number_format($data['amount'], 2) }}
+                                                            </div>
+                                                            <div style="width:30%" class="text-end">
+                                                                {{ number_format($data['increase'], 2) }}
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </td> 
+                                            <td class="text-center">{{ number_format($value->gross) }}</td> 
                                             <td class="text-center">
                                                 <span class="badge badge-round badge-{{ $value->status == 1 ? 'success' : 'danger' }}">{{ $value->status == 1 ? 'Active' : 'Inactive' }}</span>
                                             </td>
@@ -214,9 +263,9 @@
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                     <button type="button"
-                                                            data-action="{{ route('hrm.employee-salarys.destroy', $value->id) }}"
-                                                            class="btn btn-danger delete-confirm"
-                                                            title="Delete"><i class="far fa-trash-alt"></i></button>
+                                                        data-action="{{ route('hrm.employee-salarys.destroy', $value->id) }}"
+                                                        class="btn btn-danger delete-confirm"
+                                                        title="Delete"><i class="far fa-trash-alt"></i></button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -254,100 +303,351 @@
 });
 </script>
 <script>
-  
-    $(document).ready(function() {
-    $('#gross').on('input', calculateSalaries);
-    $('#salary_setup_id').on('change', calculateSalaries);
+    let empSalary = @json($employeeSalary ?? null); 
+    $(document).ready(function() { 
+        const fields = {
+            basic: 'Basic',
+            house_rent: 'House Rent',
+            conveyance: 'Conveyance',
+            medical: 'Medical',
+            entertainment: 'Entertainment',
+            leave_fare: 'Leave Fare',
+            utility: 'Utility',
+            unkeep: 'Unkeep',
+            others: 'Others'
+        };
+        var str ="";
+        let salaryAmt = 0;
+        let increaseAmt = 0;
 
-    function calculateSalaries() {
-        var gross = parseFloat($('#gross').val()) || 0;
-        var selectedOption = $('#salary_setup_id option:selected');
+        if(empSalary){ 
+            $.each(fields, function(key, label) { 
 
-        if (selectedOption.val()) {
+                // মূল value & increase 
+                let amount = parseFloat(empSalary[key] ?? 0);
+                let increase = parseFloat(empSalary['increase_'+key] ?? 0); 
+
+                // 0 হলে skip
+                if(amount == 0 && increase == 0) return true; // continue to next
+                
+                salaryAmt += amount;
+                increaseAmt += increase; 
+
+                // 2 decimal format
+                amount = parseFloat(amount).toFixed(2);
+                increase = parseFloat(increase).toFixed(2);
+
+                
+                str += '<tr>';
+                str += '<td width="30%" data-value="'+key+'">'+label+'</td>';
+                str += '<td width="30%"><input type="number" name="'+key+'" id="'+key+'" value="'+amount+'" class="form-control" readonly></td>';
+                str += '<td width="30%"><input type="number" name="increase_'+key+'" id="increase_'+key+'" value="'+increase+'" class="form-control" readonly></td>';
+                str += '<td width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button></td>';
+                str += '</tr>'; 
+            });
+
+            $('#salaryAmount').val(parseFloat(salaryAmt).toFixed(2));
+            $('#totalIncrease').val(parseFloat(increaseAmt).toFixed(2));
+            $('#gross').val(parseFloat(salaryAmt + increaseAmt).toFixed(2));
+
+            $('#breakupList').append(str);
+
+        }
+
+
+        $('#salaryBreakupSelect').change(function() {
+            var selectedText = $(this).find('option:selected').text();
+            var selectedValue = $(this).val();
+            var str = '';
+            if(selectedValue) {
+                // Check if already exists
+                if($('#breakupList td[data-value="'+selectedValue+'"]').length == 0) {
+                    str += '<tr>';
+                    str += '<td  width="30%" data-value="'+selectedValue+'">'+selectedText+'</td>';
+                    str += '<td  width="30%"><input type="number" name="'+selectedValue+'" id="'+selectedValue+'" value="0" class="form-control"></td>';
+                    str += '<td  width="30%"><input type="number" name="increase_'+selectedValue+'" id="increase_'+selectedValue+'" value="0" class="form-control"></td>';
+                    str += '<td  width="10%"> <button type="button" class="remove-salary-break-up"><i class="fa fa-trash"></i></button></td>';
+                    str += '</tr>';
+                    $('#breakupList').append(str);
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Oops!',
+                        text: 'Already added!',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+            }
+            // Reset select to default
+            $(this).val('');
+        });
+
+
+        $(document).on("click", ".remove-salary-break-up", function() {
+            $(this).closest("tr").remove();
+        });
+
+        function toggleSalaryBreakup() {
+            // Get value of checked radio by name
+            var val = $('input[name="is_consolidate"]:checked').val();
+            if(val === '1') {  // yes
+                $('#salaryBreakupSelect').prop('disabled', true);
+                $(".remove-salary-break-up").addClass('d-none'); 
+            } else {          // no
+                $('#salaryBreakupSelect').prop('disabled', false);
+                $(".remove-salary-break-up").removeClass('d-none');
+            }
+        }
+
+        // Initial check
+        toggleSalaryBreakup();
+
+        // On radio change
+        $('input[name="is_consolidate"]').change(function() {
+            toggleSalaryBreakup();
+        });
+
+   
+       $('#salaryAmount, #totalIncrease').on('keyup', function() {
+            var selectedOption = $('#salary_setup_id option:selected');
+
+            let salaryAmt = parseFloat($('#salaryAmount').val()) || 0;
+            let increaseAmt =  parseFloat($('#totalIncrease').val()) || 0;
+            let basic = houseRent = conveyance = medical = entertainment = leaveFare = utility = unkeep = others = 0;
+            let increaseBasic = increaseHouseRent = increaseConveyance = increaseMedical = increaseEntertainment = increaseLeaveFare = increaseUtility = increaseUnkeep = increaseOthers = 0
+            
             var basicPercentage = parseFloat(selectedOption.attr('data-basic')) || 0;
             var houseRentPercentage = parseFloat(selectedOption.attr('data-house_rent')) || 0;
-            var conveyancePercentage = parseFloat(selectedOption.attr('data-conveyance')) || 0;
-            var isConveyanceFixed = parseInt(selectedOption.attr('data-is_conveyance_fixed')) || 0;
+            var conveyancePercentage = parseFloat(selectedOption.attr('data-conveyance')) || 0; 
             var medicalPercentage = parseFloat(selectedOption.attr('data-medical')) || 0;
-            var isMedicalFixed = parseInt(selectedOption.attr('data-is_medical_fixed')) || 0;
-            var othersPercentage = parseFloat(selectedOption.attr('data-others')) || 0;
-            var isOthersFixed = parseInt(selectedOption.attr('data-is_others_fixed')) || 0;
+            var entertainmentPercentage = parseInt(selectedOption.attr('data-entertainment')) || 0;
+            var leave_farePercentage = parseFloat(selectedOption.attr('data-leave_fare')) || 0;
+            var utilityPercentage = parseInt(selectedOption.attr('data-utility')) || 0;
+            var unkeepPercentage = parseFloat(selectedOption.attr('data-unkeep')) || 0;
+            var othersPercentage = parseInt(selectedOption.attr('data-others')) || 0;
 
-            if (!gross) {
-                $('#basic').val(0);
-                $('#house_rent').val(0);
-                $('#conveyance').val(0);
-                $('#medical').val(0);
-                $('#others').val(0);
-                return;
+            var isHouseRent = parseFloat(selectedOption.attr('data-is_house_rent_basic')) || 0;
+            var isConveyance = parseFloat(selectedOption.attr('data-is_conveyance_basic')) || 0;
+            var isMedical = parseFloat(selectedOption.attr('data-is_medical_basic')) || 0;
+            var isEntertainment = parseInt(selectedOption.attr('data-is_entertainment_basic')) || 0;
+            var isLeaveFare = parseFloat(selectedOption.attr('data-is_leave_fare_basic')) || 0;
+            var isUtility = parseInt(selectedOption.attr('data-is_utility_basic')) || 0;
+            var isUnkeep = parseFloat(selectedOption.attr('data-is_unkeep_basic')) || 0;
+            var isothers = parseInt(selectedOption.attr('data-is_others_basics')) || 0;  
+ 
+
+            
+            if( basicPercentage != 0)
+            {
+                basic = (salaryAmt * basicPercentage)/100;
+                increaseBasic = (increaseAmt * basicPercentage)/100; 
             }
-            var basic, houseRent, conveyance, medical, others, availablegross;
+            if( houseRentPercentage != 0)
+            {
+                if(isHouseRent!=0)
+                    salaryAmt = basic;
 
-           if(isConveyanceFixed == 1 && isMedicalFixed == 1 && isOthersFixed == 1) {
-                conveyance = conveyancePercentage;
-                medical = medicalPercentage;
-                others =  othersPercentage;
-                availablegross = gross - conveyance - medical - others;
-                basic = availablegross * (basicPercentage / 100);
-                houseRent = availablegross * (houseRentPercentage / 100);
-              
-            } else if(isConveyanceFixed == 1 && isMedicalFixed == 0 && isOthersFixed == 0) {
-                conveyance =  conveyancePercentage;
-                availablegross = gross - conveyance;
-                basic = availablegross * (basicPercentage / 100);
-                houseRent = availablegross * (houseRentPercentage / 100);
-                medical =  availablegross * (medicalPercentage / 100);
-                others =  availablegross * (othersPercentage / 100);
-            } else if(isMedicalFixed == 1 && isConveyanceFixed == 0 && isOthersFixed == 0) {
-                medical =  medicalPercentage;
-                availablegross = gross - medical;
-                basic = availablegross * (basicPercentage / 100);
-                houseRent = availablegross * (houseRentPercentage / 100);
-                conveyance =  availablegross * (conveyancePercentage / 100);
-                others =  availablegross * (othersPercentage / 100);
-            } else if(isOthersFixed == 1 && isConveyanceFixed == 0 && isMedicalFixed == 0) {
-                others =  othersPercentage;
-                availablegross = gross - others;
-                basic = availablegross * (basicPercentage / 100);
-                houseRent = availablegross * (houseRentPercentage / 100);
-                conveyance =  availablegross * (conveyancePercentage / 100);
-                medical =  availablegross * (medicalPercentage / 100);
-            } else if(isConveyanceFixed == 1 && isMedicalFixed == 1 && isOthersFixed == 0) {
-                conveyance = conveyancePercentage;
-                medical = medicalPercentage;
-                availablegross = gross - conveyance - medical;
-                basic = availablegross * (basicPercentage / 100);
-                houseRent = availablegross * (houseRentPercentage / 100);
-                others =  availablegross * (othersPercentage / 100);
-            } else if(isConveyanceFixed == 1 && isMedicalFixed == 0 && isOthersFixed == 1) {
-                conveyance = conveyancePercentage;
-                others =  othersPercentage;
-                availablegross = gross - conveyance - others;
-                basic = availablegross * (basicPercentage / 100);
-                houseRent = availablegross * (houseRentPercentage / 100);
-                medical =  availablegross * (medicalPercentage / 100);
-            } else if(isConveyanceFixed == 0 && isMedicalFixed == 1 && isOthersFixed == 1) {
-                medical = medicalPercentage;
-                others =  othersPercentage;
-                availablegross = gross - medical - others;
-                basic = availablegross * (basicPercentage / 100);
-                houseRent = availablegross * (houseRentPercentage / 100);
-                conveyance =  availablegross * (conveyancePercentage / 100);
-            }else{
-                conveyance =  gross * (conveyancePercentage / 100);
-                medical =  gross * (medicalPercentage / 100);
-                others =  gross * (othersPercentage / 100);
-                basic = gross * (basicPercentage / 100);
-                houseRent = gross * (houseRentPercentage / 100);
+                houseRent = (salaryAmt * houseRentPercentage)/100;
+                increaseHouseRent = (increaseAmt * houseRentPercentage)/100; 
+            }
+            
+            if( conveyancePercentage != 0)
+            {
+                if(isConveyance!=0)
+                    salaryAmt = basic;
+
+                conveyance = (salaryAmt * conveyancePercentage)/100;
+                increaseConveyance = (increaseAmt * conveyancePercentage)/100; 
             }
 
+            if( medicalPercentage != 0)
+            {
+                if(isMedical!=0)
+                    salaryAmt = basic;
+
+                medical = (salaryAmt * medicalPercentage)/100;
+                increaseMedical = (increaseAmt * medicalPercentage)/100; 
+            }
+
+            if( entertainmentPercentage != 0)
+            {
+                if(isEntertainment!=0)
+                    salaryAmt = basic;
+
+                entertainment = (salaryAmt * entertainmentPercentage)/100;
+                increaseEntertainment = (increaseAmt * entertainmentPercentage)/100; 
+            }
+
+            if( leave_farePercentage != 0)
+            {
+                if(isLeaveFare!=0)
+                    salaryAmt = basic;
+
+                leaveFare = (salaryAmt * leave_farePercentage)/100;
+                increaseLeaveFare = (increaseAmt * leave_farePercentage)/100; 
+            }
+
+            if( utilityPercentage != 0)
+            {
+                if(isUtility!=0)
+                    salaryAmt = basic;
+
+                utility = (salaryAmt * utilityPercentage)/100;
+                increaseUtility = (increaseAmt * utilityPercentage)/100; 
+            }
+
+            
+            if( unkeepPercentage != 0)
+            {
+                if(isUnkeep!=0)
+                    salaryAmt = basic;
+
+                unkeep = (salaryAmt * unkeepPercentage)/100;
+                increaseUnkeep = (increaseAmt * unkeepPercentage)/100; 
+            }
+
+            
+            if( othersPercentage != 0)
+            {
+                if(isothers!=0)
+                    salaryAmt = basic;
+
+                others = (salaryAmt * othersPercentage)/100;
+                increaseOthers = (increaseAmt * othersPercentage)/100; 
+            }
+ 
+                    
+                   
+
+            
             $('#basic').val(basic.toFixed());
             $('#house_rent').val(houseRent.toFixed());
             $('#conveyance').val(conveyance.toFixed());
             $('#medical').val(medical.toFixed());
-            $('#others').val(others.toFixed());
-        }
-    }
+            $('#entertainment').val(entertainment.toFixed());
+            $('#leave_fare').val(leaveFare.toFixed());
+            $('#utility').val(utility.toFixed());
+            $('#unkeep').val(unkeep.toFixed());
+            $('#others').val(others.toFixed()); 
+
+            $('#increase_basic').val(increaseBasic.toFixed());
+            $('#increase_house_rent').val(increaseHouseRent.toFixed());
+            $('#increase_conveyance').val(increaseConveyance.toFixed());
+            $('#increase_medical').val(increaseMedical.toFixed());
+            $('#increase_entertainment').val(increaseEntertainment.toFixed());
+            $('#increase_leave_fare').val(increaseLeaveFare.toFixed());
+            $('#increase_utility').val(increaseUtility.toFixed());
+            $('#increase_unkeep').val(increaseUnkeep.toFixed());
+            $('#increase_others').val(increaseOthers.toFixed()); 
+
+            $('#gross').val((salaryAmt+increaseAmt).toFixed()); 
+ 
+        });
+
+
+        $('#salary_setup_id,#consolidate_yes').change(function() {
+            var selectedOption = $('#salary_setup_id option:selected');
+
+            var basicPercentage = parseFloat(selectedOption.attr('data-basic')) || 0;
+            var houseRentPercentage = parseFloat(selectedOption.attr('data-house_rent')) || 0;
+            var conveyancePercentage = parseFloat(selectedOption.attr('data-conveyance')) || 0; 
+            var medicalPercentage = parseFloat(selectedOption.attr('data-medical')) || 0;
+            var entertainmentPercentage = parseInt(selectedOption.attr('data-entertainment')) || 0;
+            var leave_farePercentage = parseFloat(selectedOption.attr('data-leave_fare')) || 0;
+            var utilityPercentage = parseInt(selectedOption.attr('data-utility')) || 0;
+            var unkeepPercentage = parseFloat(selectedOption.attr('data-unkeep')) || 0;
+            var othersPercentage = parseInt(selectedOption.attr('data-others')) || 0;
+   
+            str = "";
+            $('#breakupList').html('');
+
+            if(basicPercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="basic">Basic</td>';
+                str += '<td  width="30%"><input type="number" name="basic" id="basic" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_basic" id="increase_basic" value="0" class="form-control" readonly ></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            }
+
+            if(houseRentPercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="house_rent">House Rent</td>';
+                str += '<td  width="30%"><input type="number" name="house_rent" id="house_rent" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_house_rent" id="increase_house_rent" value="0" class="form-control" readonly ></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            }
+            if(conveyancePercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="conveyance">Conveyance</td>';
+                str += '<td  width="30%"><input type="number" name="conveyance" id="conveyance" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_conveyance" id="increase_conveyance" value="0" class="form-control" readonly></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            } 
+ 
+            if(medicalPercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="medical">Medical</td>';
+                str += '<td  width="30%"><input type="number" name="medical" id="medical" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_medical" id="increase_medical" value="0" class="form-control" readonly></td>';
+                str += '<td  width="10%"> <button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button></td>';
+                str += '</tr>'; 
+            }
+            if(entertainmentPercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="entertainment">Entertainment</td>';
+                str += '<td  width="30%"><input type="number" name="entertainment" id="entertainment" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_entertainment" id="increase_entertainment" value="0" class="form-control" readonly></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            }
+ 
+            if(leave_farePercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="leave_fare">Leave Fare</td>';
+                str += '<td  width="30%"><input type="number" name="leave_fare" id="leave_fare" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_leave_fare" id="increase_leave_fare" value="0" class="form-control" readonly></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            }
+            if(utilityPercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="utility">>Utility</td>';
+                str += '<td  width="30%"><input type="number" name="utility" id="utility" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_utility" id="increase_utility" value="0" class="form-control" readonly></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            }
+
+            if(unkeepPercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="unkeep">Unkeep</td>';
+                str += '<td  width="30%"><input type="number" name="unkeep" id="unkeep" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_unkeep" id="increase_unkeep" value="0" class="form-control" readonly></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            }
+            if(othersPercentage != 0 ){
+                str += '<tr>';
+                str += '<td  width="30%" data-value="others">Others</td>';
+                str += '<td  width="30%"><input type="number" name="others" id="others" value="0" class="form-control" readonly></td>';
+                str += '<td  width="30%"><input type="number" name="increase_others" id="increase_others" value="0" class="form-control" readonly></td>';
+                str += '<td  width="10%"><button type="button" class="remove-salary-break-up d-none"><i class="fa fa-trash"></i></button> </td>';
+                str += '</tr>'; 
+            } 
+
+            $('#breakupList').append(str);
+            
+            
+
+
+        });
+        
+   
+    
 });
 </script>
 
