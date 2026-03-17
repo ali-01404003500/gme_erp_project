@@ -3,6 +3,8 @@ namespace Modules\HRMS\Services;
 
 use Carbon\Carbon;
 use Modules\HRMS\Models\Attendance;
+use Modules\HRMS\Models\AttendancePolicy;
+use Modules\HRMS\Models\Settings\Shift;
 
 class AttendanceService
 {
@@ -37,19 +39,6 @@ class AttendanceService
             })
             ->get(); // IMPORTANT: get(), not paginate()
     }
-
-    // public function store(array $data)
-    // {
-    //     $result['attendance'] = Attendance::create($data);
-
-    //     return $result;
-    // }
-
-    // public function update(Attendance $attendance, array $data)
-    // {
-    //     $attendance->update($data);
-    //     return $attendance;
-    // }
 
     public function delete(Attendance $attendance)
     {
@@ -119,8 +108,6 @@ class AttendanceService
         })->count();
 
         $onTimeOut = $attendances->filter(function ($rec) {
-            // Assuming shift has an out_time and there might be a grace period for out as well
-            // This logic might need refinement based on actual shift and attendance rules
             if (! $rec->check_out_time || ! $rec->shift || ! $rec->shift->out_time) {
                 return false;
             }
@@ -136,17 +123,11 @@ class AttendanceService
             return $date->isWeekday(); // Excludes weekends
         }, Carbon::parse($today));
 
-        // Need to subtract holidays from workings_days. This requires fetching holiday data.
-        // Assuming a Holiday model or similar exists. For now, this is not implemented dynamically.
-        // $holidays = Holiday::whereBetween('date', [$yearStart, $today])->count();
-        // $workings_days -= $holidays;
-
-        // Calculate total leave days taken from leave applications
         $leaveDaysTaken = $leaveApplications->sum('number_of_days');
 
         // Calculate remaining leave (requires leave allocation data)
         $remaining_leave = [];
-        $employee        = auth()->user()->employee; // Get the employee model
+        $employee        = auth()->user()->employee;
 
         $leave_types = \Modules\HRMS\Models\Settings\LeaveType::all();
         foreach ($leave_types as $leave_type) {
@@ -292,27 +273,62 @@ class AttendanceService
  */
     private function calculateAttendanceStatus(array $data): string
     {
-        // 1. If no check-in time is provided, mark as Absent
         if (empty($data['check_in_time'])) {
             return 'Absent';
         }
 
-        // 2. If no shift is selected, default to Present
-        if (empty($data['shift_id'])) {
+        $policy = AttendancePolicy::where('name', 'LIKE', '%General%')
+            ->where('effective_from', '<=', $data['date'])
+            ->orderBy('effective_from', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if (! $policy) {
+            $policy = AttendancePolicy::where('effective_from', '<=', $data['date'])
+                ->latest('effective_from')
+                ->first();
+        }
+
+        if (! $policy) {
             return 'Present';
         }
 
-        $shift = \Modules\HRMS\Models\Settings\Shift::find($data['shift_id']);
-        if (! $shift) {
+        //  Day-wise Settings parsing (Sat-Thu in_time check)
+        $dayOfWeek      = \Carbon\Carbon::parse($data['date'])->format('l');
+        $policySettings = is_array($policy->day_wise_settings)
+            ? $policy->day_wise_settings
+            : json_decode($policy->day_wise_settings, true);
+
+        $todaySetting = $policySettings[$dayOfWeek] ?? null;
+        $policyInTime = $todaySetting['in_time'] ?? $policy->in_time;
+
+        if (! $policyInTime) {
             return 'Present';
         }
 
-        $checkIn     = Carbon::parse($data['check_in_time']);
-        $shiftInTime = Carbon::parse($shift->in_time);
-        $graceTime   = $shift->grace_time ?? 0;
+        //  Time Parsing
+        $attendanceDate = \Carbon\Carbon::parse($data['date'])->format('Y-m-d');
+        $checkIn        = \Carbon\Carbon::parse($attendanceDate . ' ' . $data['check_in_time']);
+        $shiftInTime    = \Carbon\Carbon::parse($attendanceDate . ' ' . $policyInTime);
 
-        // 3. Late Policy: Check-in > (Shift In + Grace)
-        if ($checkIn->greaterThan($shiftInTime->addMinutes($graceTime))) {
+        $totalBuffer = 0;
+
+        // Helper function for time/string parsing
+        $parseBuffer = function ($value) {
+            if (str_contains((string) $value, ':')) {
+                $parts = explode(':', (string) $value);
+                return ($parts[0] * 60) + ($parts[1] ?? 0);
+            }
+            return (int) ($value ?? 0);
+        };
+
+        // delay_buffer + ex_delay_buffer (duiti-i jog hobe jeno calculation full dynamic hoy)
+        $totalBuffer = $parseBuffer($policy->delay_buffer) + $parseBuffer($policy->ex_delay_buffer);
+
+        // Allowed Time = 10:00 AM + (0 + 15) Minutes = 10:15 AM
+        $allowedTime = $shiftInTime->copy()->addMinutes($totalBuffer);
+
+        if ($checkIn->greaterThan($allowedTime)) {
             return 'Late';
         }
 

@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EarlyOutDeductionPolicy extends Model
 {
     use HasFactory;
-
-    protected $table = 'early_out_deduction_policies';
-
+    protected $table    = 'early_out_deduction_policies';
     protected $fillable = [
         'consider_early_out',
         'deduct_from_gross',

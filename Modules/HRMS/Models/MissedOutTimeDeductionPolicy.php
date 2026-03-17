@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class MissedOutTimeDeductionPolicy extends Model
 {
     use HasFactory;
-
     protected $table = 'missed_out_time_deduction_policies';
 
     protected $fillable = [
