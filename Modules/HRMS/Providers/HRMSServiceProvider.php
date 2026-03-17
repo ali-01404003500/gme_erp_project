@@ -32,6 +32,7 @@ class HRMSServiceProvider  extends ServiceProvider
         $this->moduleRegister();
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'HRMS');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/migrations');
         $this->registerRoutes();
     }
 

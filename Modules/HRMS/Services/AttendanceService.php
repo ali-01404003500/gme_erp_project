@@ -249,6 +249,40 @@ class AttendanceService
             ],
         ];
     }
+    public function calculateAttendanceStatus(array $data)
+    {
+        $policy = AttendancePolicy::where('effective_from', '<=', $data['date'])
+            ->orderBy('effective_from', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        //  Day-wise Settings parsing (Sat-Thu in_time check)
+        $dayOfWeek      = Carbon::parse($data['date'])->format('l');
+        $policySettings = is_array($policy->day_wise_settings) ? $policy->day_wise_settings : json_decode($policy->day_wise_settings, true);
+
+        $todaySetting  = $policySettings[$dayOfWeek] ?? null;
+        $policyInTime  = $todaySetting['in_time'] ?? $policy->in_time;
+        $policyOutTime = $todaySetting['out_time'] ?? $policy->out_time;
+        $flag          = "";
+
+        $policyTime        = strtotime($policyInTime);
+        $delayBufferTime   = strtotime("+{$todaySetting['delay_buffer']} minutes", $policyTime);
+        $exDelayBufferTime = strtotime("+{$todaySetting['ex_delay_buffer']} minutes", $policyTime);
+
+        $checkIn = $data['check_in_time'];
+
+        if ($checkIn <= $policyInTime) {
+            $flag = "P";
+        } else if ($checkIn > $policyInTime && $checkIn <= $delayBufferTime) {
+            $flag = "D";
+        } else if ($checkIn > $policyInTime && $checkIn <= $exDelayBufferTime) {
+            $flag = "E";
+        } else {
+            $flag = "E";
+        }
+
+        return $flag;
+    }
 
     // Inside AttendanceService class
 
@@ -271,68 +305,6 @@ class AttendanceService
 /**
  * Logic to determine if Present, Late, or Absent
  */
-    private function calculateAttendanceStatus(array $data): string
-    {
-        if (empty($data['check_in_time'])) {
-            return 'Absent';
-        }
-
-        $policy = AttendancePolicy::where('name', 'LIKE', '%General%')
-            ->where('effective_from', '<=', $data['date'])
-            ->orderBy('effective_from', 'desc')
-            ->orderBy('id', 'desc')
-            ->first();
-
-        if (! $policy) {
-            $policy = AttendancePolicy::where('effective_from', '<=', $data['date'])
-                ->latest('effective_from')
-                ->first();
-        }
-
-        if (! $policy) {
-            return 'Present';
-        }
-
-        //  Day-wise Settings parsing (Sat-Thu in_time check)
-        $dayOfWeek      = \Carbon\Carbon::parse($data['date'])->format('l');
-        $policySettings = is_array($policy->day_wise_settings)
-            ? $policy->day_wise_settings
-            : json_decode($policy->day_wise_settings, true);
-
-        $todaySetting = $policySettings[$dayOfWeek] ?? null;
-        $policyInTime = $todaySetting['in_time'] ?? $policy->in_time;
-
-        if (! $policyInTime) {
-            return 'Present';
-        }
-
-        //  Time Parsing
-        $attendanceDate = \Carbon\Carbon::parse($data['date'])->format('Y-m-d');
-        $checkIn        = \Carbon\Carbon::parse($attendanceDate . ' ' . $data['check_in_time']);
-        $shiftInTime    = \Carbon\Carbon::parse($attendanceDate . ' ' . $policyInTime);
-
-        $totalBuffer = 0;
-
-        // Helper function for time/string parsing
-        $parseBuffer = function ($value) {
-            if (str_contains((string) $value, ':')) {
-                $parts = explode(':', (string) $value);
-                return ($parts[0] * 60) + ($parts[1] ?? 0);
-            }
-            return (int) ($value ?? 0);
-        };
-
-        // delay_buffer + ex_delay_buffer (duiti-i jog hobe jeno calculation full dynamic hoy)
-        $totalBuffer = $parseBuffer($policy->delay_buffer) + $parseBuffer($policy->ex_delay_buffer);
-
-        // Allowed Time = 10:00 AM + (0 + 15) Minutes = 10:15 AM
-        $allowedTime = $shiftInTime->copy()->addMinutes($totalBuffer);
-
-        if ($checkIn->greaterThan($allowedTime)) {
-            return 'Late';
-        }
-
-        return 'Present';
-    }
+    
 
 }

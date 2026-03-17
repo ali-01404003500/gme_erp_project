@@ -32,6 +32,8 @@ class AccountServiceProvider  extends ServiceProvider
         $this->moduleRegister();
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'Account');
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
         $this->registerRoutes();
     }
 
