@@ -22,7 +22,7 @@ class EmployeeService
 
     public function getAll(int $limit = 20)
     {
-        return Employee::query()
+        return Employee::query()  
             ->with(
                 'employementDetail.department',
                 'employementDetail.designation',

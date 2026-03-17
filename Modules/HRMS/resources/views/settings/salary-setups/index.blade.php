@@ -57,9 +57,13 @@
                                         <th>Effective Date</th>
                                         <th>Basic(%)</th>
                                         <th>House Rent(%)</th>
-                                        <th>Conveyance(% / Tk.)</th>
-                                        <th>Medical(% / Tk.)</th>
-                                        <th>Others(% / Tk.)</th>
+                                        <th>Conveyance(%)</th>
+                                        <th>Medical(%)</th> 
+                                        <th>Entertainment (%)</th>
+                                        <th>Leave Fare(%)</th>
+                                        <th>Utility (%)</th>
+                                        <th>Unkeep(%)</th>
+                                        <th>Others(%)</th>
                                         <th>Status</th>
                                         <th class="no-content">Action</th>
                                     </tr>
@@ -77,7 +81,12 @@
                                             <td>{{  number_format($value->house_rent) }}</td>
                                             <td>{{  number_format($value->conveyance) }}</td>
                                             <td>{{  number_format($value->medical) }}</td>
-                                            <td>{{  number_format($value->others) }}</td>
+                                            <td>{{  number_format($value->entertainment) }}</td>
+                                            <td>{{  number_format($value->leave_fare) }}</td>
+                                            <td>{{  number_format($value->utility) }}</td>
+                                            <td>{{  number_format($value->unkeep) }}</td>
+                                            <td>{{  number_format($value->others) }}</td> 
+
                                             <td>
                                                 @if ($value->status == '0')
                                                     <span class="badge badge-round badge-warning">De-Active</span>
