@@ -256,7 +256,6 @@ class AttendanceService
             ->orderBy('id', 'desc')
             ->first();
 
-        //  Day-wise Settings parsing (Sat-Thu in_time check)
         $dayOfWeek      = Carbon::parse($data['date'])->format('l');
         $policySettings = is_array($policy->day_wise_settings) ? $policy->day_wise_settings : json_decode($policy->day_wise_settings, true);
 
@@ -284,11 +283,9 @@ class AttendanceService
         return $flag;
     }
 
-    // Inside AttendanceService class
-
     public function store(array $data)
     {
-        // Automatically determine status before creating
+
         $data['attendance_type'] = $this->calculateAttendanceStatus($data);
         $result['attendance']    = Attendance::create($data);
         return $result;
@@ -296,15 +293,10 @@ class AttendanceService
 
     public function update(Attendance $attendance, array $data)
     {
-        // Automatically determine status before updating
+
         $data['attendance_type'] = $this->calculateAttendanceStatus($data);
         $attendance->update($data);
         return $attendance;
     }
-
-/**
- * Logic to determine if Present, Late, or Absent
- */
-    
 
 }
