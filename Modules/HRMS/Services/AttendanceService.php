@@ -90,8 +90,8 @@ class AttendanceService
             }
 
             $graceTime   = $rec->shift->grace_time ?? 0;
-            $checkIn     = \Carbon\Carbon::parse($rec->check_in_time);
-            $shiftInTime = \Carbon\Carbon::parse($rec->shift->in_time);
+            $checkIn     = Carbon::parse($rec->check_in_time);
+            $shiftInTime = Carbon::parse($rec->shift->in_time);
             return $checkIn->greaterThan($shiftInTime->addMinutes($graceTime));
         })->count();
 
@@ -102,8 +102,8 @@ class AttendanceService
             }
 
             $graceTime   = $rec->shift->grace_time ?? 0;
-            $checkIn     = \Carbon\Carbon::parse($rec->check_in_time);
-            $shiftInTime = \Carbon\Carbon::parse($rec->shift->in_time);
+            $checkIn     = Carbon::parse($rec->check_in_time);
+            $shiftInTime = Carbon::parse($rec->shift->in_time);
             return $checkIn->lessThanOrEqualTo($shiftInTime->addMinutes($graceTime));
         })->count();
 
@@ -112,8 +112,8 @@ class AttendanceService
                 return false;
             }
 
-            $checkOut     = \Carbon\Carbon::parse($rec->check_out_time);
-            $shiftOutTime = \Carbon\Carbon::parse($rec->shift->out_time);
+            $checkOut     = Carbon::parse($rec->check_out_time);
+            $shiftOutTime = Carbon::parse($rec->shift->out_time);
             // Assuming on-time out is checking out at or before shift out time (might need adjustment)
             return $checkOut->lessThanOrEqualTo($shiftOutTime);
         })->count();

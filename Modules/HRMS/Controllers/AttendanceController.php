@@ -132,12 +132,12 @@ class AttendanceController extends Controller
 
         // Convert 12-hour inputs to 24-hour TIME format
         if (! empty($validate['check_in_time'])) {
-            $validate['check_in_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_in_time'])
+            $validate['check_in_time'] = Carbon::createFromFormat('h:i A', $validate['check_in_time'])
                 ->format('H:i');
         }
 
         if (! empty($validate['check_out_time'])) {
-            $validate['check_out_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_out_time'])
+            $validate['check_out_time'] = Carbon::createFromFormat('h:i A', $validate['check_out_time'])
                 ->format('H:i');
         }
 
@@ -221,12 +221,12 @@ class AttendanceController extends Controller
 
         // Convert 12-hour inputs to 24-hour TIME format
         if (! empty($validate['check_in_time'])) {
-            $validate['check_in_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_in_time'])
+            $validate['check_in_time'] = Carbon::createFromFormat('h:i A', $validate['check_in_time'])
                 ->format('H:i');
         }
 
         if (! empty($validate['check_out_time'])) {
-            $validate['check_out_time'] = \Carbon\Carbon::createFromFormat('h:i A', $validate['check_out_time'])
+            $validate['check_out_time'] = Carbon::createFromFormat('h:i A', $validate['check_out_time'])
                 ->format('H:i');
         }
 
