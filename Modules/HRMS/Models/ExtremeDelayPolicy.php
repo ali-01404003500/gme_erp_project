@@ -17,7 +17,6 @@ class ExtremeDelayPolicy extends Model
         'extreme_delay_limit',
         'adjust_days',
     ];
-
     protected $casts = [
         'consider_extreme_delay'             => 'boolean',
         'deduct_from_salary'                 => 'boolean',

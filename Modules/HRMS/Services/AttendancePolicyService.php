@@ -44,7 +44,6 @@ class AttendancePolicyService
             'ex_delay_buffer'      => $data['ex_delay_buffer'] ?? '00:00',
             'early_out_time'       => $data['early_out_time'] ?? null,
             'break_time'           => $data['break_time'] ?? 0,
-
             // checkbox settings
             'ignore_ot_deduction'  => filter_var($data['ignore_ot_deduction'] ?? false, FILTER_VALIDATE_BOOLEAN),
             'exclude_from_reports' => filter_var($data['exclude_from_reports'] ?? false, FILTER_VALIDATE_BOOLEAN),
