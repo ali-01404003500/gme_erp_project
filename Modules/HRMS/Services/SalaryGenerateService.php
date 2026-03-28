@@ -198,6 +198,7 @@ class SalaryGenerateService
         DB::select("
             CALL calculate_salary_gennerate_details(
                 $empId, '$month', $totalDays, $weekendDays, $holidays, $workingDays,
+                @total_day,  @weekend_day,  @holiday,  @absent_day, @late_day,  @leave_day,  @working_day,  @payment_method, 
                 @gross, @basic, @house, @medical, @conv, 
                 @ent, @leave_fare, @utility, @unkeep, @others,
                 @absent, @late, @leave, @loan, @advance, @tax, @net
@@ -205,18 +206,27 @@ class SalaryGenerateService
 
         ");
   
+  
         $result = DB::select("
             SELECT 
+                @total_day as total_day,
+                @weekend_day as weekend_day,
+                @holiday as holiday,
+                @absent_day as absent_day,
+                @late_day as late_day,
+                @leave_day as leave_day,
+                @working_day as working_day,
+                @payment_method as payment_method, 
                 @gross as gross_salary,
                 @basic as basic_salary,
-                @house as house_rent,
-                @medical as medical,
-                @conv as conveyance,
-                @ent as entertainment,
-                @leave_fare as leave_fare,
-                @utility as utility,
-                @unkeep as unkeep,
-                @others as others,
+                @house as house_rent_salary,
+                @medical as medical_salary,
+                @conv as conveyance_salary,
+                @ent as entertainment_salary,
+                @leave_fare as leave_fare_salary,
+                @utility as utility_salary,
+                @unkeep as unkeep_salary,
+                @others as others_salary,
                 @absent as absent_deduction,
                 @late as late_deduction,
                 @leave as leave_deduction,
@@ -225,6 +235,7 @@ class SalaryGenerateService
                 @tax as tax_deduction,
                 @net as salary_payment 
         ");
+        //dd($result);
         
 
         return (array) $result[0];
@@ -264,7 +275,7 @@ class SalaryGenerateService
 
             // Get working days, holidays, weekend
   
-s            $policy = SalaryGenerationPolicy::first(); 
+            $policy = SalaryGenerationPolicy::first(); 
             $result = DB::select("CALL GetMonthSummary('$month')"); 
             $data = $result[0];
   
@@ -273,8 +284,10 @@ s            $policy = SalaryGenerationPolicy::first();
             } else {
                 $totalDays = $data->total_days;
             }
+            $count = 0;
 
             foreach ($employees as $employee) {
+                $count = $count + 1;
 
                 $salaryData = $this->calculateSalary($employee->id, $month, $totalDays, $data->weekends,$data->holidays,$data->working_days);
  
@@ -303,29 +316,42 @@ s            $policy = SalaryGenerationPolicy::first();
                 }
 
 
-                // Create salary record
-                $netEarning = $salaryData['gross_salary']-$salaryData['tax_deduction'];
+                // Create salary record 
                 $totalDeduction = $salaryData['absent_deduction']-$salaryData['late_deduction']-$salaryData['loan_deduction']-$salaryData['advance_deduction']-$salaryData['tax_deduction'];
                 $totalSalary += $salaryData['gross_salary'];
+                $netEarning = $salaryData['gross_salary'] - $salaryData['tax_deduction'] - $totalDeduction;
   
                 SalaryGenerate::updateOrInsert(
                     [ 
                         'employee_id' => $employee->id,
                         'year_month'       => $month
                     ],
-                    [ 
+                    [   
+                        
                         'payroll_id' => $payroll->id,
-                        'basic' => $salaryData['basic_salary'],
-                        'house_rent'   => $salaryData['house_rent'],
-                        'medical'      => $salaryData['medical'],
-                        'conveyance'   => $salaryData['conveyance'],
-                        'entertainment'=> $salaryData['entertainment'],
-                        'leave_fare'   => $salaryData['leave_fare'],
-                        'utility'      => $salaryData['utility'],
-                        'unkeep'       => $salaryData['unkeep'],
-                        'others'       => $salaryData['others'],
 
-                        'absence' => $salaryData['absent_deduction'],  
+                        'total_days' => $salaryData['total_day'],
+                        'weekend'   => $salaryData['weekend_day'],
+                        'holidays'      => $salaryData['holiday'],
+                        'absent_days'   => $salaryData['absent_day'],
+                        'late_days' => $salaryData['late_day'],
+                        'leave_days'   => $salaryData['leave_day'],
+                        'working_days'      => $salaryData['working_day'],
+                        'approved_salary_ratio' => 100,
+                        'payment_method'   => $salaryData['payment_method'],
+
+
+                        'basic' => $salaryData['basic_salary'],
+                        'house_rent'   => $salaryData['house_rent_salary'],
+                        'medical'      => $salaryData['medical_salary'],
+                        'conveyance'   => $salaryData['conveyance_salary'],
+                        'entertainment'=> $salaryData['entertainment_salary'],
+                        'leave_fare'   => $salaryData['leave_fare_salary'],
+                        'utility'      => $salaryData['utility_salary'],
+                        'unkeep'       => $salaryData['unkeep_salary'],
+                        'others'       => $salaryData['others_salary'], 
+
+                        'absent_deduction' => $salaryData['absent_deduction'] ?? 0,  
                         'late_deduction' => $salaryData['late_deduction'],  
                         'loan'   => $salaryData['loan_deduction'],
                         'advance'=> $salaryData['advance_deduction'],
@@ -337,7 +363,9 @@ s            $policy = SalaryGenerationPolicy::first();
                         'total_deductions'        => $totalDeduction, 
                         
                         'total_tax'    => $salaryData['tax_deduction'],
+                        'created_by' => auth()->user()->id,
                         'created_at' => now(),
+                        'updated_by' =>  auth()->user()->id,
                         'updated_at' => now()
                     ] 
  
@@ -352,11 +380,13 @@ s            $policy = SalaryGenerationPolicy::first();
                  
             }
 
-            return $allSalaries;
-
             $payroll->update([
                 'total_net_earning' => $totalSalary,
+                'total_employees' => $count
             ]); 
+
+            return $allSalaries;
+ 
 
         
         } catch (\Throwable $e) {
