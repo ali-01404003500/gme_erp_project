@@ -16,28 +16,22 @@ class LeaveSalaryDeductionPolicyController extends Controller
 {
     public function index()
     {
-        $leaveTypes = LeaveType::all();
-
         $policies = [
             'absent'        => AbsentPolicy::latest()->first() ?? (object) [
-                'consider_absent'    => 0,
-                'deduct_from_salary' => 0,
-                'deduct_from_gross'  => 0,
-                'adjust_days'        => 1,
+                'consider_absent'    => 0, 
+                'deduct_from_gross'  => 0, 
             ],
             'delay'         => DelayPolicy::latest()->first() ?? (object) [
                 'consider_delay'             => 0,
-                'deduct_from_salary'         => 0,
-                'consider_consecutive_delay' => 0,
-                'delay_limit'                => 4,
-                'adjust_days'                => 1,
+                'deduct_from_gross_salary'         => 0, 
+                'delay_limit'                => 0,
+                'adjust_days'                => 0,
             ],
             'extreme_delay' => ExtremeDelayPolicy::latest()->first() ?? (object) [
                 'consider_extreme_delay'             => 0,
-                'deduct_from_salary'                 => 0,
-                'consider_consecutive_extreme_delay' => 0,
-                'extreme_delay_limit'                => 4,
-                'adjust_days'                        => 1,
+                'deduct_from_gross_salary'                 => 0, 
+                'extreme_delay_limit'                => 0,
+                'adjust_days'                        => 0,
             ],
             'early_out'     => EarlyOutDeductionPolicy::latest()->first() ?? (object) [
                 'consider_early_out'             => 0,
@@ -45,12 +39,6 @@ class LeaveSalaryDeductionPolicyController extends Controller
                 'consider_consecutive_early_out' => 0,
                 'early_out_limit'                => 0,
                 'adjust_days'                    => 0,
-            ],
-            'underwork'     => UnderworkDeductionPolicy::latest()->first() ?? (object) [
-                'consider_underwork' => 0,
-                'underwork_minutes'  => 0,
-                'underwork_limit'    => 0,
-                'adjust_days'        => 0,
             ],
             'unpaid_leave'  => UnpaidLeaveDeductionPolicy::latest()->first() ?? (object) [
                 'consider_unpaid_leave' => 0,
@@ -65,7 +53,7 @@ class LeaveSalaryDeductionPolicyController extends Controller
             ],
         ];
 
-        return view('HRMS::leave-salary-deduction-policy.index', compact('leaveTypes', 'policies'));
+        return view('HRMS::salary-deduction-policy.index', compact('policies'));
     }
 
     public function store(Request $request)
@@ -77,10 +65,8 @@ class LeaveSalaryDeductionPolicyController extends Controller
             AbsentPolicy::updateOrCreate(
                 ['id' => 1],
                 [
-                    'consider_absent'    => $request->has('absent_consider'),
-                    'deduct_from_salary' => $request->has('absent_deduct_salary'),
-                    'deduct_from_gross'  => $request->has('absent_deduct_gross'),
-                    'adjust_days'        => $request->input('absent_days', 1),
+                    'consider_absent'    => $request->has('absent_consider'), 
+                    'deduct_from_gross'  => $request->has('absent_deduct_gross'), 
                 ]
             );
         }
@@ -91,8 +77,7 @@ class LeaveSalaryDeductionPolicyController extends Controller
                 ['id' => 1],
                 [
                     'consider_delay'             => $request->has('delay_consider'),
-                    'deduct_from_salary'         => $request->has('delay_deduct_salary'),
-                    'consider_consecutive_delay' => $request->has('delay_consecutive'),
+                    'deduct_from_gross_salary'         => $request->has('delay_deduct_gross_salary'), 
                     'delay_limit'                => $request->delay_limit ?? 4,
                     'adjust_days'                => $request->delay_adjust ?? 1,
                 ]
@@ -105,8 +90,7 @@ class LeaveSalaryDeductionPolicyController extends Controller
                 ['id' => 1],
                 [
                     'consider_extreme_delay'             => $request->has('ext_consider'),
-                    'deduct_from_salary'                 => $request->has('ext_deduct_salary'),
-                    'consider_consecutive_extreme_delay' => $request->has('ext_consecutive'),
+                    'deduct_from_gross_salary'                 => $request->has('ext_deduct_gross_salary'), 
                     'extreme_delay_limit'                => $request->input('ext_limit', 4),
                     'adjust_days'                        => $request->input('ext_adjust', 1),
                 ]
@@ -119,28 +103,14 @@ class LeaveSalaryDeductionPolicyController extends Controller
                 ['id' => 1],
                 [
                     'consider_early_out'             => $request->has('early_out_consider'),
-                    'deduct_from_gross'              => $request->has('early_out_deduct_gross'),
-                    'consider_consecutive_early_out' => $request->has('early_out_consecutive'),
+                    'deduct_from_gross'              => $request->has('early_out_deduct_gross'), 
                     'early_out_limit'                => $request->early_out_limit ?? 0,
                     'adjust_days'                    => $request->early_out_adjust ?? 0,
                 ]
             );
         }
 
-        // =========== Underwork
-        if ($policyType === 'underwork') {
-            UnderworkDeductionPolicy::updateOrCreate(
-                ['id' => 1],
-                [
-                    'consider_underwork'  => $request->has('under_consider'),
-                    'consider_cumulative' => $request->has('under_cumulative'),
-                    'deduct_from_salary'  => $request->has('under_deduct_salary'),
-                    'leave_type_id'       => $request->leave_type,
-                    'hours_to_consider'   => $request->under_hours ?? 0,
-                    'adjust_days'         => $request->under_adjust ?? 0,
-                ]
-            );
-        }
+       
         //============ unpaid leave
         if ($policyType === 'unpaid_leave') {
             UnpaidLeaveDeductionPolicy::updateOrCreate(
@@ -157,13 +127,12 @@ class LeaveSalaryDeductionPolicyController extends Controller
                 ['id' => 1],
                 [
                     'consider_missed_out'  => $request->has('missed_out_consider'),
-                    'deduct_from_gross'    => $request->has('missed_out_deduct_gross'),
-                    'consider_consecutive' => $request->has('missed_out_consecutive'),
+                    'deduct_from_gross'    => $request->has('missed_out_deduct_gross'), 
                     'missed_out_limit'     => $request->missed_out_limit ?? 0,
                     'adjust_days'          => $request->missed_out_adjust ?? 0,
                 ]
             );
         }
-        return redirect()->back()->with('success', ucfirst(str_replace('_', ' ', $policyType)) . ' Policy updated successfully.');
+        return redirect()->back()->with('activeTab', $policyType)->with('success', ucfirst(str_replace('_', ' ', $policyType)) . ' Policy updated successfully.');
     }
 }

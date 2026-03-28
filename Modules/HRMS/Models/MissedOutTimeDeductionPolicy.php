@@ -11,16 +11,14 @@ class MissedOutTimeDeductionPolicy extends Model
 
     protected $fillable = [
         'consider_missed_out',
-        'deduct_from_gross',
-        'consider_consecutive',
+        'deduct_from_gross', 
         'missed_out_limit',
         'adjust_days',
     ];
 
     protected $casts = [
         'consider_missed_out'  => 'boolean',
-        'deduct_from_gross'    => 'boolean',
-        'consider_consecutive' => 'boolean',
+        'deduct_from_gross'    => 'boolean', 
         'missed_out_limit'     => 'integer',
         'adjust_days'          => 'integer',
     ];

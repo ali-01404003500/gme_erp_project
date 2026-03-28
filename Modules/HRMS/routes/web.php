@@ -118,7 +118,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         // Route::resource('leave-statuses', LeaveStatusController::class);
         Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class);
         Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
-        Route::resource('leave-salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
+        Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
         Route::resource('attendance-policies', AttendancePolicyController::class);
     });
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {

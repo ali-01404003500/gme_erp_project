@@ -395,21 +395,21 @@
                         @endif
 
                         {{-- ===================== Leave Salary Deduction Policies Menu ===================== --}}
-                        @if (hasPermission('hrm.settings.leave-salary-deduction-policies.index'))
+                        @if (hasPermission('hrm.settings.salary-deduction-policies.index'))
                             <li
-                                class="has-subchild {{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'open' : '' }}">
+                                class="has-subchild {{ request()->routeIs('hrm.settings.salary-deduction-policies.*') ? 'open' : '' }}">
                                 <a href="#"
-                                    class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'active' : '' }}">
+                                    class="{{ request()->routeIs('hrm.settings.salary-deduction-policies.*') ? 'active' : '' }}">
                                     <span class="nav-icon fa fa-cog"></span>
                                     <span class="menu-text">{{ t_('menu.hrm-settings-menu-title3') }}</span>
                                     <span class="toggle-icon"></span>
                                 </a>
                                 <ul>
                                     <li>
-                                        <a href="{{ route('hrm.settings.leave-salary-deduction-policies.index') }}"
-                                            class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.index') ? 'active' : '' }}">
+                                        <a href="{{ route('hrm.settings.salary-deduction-policies.index') }}"
+                                            class="{{ request()->routeIs('hrm.settings.salary-deduction-policies.index') ? 'active' : '' }}">
                                             <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
-                                            {{ t_('menu.leave-salary-deduction-policies') }}
+                                            {{ t_('menu.salary-deduction-policies') }}
                                         </a>
                                     </li>
                                 </ul>

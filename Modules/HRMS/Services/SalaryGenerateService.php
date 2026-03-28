@@ -9,6 +9,7 @@ use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\Loan;
 use Modules\HRMS\Models\Payroll;
 use Modules\HRMS\Models\SalaryGenerate;
+use Modules\HRMS\Models\SalaryGenerationPolicy;
 
 class SalaryGenerateService
 {
@@ -192,11 +193,11 @@ class SalaryGenerateService
       /**
      * Calculate salary for single employee
      */
-    public function calculateSalary($empId, $month)
-    {
+    public function calculateSalary($empId, $month, $totalDays, $weekendDays, $holidays, $workingDays)
+    { 
         DB::select("
             CALL calculate_salary_gennerate_details(
-                $empId, '$month', 
+                $empId, '$month', $totalDays, $weekendDays, $holidays, $workingDays,
                 @gross, @basic, @house, @medical, @conv, 
                 @ent, @leave_fare, @utility, @unkeep, @others,
                 @absent, @late, @leave, @loan, @advance, @tax, @net
@@ -260,10 +261,22 @@ class SalaryGenerateService
            
             $allSalaries = [];
             $totalSalary = 0;
- 
+
+            // Get working days, holidays, weekend
+  
+            $policy = SalaryGenerationPolicy::first(); 
+            $result = DB::select("CALL GetMonthSummary('$month')"); 
+            $data = $result[0];
+  
+            if($policy->calculation_type == "fixed_days") {
+                $totalDays = $policy->fixed_days; 
+            } else {
+                $totalDays = $data->total_days;
+            }
+
             foreach ($employees as $employee) {
 
-                $salaryData = $this->calculateSalary($employee->id, $month);
+                $salaryData = $this->calculateSalary($employee->id, $month, $totalDays, $data->weekends,$data->holidays,$data->working_days);
  
                 $loan = Loan::query()
                     ->where('employee_id', $employee->id)
