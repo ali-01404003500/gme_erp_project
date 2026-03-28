@@ -659,7 +659,7 @@
                                                                     value="{{ old('date_of_joining', optional($employee->employementDetail)->date_of_joining) }}">
                                                             </div>
                                                         </div>
-
+ 
                                                         <div class="col-md-4 mb-4">
                                                             <div class="form-group">
                                                                 <label for="department"
@@ -757,6 +757,17 @@
                                                                         Inactive
                                                                     </option>
                                                                 </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4 mb-4">
+                                                            <div class="form-group">
+                                                                <label for="date_of_termination"
+                                                                    class="color-dark fs-14 fw-500 align-center">Date of
+                                                                    Employeement Close </label>
+                                                                <input type="text"
+                                                                    class="form-control flatdate ip-gray radius-xs b-light px-15"
+                                                                    id="date_of_termination" name="date_of_termination"
+                                                                    value="{{ old('date_of_termination', optional($employee->employementDetail)->date_of_termination) }}">
                                                             </div>
                                                         </div>
 
