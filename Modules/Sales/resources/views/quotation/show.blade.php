@@ -334,6 +334,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $contentHightRem = 625;
+                        $dd = [];
+                    @endphp
                     @foreach ($quotation->quotationDetails as $key => $quotationDetail)
                         @php
                             $description =
@@ -343,28 +347,43 @@
                                     <div>
                                         <div>Features: ' .
                                 $quotationDetail->product->description .
-                                '</div><br>Model: ' .
+                                '</div>
+                                        <div>Model: ' .
                                 $quotationDetail->product->model .
-                                '<br>Brand: ' .
+                                '</div>
+                                        <div>Brand: ' .
                                 optional($quotationDetail->product->brand)->name .
-                                '<br>Manufacturer: ' .
+                                '</div>
+                                        <div>Manufacturer: ' .
                                 optional(optional($quotationDetail->product->brand)->supplier)->company_name .
-                                '</div>';
+                                '</div>
+                                    </div>';
                             // 2. Initialize Paginator
-                        $paginator = new Modules\Sales\Services\HTMLPaginatorService(400); // 1000px height per page
+                       $paginator = new Modules\Sales\Services\HtmlPaginatorService($contentHightRem); // 1000px height per page
 
                         // 3. Split Content
-                        $pages = $paginator->paginate($description);
-                         dd($pages);
+                       $result =  $paginator->paginate($description);
+// dd($result);
+                        $pages = $result['pages'];
+                        $remainingHeight = $result['remainingHeight']; // Available height 
+                        if($remainingHeight > 50){
+                            $contentHightRem = $remainingHeight;
+                        }else{
+                            $contentHightRem = 625;
+                        }
+
+                        $dd[] = $result;
+                        // dd($pages );
                         // 4. Loop through pages
                         $parted = [];
                         foreach ($pages as $page) {
                             $parted[] = $page;
-                        }
-                        @endphp
-                        <tr >
+                            }
+                            @endphp
+
+                        <tr style="border: 1px solid black; page-break-inside: avoid; width: 100%;s" >
                             <td style="border: 1px solid black; text-align: center;">{{ $key + 1 }}</td>
-                            <td style="border: 1px solid black;">{!! $parted[0] !!}</td>
+                            <td style="border: 1px solid black;">{!!$pages[0]!!}</td>
                             @if(!$withoutImage)
                                 <td style="border: 1px solid black; text-align: center;">
                                     @if ($quotationDetail->product->profile_image_upload)
@@ -393,7 +412,7 @@
                         </tr>
                         @if (count($parted) > 1)
                             @for ($i = 1; $i < count($parted); $i++)
-                                <tr style="page-break-inside: avoid;">
+                                <tr >
                                     <td style="border: 1px solid black; text-align: center;"></td>
                                     <td style="border: 1px solid black ;">{!! $parted[$i] !!}</td>
                                     @if (!$withoutImage)
@@ -407,6 +426,7 @@
                             @endfor
                         @endif
                     @endforeach
+                    {{-- @dd($dd) --}}
                 </tbody>
                 <tfoot>
                     <tr>
@@ -421,9 +441,11 @@
                 <p><strong>Net Amount: {{ numberFormat($quotation->total) }}</strong></p>
             </div>
 
-            <div class="terms page-break">
+            <div class="terms ">
                 <table class="terms-table">
-                    <tr><td colspan="7"><h3>TERMS & CONDITIONS</h3></td></tr>
+                    <tr>
+                        <td colspan="3"><h3>TERMS & CONDITIONS</h3></td>
+                    </tr>
                     <tr>
                         <td width="15%"><strong>Payment</strong></td>
                         <td width="5%">:</td>
