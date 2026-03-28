@@ -23,7 +23,7 @@
                                 @if (hasPermission('hrm.salary-generates.create'))
                                     <button class="btn btn-xs btn-primary me-1" data-bs-toggle="modal"
                                         data-bs-target="#createModal">
-                                        Add New
+                                        Make Salary Generate
                                     </button>
                                 @endif
                             </div>
@@ -149,6 +149,19 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="row mb-4">
+                                    <label class="col-sm-12 col-form-label">Employee</label>
+                                    <div class="col-sm-12">
+                                        <select name="employee_id"  
+                                            class="form-select tom-select">
+                                            <option value="">All Employee</option> 
+                                            @foreach ($employees as $item)
+                                                <option value="{{ $item->id }}">{{ $item->full_name }}</option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
                                     <label class="col-sm-12 col-form-label">Department</label>
                                     <div class="col-sm-12">
                                         <select class="form-select tom-select" name="department_id">
@@ -159,6 +172,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                
                                 <div class="row mb-4">
                                     <label class="col-sm-12 col-form-label">Year Month</label>
                                     <div class="col-sm-12">

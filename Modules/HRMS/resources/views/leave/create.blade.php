@@ -59,7 +59,7 @@
                                             <input type="hidden" name="halfDayLeave" id="halfDayLeave" value="0" >
                                             <input type="hidden" name="simultaneouslyLimit" id="simultaneouslyLimit" value="0" >
                                             <input type="hidden" name="leaveBalance" id="leaveBalance" value="0" >
-                                
+                                            <input type="hidden" id="holidays" value='@json($holidays)'>
                                         </div>
 
                                         <div class="col-md-6">
@@ -196,6 +196,8 @@
             let from_type = $('#from_date_leave_count').val(); 
             let to_type = $('#to_date_leave_count').val();
 
+            let holidays = JSON.parse($('#holidays').val() || '[]');
+
 
             if (start !== '' && end !== '') {
 
@@ -206,8 +208,26 @@
 
                 let leave_days = 0;
 
-                // Same Day Leave
-                if (diffDays === 1) {
+                // Step: valid days calculate (holiday + friday বাদ)
+                let validDates = [];
+
+                let current = new Date(startDate);
+                while (current <= endDate) {
+
+                    let day = current.getDay(); // Friday = 5
+                    let dateStr = current.toISOString().split('T')[0];
+
+                    if (day !== 5 && !holidays.includes(dateStr)) {
+                        validDates.push(new Date(current));
+                    }
+
+                    current.setDate(current.getDate() + 1);
+                }
+
+                let validDays = validDates.length;
+
+                // Same Day (after filtering)
+                if (validDays === 1) {
 
                     if (from_type === 'first_half' && to_type === 'first_half') {
                         leave_days = 0.5;
@@ -221,23 +241,20 @@
                     else if (from_type === 'second_half' && to_type === 'second_half') {
                         leave_days = 0.5;
                     }
-                    else
-                    {
+                    else {
                         leave_days = 0;
                     }
 
                 }
 
-                // Multiple Days Leave
-                else {
+                // Multiple Days
+                else if (validDays > 1) {
 
-                    let middleDays = diffDays - 2;
+                    let middleDays = validDays - 2;
                     if (middleDays < 0) middleDays = 0;
 
                     let from_value = 1;
                     let to_value = 1;
-
-                 
 
                     if (from_type === 'first_half' && to_type === 'first_half') {
                         from_value = 0.5;
@@ -245,16 +262,14 @@
                     if (from_type === 'first_half' && to_type === 'second_half') {
                         from_value = 1;
                     }
-                   
                     if (from_type === 'second_half' && to_type === 'second_half') {
                         from_value = 0.5;
                     }
 
-
                     leave_days = middleDays + from_value + to_value;
-
                 }
-
+ 
+ 
                 $("#total_days").val(leave_days);
  
 

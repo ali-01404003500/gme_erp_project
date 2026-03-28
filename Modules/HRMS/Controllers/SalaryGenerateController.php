@@ -41,6 +41,7 @@ class SalaryGenerateController extends Controller
             ->searchByFields(['department_id', 'year_month'])
             ->paginate(20);
         $data['departments'] = Department::where('status', 1)->get();
+        $data['employees'] = Employee::where('status', 1)->get();
 
 
         return view("HRMS::payroll.salary-generates.payrolls", $data);
@@ -61,13 +62,15 @@ class SalaryGenerateController extends Controller
     {
         return view('salaryGenerates.create');
     }
+ 
 
     /**
-     * Store a newly created resource in storage.
+     * Store salary for single employee
      */
-    public function store(Request $request)
+    
+    /*public function store(Request $request)
     {
-        // dd($request->all());
+         
         $salaries = EmployeeSalary::whereRaw(
             DB::connection()->getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME) == 'pgsql'
                 ? "to_char(effective_date, 'YYYY-MM') <= ?"
@@ -112,7 +115,32 @@ class SalaryGenerateController extends Controller
 
         $this->service->store($data, $request);
         return redirect()->route('hrm.payrolls')->with('success', 'SalaryGenerate created successfully.');
+    } */
+
+        
+    public function store(Request $request, SalaryGenerate $service)
+    {
+        // Validate input
+        $request->validate([
+            'year_month' => 'required|date_format:Y-m',
+        ]);
+
+        $month = $request->year_month . '-01'; // convert to full date for SP
+
+        // Call Service function that handles all active employee salary calculation & save
+        $allSalaries = $this->service->salaryGenerateAndSaveAllActiveEmployee($month,$request);
+
+        // Return JSON response
+        /*return response()->json([
+            'success' => true,
+            'month' => $month,
+            'salaries' => $allSalaries,
+            'message' => 'Payroll created successfully.',
+        ]);*/
+        return redirect()->route('hrm.payrolls')->with('success', 'SalaryGenerate created successfully.');
     }
+ 
+
 
     /**
      * Display the specified resource.
@@ -327,4 +355,8 @@ class SalaryGenerateController extends Controller
             $description
         );
     }
+ 
+
+
+ 
 }
