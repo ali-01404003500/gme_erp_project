@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Account;
 use Modules\Account\Services\AccountTransactionService;
 use Modules\HRMS\Models\Payroll;
+use Modules\HRMS\Models\Settings\Designation;
 use PDO;
 
 class SalaryGenerateController extends Controller
@@ -48,9 +49,10 @@ class SalaryGenerateController extends Controller
     }
     public function index()
     {
-        $data['salaryGenerates'] = $this->service->getAll();
+        $data['salaryGenerates'] = $this->service->getAll(); 
         $data['departments'] = Department::where('status', 1)->get();
-        $data['employees'] = Employee::all();
+        $data['designation'] = Designation::get();
+        $data['employees'] = Employee::where('status', 1)->get(); 
         $data['accounts'] = Account::orderBy('account_group_id', 'asc')->get();
         return view("HRMS::payroll.salary-generates.index", $data);
     }
@@ -182,7 +184,7 @@ class SalaryGenerateController extends Controller
             'advance' => 'nullable|numeric',
             'loan' => 'nullable|numeric',
             'no_pay_leave' => 'nullable|numeric',
-            'absence' => 'nullable|numeric',
+            'absent_deduction' => 'nullable|numeric',
             'tax' => 'nullable|numeric',
             'gross' => 'nullable|numeric',
             'total_other_earnings' => 'nullable|numeric',
