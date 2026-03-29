@@ -56,8 +56,7 @@
                        class="{{ request()->routeIs('hrm.designations.*') ? 'active' : '' }}">
                         {{ t_('menu.designations') }}
                     </a>
-<<<<<<< HEAD
-=======
+
                     <ul></ul>
                 </li>
             @endif
