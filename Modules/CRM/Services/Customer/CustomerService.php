@@ -26,6 +26,7 @@ class CustomerService
 
     public function getAll(int $limit = 20)
     {
+        
         return Customer::query()
             ->searchByFields(['company_name', 'email', 'user_ref_id'])
             ->likeSearch('phone')

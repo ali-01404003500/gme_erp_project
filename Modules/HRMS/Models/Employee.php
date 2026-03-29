@@ -33,15 +33,6 @@ class Employee extends BaseModel
         return $this->hasMany(ApproverStep::class, 'employee_id');
     }
 
-<<<<<<< HEAD
-    // public function designation(){
-    //     return $this->hasOne(Designation::class,'designation_id');
-    // }
-
-    
-
-=======
->>>>>>> 5c8e735f94cfa96793995babf9908b01e272758d
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -415,21 +406,13 @@ class Employee extends BaseModel
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  
-
-}
-=======
-
-=======
->>>>>>> 5c8e735f94cfa96793995babf9908b01e272758d
-    public function designation()
+     public function designation()
     {
         return $this->belongsTo(Designation::class, 'designation_id');
     }
+  
+
 }
-<<<<<<< HEAD
->>>>>>> 37752bb94c44fb43cee669cfaa4007fff48d1acd
-=======
->>>>>>> 5c8e735f94cfa96793995babf9908b01e272758d
+
+   
+

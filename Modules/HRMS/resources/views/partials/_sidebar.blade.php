@@ -352,11 +352,8 @@
                             </li>
                         @endif
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-                   
 
-=======
+
                         {{-- ===================== Attendance Policies Menu ===================== --}}
                         @if (hasPermission('hrm.settings.attendance-policies.index'))
                             <li class="has-subchild {{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'open' : '' }}">
@@ -443,7 +440,7 @@
                                   {{ t_('menu.hrm-settings-leave-types-menu-title') }}</a>
                           </li>
                       @endif
->>>>>>> b1b9cebf6fe58048898aac98c75dae7b7ff7f3c7
+
                       @if (hasPermission('hrm.settings.shifts.index'))
                           <li><a href="{{ route('hrm.settings.shifts.index') }}"
                                   class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
@@ -468,9 +465,7 @@
                                   {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
                           </li>
                       @endif
-<<<<<<< HEAD
-=======
-                        @if (hasPermission('hrm.settings.shifts.index'))
+         @if (hasPermission('hrm.settings.shifts.index'))
                             <li><a href="{{ route('hrm.settings.shifts.index') }}"
                                     class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
                                     <span class="nav-icon nav-icon fas fa-calendar-alt" style="margin-right: 21px;"></span>
@@ -484,9 +479,7 @@
                                     {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
                             </li>
                         @endif
->>>>>>> 5c8e735f94cfa96793995babf9908b01e272758d
-=======
->>>>>>> b1b9cebf6fe58048898aac98c75dae7b7ff7f3c7
+
                         @if (hasPermission('hrm.settings.appraisal-policies.index'))
                             <li><a href="{{ route('hrm.settings.appraisal-policies.index') }}"
                                     class="{{ request()->routeIs('hrm.settings.appraisal-policies.*') ? 'active' : '' }}">
