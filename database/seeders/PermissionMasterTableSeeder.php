@@ -173,7 +173,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Types',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Types',
-                'key' => 'hrm.settings.leave-types',
+                'key' => 'hrm.leave-types',
                 'parent_key' => 'hrm.settings',
             ],
             [
@@ -227,7 +227,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Salary Setups',
                 'description' => 'Permission of Add, Remove, Update, Delete Salary Setups',
-                'key' => 'hrm.settings.salary-setups',
+                'key' => 'hrm.salary-setups',
                 'parent_key' => 'hrm.settings',
             ],
             [

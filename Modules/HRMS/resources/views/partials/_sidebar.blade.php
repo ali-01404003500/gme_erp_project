@@ -7,47 +7,65 @@
             <span class="toggle-icon"></span>
         </a>
         <ul>
-            {{-- ===================== Employee Menu ===================== --}}
-            @if (hasPermission('hrm.settings.employees.index'))
-                <li class="has-subchild {{ request()->routeIs('hrm.settings.employees.*') ? 'open' : '' }}">
-                    <a href="#" class="{{ request()->routeIs('hrm.settings.employees.*') ? 'active' : '' }}">
-                        <span class="nav-icon fas fa-clock"></span>
-                        <span class="menu-text">Emloyee</span>
-                        <span class="toggle-icon"></span>
+           {{-- ===================== Employee Menu ===================== --}}
+@if (
+    hasPermission('hrm.employees.*') ||
+    hasPermission('hrm.departments.index') ||
+    hasPermission('hrm.designations.index')
+)
+    <li class="has-subchild 
+        {{ request()->routeIs('hrm.employees.*') 
+            || request()->routeIs('hrm.departments.*') 
+            || request()->routeIs('hrm.designations.*') ? 'open' : '' }}">
+
+        <a href="#" class="
+            {{ request()->routeIs('hrm.employees.*') 
+                || request()->routeIs('hrm.departments.*') 
+                || request()->routeIs('hrm.designations.*') ? 'active' : '' }}">
+            
+            <span class="nav-icon fas fa-users"></span>
+            <span class="menu-text">Employee</span>
+            <span class="toggle-icon"></span>
+        </a>
+
+        <ul>
+            {{-- Employees --}}
+            @if (hasPermission('hrm.employees.*'))
+                <li>
+                    <a href="{{ route('hrm.employees.index') }}"
+                       class="{{ request()->routeIs('hrm.employees.*') ? 'active' : '' }}">
+                        {{ t_('menu.employees') }}
                     </a>
-                    <ul>
-                        @if (hasPermission('hrm.employees.*'))
-                            <li>
-                                <a href="{{ route('hrm.employees.index') }}"
-                                    class="{{ request()->routeIs('hrm.employees.index') ? 'active' : '' }}">
-                                    {{ t_('menu.employees') }}
-                                </a>
-                            </li>
-                        @endif
-                        @if(hasPermission('hrm.settings.departments.index'))
-                            <li>
-                                <a href="{{ route('hrm.settings.departments.index') }}"
-                                    class="{{ request()->routeIs('hrm.settings.departments.*') ? 'active' : '' }}">
-                                    {{ t_('menu.departments') }}
-                                </a>
-                            </li>
-                        @endif
-                        @if(hasPermission('hrm.settings.designations.index'))
-                            <li>
-                                <a href="{{ route('hrm.settings.designations.index') }}"
-                                    class="{{ request()->routeIs('hrm.settings.designations.*') ? 'active' : '' }}">
-                                    {{ t_('menu.designations') }}
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
                 </li>
             @endif
 
+            {{-- Departments --}}
+            @if(hasPermission('hrm.departments.index'))
+                <li>
+                    <a href="{{ route('hrm.departments.index') }}"
+                       class="{{ request()->routeIs('hrm.departments.*') ? 'active' : '' }}">
+                        {{ t_('menu.departments') }}
+                    </a>
+                </li>
+            @endif
+
+            {{-- Designations --}}
+            @if(hasPermission('hrm.designations.index'))
+                <li>
+                    <a href="{{ route('hrm.designations.index') }}"
+                       class="{{ request()->routeIs('hrm.designations.*') ? 'active' : '' }}">
+                        {{ t_('menu.designations') }}
+                    </a>
+                </li>
+            @endif
+        </ul>
+    </li>
+@endif
+
             {{-- ===================== Attendance Menu ===================== --}}
-            @if (hasPermission('hrm.settings.attendance-policies.index'))
-                <li class="has-subchild {{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'open' : '' }}">
-                    <a href="#" class="{{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'active' : '' }}">
+            @if (hasPermission('hrm.attendance-policies.index'))
+                <li class="has-subchild {{ request()->routeIs('hrm.attendance-policies.*') ? 'open' : '' }}">
+                    <a href="#" class="{{ request()->routeIs('hrm.attendance-policies.*') ? 'active' : '' }}">
                         <span class="nav-icon fas fa-clock"></span>
                         <span class="menu-text">Attendance Settings</span>
                         <span class="toggle-icon"></span>
@@ -68,8 +86,8 @@
                         @endif
                         @if (hasPermission('hrm.attendances.*'))
                             <li>
-                                <a href="{{ route('hrm.settings.attendance-policies.index') }}"
-                                    class="{{ request()->routeIs('hrm.settings.attendance-policies.index') ? 'active' : '' }}">
+                                <a href="{{ route('hrm.attendance-policies.index') }}"
+                                    class="{{ request()->routeIs('hrm.attendance-policies.index') ? 'active' : '' }}">
                                     <span class="nav-icon fas fa-calendar-check" style="margin-right: 21px;"></span>
                                     Attendance Policy
                                 </a>
@@ -81,125 +99,198 @@
             @endif
 
             {{-- ===================== Leave Menu ===================== --}}
-            @if (hasPermission('hrm.settings.attendance-policies.index'))
-                    <li class="has-subchild {{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'open' : '' }}">
-                        <a href="#" class="{{ request()->routeIs('hrm.settings.attendance-policies.*') ? 'active' : '' }}">
-                            <span class="nav-icon fas fa-clock"></span>
-                            <span class="menu-text">Attendance Settings</span>
-                            <span class="toggle-icon"></span>
-                        </a>
 
-                        <ul>
-                            @if (hasPermission('hrm.settings.leave-types.index'))
-                                <li><a href="{{ route('hrm.settings.leave-types.index') }}"
-                                        class="{{ request()->routeIs('hrm.settings.leave-types.*') ? 'active' : '' }}">
-                                        <span class="nav-icon nav-icon fas fa-door-open" style="margin-right: 21px;"></span>
-                                        {{ t_('menu.hrm-settings-leave-types-menu-title') }}</a>
-                                </li>
-                            @endif
+@if (
+    hasPermission('hrm.leave-types.index') ||
+    hasPermission('hrm.settings.leave-approvers.index') ||
+    hasPermission('hrm.leave-groups.index') ||
+    hasPermission('hrm.leave-years.index') ||
+    hasPermission('hrm.leave-statuses.index') ||
+    hasPermission('hrm.leave-eligible-employees.index') ||
+    hasPermission('hrm.leaves.*') ||
+    hasPermission('hrm.leaveAdjustment.index') ||
+    hasPermission('hrm.leave-salary-deduction-policies.index')
+)
+    @php
+        $leaveMenuActive =
+            request()->routeIs('hrm.leave-types.*') ||
+            request()->routeIs('hrm.settings.leave-approvers.*') ||
+            request()->routeIs('hrm.leave-groups.*') ||
+            request()->routeIs('hrm.leave-years.*') ||
+            request()->routeIs('hrm.leave-statuses.*') ||
+            request()->routeIs('hrm.leave-eligible-employees.*') ||
+            request()->routeIs('hrm.leaves.*') ||
+            request()->routeIs('hrm.leaveAdjustment.*') ||
+            request()->routeIs('hrm.leave-salary-deduction-policies.*');
+    @endphp
 
-                            @if (hasPermission('hrm.settings.leave-approvers.index'))
-                                <li>
-                                    <a href="{{ route('hrm.settings.leave-approvers.index') }}"
-                                        class="{{ request()->routeIs('settings.leave-approvers.*') ? 'active' : '' }}">
-                                        <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
-                                        {{ t_('menu.Approver-Setup') }}
-                                    </a>
-                                </li>
-                            @endif
-                            {{-- ============================================> leave groups --}}
-                            @if (hasPermission('hrm.settings.leave-groups.index'))
-                                <li>
-                                    <a href="{{ route('hrm.settings.leave-groups.index') }}"
-                                        class="{{ request()->routeIs('settings.leave-groups.*') ? 'active' : '' }}">
-                                        <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
-                                        {{ t_('menu.leave-group') }}
-                                    </a>
-                                </li>
-                            @endif
-                            {{-- ============================================> leave years --}}
-                            @if (hasPermission('hrm.settings.leave-years.index'))
-                                <li>
-                                    <a href="{{ route('hrm.settings.leave-years.index') }}"
-                                        class="{{ request()->routeIs('settings.leave-years.*') ? 'active' : '' }}">
-                                        <span class="nav-icon fas fa-calendar-check"></span>
-                                        <span class="menu-text"> {{ t_('menu.leave-year') }}</span>
-                                    </a>
-                                </li>
-                            @endif
-                            {{-- ============================================> leave status --}}
-                            @if (hasPermission('hrm.settings.leave-statuses.index'))
-                                <li>
-                                    <a href="{{ route('hrm.settings.leave-statuses.index') }}"
-                                        class="{{ request()->routeIs('settings.leave-statuses.*') ? 'active' : '' }}">
-                                        <span class="nav-icon fas fa-user-clock"></span>
-                                        <span class="menu-text"> {{ t_('menu.leave-status') }}</span>
-                                    </a>
-                                </li>
-                            @endif
-                            {{-- ============================================> leave status --}}
-                            @if (hasPermission('hrm.settings.leave-eligible-employees.index'))
-                                <li>
-                                    <a href="{{ route('hrm.settings.leave-eligible-employees.index') }}"
-                                        class="{{ request()->routeIs('settings.leave-eligible-employees.*') ? 'active' : '' }}">
-                                        <span class="nav-icon fas fa-user-clock"></span>
-                                        <span class="menu-text"> {{ t_('menu.leave-eligible-employee') }}</span>
-                                    </a>
-                                </li>
-                            @endif
+    <li class="has-subchild {{ $leaveMenuActive ? 'open' : '' }}">
+        <a href="#" class="{{ $leaveMenuActive ? 'active' : '' }}">
+            <span class="nav-icon fas fa-clock"></span>
+            <span class="menu-text">Leave</span>
+            <span class="toggle-icon"></span>
+        </a>
 
-                            @if (hasPermission('hrm.leaves.*'))
-                                <li>
-                                    <a href="{{ route('hrm.leaves.index') }}"
-                                        class="{{ request()->routeIs('hrm.leaves.*') ? 'active' : '' }}">
-                                        <span class="nav-icon uil uil-house-user"></span>
-                                        <span class="menu-text">{{ t_('menu.Leaves Application') }}</span>
-                                    </a>
-                                    <ul>
-
-                                    </ul>
-                                </li>
-                            @endif
-
-                            {{-- Leave Adjsutment --}}
-                            @if (hasPermission('hrm.settings.leaveAdjustment.index'))
-                                <li>
-                                    <a href="{{ route('hrm.settings.leaveAdjustment.index') }}"
-                                        class="{{ request()->routeIs('hrm.settings.leaveAdjustment.*') ? 'active' : '' }}">
-                                        <span class="nav-icon nav-icon fas fa-door-open"></span>
-                                        <span class="menu-text"> {{ t_('menu.leave-adjustment') }}</span>
-                                    </a>
-                                    <ul></ul>
-                                </li>
-                            @endif
-                            {{-- ============================================> leave encashment --}}
-                            {{-- @if (hasPermission('hrm.settings.leaveEncashmentProcess.index'))
-                            <li>
-                                <a href="{{ route('hrm.settings.leaveEncashmentProcess.index') }}"
-                                    class="{{ request()->routeIs('hrm.settings.leaveEncashmentProcess.*') ? 'active' : '' }}">
-                                    <span class="nav-icon fas fa-money-bill-wave"></span>
-                                    <span class="menu-text"> {{ t_('menu.leave-encashment') }}</span>
-                                </a>
-                            </li>
-                            @endif --}}
-
-                    </li>
-                </ul>
+        <ul>
+            {{-- Leave Types --}}
+            @if (hasPermission('hrm.leave-types.index'))
+                <li>
+                    <a href="{{ route('hrm.leave-types.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-types.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-door-open" style="margin-right: 21px;"></span>
+                        {{ t_('menu.hrm-settings-leave-types-menu-title') }}
+                    </a>
+                </li>
             @endif
 
+            {{-- Approver Setup --}}
+            @if (hasPermission('hrm.settings.leave-approvers.index'))
+                <li>
+                    <a href="{{ route('hrm.settings.leave-approvers.index') }}"
+                       class="{{ request()->routeIs('hrm.settings.leave-approvers.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-user" style="margin-right: 21px;"></span>
+                        {{ t_('menu.Approver-Setup') }}
+                    </a>
+                </li>
+            @endif
 
-        @if (hasPermission('hrm.noticeboards.*'))
-            <li>
-                <a href="{{ route('hrm.noticeboards.index') }}"
-                    class="{{ request()->routeIs('hrm.noticeboards.*') ? 'active' : '' }}">
-                    <span class="nav-icon fas fa-chalkboard"></span>
-                    <span class="menu-text">{{ t_('menu.Noticeboard') }}</span>
-                </a>
-                <ul>
+            {{-- Leave Groups --}}
+            @if (hasPermission('hrm.leave-groups.index'))
+                <li>
+                    <a href="{{ route('hrm.leave-groups.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-groups.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-users" style="margin-right: 21px;"></span>
+                        {{ t_('menu.leave-group') }}
+                    </a>
+                </li>
+            @endif
 
-                </ul>
-            </li>
-        @endif
+            {{-- Leave Years --}}
+            @if (hasPermission('hrm.leave-years.index'))
+                <li>
+                    <a href="{{ route('hrm.leave-years.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-years.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-calendar-check"></span>
+                        <span class="menu-text">{{ t_('menu.leave-year') }}</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Leave Status --}}
+            @if (hasPermission('hrm.leave-statuses.index'))
+                <li>
+                    <a href="{{ route('hrm.leave-statuses.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-statuses.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-user-clock"></span>
+                        <span class="menu-text">{{ t_('menu.leave-status') }}</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Eligible Employees --}}
+            @if (hasPermission('hrm.leave-eligible-employees.index'))
+                <li>
+                    <a href="{{ route('hrm.leave-eligible-employees.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-eligible-employees.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-user-check"></span>
+                        <span class="menu-text">{{ t_('menu.leave-eligible-employee') }}</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Leave Application --}}
+            @if (hasPermission('hrm.leaves.*'))
+                <li>
+                    <a href="{{ route('hrm.leaves.index') }}"
+                       class="{{ request()->routeIs('hrm.leaves.*') ? 'active' : '' }}">
+                        <span class="nav-icon uil uil-house-user"></span>
+                        <span class="menu-text">{{ t_('menu.Leaves Application') }}</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Leave Adjustment --}}
+            @if (hasPermission('hrm.leaveAdjustment.index'))
+                <li>
+                    <a href="{{ route('hrm.leaveAdjustment.index') }}"
+                       class="{{ request()->routeIs('hrm.leaveAdjustment.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-exchange-alt"></span>
+                        <span class="menu-text">{{ t_('menu.leave-adjustment') }}</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Salary Deduction Policies --}}
+            @if (hasPermission('hrm.leave-salary-deduction-policies.index'))
+                <li>
+                    <a href="{{ route('hrm.leave-salary-deduction-policies.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-salary-deduction-policies.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-money-bill-wave" style="margin-right: 21px;"></span>
+                        {{ t_('menu.leave-salary-deduction-policies') }}
+                    </a>
+                </li>
+            @endif
+        </ul>
+    </li>
+@endif
+
+    {{-- ===================== Salary Menu ===================== --}}
+@if (
+    hasPermission('hrm.salary-generation-policies.index') ||
+    hasPermission('hrm.payrolls') ||
+    hasPermission('hrm.salary-setups.index')
+)
+    <li class="has-subchild 
+        {{ request()->routeIs('hrm.salary-generation-policies.*') 
+            || request()->routeIs('hrm.payrolls') 
+            || request()->routeIs('hrm.salary-setups.*') ? 'open' : '' }}">
+
+        <a href="#" class="
+            {{ request()->routeIs('hrm.salary-generation-policies.*') 
+                || request()->routeIs('hrm.payrolls') 
+                || request()->routeIs('hrm.salary-setups.*') ? 'active' : '' }}">
+
+            <span class="nav-icon fa fa-cog"></span>
+            <span class="menu-text">{{ t_('menu.hrm-settings-menu-title2') }}</span>
+            <span class="toggle-icon"></span>
+        </a>
+
+        <ul>
+            {{-- Salary Generation Policies --}}
+            @if (hasPermission('hrm.salary-generation-policies.index'))
+                <li>
+                    <a href="{{ route('hrm.salary-generation-policies.index') }}"
+                       class="{{ request()->routeIs('hrm.salary-generation-policies.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-user" style="margin-right: 21px;"></span>
+                        {{ t_('menu.salary-generation-policies') }}
+                    </a>
+                </li>
+            @endif
+
+            {{-- Payroll --}}
+            @if (hasPermission('hrm.payrolls'))
+                <li>
+                    <a href="{{ route('hrm.payrolls') }}"
+                       class="{{ request()->routeIs('hrm.payrolls') ? 'active' : '' }}">
+                        <span class="nav-icon uil uil-money-bill"></span>
+                        <span class="menu-text">{{ t_('menu.Payroll') }}</span>
+                    </a>
+                </li>
+            @endif
+
+            {{-- Salary Setup --}}
+            @if (hasPermission('hrm.salary-setups.index'))
+                <li>
+                    <a href="{{ route('hrm.salary-setups.index') }}"
+                       class="{{ request()->routeIs('hrm.salary-setups.*') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-money-check" style="margin-right: 21px;"></span>
+                        {{ t_('menu.hrm-settings-salary-menu-title') }}
+                    </a>
+                </li>
+            @endif
+        </ul>
+    </li>
+@endif
 
     @if(hasPermission('hrm.bills.*'))
         <li class="has-subchild {{ request()->routeIs('hrm.bills.*') ? 'open' : '' }}">
@@ -239,18 +330,6 @@
             </ul>
         </li>
     @endif
-
-
-
-    @if (hasPermission('hrm.salary-generates.*'))
-        <li>
-            <a href="{{ route('hrm.payrolls') }}" class="{{ request()->routeIs('hrm.salary-generates.*') ? 'active' : '' }}">
-                <span class="nav-icon uil uil-money-bill"></span>
-                <span class="menu-text">{{ t_('menu.Payroll') }}</span>
-            </a>
-
-        </li>
-    @endif
     @if (hasPermission('hrm.loans.*'))
         <li>
             <a href="{{ route('hrm.loans.index') }}" class="{{ request()->routeIs('hrm.loans.*') ? 'active' : '' }}">
@@ -258,58 +337,6 @@
                 <span class="menu-text">{{ t_('menu.Loans') }}</span>
             </a>
             <ul>
-
-            </ul>
-        </li>
-    @endif
-    @if (hasPermission('hrm.daily-visit-plans.*'))
-        <li>
-            <a href="{{ route('hrm.daily-visit-plans.index') }}"
-                class="{{ request()->routeIs('hrm.daily-visit-plans.*') ? 'active' : '' }}">
-                <span class="nav-icon uil uil-map-marker"></span>
-                <span class="menu-text">{{ t_('menu.Daily Visit Plan') }}</span>
-            </a>
-            <ul>
-
-            </ul>
-        </li>
-    @endif
-
-
-    {{-- @if (hasPermission('hrm.holiday-calendar.*'))
-    <li>
-        <a href="#" class="{{ request()->routeIs('hrm.holiday-calendar.*') ? 'active' : '' }}">
-            <span class="nav-icon uil uil-calendar-alt"></span>
-            <span class="menu-text">{{ t_('menu.Holiday Calendar') }}</span>
-            <span class="toggle-icon"></span>
-        </a>
-        <ul>
-
-        </ul>
-    </li>
-    @endif --}}
-    @if(hasPermission('hrm.reports.*'))
-        <li class="has-subchild {{ request()->routeIs('hrm.reports.*') ? 'open' : '' }}">
-            <a href="#" class="{{ request()->routeIs('hrm.reports.*') ? 'active' : '' }}">
-                <span class="nav-icon uil uil-chart-bar"></span>
-                <span class="menu-text">{{ t_('menu.Reports') }}</span>
-                <span class="toggle-icon"></span>
-            </a>
-            <ul>
-                @if(hasPermission('hrm.reports.daily-attendance-report'))
-                    <li><a href="{{ route('hrm.reports.daily-attendance-report') }}"
-                            class="{{ request()->routeIs('hrm.reports.daily-attendance-report') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-calendar-check" style="margin-right: 21px;"></span>
-                            {{ t_('Daily Attendance Report') }}</a>
-                    </li>
-                @endif
-                @if(hasPermission('hrm.reports.monthly-attendance-report'))
-                    <li><a href="{{ route('hrm.reports.monthly-attendance-report') }}"
-                            class="{{ request()->routeIs('hrm.reports.monthly-attendance-report') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-calendar-alt" style="margin-right: 21px;"></span>
-                            {{ t_('Monthly Attendance Report') }}</a>
-                    </li>
-                @endif
 
             </ul>
         </li>
@@ -394,141 +421,64 @@
             </ul>
         </li>
     @endif
-
-    @if (hasPermission('hrm.settings.*'))
-        <li class="has-subchild {{ request()->routeIs('hrm.settings.*') ? 'open' : '' }}">
-            <a href="#" class="{{ request()->routeIs('hrm.settings.*') ? 'active' : '' }}">
-                <span class="nav-icon fa fa-cog"></span>
-                <span class="menu-text">{{ t_('menu.hrm-settings-menu-title') }}</span>
+    @if (hasPermission('hrm.noticeboards.*') || hasPermission('hrm.settings.notice-types.index'))
+        <li
+            class="has-subchild 
+                                {{ request()->routeIs('hrm.noticeboards.*') || request()->routeIs('hrm.settings.notice-types.*') ? 'open' : '' }}">
+            <a href="#"
+                class="
+                                                {{ request()->routeIs('hrm.noticeboards.*') || request()->routeIs('hrm.settings.notice-types.*') ? 'active' : '' }}">
+                <span class="nav-icon fas fa-bullhorn"></span>
+                <span class="menu-text">Notice</span>
                 <span class="toggle-icon"></span>
             </a>
-
             <ul>
-
-
-
-
-
-
-                {{-- ===================== Salary Generation Policies Menu ===================== --}}
-                @if (hasPermission('hrm.settings.salary-generation-policies.index'))
-                    <li class="has-subchild {{ request()->routeIs('hrm.settings.salary-generation-policies.*') ? 'open' : '' }}">
-                        <a href="#" class="{{ request()->routeIs('hrm.settings.salary-generation-policies.*') ? 'active' : '' }}">
-                            <span class="nav-icon fa fa-cog"></span>
-                            <span class="menu-text">{{ t_('menu.hrm-settings-menu-title2') }}</span>
-                            <span class="toggle-icon"></span>
+                {{-- Notice Board --}}
+                @if (hasPermission('hrm.noticeboards.*'))
+                    <li>
+                        <a href="{{ route('hrm.noticeboards.index') }}"
+                            class="{{ request()->routeIs('hrm.noticeboards.*') ? 'active' : '' }}">
+                            <span class="nav-icon fas fa-chalkboard" style="margin-right: 21px;"></span>
+                            {{ t_('menu.Noticeboard') }}
                         </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('hrm.settings.salary-generation-policies.index') }}"
-                                    class="{{ request()->routeIs('hrm.settings.salary-generation-policies.index') ? 'active' : '' }}">
-                                    <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
-                                    {{ t_('menu.salary-generation-policies') }}
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                 @endif
-
-                {{-- ===================== Leave Salary Deduction Policies Menu ===================== --}}
-                @if (hasPermission('hrm.settings.leave-salary-deduction-policies.index'))
-                    <li
-                        class="has-subchild {{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'open' : '' }}">
-                        <a href="#"
-                            class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.*') ? 'active' : '' }}">
-                            <span class="nav-icon fa fa-cog"></span>
-                            <span class="menu-text">{{ t_('menu.hrm-settings-menu-title3') }}</span>
-                            <span class="toggle-icon"></span>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('hrm.settings.leave-salary-deduction-policies.index') }}"
-                                    class="{{ request()->routeIs('hrm.settings.leave-salary-deduction-policies.index') ? 'active' : '' }}">
-                                    <span class="nav-icon nav-icon fas fa-user" style="margin-right: 21px;"></span>
-                                    {{ t_('menu.leave-salary-deduction-policies') }}
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
-
-                @if (hasPermission('hrm.settings.shifts.index'))
-                    <li><a href="{{ route('hrm.settings.shifts.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-calendar-alt" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-shift-menu-title') }}</a>
-                    </li>
-                @endif
-                @if (hasPermission('hrm.settings.holidays.index'))
-                    <li><a href="{{ route('hrm.settings.holidays.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.holidays.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-umbrella-beach" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
-                    </li>
-                @endif
-                @if (hasPermission('hrm.settings.leave-types.index'))
-                    <li><a href="{{ route('hrm.settings.leave-types.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.leave-types.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-door-open" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-leave-types-menu-title') }}</a>
-                    </li>
-                @endif
-                @if (hasPermission('hrm.settings.shifts.index'))
-                    <li><a href="{{ route('hrm.settings.shifts.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-calendar-alt" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-shift-menu-title') }}</a>
-                    </li>
-                @endif
-                @if (hasPermission('hrm.settings.hotspots.index'))
-                    <li><a href="{{ route('hrm.settings.hotspots.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.hotspots.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-map-marked-alt" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-hotspot-menu-title') }}</a>
-                    </li>
-                @endif
-                @if (hasPermission('hrm.settings.holidays.index'))
-                    <li><a href="{{ route('hrm.settings.holidays.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.holidays.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-umbrella-beach" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
-                    </li>
-                @endif
-                @if (hasPermission('hrm.settings.appraisal-policies.index'))
-                    <li><a href="{{ route('hrm.settings.appraisal-policies.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.appraisal-policies.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-tasks" style="margin-right: 21px;"></span>
-                            {{ t_('menu.Appraisal Policies') }}</a>
-                    </li>
-                @endif
-                @if (hasPermission('hrm.settings.salary-setups.index'))
-                    <li><a href="{{ route('hrm.settings.salary-setups.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.salary-setups.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-money-check" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-salary-menu-title') }}</a>
-                    </li>
-                @endif
+                {{-- Notice Types --}}
                 @if (hasPermission('hrm.settings.notice-types.index'))
-                    <li><a href="{{ route('hrm.settings.notice-types.index') }}"
+                    <li>
+                        <a href="{{ route('hrm.settings.notice-types.index') }}"
                             class="{{ request()->routeIs('hrm.settings.notice-types.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-chalkboard" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-notice-types-menu-title') }}</a>
+                            <span class="nav-icon fas fa-list" style="margin-right: 21px;"></span>
+                            {{ t_('menu.hrm-settings-notice-types-menu-title') }}
+                        </a>
                     </li>
                 @endif
-                @if (hasPermission('hrm.settings.expense-types.index'))
-                    <li><a href="{{ route('hrm.settings.expense-types.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.expense-types.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-money-check-alt" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-expense-types-menu-title') }}</a>
+            </ul>
+        </li>
+    @endif
+    @if(hasPermission('hrm.reports.*'))
+        <li class="has-subchild {{ request()->routeIs('hrm.reports.*') ? 'open' : '' }}">
+            <a href="#" class="{{ request()->routeIs('hrm.reports.*') ? 'active' : '' }}">
+                <span class="nav-icon uil uil-chart-bar"></span>
+                <span class="menu-text">{{ t_('menu.Reports') }}</span>
+                <span class="toggle-icon"></span>
+            </a>
+            <ul>
+                @if(hasPermission('hrm.reports.daily-attendance-report'))
+                    <li><a href="{{ route('hrm.reports.daily-attendance-report') }}"
+                            class="{{ request()->routeIs('hrm.reports.daily-attendance-report') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-calendar-check" style="margin-right: 21px;"></span>
+                            {{ t_('Daily Attendance Report') }}</a>
                     </li>
                 @endif
-                @if (hasPermission('hrm.settings.transport-types.index'))
-                    <li><a href="{{ route('hrm.settings.transport-types.index') }}"
-                            class="{{ request()->routeIs('hrm.settings.transport-types.*') ? 'active' : '' }}">
-                            <span class="nav-icon nav-icon fas fa-truck-moving" style="margin-right: 21px;"></span>
-                            {{ t_('menu.hrm-settings-transport-types-menu-title') }}</a>
+                @if(hasPermission('hrm.reports.monthly-attendance-report'))
+                    <li><a href="{{ route('hrm.reports.monthly-attendance-report') }}"
+                            class="{{ request()->routeIs('hrm.reports.monthly-attendance-report') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-calendar-alt" style="margin-right: 21px;"></span>
+                            {{ t_('Monthly Attendance Report') }}</a>
                     </li>
                 @endif
+
             </ul>
         </li>
     @endif
@@ -567,6 +517,115 @@
             </ul>
         </li>
     @endif
+
+
+    @if (hasPermission('hrm.daily-visit-plans.*'))
+        <li>
+            <a href="{{ route('hrm.daily-visit-plans.index') }}"
+                class="{{ request()->routeIs('hrm.daily-visit-plans.*') ? 'active' : '' }}">
+                <span class="nav-icon uil uil-map-marker"></span>
+                <span class="menu-text">{{ t_('menu.Daily Visit Plan') }}</span>
+            </a>
+            <ul>
+
+            </ul>
+        </li>
+    @endif
+
+
+    {{-- @if (hasPermission('hrm.holiday-calendar.*'))
+    <li>
+        <a href="#" class="{{ request()->routeIs('hrm.holiday-calendar.*') ? 'active' : '' }}">
+            <span class="nav-icon uil uil-calendar-alt"></span>
+            <span class="menu-text">{{ t_('menu.Holiday Calendar') }}</span>
+            <span class="toggle-icon"></span>
+        </a>
+        <ul>
+
+        </ul>
+    </li>
+    @endif --}}
+
+
+
+    @if (hasPermission('hrm.settings.*'))
+        <li class="has-subchild {{ request()->routeIs('hrm.settings.*') ? 'open' : '' }}">
+            <a href="#" class="{{ request()->routeIs('hrm.settings.*') ? 'active' : '' }}">
+                <span class="nav-icon fa fa-cog"></span>
+                <span class="menu-text">{{ t_('menu.hrm-settings-menu-title') }}</span>
+                <span class="toggle-icon"></span>
+            </a>
+            <ul>
+                @if (hasPermission('hrm.settings.shifts.index'))
+                    <li><a href="{{ route('hrm.settings.shifts.index') }}"
+                            class="{{ request()->routeIs('hrm.settings.shifts.*') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-calendar-alt" style="margin-right: 21px;"></span>
+                            {{ t_('menu.hrm-settings-shift-menu-title') }}</a>
+                    </li>
+                @endif
+                @if (hasPermission('hrm.settings.holidays.index'))
+                    <li><a href="{{ route('hrm.settings.holidays.index') }}"
+                            class="{{ request()->routeIs('hrm.settings.holidays.*') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-umbrella-beach" style="margin-right: 21px;"></span>
+                            {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
+                    </li>
+                @endif
+                @if (hasPermission('hrm.settings.hotspots.index'))
+                    <li><a href="{{ route('hrm.settings.hotspots.index') }}"
+                            class="{{ request()->routeIs('hrm.settings.hotspots.*') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-map-marked-alt" style="margin-right: 21px;"></span>
+                            {{ t_('menu.hrm-settings-hotspot-menu-title') }}</a>
+                    </li>
+                @endif
+                @if (hasPermission('hrm.settings.holidays.index'))
+                    <li><a href="{{ route('hrm.settings.holidays.index') }}"
+                            class="{{ request()->routeIs('hrm.settings.holidays.*') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-umbrella-beach" style="margin-right: 21px;"></span>
+                            {{ t_('menu.hrm-settings-holiday-menu-title') }}</a>
+                    </li>
+                @endif
+                @if (hasPermission('hrm.settings.appraisal-policies.index'))
+                    <li><a href="{{ route('hrm.settings.appraisal-policies.index') }}"
+                            class="{{ request()->routeIs('hrm.settings.appraisal-policies.*') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-tasks" style="margin-right: 21px;"></span>
+                            {{ t_('menu.Appraisal Policies') }}</a>
+                    </li>
+                @endif
+                
+
+                @if (hasPermission('hrm.settings.expense-types.index'))
+                    <li><a href="{{ route('hrm.settings.expense-types.index') }}"
+                            class="{{ request()->routeIs('hrm.settings.expense-types.*') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-money-check-alt" style="margin-right: 21px;"></span>
+                            {{ t_('menu.hrm-settings-expense-types-menu-title') }}</a>
+                    </li>
+                @endif
+                @if (hasPermission('hrm.settings.transport-types.index'))
+                    <li><a href="{{ route('hrm.settings.transport-types.index') }}"
+                            class="{{ request()->routeIs('hrm.settings.transport-types.*') ? 'active' : '' }}">
+                            <span class="nav-icon nav-icon fas fa-truck-moving" style="margin-right: 21px;"></span>
+                            {{ t_('menu.hrm-settings-transport-types-menu-title') }}</a>
+                    </li>
+                @endif
+            </ul>
+        </li>
+    @endif
+
+
+<li class="nav-item">
+    <a href="{{ route('hrm.salary-signatories.index') }}" class="nav-link {{ request()->routeIs('hrm.salary-signatories.*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-user-tie"></i>
+        <p>Salary Signatory</p>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a href="{{ route('hrm.salary-approvals.verification') }}" class="nav-link {{ request()->routeIs('hrm.salary-approvals.*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-money-bill-wave"></i>
+        <p>Salary Approval</p>
+    </a>
+</li>
+
     </ul>
     </li>
 @endif

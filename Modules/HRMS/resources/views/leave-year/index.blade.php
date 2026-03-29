@@ -1,5 +1,5 @@
 @extends('layout.app')
-
+@section('title', 'Leave Year Management')
 @section('content')
     <div class="container-fluid">
         {{-- Alerts --}}
@@ -118,7 +118,7 @@
     {{-- Entry Modal --}}
     <div class="modal fade" id="openYearModal" tabindex="-1">
         <div class="modal-dialog">
-            <form action="{{ route('hrm.settings.leave-years.store') }}" method="POST">
+            <form action="{{ route('hrm.leave-years.store') }}" method="POST">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">

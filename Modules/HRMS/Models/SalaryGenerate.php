@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\HRMS\Models;
 
 use App\Models\BaseModel;
@@ -31,7 +30,12 @@ class SalaryGenerate extends BaseModel
         return $this->hasMany(SalaryGeneratePayment::class, 'salary_generate_id');
     }
 
-    public function department(){
+    public function department()
+    {
         return $this->belongsTo(Department::class, 'department_id');
+    }
+    public function approvalRequest()
+    {
+        return $this->hasOne(SalaryApprovalRequest::class, 'salary_generate_id');
     }
 }

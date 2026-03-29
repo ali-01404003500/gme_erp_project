@@ -564,27 +564,27 @@ class PermissionTableSeed extends Seeder
             // Settings: Leave Types
             [
                 'name' => 'Leave Types List',
-                'slug' => 'hrm.settings.leave-types.index',
+                'slug' => 'hrm.leave-types.index',
                 'description' => 'Leave types list permission',
-                'key' => 'hrm.settings.leave-types',
+                'key' => 'hrm.leave-types',
             ],
             [
                 'name' => 'Create Leave Type',
-                'slug' => 'hrm.settings.leave-types.create',
+                'slug' => 'hrm.leave-types.create',
                 'description' => 'Leave type create permission',
-                'key' => 'hrm.settings.leave-types',
+                'key' => 'hrm.leave-types',
             ],
             [
                 'name' => 'Leave Type Update',
-                'slug' => 'hrm.settings.leave-types.update',
+                'slug' => 'hrm.leave-types.update',
                 'description' => 'Leave type update permission',
-                'key' => 'hrm.settings.leave-types',
+                'key' => 'hrm.leave-types',
             ],
             [
                 'name' => 'Leave Type Delete',
-                'slug' => 'hrm.settings.leave-types.destroy',
+                'slug' => 'hrm.leave-types.destroy',
                 'description' => 'Leave type delete permission',
-                'key' => 'hrm.settings.leave-types',
+                'key' => 'hrm.leave-types',
             ],
 
             // Settings: Shifts
@@ -799,28 +799,28 @@ class PermissionTableSeed extends Seeder
             // Settings: Salary Setups
             [
                 'name' => 'Salary Setups List',
-                'slug' => 'hrm.settings.salary-setups.index',
+                'slug' => 'hrm.salary-setups.index',
                 'description' => 'Salary setups list permission',
-                'key' => 'hrm.settings.salary-setups',
+                'key' => 'hrm.salary-setups',
             ],
             [
                 'name' => 'Create Salary Setup',
-                'slug' => 'hrm.settings.salary-setups.create',
+                'slug' => 'hrm.salary-setups.create',
                 'description' => 'Salary setup create permission',
-                'key' => 'hrm.settings.salary-setups',
+                'key' => 'hrm.salary-setups',
             ],
             [
                 'name' => 'Salary Setup Update',
-                'slug' => 'hrm.settings.salary-setups.update',
+                'slug' => 'hrm.salary-setups.update',
                 'description' => 'Salary setup update permission',
-                'key' => 'hrm.settings.salary-setups',
+                'key' => 'hrm.salary-setups',
             ],
 
             [
                 'name' => 'Salary Setup Delete',
-                'slug' => 'hrm.settings.salary-setups.destroy',
+                'slug' => 'hrm.salary-setups.destroy',
                 'description' => 'Salary setup delete permission',
-                'key' => 'hrm.settings.salary-setups',
+                'key' => 'hrm.salary-setups',
             ],
 
             // Settings: Appraisal Policies

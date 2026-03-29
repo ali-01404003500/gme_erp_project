@@ -1,5 +1,5 @@
 @extends('layout.app')
-
+@section('title', 'Leave Group Management')
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
@@ -42,7 +42,7 @@
                                                 <i class="fas fa-edit"></i>
                                             </button>
 
-                                            <form action="{{ route('hrm.settings.leave-groups.destroy', $group->id) }}"
+                                            <form action="{{ route('hrm.leave-groups.destroy', $group->id) }}"
                                                 method="POST"
                                                 onsubmit="return confirm('Are you sure you want to delete this group?')">
                                                 @csrf
@@ -73,7 +73,7 @@
                         <h5 class="modal-title fw-bold" id="modalTitle">Add Leave Group</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form id="leaveGroupForm" method="POST" action="{{ route('hrm.settings.leave-groups.store') }}">
+                    <form id="leaveGroupForm" method="POST" action="{{ route('hrm.leave-groups.store') }}">
                         @csrf
                         <input type="hidden" name="_method" id="formMethod" value="POST">
 
@@ -232,7 +232,7 @@
             $('#group_name').val('');
             $('#formMethod').val('POST');
             $('#modalTitle').text('Add Leave Group');
-            $('#leaveGroupForm').attr('action', "{{ route('hrm.settings.leave-groups.store') }}");
+            $('#leaveGroupForm').attr('action', "{{ route('hrm.leave-groups.store') }}");
         }
     </script>
 

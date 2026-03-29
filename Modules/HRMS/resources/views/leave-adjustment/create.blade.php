@@ -137,7 +137,7 @@
 
                 <!-- Action Buttons -->
                 <div class="footer-buttons">
-                    <a href="{{ route('hrm.settings.leaveAdjustment.index') }}" class="btn btn-outline-secondary">Back</a>
+                    <a href="{{ route('hrm.leaveAdjustment.index') }}" class="btn btn-outline-secondary">Back</a>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>

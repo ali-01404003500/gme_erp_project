@@ -52,7 +52,7 @@
                             </button>
                         </div>
 
-                       <a href="{{ route('hrm.settings.leaveAdjustment.create') }}" class="btn btn-success">
+                       <a href="{{ route('hrm.leaveAdjustment.create') }}" class="btn btn-success">
 
                                 <i class="fas fa-plus me-1"></i> Add New
                         </a>

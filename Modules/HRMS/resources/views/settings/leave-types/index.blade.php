@@ -20,7 +20,7 @@
                         </div>
                         <div class="breadcrumb-main__wrapper">
                             <div class="action-btn mt-sm-0 mt-15">
-                                @if (hasPermission('hrm.settings.leave-types.create'))
+                                @if (hasPermission('hrm.leave-types.create'))
                                     <button class="btn btn-xs btn-primary me-1" data-bs-toggle="modal"
                                         data-bs-target="#createModal">Add New</button>
                                 @endif
@@ -56,18 +56,18 @@
                                                 <td class="text-center">{{ ucfirst($leaveType->leave_count_type) }}</td>
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-sm">
-                                                        @if (hasPermission('hrm.settings.leave-types.update'))
+                                                        @if (hasPermission('hrm.leave-types.update'))
                                                             <button type="button"
-                                                                data-action="{{ route('hrm.settings.leave-types.update', $leaveType->id) }}"
+                                                                data-action="{{ route('hrm.leave-types.update', $leaveType->id) }}"
                                                                 data-data="{{ json_encode($leaveType) }}"
                                                                 class="btn btn-outline-primary btn-edit" data-bs-toggle="modal"
                                                                 data-bs-target="#editModal">
                                                                 <i class="far fa-edit"></i>
                                                             </button>
                                                         @endif
-                                                        @if (hasPermission('hrm.settings.leave-types.destroy'))
+                                                        @if (hasPermission('hrm.leave-types.destroy'))
                                                             <button type="button"
-                                                                data-action="{{ route('hrm.settings.leave-types.destroy', $leaveType->id) }}"
+                                                                data-action="{{ route('hrm.leave-types.destroy', $leaveType->id) }}"
                                                                 class="btn btn-outline-danger delete-confirm">
                                                                 <i class="far fa-trash-alt"></i>
                                                             </button>
@@ -105,7 +105,7 @@
                     <h5 class="modal-title">New Leave Type</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('hrm.settings.leave-types.store') }}" method="post">
+                <form action="{{ route('hrm.leave-types.store') }}" method="post">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
