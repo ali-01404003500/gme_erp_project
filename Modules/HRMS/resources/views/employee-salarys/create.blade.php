@@ -136,17 +136,11 @@
                                         <div class="col-md-6">
                                             <div class="card p-3">
                                                 <label class="form-label">Add Salary Breakup <span class="text-danger">*</span></label>
-                                                <select id="salaryBreakupSelect" class="form-select mb-3">
+                                                <select id="salaryBreakupSelect" class="form-select mb-3"> 
                                                     <option value="">Select Salary Breakup</option>
-                                                    <option value="basic">Basic</option>
-                                                    <option value="house_rent">House Rent</option>
-                                                    <option value="conveyance">Conveyance</option>
-                                                    <option value="medical">Medical</option>
-                                                    <option value="entertainment">Entertainment</option>
-                                                    <option value="leave_fare">Leave Fare</option>
-                                                    <option value="utility">Utility</option>
-                                                    <option value="unkeep">Unkeep</option>
-                                                    <option value="others">Others</option>
+                                                    @foreach ($salaryBreakdown as $key => $sb)
+                                                        <option value="{{ $sb->value}}">{{ $sb->type}}</option>
+                                                    @endforeach 
                                                 </select>
 
                                                 <div class="table-responsive">

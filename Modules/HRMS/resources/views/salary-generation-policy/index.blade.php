@@ -14,7 +14,7 @@
 
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body p-5">
-                <form action="{{ route('hrm.settings.salary-generation-policies.store') }}" method="POST">
+                <form action="{{ route('hrm.salary-generation-policies.store') }}" method="POST">
                     @csrf
  
                     <div class="row g-5">

@@ -72,7 +72,7 @@
         const policies = @json($policies);
         const tabContents = {
             'absent': `
-                    <form action="{{ route('hrm.settings.salary-deduction-policies.store') }}" method="POST">
+                    <form action="{{ route('hrm.salary-deduction-policies.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="policy_type" value="absent">
                         <h5 class="fw-bold mb-4">Absent Policy</h5>
@@ -96,7 +96,7 @@
                     </form>
                 `,
             'delay': `
-                <form action="{{ route('hrm.settings.salary-deduction-policies.store') }}" method="POST">
+                <form action="{{ route('hrm.salary-deduction-policies.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="policy_type" value="delay">
                     <h5 class="fw-bold mb-4">Delay Policy</h5>
@@ -127,7 +127,7 @@
                 </form>
             `,
             'extreme': `
-                    <form action="{{ route('hrm.settings.salary-deduction-policies.store') }}" method="POST">
+                    <form action="{{ route('hrm.salary-deduction-policies.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="policy_type" value="extreme_delay">
                         <h5 class="fw-bold mb-4">Extreme Delay Policy</h5>
@@ -158,7 +158,7 @@
                     </form>
                 `,
             'early-out': `
-                <form action="{{ route('hrm.settings.salary-deduction-policies.store') }}" method="POST">
+                <form action="{{ route('hrm.salary-deduction-policies.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="policy_type" value="early_out">
                     <h5 class="fw-bold mb-4">Early Out Deduction Policy</h5>
@@ -189,7 +189,7 @@
                 </form>
             `, 
            'unpaid': `
-                <form action="{{ route('hrm.settings.salary-deduction-policies.store') }}" method="POST">
+                <form action="{{ route('hrm.salary-deduction-policies.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="policy_type" value="unpaid_leave">
                     <h5 class="fw-bold mb-4">Unpaid Leave Deduction Policy</h5>
@@ -213,7 +213,7 @@
                 </form>
             `,
             'missed-out': `
-            <form action="{{ route('hrm.settings.salary-deduction-policies.store') }}" method="POST">
+            <form action="{{ route('hrm.salary-deduction-policies.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="policy_type" value="missed_out">
                 <h5 class="fw-bold mb-4">Missed Out Time Deduction Policy</h5>

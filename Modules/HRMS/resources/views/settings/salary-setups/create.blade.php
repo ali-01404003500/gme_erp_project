@@ -17,8 +17,8 @@
                             </nav>
                         </div>
                         <div class="action-btn mt-sm-0 mt-15">
-                            @if (hasPermission('hrm.settings.salary-setups.index'))
-                            <a href="{{ route('hrm.settings.salary-setups.index') }}"
+                            @if (hasPermission('hrm.salary-setups.index'))
+                            <a href="{{ route('hrm.salary-setups.index') }}"
                                 class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
                                     class="fa fa-list"></i> List</a>
                             @endif
@@ -36,7 +36,7 @@
                     <div class="row justify-content-center" id="justify-content-center">
                         <div class="col-sm-12">
                             <div class="mt-40 mb-50 p-30">
-                                <form action="{{ route('hrm.settings.salary-setups.store', app()->getLocale()) }}" method="POST"
+                                <form action="{{ route('hrm.salary-setups.store', app()->getLocale()) }}" method="POST"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">

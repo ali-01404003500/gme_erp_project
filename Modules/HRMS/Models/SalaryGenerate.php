@@ -34,4 +34,9 @@ class SalaryGenerate extends BaseModel
     public function department(){
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'payroll_id';
+    }
 }

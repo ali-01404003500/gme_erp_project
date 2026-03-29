@@ -19,7 +19,7 @@
                         </div>
                         <div class="breadcrumb-main__wrapper">
                             <div class="action-btn mt-sm-0 mt-15">
-                                @if (hasPermission('hrm.settings.designations.create'))
+                                @if (hasPermission('hrm.designations.create'))
                                 <button class="btn btn-xs btn-primary me-1" data-bs-toggle="modal"
                                 data-bs-target="#createModal">
                                 Add New
@@ -64,18 +64,18 @@
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 
-                                                    @if (hasPermission('hrm.settings.designations.update'))
+                                                    @if (hasPermission('hrm.designations.update'))
                                                         <a href={{ $item->id }} class="btn btn-edit  btn-outline-warning"
                                                             data-name="{{ $item->name }}" data-code="{{ $item->code }}" data-status="{{ $item->status }}"
-                                                            data-action="{{ route('hrm.settings.designations.update', $item->id) }}"
+                                                            data-action="{{ route('hrm.designations.update', $item->id) }}"
                                                             data-toggle="tooltip" data-placement="top" title="Edit"
                                                             data-bs-toggle="modal" data-bs-target="#editModal">
                                                             <i class="far fa-edit"></i>
                                                         </a>
                                                     @endif
-                                                    @if (hasPermission('hrm.settings.designations.destroy'))
+                                                    @if (hasPermission('hrm.designations.destroy'))
                                                         <button type="button"
-                                                            data-action="{{ route('hrm.settings.designations.destroy', $item->id) }}"
+                                                            data-action="{{ route('hrm.designations.destroy', $item->id) }}"
                                                             class="btn btn-outline-danger delete-confirm"><i
                                                                 class="far fa-trash-alt"></i></button>
                                                     @endif
@@ -110,7 +110,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-hidden="true"></button>
                             </div>
-                            <form action="{{ route('hrm.settings.designations.store') }}" method="post">
+                            <form action="{{ route('hrm.designations.store') }}" method="post">
                                 @csrf
                                 <div class="modal-body">
                                     <div class="row mb-4">

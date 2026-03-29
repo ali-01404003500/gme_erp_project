@@ -12,7 +12,7 @@
 
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4">
-                <form action="{{ route('hrm.settings.leave-statuses.store') }}" method="POST">
+                <form action="{{ route('hrm.leave-statuses.store') }}" method="POST">
                 @csrf 
                     <div class="row">
                         <div class="col-md-5"> 
@@ -205,7 +205,7 @@
 
                 $.ajax({
  
-                    url: `{{ route('hrm.settings.leave-statuses.get-balance') }}`, 
+                    url: `{{ route('hrm.leave-statuses.get-balance') }}`, 
                     data: {
                         employee_id: id
                     },

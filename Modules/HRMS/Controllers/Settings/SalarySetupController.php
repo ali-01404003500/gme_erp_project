@@ -74,7 +74,7 @@ class SalarySetupController extends Controller
  
         ]);
         $this->service->store($validate);
-        return redirect()->route('hrm.settings.salary-setups.index')->with('success', 'SalarySetup created successfully.');
+        return redirect()->route('hrm.salary-setups.index')->with('success', 'SalarySetup created successfully.');
     }
 
     /**
@@ -127,7 +127,7 @@ class SalarySetupController extends Controller
 
         $this->service->update($salarySetup, $validate);
 
-        return redirect()->route('hrm.settings.salary-setups.index')->with('success', 'SalarySetup updated successfully.');
+        return redirect()->route('hrm.salary-setups.index')->with('success', 'SalarySetup updated successfully.');
     }
 
     /**
@@ -136,6 +136,6 @@ class SalarySetupController extends Controller
     public function destroy(SalarySetup $salarySetup)
     {
         $this->service->delete($salarySetup);
-        return redirect()->route('hrm.settings.salary-setups.index')->with('success', 'SalarySetup deleted successfully.');
+        return redirect()->route('hrm.salary-setups.index')->with('success', 'SalarySetup deleted successfully.');
     }
 }

@@ -19,10 +19,12 @@ class SalaryGenerateService
         $this->transactionService = $transactionService;
     }
 
-    public function getAll(int $limit = 20)
+    public function getAll($status = 'Create', int $limit = 20)
     {
         return SalaryGenerate::query()
-            ->searchByFields(['payroll_id', 'employee_id', 'department_id', 'year_month'])
+            ->where('status', $status)
+            ->searchByFields(['payroll_id', 'employee_id', 'department_id', 'year_month','status'])
+            ->orderBy('department_id', 'asc')
             ->paginate($limit);
     }
 
@@ -179,6 +181,117 @@ class SalaryGenerateService
         $salaryGenerate->update($data);
         return $salaryGenerate;
     }
+    public function updateMultiple(array $data)
+    { 
+        $ids = $data['id'];
+        $remarks = $data['remarks'];
+        $status = $data['status'];
+
+        
+  
+
+        if($status === 'department_head_checked' || $status === 'department_head_deny'){
+            foreach ($ids as $index => $id) {
+                $salary = SalaryGenerate::find($id);
+                if ($salary) {
+                    $salary->update([
+                        'status' => $status,
+                        'remarks' => $remarks[$index] ?? null,
+                        'checked_by_dept_head' =>  auth()->user()->id,
+                        'checked_date_dept_head' => now()
+                    ]);
+                }
+            }
+            
+        }
+        else if($status === 'hr_head_checked' || $status === 'hr_head_deny'){
+            foreach ($ids as $index => $id) {
+                $salary = SalaryGenerate::find($id);
+                if ($salary) {
+                    $salary->update([
+                        'status' => $status,
+                        'remarks' => $remarks[$index] ?? null,
+                        'checked_by_hr_head' =>  auth()->user()->id,
+                        'checked_date_hr_head' => now()
+                    ]);
+                }
+            }
+            
+        }  
+        else if($status === 'admin_head_checked' || $status === 'admin_head_deny'){
+            foreach ($ids as $index => $id) {
+                $salary = SalaryGenerate::find($id);
+                if ($salary) {
+                    $salary->update([
+                        'status' => $status,
+                        'remarks' => $remarks[$index] ?? null,
+                        'checked_by_admin_head' =>  auth()->user()->id,
+                        'checked_date_admin_head' => now()
+                    ]);
+                }
+            }
+            
+        }
+        else if($status === 'account_head_checked' || $status === 'account_head_deny'){
+            foreach ($ids as $index => $id) {
+                $salary = SalaryGenerate::find($id);
+                if ($salary) {
+                    $salary->update([
+                        'status' => $status,
+                        'remarks' => $remarks[$index] ?? null,
+                        'checked_by_accounts_head' =>  auth()->user()->id,
+                        'checked_date_accounts_head' => now()
+                    ]);
+                }
+            }
+            
+        } 
+        else if($status === 'ceo_checked' || $status === 'ceo_deny'){
+            foreach ($ids as $index => $id) {
+                $salary = SalaryGenerate::find($id);
+                if ($salary) {
+                    $salary->update([
+                        'status' => $status,
+                        'remarks' => $remarks[$index] ?? null,
+                        'checked_by_ceo' =>  auth()->user()->id,
+                        'checked_date_ceo' => now()
+                    ]);
+                }
+            }
+            
+        }
+        else if($status === 'md_checked' || $status === 'md_deny'){
+            foreach ($ids as $index => $id) {
+                $salary = SalaryGenerate::find($id);
+                if ($salary) {
+                    $salary->update([
+                        'status' => $status,
+                        'remarks' => $remarks[$index] ?? null,
+                        'checked_by_md' =>  auth()->user()->id,
+                        'checked_date_md' => now()
+                    ]);
+                }
+            }
+            
+        }
+        else if($status === 'chairman_checked' || $status === 'chairman_deny'){
+            foreach ($ids as $index => $id) {
+                $salary = SalaryGenerate::find($id);
+                if ($salary) {
+                    $salary->update([
+                        'status' => $status,
+                        'remarks' => $remarks[$index] ?? null,
+                        'checked_by_chairman' =>  auth()->user()->id,
+                        'checked_date_chairman' => now()
+                    ]);
+                }
+            }
+            
+        }
+
+       
+        
+    }
 
     public function delete(SalaryGenerate $salaryGenerate)
     {
@@ -324,6 +437,7 @@ class SalaryGenerateService
                 SalaryGenerate::updateOrInsert(
                     [ 
                         'employee_id' => $employee->id,
+                        'department_id' => $employee->employementDetail->department->id,
                         'year_month'       => $month
                     ],
                     [   

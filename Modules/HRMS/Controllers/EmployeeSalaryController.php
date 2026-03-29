@@ -3,6 +3,7 @@
 namespace Modules\HRMS\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\SalaryBreakdown;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\EmployeeSalary;
 use Modules\HRMS\Models\Settings\SalarySetup;
@@ -42,6 +43,7 @@ class EmployeeSalaryController extends Controller
         $salary_id = $request->query('salary_id'); // New parameter to check for edit
 
         $data['employee'] = Employee::findOrFail($employee_id);
+        $data['salaryBreakdown'] = SalaryBreakdown::where('status',1)->get();
         $data['salarySetups'] = SalarySetup::where('status', 1)->get();
 
         if ($salary_id) {
