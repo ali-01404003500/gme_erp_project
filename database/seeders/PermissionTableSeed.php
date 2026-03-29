@@ -558,6 +558,50 @@ class PermissionTableSeed extends Seeder
                 'slug' => 'hrm.salary-generates.show',
                 'description' => 'Salary generate show permission',
                 'key' => 'hrm.salary-generates',
+            ], 
+
+            // Salary verification
+            [
+                'name' => 'Salary Vefication Department Head',
+                'slug' => 'hrm.salary-generates.check-by-department-head',
+                'description' => 'Salary Vefication Department Head permission',
+                'key' => 'hrm.salary-generates',
+            ],
+             [
+                'name' => 'Salary Vefication HR Head',
+                'slug' => 'hrm.salary-generates.check-by-hr-head',
+                'description' => 'Salary Vefication HR Head permission',
+                'key' => 'hrm.salary-generates',
+            ],
+             [
+                'name' => 'Salary Vefication Admin Head',
+                'slug' => 'hrm.salary-generates.check-by-admin-head',
+                'description' => 'Salary Vefication Admin Head permission',
+                'key' => 'hrm.salary-generates',
+            ],
+             [
+                'name' => 'Salary Vefication Account Head',
+                'slug' => 'hrm.salary-generates.check-by-account-head',
+                'description' => 'Salary Vefication Account Head permission',
+                'key' => 'hrm.salary-generates',
+            ],
+             [
+                'name' => 'Salary Vefication CEO',
+                'slug' => 'hrm.salary-generates.check-by-ceo',
+                'description' => 'Salary Vefication CEO permission',
+                'key' => 'hrm.salary-generates',
+            ],
+             [
+                'name' => 'Salary Vefication MD',
+                'slug' => 'hrm.salary-generates.check-by-md',
+                'description' => 'Salary Vefication MD permission',
+                'key' => 'hrm.salary-generates',
+            ],
+             [
+                'name' => 'Salary Vefication Chairman',
+                'slug' => 'hrm.salary-generates.check-by-chairman',
+                'description' => 'Salary Vefication Chairman permission',
+                'key' => 'hrm.salary-generates',
             ],
 
 

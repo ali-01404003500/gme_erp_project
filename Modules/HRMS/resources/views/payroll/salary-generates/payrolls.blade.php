@@ -111,9 +111,29 @@
                                                 <td class="text-center">{{ numberFormat($item->total_net_earning) }}</td> 
                                                 <td class="text-center">                                       
                                                     <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+
+                                                        @php 
+                                                             
+                                                        if (hasPermission('hrm.salary-generates.check-by-department-head'))
+                                                            $status = 'Create';
+                                                        elseif (hasPermission('hrm.salary-generates.check-by-hr-head'))
+                                                            $status = 'department_head_checked';
+                                                        elseif (hasPermission('hrm.salary-generates.check-by-admin-head'))
+                                                            $status = 'hr_head_checked';
+                                                        elseif (hasPermission('hrm.salary-generates.check-by-account-head'))
+                                                            $status = 'admin_head_checked'; 
+                                                        elseif (hasPermission('hrm.salary-generates.check-by-ceo'))
+                                                            $status = 'account_head_checked';  
+                                                        elseif (hasPermission('hrm.salary-generates.check-by-md'))
+                                                            $status =  'ceo_checked';   
+                                                        elseif (hasPermission('hrm.salary-generates.check-by-chairman'))
+                                                            $status = 'md_checked';  
+                                                        else
+                                                            $status = 'Create'; 
+                                                        @endphp
                                                         
                                                         @if (hasPermission('hrm.salary-generates.index'))
-                                                            <a href="{{ route('hrm.salary-generates.index', ['payroll_id' => $item->id]) }}" class="btn btn-outline-primary" title="View">
+                                                            <a href="{{ route('hrm.salary-generates.index', ['payroll_id' => $item->id,'status' => $status ]) }}" class="btn btn-outline-primary" title="View">
                                                                 <i class="fas fa-eye"></i>
                                                             </a>
                                                         @endif

@@ -43,7 +43,7 @@ class LeaveTypeController extends Controller
 
         $this->service->store($validate);
 
-        return redirect()->route('hrm.settings.leave-types.index')->with('success', 'Leave Type created successfully.');
+        return redirect()->route('hrm.leave-types.index')->with('success', 'Leave Type created successfully.');
     }
 
     public function update(Request $request, LeaveType $leaveType)
@@ -68,14 +68,14 @@ class LeaveTypeController extends Controller
 
         $this->service->update($leaveType, $validate);
 
-        return redirect()->route('hrm.settings.leave-types.index')->with('success', 'Leave Type updated successfully.');
+        return redirect()->route('hrm.leave-types.index')->with('success', 'Leave Type updated successfully.');
     }
 
     public function destroy(LeaveType $leaveType)
     { 
         try {
             $leaveType->delete();
-            return redirect()->route('hrm.settings.leave-types.index')->with('success', 'Leave Type deleted successfully.');
+            return redirect()->route('hrm.leave-types.index')->with('success', 'Leave Type deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Database Error: ' . $e->getMessage());
         }

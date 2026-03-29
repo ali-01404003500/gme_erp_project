@@ -49,7 +49,7 @@ class DepartmentController extends Controller
             'status' => 'required'
         ]);
         $this->service->store($validate);
-        return redirect()->route('hrm.settings.departments.index')->with('success', 'Department created successfully.');
+        return redirect()->route('hrm.departments.index')->with('success', 'Department created successfully.');
     }
 
     /**
@@ -84,7 +84,7 @@ class DepartmentController extends Controller
         ]);
         $this->service->update($department, $validate);
 
-        return redirect()->route('hrm.settings.departments.index')->with('success', 'Department updated successfully.');
+        return redirect()->route('hrm.departments.index')->with('success', 'Department updated successfully.');
     }
 
     /**
@@ -93,6 +93,6 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         $this->service->delete($department);
-        return redirect()->route('hrm.settings.departments.index')->with('success', 'Department deleted successfully.');
+        return redirect()->route('hrm.departments.index')->with('success', 'Department deleted successfully.');
     }
 }

@@ -18,8 +18,8 @@
                         </div>
                         <div class="breadcrumb-main__wrapper">
                             <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
-                                @if (hasPermission('hrm.settings.salary-setups.create'))
-                                    <a href="{{ route('hrm.settings.salary-setups.create') }}" class="btn px-20 btn-primary btn-sm">
+                                @if (hasPermission('hrm.salary-setups.create'))
+                                    <a href="{{ route('hrm.salary-setups.create') }}" class="btn px-20 btn-primary btn-sm">
                                         <i class="las la-plus fs-16"></i>Add New
                                     </a>
                                 @endif
@@ -99,15 +99,15 @@
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 
-                                                    @if (hasPermission('hrm.settings.salary-setups.update'))
+                                                    @if (hasPermission('hrm.salary-setups.update'))
                                                         <a class="btn btn-outline-warning"
-                                                            href="{{ route('hrm.settings.salary-setups.edit', $value->id) }}"
+                                                            href="{{ route('hrm.salary-setups.edit', $value->id) }}"
                                                             title="Edit"><i class="far fa-edit"></i></a>
                                                     @endif
                                                   
-                                                    @if (hasPermission('hrm.settings.salary-setups.destroy'))
+                                                    @if (hasPermission('hrm.salary-setups.destroy'))
                                                         <button type="button"
-                                                            data-action="{{ route('hrm.settings.salary-setups.destroy', $value->id) }}"
+                                                            data-action="{{ route('hrm.salary-setups.destroy', $value->id) }}"
                                                             class="btn btn-outline-danger delete-confirm"
                                                             title="Delete"><i class="far fa-trash-alt"></i></button>
                                                     @endif
