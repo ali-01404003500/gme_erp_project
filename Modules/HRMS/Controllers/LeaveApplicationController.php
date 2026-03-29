@@ -16,6 +16,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Modules\HRMS\Models\ApprovalRequest;
 use Modules\HRMS\Models\LeaveStatus;
+use Modules\HRMS\Models\Settings\Holiday;
 
 class LeaveApplicationController extends Controller
 {
@@ -47,7 +48,8 @@ class LeaveApplicationController extends Controller
         $data['leaveTypes'] = LeaveType::all();
         $data['leaveApplications'] = $this->service->getAll(); 
         $data['company_info'] = CompanyInfo::first();
-
+        
+        
         if ($request->export == "pdf") {
             set_time_limit(1000);
             $html = view('HRMS::leave.indexView', $data)->render();
@@ -74,7 +76,7 @@ class LeaveApplicationController extends Controller
     public function create()
     {
         $data['employees'] = Employee::where('status', 1)->get();;
-
+        $data['holidays'] = [];
         $data['leaveTypes'] = LeaveType::all();
         
         return view('HRMS::leave.create', $data);	

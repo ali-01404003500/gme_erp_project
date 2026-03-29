@@ -96,58 +96,170 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salaryGenerates])' style="width:100%">
-                                    <thead>
+                                <table id="zero-config"class="table table-bordered  table-bordered  dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salaryGenerates])' style="width:100%">  
+                                    <thead>  
+                                        <tr>
+                                            <th colspan="6" class="text-center ">Employee</th>
+                                            <th colspan="7" class="text-center ">Attendance</th>
+                                            <th colspan="11" class="text-center ">Salary Breakdown</th>
+                                            <th class="text-center ">&nbsp;</th>
+                                            <th colspan="6" class="text-center ">Deductions</th>
+                                            <th colspan="6" class="text-center ">&nbsp;</th>
+                                        </tr>
+
                                         <tr>
                                             <th><input type="checkbox" id="checkAll" class="form-check-input"></th>
-                                            <th class="text-center" style="width: 8%">Sl</th>
+                                            <th class="text-center">Sl</th>
                                             <th class="text-center">Employee</th>
                                             <th class="text-center">Department</th>
-                                            <th class="text-center">Month</th>
-                                            <th class="text-center">Year</th>
-                                            <th class="text-center">Net Salary</th>
-                                            <th class="text-center">Deduction</th>
-                                            <th class="text-center">Due Amount</th>
-                                            <th class="text-center">Pay Date</th> 
-                                            <th class="text-center no-content">Is paid</th>
+                                            <th class="text-center">Designation</th>
+                                            <th class="text-center">ID No</th>
+                                            <th class="text-center">Days of Month</th>
+                                            <th class="text-center">Weekend</th>
+                                            <th class="text-center">Holiday</th>
+                                            <th class="text-center">Absent</th>
+                                            <th class="text-center">Late</th>
+                                            <th class="text-center">Leave</th>
+                                            <th class="text-center">Worked Days</th>
+                                            <th class="text-center">Basic Salary</th> 
+                                            <th class="text-center">House Rent</th>
+                                            <th class="text-center">Medical</th> 
+                                            <th class="text-center">Conveyance</th> 
+                                            <th class="text-center">Entertainment</th>
+                                            <th class="text-center">Leave Fare</th> 
+                                            <th class="text-center">Utility</th> 
+                                            <th class="text-center">Unkeep</th> 
+                                            <th class="text-center">Others</th>  
+                                            <th class="text-center">Increment Amount</th> 
+                                            <th class="text-center">Gross Salary</th> 
+                                            <th class="text-center">Approved Salary in (%)</th> 
+                                            <th class="text-center">Absent Deduction</th>  
+                                            <th class="text-center">Late Deduction</th> 
+                                            <th class="text-center">Advance Deduction</th> 
+                                            <th class="text-center">Loan Deduction</th> 
+                                            <th class="text-center">Tax Deduction</th> 
+                                            <th class="text-center">Total Deduction</th> 
+                                            <th class="text-center">Net Payable</th> 
+                                            <th class="text-center">Payment Method</th>  
+                                            <th class="text-center">Status</th>
+                                            <th class="text-center">Remarks</th> 
                                             <th class="text-center no-content" >Action</th>
                                         </tr>
+                                        
                                     </thead>
                                     <tbody>
                                         @csrf
+                                        @php
+                                            $totalbasic = 0;
+                                            $totalhouse = 0;
+                                            $totalmedical = 0;
+                                            $totalconveyance = 0;
+                                            $totalentertainment = 0;
+                                            $totalleavefare = 0;
+                                            $totalutility = 0;
+                                            $totalunkeep = 0;
+                                            $totalothers = 0;
+                                            $totalincrement = 0;
+                                            $totalgross = 0;
+
+                                            $totalabsent = 0;
+                                            $totallate = 0;
+                                            $totaladvance = 0;
+                                            $totalloan = 0;
+                                            $totaltax = 0;
+                                            $totaldeduction = 0;
+                                            $totalearning = 0;
+                                            
+                                        @endphp
+                                        
                                         @foreach ($salaryGenerates as $key => $item)
+                                            @php
+                                                $totalbasic += $item->basic;
+                                                $totalhouse += $item->house_rent;
+                                                $totalmedical += $item->medical;
+                                                $totalconveyance += $item->conveyance;
+                                                $totalentertainment += $item->entertainment;
+                                                $totalleavefare += $item->leave_fare;
+                                                $totalutility += $item->utility;
+                                                $totalunkeep += $item->unkeep;
+                                                $totalothers += $item->others;
+                                                $totalincrement += 0; 
+                                                $totalgross += $item->gross;
+
+                                                $totalabsent += $item->absent_deduction;
+                                                $totallate += $item->late_deduction;
+                                                $totaladvance += $item->advance;
+                                                $totalloan += $item->loan;
+                                                $totaltax += $item->tax;
+                                                $totaldeduction += $item->total_deductions;
+                                                $totalearning += $item->net_earning;
+                                                
+                                            @endphp
+                                            
                                             <tr>
                                                 <td>
-                                                    @if ($item->status == 'UnPaid' || $item->status == 'Partially Paid' && $item->net_earning - $item->salaryGeneratePayments->sum('amount') != 0 )
+                                                    @if ($item->status == 'create' )
                                                         <input type="checkbox" name="id[]" value="{{ $item->id }}" class="checkBoxClass">
                                                     @else
                                                         <input type="checkbox" disabled>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">{{ $key + 1 }}</td>
-                                                <td class="text-center">
+                                                <td class="text-start">
                                                     @if ($item->status == 'UnPaid' || $item->status == 'Partially Paid')
                                                         <a href="{{ route('hrm.salary-generates.edit', $item->id) }}" target="_blank">{{ $item->employee->full_name }}</a>
                                                     @else
                                                         <a href="{{ route('hrm.salary-generates.show', $item->id) }}" target="_blank">{{ $item->employee->full_name }}</a>
                                                     @endif
-                                                </td>
-                                                <td class="text-center">{{ optional(optional(optional($item->employee)->employementDetail)->department)->name }}</td>
-                                                <td class="text-center">{{ date('F', strtotime($item->year_month)) }}</td>
-                                                <td class="text-center">{{ date('Y', strtotime($item->year_month)) }}</td>
-                                                <td class="text-center">{{ numberFormat($item->net_earning) }}</td>
-                                                <td class="text-center">{{ numberFormat($item->total_deductions) }}</td>
-                                                <td class="text-center">
-                                                    @if ($item->status == 'Partially Paid' && ($item->net_earning - $item->salaryGeneratePayments->sum('amount')) > 0)
-                                                        {{ numberFormat($item->net_earning - $item->total_deductions - $item->salaryGeneratePayments->sum('amount')) ?? 0 }}
-                                                    @elseif ($item->status == 'UnPaid')
-                                                        {{ numberFormat($item->net_earning - $item->total_deductions) ?? 0 }}
-                                                    @else
-                                                        0
-                                                    @endif
+                                                </td>  
+                                                <td class="text-start">{{ optional(optional(optional($item->employee)->employementDetail)->department)->name }}</td>
+                                                <td class="text-start">{{ optional(optional(optional($item->employee)->employementDetail)->designation)->name }}</td>card_no
+                                                <td class="text-start">{{ optional(optional($item->employee)->employementDetail)->card_no }}</td> 
+                                                <td class="text-center">{{ $item->total_days }}</td>
+                                                <td class="text-center">{{ $item->weekend }}</td>
+                                                <td class="text-center">{{ $item->holidays }}</td>
+                                                <td class="text-center">{{ $item->absent_days }}</td>
+                                                <td class="text-center">{{ $item->late_days }}</td>
+                                                <td class="text-center">{{ $item->leave_days }}</td>
+                                                <td class="text-center">{{ $item->working_days }}</td>
 
+                                                <td class="text-center">{{ numberFormat($item->basic) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->house_rent) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->medical) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->conveyance) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->entertainment) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->leave_fare) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->utility) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->unkeep) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->others) }}</td>  
+ 
+                                                <td class="text-center">{{ 0 }}</td>
+                                                <td class="text-center">{{ numberFormat($item->gross) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->approved_salary_ratio) }}%</td>
+                                                <td class="text-center">{{ numberFormat($item->absent_deduction) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->late_deduction) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->advance) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->loan) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->tax) }}</td>
+                                                <td class="text-center">{{ numberFormat($item->total_deductions) }}</td> 
+                                                <td class="text-center highlight-col">{{ numberFormat($item->net_earning) }}</td> 
+                                                <td class="text-center">
+                                                    @php
+                                                        $badgeClass = match(strtolower($item->payment_method)) {
+                                                            'cash' => 'bg-success',
+                                                            'bank' => 'bg-primary',
+                                                            default => 'bg-info',
+                                                        };
+                                                    @endphp
+                                                    <span class="badge {{ $badgeClass }}">
+                                                        {{ ucfirst(strtolower($item->payment_method)) }}
+                                                    </span>
+                                                </td>   
+                                                <td class="text-center">{{ $item->status }}</td>
+                                                <td class="text-center">
+                                                    <input type="text" name="remarks[{{ $item->id }}]" class="form-control form-control-sm" placeholder="Note">
                                                 </td>
-                                                <td class="text-center">{{ $item->pay_date }}</td>
+                                                
                                                 <td class="text-center">
                                                     @if ($item->status == 'UnPaid')
                                                         <div class="btn-group btn-group-xs text-center">
@@ -183,31 +295,41 @@
                                                     </div>
                                                     @endif
                                                 </td>
-                                                <td class="text-center">
-                                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                                                        @if ($item->status == 'UnPaid')
-                                                            @if (hasPermission('hrm.salary-generates.update'))
-                                                                <a href="{{ route('hrm.salary-generates.edit', $item->id) }}" class="btn btn-edit btn-outline-warning" title="Edit">
-                                                                    <i class="far fa-edit"></i>
-                                                                </a>
-                                                            @endif
-                                                            {{-- @if (hasPermission('hrm.salary-generates.destroy'))
-                                                                <button type="button" data-action="{{ route('hrm.salary-generates.destroy', $item->id) }}" class="btn btn-outline-danger delete-confirm" title="Delete">
-                                                                    <i class="far fa-trash-alt"></i>
-                                                                </button>
-                                                            @endif --}}
-                                                        @endif
-                                                        @if (hasPermission('hrm.salary-generates.show'))
-                                                            <a href="{{ route('hrm.salary-generates.show', $item->id) }}" class="btn btn-outline-primary" title="View">
-                                                                <i class="fas fa-eye"></i>
-                                                            </a>
-                                                        @endif
-                                                    </div>
-                                                </td>
+                                                 
                                             </tr>
                                             
                                         @endforeach
                                     </tbody>
+                                    <tfoot> 
+                                            
+                                        <tr>
+                                            <th colspan="13" class="text-end">Total</th>
+                                            <th class="text-center">{{ numberFormat($totalbasic) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalhouse) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalmedical) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalconveyance) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalentertainment) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalleavefare) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalutility) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalunkeep) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalothers) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalincrement) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalgross) }}</th> 
+                                           
+
+                                            <th class="text-center ">&nbsp;</th>
+
+                                            <th class="text-center">{{ numberFormat($totalabsent) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totallate) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totaladvance) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totalloan) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totaltax) }}</th> 
+                                            <th class="text-center">{{ numberFormat($totaldeduction) }}</th> 
+
+                                            <th class="text-center">{{ numberFormat($totalearning) }}</th>  
+                                            <th colspan="4" class="text-center ">&nbsp;</th>
+                                        </tr> 
+                                    </tfoot>
                                 </table>
                             </div>
                             <div class="d-none">
@@ -432,7 +554,7 @@
                                     </label>
                                     <div class="col-sm-12">
                                         <select required="required" name="credit_account_id" 
-                                                id="paidAllCreditAccountId" class="form-control tom-select required" <!-- Updated ID -->
+                                                id="paidAllCreditAccountId" class="form-control tom-select required"
                                                 data-placeholder="- Select Account -" required>
                                             <option></option>
                                             @foreach ($accounts as $id => $value)
@@ -737,4 +859,33 @@
     }
 });
 </script> --}}
+
+<style>
+    thead th {
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 2;
+    }
+    tfoot td {
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 2;
+    }
+
+    .highlight-col {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .highlight-col {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    input[type="checkbox"] {
+        transform: scale(1.2);
+    }
+</style>
 @endsection

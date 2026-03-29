@@ -23,7 +23,7 @@
                                 @if (hasPermission('hrm.salary-generates.create'))
                                     <button class="btn btn-xs btn-primary me-1" data-bs-toggle="modal"
                                         data-bs-target="#createModal">
-                                        Add New
+                                        Make Salary Generate
                                     </button>
                                 @endif
                             </div>
@@ -93,8 +93,8 @@
                                             <th class="text-center">Department</th>
                                             <th class="text-center">Month</th>
                                             <th class="text-center">Year</th>
+                                            <th class="text-center">Total Employees</th>
                                             <th class="text-center">Net Salary</th>
-                                            <th class="text-center no-content">Deduction</th>
                                             <th class="text-center no-content" >Action</th>
                                         </tr>
                                     </thead>
@@ -107,8 +107,8 @@
                                                 <td class="text-center">{{ optional($item->department)->name ??'All Department'}}</td>
                                                 <td class="text-center">{{ date('F', strtotime($item->year_month)) }}</td>
                                                 <td class="text-center">{{ date('Y', strtotime($item->year_month)) }}</td>
+                                                <td class="text-center">{{ $item->total_employees }}</td> 
                                                 <td class="text-center">{{ numberFormat($item->total_net_earning) }}</td> 
-                                                <td class="text-center">{{ numberFormat($item->salaryGenerates->sum('loan')) }}</td> 
                                                 <td class="text-center">                                       
                                                     <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                                         
@@ -149,6 +149,19 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="row mb-4">
+                                    <label class="col-sm-12 col-form-label">Employee</label>
+                                    <div class="col-sm-12">
+                                        <select name="employee_id"  
+                                            class="form-select tom-select">
+                                            <option value="">All Employee</option> 
+                                            @foreach ($employees as $item)
+                                                <option value="{{ $item->id }}">{{ $item->full_name }}</option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
                                     <label class="col-sm-12 col-form-label">Department</label>
                                     <div class="col-sm-12">
                                         <select class="form-select tom-select" name="department_id">
@@ -159,6 +172,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                
                                 <div class="row mb-4">
                                     <label class="col-sm-12 col-form-label">Year Month</label>
                                     <div class="col-sm-12">
@@ -172,7 +186,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
                                     data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary mt-2 mb-2 btn-no-effect">
+                                <button type="submit" class="btn btn-primary mt-2 mb-2 btn-no-effect" id="generateSalaryBtn">
                                     </span>&nbsp;<span class="nav-icon fa fa-cog"></span>Generate
                                     </span></button>
                             </div>
@@ -240,6 +254,14 @@
                             </div>
                         </form>
                     </div>
+                </div>
+            </div>
+            <div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; text-align:center;">
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:white; font-size:1.5rem;">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div>Salary Generating...</div>
                 </div>
             </div>
         </div>
@@ -331,6 +353,14 @@
     </script> --}}
 <script>
     $(document).ready(function() {
+
+    $(document).ready(function(){
+        $('#generateSalaryBtn').on('click', function(){
+            $('#overlay').show(); // Show overlay
+        });
+    });
+
+
     // Get CSRF token from meta tag
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
 

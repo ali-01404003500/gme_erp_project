@@ -115,6 +115,14 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('appraisal-policies', AppraisalPolicyController::class)->except(['show', 'edit', 'create']);
         Route::resource('hotspots', HotspotController::class)->except(['show', 'edit', 'create']);
 
+<<<<<<< HEAD
+=======
+        // Route::resource('leave-statuses', LeaveStatusController::class);
+        Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class);
+        Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
+        Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
+        Route::resource('attendance-policies', AttendancePolicyController::class);
+>>>>>>> 03a4aab6c5a29488a6a46e0da88a3dbd2ce63bca
     });
 
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {

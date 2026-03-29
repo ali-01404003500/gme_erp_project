@@ -141,6 +141,7 @@ class EmployeeService
             EmployementDetail::create([
                 'employee_id' => $employee->id,
                 'date_of_joining' => $employementDetails['date_of_joining'],
+                'date_of_termination' => $employementDetails['date_of_termination'], 
                 'employment_type_id' => $employementDetails['employment_type_id'],
                 'department_id' => $employementDetails['department_id'],
                 'designation_id' => $employementDetails['designation_id'],
