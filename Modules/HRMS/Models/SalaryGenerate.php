@@ -39,4 +39,10 @@ class SalaryGenerate extends BaseModel
     {
         return 'payroll_id';
     }
+    public function verifications()
+    {
+        return $this->hasMany(SalaryVerification::class, 'salary_id', 'id')->orderBy('approver_level'); // optional: approvals order
+    }
+   
+
 }

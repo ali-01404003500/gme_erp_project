@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Account;
 use Modules\Account\Services\AccountTransactionService;
 use Modules\HRMS\Models\Payroll;
+use Modules\HRMS\Models\SalarySignatory;
 use Modules\HRMS\Models\Settings\Designation;
 use PDO;
 
@@ -49,13 +50,13 @@ class SalaryGenerateController extends Controller
         return view("HRMS::payroll.salary-generates.payrolls", $data);
     }
     public function index(Request $request)
-    {
-        $status = $request->input('status', 'Create'); 
-        $data['salaryGenerates'] = $this->service->getAll($status); 
+    { 
+        $data['salaryGenerates'] = $this->service->getAll(); 
         $data['salaryBreakdowns'] = SalaryBreakdown::where('status',1)->get();
         $data['departments'] = Department::where('status', 1)->orderBy('code', 'asc')->get();
         $data['designation'] = Designation::get();
         $data['employees'] = Employee::where('status', 1)->get(); 
+        $data['salarySignatories'] = SalarySignatory::get();
         $data['accounts'] = Account::orderBy('account_group_id', 'asc')->get();
         return view("HRMS::payroll.salary-generates.index", $data);
     }
@@ -202,12 +203,12 @@ class SalaryGenerateController extends Controller
     { 
 
         $validate =  $request->validate([
-            'id' => 'required|array',
-            'remarks' => 'nullable|array',
-            'status' => 'required|string',
+            'id' => 'required',
+            'remarks' => 'nullable|string', 
+            'approver_status' => 'required|string',
         ]);
   
-        $this->service->updateMultiple($validate);
+        $this->service->updateSingle($validate);
 
         return redirect()->route('hrm.salary-generates.index', ['payroll_id' => $request->payroll_id,'status' => $request->status])->with('success', 'Salary Verification Checked successfully.');  
     }

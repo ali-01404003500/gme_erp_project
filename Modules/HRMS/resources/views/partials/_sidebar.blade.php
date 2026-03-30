@@ -273,6 +273,16 @@
                     
                 </li>
             @endif
+
+            {{-- Salary Signatory--}}
+            @if (hasPermission('hrm.salary-signatories.index')) 
+                <li class="nav-item">
+                    <a href="{{ route('hrm.salary-signatories.index') }}" class="nav-link {{ request()->routeIs('hrm.salary-signatories.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-user-tie"></i>
+                        <p>Salary Signatory</p>
+                    </a>
+                </li>
+            @endif 
        
 
 
@@ -602,21 +612,7 @@
             </ul>
         </li>
     @endif
-
-{{-- 
-<li class="nav-item">
-    <a href="{{ route('hrm.salary-signatories.index') }}" class="nav-link {{ request()->routeIs('hrm.salary-signatories.*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-user-tie"></i>
-        <p>Salary Signatory</p>
-    </a>
-</li>
-
-<li class="nav-item">
-    <a href="{{ route('hrm.salary-approvals.verification') }}" class="nav-link {{ request()->routeIs('hrm.salary-approvals.*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-money-bill-wave"></i>
-        <p>Salary Approval</p>
-    </a>
-</li> --}}
+ 
 
     </ul>
     </li>

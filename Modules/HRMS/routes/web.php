@@ -109,8 +109,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
     Route::get('payrolls', [SalaryGenerateController::class, 'payrolls'])->name('payrolls');
     Route::resource('salary-setups', SalarySetupController::class);
+
     //======== salary Signatory Routes ========
-    // Route::resource('salary-signatories', SalarySignatoryController::class);
+    Route::resource('salary-signatories', SalarySignatoryController::class);
 
     Route::group(['prefix' => 'settings', 'as' => 'settings.'], function () {
         Route::resource('shifts', ShiftController::class)->except(['show', 'edit', 'create']);
@@ -163,14 +164,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         });
     });
 
-    // Salary Approval Routes
-    // Route::group(['prefix' => 'salary-approvals', 'as' => 'salary-approvals.'], function () {
-    //     Route::get('/verification', [SalaryApprovalController::class, 'verificationPage'])->name('verification');
-    //     Route::get('/history', [SalaryApprovalController::class, 'history'])->name('history');
-    //     Route::get('/{salaryApprovalRequest}', [SalaryApprovalController::class, 'show'])->name('show');
-    //     Route::put('/{salaryApprovalRequest}/approve', [SalaryApprovalController::class, 'approve'])->name('approve');
-    //     Route::put('/{salaryApprovalRequest}/deny', [SalaryApprovalController::class, 'deny'])->name('deny');
-    // });
+ 
 });
 
 Route::group(['prefix' => 'carrier', 'as' => 'carrier.'], function () {

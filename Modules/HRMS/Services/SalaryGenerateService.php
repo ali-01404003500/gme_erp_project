@@ -10,6 +10,8 @@ use Modules\HRMS\Models\Loan;
 use Modules\HRMS\Models\Payroll;
 use Modules\HRMS\Models\SalaryGenerate;
 use Modules\HRMS\Models\SalaryGenerationPolicy;
+use Modules\HRMS\Models\SalarySignatory;
+use Modules\HRMS\Models\SalaryVerification;
 
 class SalaryGenerateService
 {
@@ -19,10 +21,10 @@ class SalaryGenerateService
         $this->transactionService = $transactionService;
     }
 
-    public function getAll($status = 'Create', int $limit = 20)
-    {
-        return SalaryGenerate::query()
-            ->where('status', $status)
+    public function getAll(int $limit = 20)
+    { 
+        return SalaryGenerate::with('verifications')
+            ->whereIn('status', ['Pending','recomended'])
             ->searchByFields(['payroll_id', 'employee_id', 'department_id', 'year_month','status'])
             ->orderBy('department_id', 'asc')
             ->paginate($limit);
@@ -181,115 +183,47 @@ class SalaryGenerateService
         $salaryGenerate->update($data);
         return $salaryGenerate;
     }
-    public function updateMultiple(array $data)
+    public function updateSingle(array $data)
     { 
-        $ids = $data['id'];
-        $remarks = $data['remarks'];
-        $status = $data['status'];
-
-        
-  
-
-        if($status === 'department_head_checked' || $status === 'department_head_deny'){
-            foreach ($ids as $index => $id) {
-                $salary = SalaryGenerate::find($id);
-                if ($salary) {
-                    $salary->update([
-                        'status' => $status,
-                        'remarks' => $remarks[$index] ?? null,
-                        'checked_by_dept_head' =>  auth()->user()->id,
-                        'checked_date_dept_head' => now()
-                    ]);
-                }
-            }
-            
-        }
-        else if($status === 'hr_head_checked' || $status === 'hr_head_deny'){
-            foreach ($ids as $index => $id) {
-                $salary = SalaryGenerate::find($id);
-                if ($salary) {
-                    $salary->update([
-                        'status' => $status,
-                        'remarks' => $remarks[$index] ?? null,
-                        'checked_by_hr_head' =>  auth()->user()->id,
-                        'checked_date_hr_head' => now()
-                    ]);
-                }
-            }
-            
-        }  
-        else if($status === 'admin_head_checked' || $status === 'admin_head_deny'){
-            foreach ($ids as $index => $id) {
-                $salary = SalaryGenerate::find($id);
-                if ($salary) {
-                    $salary->update([
-                        'status' => $status,
-                        'remarks' => $remarks[$index] ?? null,
-                        'checked_by_admin_head' =>  auth()->user()->id,
-                        'checked_date_admin_head' => now()
-                    ]);
-                }
-            }
-            
-        }
-        else if($status === 'account_head_checked' || $status === 'account_head_deny'){
-            foreach ($ids as $index => $id) {
-                $salary = SalaryGenerate::find($id);
-                if ($salary) {
-                    $salary->update([
-                        'status' => $status,
-                        'remarks' => $remarks[$index] ?? null,
-                        'checked_by_accounts_head' =>  auth()->user()->id,
-                        'checked_date_accounts_head' => now()
-                    ]);
-                }
-            }
-            
-        } 
-        else if($status === 'ceo_checked' || $status === 'ceo_deny'){
-            foreach ($ids as $index => $id) {
-                $salary = SalaryGenerate::find($id);
-                if ($salary) {
-                    $salary->update([
-                        'status' => $status,
-                        'remarks' => $remarks[$index] ?? null,
-                        'checked_by_ceo' =>  auth()->user()->id,
-                        'checked_date_ceo' => now()
-                    ]);
-                }
-            }
-            
-        }
-        else if($status === 'md_checked' || $status === 'md_deny'){
-            foreach ($ids as $index => $id) {
-                $salary = SalaryGenerate::find($id);
-                if ($salary) {
-                    $salary->update([
-                        'status' => $status,
-                        'remarks' => $remarks[$index] ?? null,
-                        'checked_by_md' =>  auth()->user()->id,
-                        'checked_date_md' => now()
-                    ]);
-                }
-            }
-            
-        }
-        else if($status === 'chairman_checked' || $status === 'chairman_deny'){
-            foreach ($ids as $index => $id) {
-                $salary = SalaryGenerate::find($id);
-                if ($salary) {
-                    $salary->update([
-                        'status' => $status,
-                        'remarks' => $remarks[$index] ?? null,
-                        'checked_by_chairman' =>  auth()->user()->id,
-                        'checked_date_chairman' => now()
-                    ]);
-                }
-            }
-            
-        }
-
+        $id = $data['id'];
+        $remarks = $data['remarks'];  
        
+        $salary = SalaryGenerate::find($id);
+        if ($salary) {
+            $nextStep = SalaryVerification::where('payroll_id',$salary->payroll_id) 
+                ->where('salary_id',$id)
+                ->where('approver_level','>', $salary->current_approval_level)
+                ->orderBy('approver_level')
+                ->first();
+
+            if($nextStep){ 
+                $salary->update([
+                    'remarks' => $remarks ?? null,
+                    'current_approval_level'=>$nextStep->approver_level,
+                    'status'=>'recomended'
+                ]);
+
+            }else{
+
+                $salary->update([
+                    'remarks' => $remarks ?? null,
+                    'current_approval_level'=>$nextStep->approver_level,
+                    'status'=>'approved'
+                ]);
+
+            }  
+
+
+            $verification = SalaryVerification::where('payroll_id',$salary->payroll_id)->where('salary_id',$id)->where('approver_id', auth()->user()->employee->id)->first();
+
+            if($verification){
+                $verification->update([
+                    'status' => $data['approver_status'],
+                    'approved_at' => now(),
+                ]);
+            }
+        }
+     
         
     }
 
@@ -398,6 +332,7 @@ class SalaryGenerateService
                 $totalDays = $data->total_days;
             }
             $count = 0;
+            $SalarySignatorySteps = SalarySignatory::where('status','active')->orderBy('id')->get();
 
             foreach ($employees as $employee) {
                 $count = $count + 1;
@@ -472,7 +407,7 @@ class SalaryGenerateService
                         'tax'    => $salaryData['tax_deduction'], 
                         'gross'    => $salaryData['gross_salary'],
 
-                        'status'        => "Create",
+                        'status'        => "Pending",
                         'net_earning'        => $netEarning,
                         'total_deductions'        => $totalDeduction, 
                         
@@ -491,14 +426,33 @@ class SalaryGenerateService
                     'employee_name' => $employee->name,
                     'salary' => $salaryData
                 ]; 
-                 
+ 
+                $salaryGenerate = SalaryGenerate::where('employee_id', $employee->id)
+                                    ->where('department_id', $employee->employementDetail->department->id) 
+                                    ->where('payroll_id', $payroll->id)
+                                    ->where('year_month', $month)
+                                    ->first();
+                                    
+                SalaryVerification::where('payroll_id', $payroll->id)->where('salary_id',$salaryGenerate->id)->delete();
+
+                foreach ($SalarySignatorySteps as $key => $step) { 
+                    SalaryVerification::create([ 
+                        'salary_id' => $salaryGenerate->id,
+                        'payroll_id'=> $payroll->id,
+                        'approver_level'=>$key+1,
+                        'reference_type'=>SalaryGenerate::class,
+                        'approver_id'=>$step->employee_id,
+                        'status'=>'pending'
+                    ]); 
+
+                }    
             }
 
             $payroll->update([
                 'total_net_earning' => $totalSalary,
                 'total_employees' => $count
             ]); 
-
+ 
             return $allSalaries;
  
 

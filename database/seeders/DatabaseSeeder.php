@@ -115,7 +115,8 @@ class DatabaseSeeder extends Seeder
 
 
 
-
+        $this->call(SalarySignatorySeeder::class);
+        $this->call(SalaryBreakdownSeeder::class);
 
         $role->users()->sync(1);
     }
