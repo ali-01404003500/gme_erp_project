@@ -55,10 +55,7 @@
                             </form>
                         </div>
                     </div>
-                </div>
-                <form action="{{ route('hrm.salary-generates.update', request()->payroll_id)}}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+                </div> 
                     <div class="col-md-12">
                         <div class="card mb-4">
                             <div class="card-body">
@@ -66,17 +63,16 @@
                                     <table id="zero-config"class="table table-bordered  table-bordered  dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salaryGenerates])' style="width:100%">  
                                         <thead>  
                                             <tr>
-                                                <th colspan="3" class="text-center ">Employee</th>
+                                                <th colspan="2" class="text-center ">Employee</th>
                                                 <th colspan="2" class="text-center ">Attendance</th>
                                                 <th colspan="5" class="text-center d-none">Attendance</th>
                                                 <th colspan="{{ $salaryBreakdowns->count()+2 }}" class="text-center ">Salary Breakdown</th>
                                                 <th class="text-center ">&nbsp;</th>
                                                 <th colspan="6" class="text-center ">Deductions</th>
-                                                <th colspan="6" class="text-center ">&nbsp;</th>
+                                                <th colspan="7" class="text-center ">&nbsp;</th>
                                             </tr>
 
-                                            <tr>
-                                                <th class="  bg-none"><input type="checkbox" id="checkAll" class="form-check-input"></th>
+                                            <tr> 
                                                 <th class="text-center rotate-header bg-none">Sl</th>
                                                 <th class="text-center bg-none">Employee</th> 
                                                 <th class="text-center rotate-header bg-none  d-none">Days of <br>Month</th>
@@ -106,7 +102,7 @@
                                                 <th class="text-center rotate-header bg-none">Payment <br>Method</th>  
                                                 <th class="text-center bg-none">Status</th>
                                                 <th class="text-center bg-none">Remarks</th> 
-                                                {{-- <th class="text-center rotate-header bg-none no-content" >Action</th> --}}
+                                                <th class="text-center bg-none no-content" >Action</th>
                                             </tr>
                                             
                                         </thead>
@@ -134,6 +130,7 @@
                                                 $department = '';
                                                 
                                             @endphp 
+                                            {{-- @dd($salaryGenerates) --}}
                                             @foreach ($salaryGenerates as $key => $item)
                                                 @php
                                                     $total_basic += $item->basic;
@@ -166,14 +163,7 @@
                                                 @endphp
                                                 @endif
                                                 
-                                                <tr>
-                                                    <td>
-                                                        @if ($item->status == 'Create' )
-                                                            <input type="checkbox" name="id[]" value="{{ $item->id }}" class="checkBoxClass">
-                                                        @else
-                                                            <input type="checkbox" disabled>
-                                                        @endif
-                                                    </td>
+                                                <tr> 
                                                     <td class="text-center">{{ $key + 1 }}</td>
                                                     <td class="text-start">
                                                         @if ($item->status == 'UnPaid' || $item->status == 'Partially Paid')
@@ -222,11 +212,42 @@
                                                             {{ ucfirst(strtolower($item->payment_method)) }}
                                                         </span>
                                                     </td>   
-                                                    <td class="text-center">{{ ucwords(str_replace('_', ' ', $item->status)) }}</td>
-                                                    <td class="text-center">
-                                                        <input type="text" name="remarks[]" class="form-control form-control-sm" placeholder="Note" value="{{ $item->remarks }}">
-                                                    </td>
-                                                    
+                                                    <td class="text-center">{{ ucwords(str_replace('_', ' ', $item->status)) }} - {{ $item->current_approval_level }}</td>
+
+                                                    <form action="{{ route('hrm.salary-generates.update', request()->payroll_id)}}" method="POST" enctype="multipart/form-data">
+                                                        <td class="text-center">
+                                                            <input type="text" name="remarks" class="form-control form-control-sm" placeholder="Note" value="{{ $item->remarks }}">
+                                                        </td>
+                                                        <td class="text-center">  
+                                                            @csrf
+                                                            @method('PUT')
+                                                        
+                                                            <input type="hidden" name="approver_status" id="approver_status{{ $item->id }}" value="">
+                                                            <input type="hidden" name="payroll_id"  value="{{ request()->payroll_id }}"> 
+                                                            <input type="hidden" name="id" value="{{ $item->id }}" >
+
+                                                            @foreach($item->verifications as $verification) 
+                                                            
+                                                                @if($item->current_approval_level == $verification->approver_level && $verification->approver_id == auth()->user()->employee->id)  
+                                                            
+                                                                    <!-- Approve / Reject buttons --> 
+                                                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                                                        <button type="submit" class="btn btn-sm btn-primary status-btn" data-status="approved"  data-id="{{ $item->id }}"
+                                                                            data-level="{{ $item->current_approval_level }}" onclick="$('#approver_status{{ $item->id }}').val('approved')">
+                                                                            <i class="fas fa-check-circle"></i>
+                                                                        </button>
+
+                                                                        <button type="submit" class="btn btn-sm btn-danger status-btn" data-status="rejected" data-id="{{ $item->id }}"
+                                                                            data-level="{{ $item->current_approval_level }}" onclick="$('#approver_status{{ $item->id }}').val('rejected')">
+                                                                            <i class="fas fa-times-circle"></i>
+                                                                        </button>
+                                                                    </div> 
+                                                                @endif
+                                                                
+                                                            @endforeach
+                                                        
+                                                        </td>
+                                                    </form>
                                                     {{-- <td class="text-center">
                                                         @if ($item->status == 'UnPaid')
                                                             <div class="btn-group btn-group-xs text-center">
@@ -270,7 +291,7 @@
                                         <tfoot> 
                                                 
                                             <tr>
-                                                <th colspan="5" class="text-end d-none">Total</th>
+                                                <th colspan="4" class="text-end d-none">Total</th>
                                                 <th colspan="5" class="text-end">Total</th>
 
                                                 @foreach($salaryBreakdowns as $sb)
@@ -300,13 +321,41 @@
 
                                                 <th class="text-center">{{ numberFormat($totalearning) }}</th>  
                                                 <th colspan="3" class="text-center ">&nbsp;</th>
-                                                {{-- <th class="text-center ">&nbsp;</th> --}}
+                                                <th class="text-center ">&nbsp;</th>
                                             </tr> 
                                         </tfoot>
                                     </table>
                                 </div> 
                             </div>
                             <div class="card-footer">
+ 
+                                {{-- <input type="hidden" name="approver_status" id="approver_status" value="">
+                                <input type="hidden" name="payroll_id"  value="{{ request()->payroll_id }}"> 
+                                 
+                                
+                                @foreach($item->verifications as $verification)
+
+                                    @if($item->current_approval_level == $verification->approver_level && ($item->status == 'Pending' || $item->status == 'recomended')  && $verification->approver_id == auth()->user()->employee->id)  
+                                   
+                                        <!-- Approve / Reject buttons --> 
+                                        <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                            <button type="submit" class="btn btn-sm btn-primary status-btn" data-status="approved" 
+                                                data-level="{{ $item->current_approval_level + 1 }}" onclick="$('#approver_status').val('approved')">
+                                                <i class="fas fa-check-circle"></i> Check
+                                            </button>
+
+                                            <button type="submit" class="btn btn-sm btn-danger status-btn" data-status="rejected"
+                                                data-level="{{ $item->current_approval_level + 1 }}" onclick="$('#approver_status').val('rejected')">
+                                                <i class="fas fa-times-circle"></i> Deny
+                                            </button>
+                                        </div> 
+                                    @endif
+                                    
+                                @endforeach --}}
+                                
+
+
+                                
                                 {{-- <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                     <button type="submit" id="paidAll" name="status" value="Paid"
                                         class="btn btn-primary btn-sm paid-all" data-bs-toggle="modal" data-bs-target="#paidAllModal"
@@ -315,11 +364,9 @@
                                         class="btn btn-warning btn-sm partially-paid" data-bs-toggle="modal" data-bs-target="#partiallyPaidModal"
                                         formaction="{{ route('hrm.salary-generates.partially-paid-all') }}">Partially Paid
                                         All</button>
-                                </div> --}}
-                                <input type="hidden" name="status" id="status" value="{{ request()->status }}">
-                                <input type="hidden" name="payroll_id"  value="{{ request()->payroll_id }}"> 
+                                </div> --}} 
                                 
-                                @if ($item->status == "Create" && hasPermission('hrm.salary-generates.check-by-department-head'))
+                                {{-- @if ($item->status == "Create" && hasPermission('hrm.salary-generates.check-by-department-head'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="department_head_checked" onclick="$('#status').val(this.dataset.status)">
@@ -403,13 +450,12 @@
                                             <i class="fas fa-times-circle"></i> Chairman Deny
                                         </button>
                                     </div>
-                                @endif
+                                @endif --}}
                                     
                             </div>
                         </div>
 
-                    </div>
-                </form>
+                    </div> 
             </div>
 
             <div class="d-none">
@@ -818,6 +864,38 @@
         localStorage.removeItem('successMessage');
     }
 });
+
+    $(document).ready(function(){
+
+       $(document).on('click', '.status-btn', function () {
+
+            let status = $(this).data('status');
+            let id = $(this).data('id');
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to " + status + " this request?",
+                icon: status === 'approved' ? 'success' : 'warning',
+                showCancelButton: true,
+                confirmButtonColor: status === 'approved' ? '#3085d6' : '#d33',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Yes, ' + status + ' it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    // hidden input set
+                    $('#approver_status' + id).val(status);
+
+                    // form submit
+                    form.submit();
+                }
+            });
+        });
+
+    });
+
+
 
     </script>
 
