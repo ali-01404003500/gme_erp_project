@@ -11,7 +11,7 @@
         <div class="logo-area d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center"> 
                 <!-- By default text dekhaabe -->
-                <span class="company-title ms-2" id="companyText">
+                <span class="company-title ms-2" id="companyText" style="font-size: 25px; font-weight: bold;  background: linear-gradient(to right, green, red); -webkit-background-clip: text;  -webkit-text-fill-color: transparent;">
                     {{ $companyInfo?->software_title ?? 'GME ERP' }}
                 </span>
 
