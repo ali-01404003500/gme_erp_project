@@ -1,7 +1,7 @@
 <nav class="navbar navbar-light">
     <div class="navbar-left">
        <div class="logo-area">
-            <a class="navbar-brand d-flex align-items-center" href="#" id="companyToggle">
+            <a class="navbar-brand d-flex align-items-center" href="#">
                 @php
                     use App\Models\AccessControl\CompanyInfo;
                     $companyInfo = cache()->remember('company_info', now()->addHours(24), function () { 
@@ -15,7 +15,7 @@
 
                 <!-- Logo initially hide -->
                 @if(!empty($companyInfo?->company_logo))
-                    <img src="{{ $companyInfo->company_logo }}" 
+                    <img src="{{ url($companyInfo->company_logo) }}" 
                         alt="{{ $companyInfo->software_title }}" 
                         class="company-logo ms-2 company-logo " 
                         id="companyLogo"
@@ -23,7 +23,7 @@
                 @endif
             </a>
 
-            <a href="#" class="sidebar-toggle ms-3" >
+            <a href="#" class="sidebar-toggle ms-3"  id="companyToggle" >
                 <img class="svg" src="{{ asset('assets/img/svg/align-center-alt.svg') }}" alt="Toggle Sidebar">
             </a>
         </div>
