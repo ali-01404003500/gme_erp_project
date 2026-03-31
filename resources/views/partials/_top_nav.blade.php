@@ -9,13 +9,14 @@
         @endphp 
         
         <div class="logo-area d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center"> 
+
+            <a href="{{ request()->getSchemeAndHttpHost() }}" class="d-flex align-items-center"> 
                 <!-- By default text dekhaabe -->
                 <span class="company-title ms-2" id="companyText" style="font-size: 25px; font-weight: bold;  background: linear-gradient(to right, green, red); -webkit-background-clip: text;  -webkit-text-fill-color: transparent;">
                     {{ $companyInfo?->software_title ?? 'GME ERP' }}
                 </span>
 
-                  <!-- Logo initially hide -->
+                <!-- Logo initially hide -->
                 @if(!empty($companyInfo?->company_logo))
                     <img src="{{ url($companyInfo->company_logo) }}" 
                         alt="{{ $companyInfo->software_title }}" 
@@ -23,7 +24,7 @@
                         id="companyLogo"
                         style="height:60px; object-fit:contain; display:none;">
                 @endif
-            </div>
+            </a>
 
             <!-- Toggle Button -->
             <a href="#" class="sidebar-toggle ms-3" id="companyToggle">
