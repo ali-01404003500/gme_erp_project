@@ -28,8 +28,7 @@ class PermissionTableSeed extends Seeder
          */
         $permissions = [
 
-
-            //dashboard   
+            //Dashboard Menu  
             [
                 'name' => 'Admin Dashboard',
                 'description' => 'Permission to view admin dashboard',
@@ -42,104 +41,9 @@ class PermissionTableSeed extends Seeder
                 'slug' => 'dashboard.user',
                 'key' => 'dashboard',
             ],
-
-
-            // Users Crud
-            [
-                'name' => 'Create Role',
-                'slug' => 'access_control.roles.create',
-                'description' => 'Role create permission',
-                'key' => 'access_control.roles'
-            ],
-            [
-                'name' => 'Role List',
-                'slug' => 'access_control.roles.index',
-                'description' => 'Role list permission',
-                'key' => 'access_control.roles'
-            ],
-
-            [
-                'name' => 'Update Role',
-                'slug' => 'access_control.roles.update',
-                'description' => 'Role update permission',
-                'key' => 'access_control.roles'
-            ],
-
-            [
-                'name' => 'Delete Role',
-                'slug' => 'access_control.roles.destroy',
-                'description' => 'Role delete permission',
-                'key' => 'access_control.roles'
-            ],
-            //Global Settings
-            [
-                'name' => 'Global Settings',
-                'slug' => 'access_control.global-settings.update',
-                'description' => 'Global Settings permission',
-                'key' => 'access_control.global-settings'
-            ],
-
-
-            //verification.verification-requests
-            [
-                'name' => 'Verification Requests',
-                'slug' => 'verification.verification-requests',
-                'description' => 'Verification Requests permission',
-                'key' => 'verification'
-            ],
-            // 📂 Document Types
-            [
-                'name' => 'Create Document Type',
-                'slug' => 'cms.document-types.create',
-                'description' => 'Permission to create document types',
-                'key' => 'cms.document-types',
-            ],
-            [
-                'name' => 'List Document Types',
-                'slug' => 'cms.document-types.index',
-                'description' => 'Permission to view document types list',
-                'key' => 'cms.document-types',
-            ],
-            [
-                'name' => 'Edit Document Type',
-                'slug' => 'cms.document-types.update',
-                'description' => 'Permission to edit document types',
-                'key' => 'cms.document-types',
-            ],
-            [
-                'name' => 'Delete Document Type',
-                'slug' => 'cms.document-types.destroy',
-                'description' => 'Permission to delete document types',
-                'key' => 'cms.document-types',
-            ],
-
-            // 📂 Document Heads
-            [
-                'name' => 'Create Document Head',
-                'slug' => 'cms.document-heads.create',
-                'description' => 'Permission to create document heads',
-                'key' => 'cms.document-heads',
-            ],
-            [
-                'name' => 'List Document Heads',
-                'slug' => 'cms.document-heads.index',
-                'description' => 'Permission to view document heads list',
-                'key' => 'cms.document-heads',
-            ],
-            [
-                'name' => 'Edit Document Head',
-                'slug' => 'cms.document-heads.update',
-                'description' => 'Permission to edit document heads',
-                'key' => 'cms.document-heads',
-            ],
-            [
-                'name' => 'Delete Document Head',
-                'slug' => 'cms.document-heads.destroy',
-                'description' => 'Permission to delete document heads',
-                'key' => 'cms.document-heads',
-            ],
-
-            // 📂 Document Entries
+            
+            //CMS Menu
+            // Document Entries
             [
                 'name' => 'Create Document Entry',
                 'slug' => 'cms.document-entries.create',
@@ -166,7 +70,7 @@ class PermissionTableSeed extends Seeder
             ],
 
 
-            // 📂 Application Entries
+            // Application Entries
             [
                 'name' => 'Create Application Entry',
                 'slug' => 'cms.application-entries.create',
@@ -191,8 +95,6 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Permission to delete application entries',
                 'key' => 'cms.application-entries',
             ],
-
-            // ✅ Custom Application Entry Actions
             [
                 'name' => 'Approve Application Entry',
                 'slug' => 'cms.application-entries.approved',
@@ -218,956 +120,59 @@ class PermissionTableSeed extends Seeder
                 'key' => 'cms.application-entries',
             ],
 
-
-            //employees
-            [
-                'name' => 'Create Employee',
-                'slug' => 'hrm.employees.create',
-                'description' => 'Employee create permission',
-                'key' => 'hrm.employees'
-            ],
-
-            [
-                'name' => 'Employee List',
-                'slug' => 'hrm.employees.index',
-                'description' => 'Employee list permission',
-                'key' => 'hrm.employees'
-            ],
-
-            [
-                'name' => 'Employee Update',
-                'slug' => 'hrm.employees.update',
-                'description' => 'Employee update permission',
-                'key' => 'hrm.employees'
-            ],
-
-            [
-                'name' => 'Employee View',
-                'slug' => 'hrm.employees.show',
-                'description' => 'Employee show permission',
-                'key' => 'hrm.employees'
-            ],
-
-            [
-                'name' => 'Employee Delete',
-                'slug' => 'hrm.employees.destroy',
-                'description' => 'Employee delete permission',
-                'key' => 'hrm.employees'
-            ],
-
-
-            //attendance
-            [
-                'name' => 'Attendance List',
-                'slug' => 'hrm.attendances.index',
-                'description' => 'Attendance list permission',
-                'key' => 'hrm.attendances'
-            ],
-
-            [
-                'name' => 'Create Attendance',
-                'slug' => 'hrm.attendances.create',
-                'description' => 'Attendance create permission',
-                'key' => 'hrm.attendances'
-            ],
-
-            [
-                'name' => 'Attendance Update',
-                'slug' => 'hrm.attendances.update',
-                'description' => 'Attendance update permission',
-                'key' => 'hrm.attendances'
-            ],
-
-
-            [
-                'name' => 'Attendance Delete',
-                'slug' => 'hrm.attendances.destroy',
-                'description' => 'Attendance delete permission',
-                'key' => 'hrm.attendances'
-            ],
-
-
-            //leave application
-            [
-                'name' => 'Leave Application List',
-                'slug' => 'hrm.leaves.index',
-                'description' => 'Leave application list permission',
-                'key' => 'hrm.leaves'
-            ],
-
-            [
-                'name' => 'Create Leave Application',
-                'slug' => 'hrm.leaves.create',
-                'description' => 'Leave application create permission',
-                'key' => 'hrm.leaves'
-            ],
-
-            [
-                'name' => 'Leave Application Update',
-                'slug' => 'hrm.leaves.update',
-                'description' => 'Leave application update permission',
-                'key' => 'hrm.leaves'
-            ],
-
-
-
-            [
-                'name' => 'Leave Application Delete',
-                'slug' => 'hrm.leaves.destroy',
-                'description' => 'Leave application delete permission',
-                'key' => 'hrm.leaves'
-            ],
-            [
-                'name' => 'Leave Application Recommended',
-                'slug' => 'hrm.leaves.recommended',
-                'description' => 'Leave application recommended permission',
-                'key' => 'hrm.leaves'
-            ],
-
-            [
-                'name' => 'Leave Application Approved',
-                'slug' => 'hrm.leaves.approved',
-                'description' => 'Leave application approved permission',
-                'key' => 'hrm.leaves'
-            ],
-
-            //notice board
-            [
-                'name' => 'Notice Board List',
-                'slug' => 'hrm.noticeboards.index',
-                'description' => 'Notice board list permission',
-                'key' => 'hrm.noticeboards'
-            ],
-
-            [
-                'name' => 'Create Notice Board',
-                'slug' => 'hrm.noticeboards.create',
-                'description' => 'Notice board create permission',
-                'key' => 'hrm.noticeboards'
-            ],
-
-            [
-                'name' => 'Notice Board Update',
-                'slug' => 'hrm.noticeboards.update',
-                'description' => 'Notice board update permission',
-                'key' => 'hrm.noticeboards'
-            ],
-
-            [
-                'name' => 'Notice Board View',
-                'slug' => 'hrm.noticeboards.show',
-                'description' => 'Notice board show permission',
-                'key' => 'hrm.noticeboards'
-            ],
-
-            [
-                'name' => 'Notice Board Delete',
-                'slug' => 'hrm.noticeboards.destroy',
-                'description' => 'Notice board delete permission',
-                'key' => 'hrm.noticeboards'
-            ],
-
-            //TA/DA
-            [
-                'name' => 'TA/DA List',
-                'slug' => 'hrm.bills.index',
-                'description' => 'TA/DA list permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'Create TA/DA',
-                'slug' => 'hrm.bills.create',
-                'description' => 'TA/DA create permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'TA/DA Update',
-                'slug' => 'hrm.bills.update',
-                'description' => 'TA/DA update permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'TA/DA View',
-                'slug' => 'hrm.bills.show',
-                'description' => 'TA/DA show permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'TA/DA Delete',
-                'slug' => 'hrm.bills.destroy',
-                'description' => 'TA/DA delete permission',
-                'key' => 'hrm.bills'
-            ],
-            [
-                'name' => 'TA/DA Team Leader Verify',
-                'slug' => 'hrm.bills.team_leader_verify',
-                'description' => 'TA/DA team leader verify permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'TA/DA HR/Accounts Verify',
-                'slug' => 'hrm.bills.accounts_verify',
-                'description' => 'TA/DA HR/accounts verify permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'TA/DA Final Approve',
-                'slug' => 'hrm.bills.final_approve',
-                'description' => 'TA/DA final approve permission',
-                'key' => 'hrm.bills'
-            ],
-
-            [
-                'name' => 'TA/DA Verify',
-                'slug' => 'hrm.bills.verify',
-                'description' => 'TA/DA Verification List',
-                'key' => 'hrm.bills'
-            ],
-
-
-            // PermissionTableSeeder additions
-            // Employee Salary
-
-            [
-                'name' => 'Create Employee Salary',
-                'slug' => 'hrm.employee-salarys.create',
-                'description' => 'Employee salary create permission',
-                'key' => 'hrm.employee-salarys',
-            ],
-            // Daily Visit Plans
-            [
-                'name' => 'Daily Visit Plans List',
-                'slug' => 'hrm.daily-visit-plans.index',
-                'description' => 'Daily visit plans list permission',
-                'key' => 'hrm.daily-visit-plans',
-            ],
-            [
-                'name' => 'Create Daily Visit Plan',
-                'slug' => 'hrm.daily-visit-plans.create',
-                'description' => 'Daily visit plan create permission',
-                'key' => 'hrm.daily-visit-plans',
-            ],
-            [
-                'name' => 'Daily Visit Plan Update',
-                'slug' => 'hrm.daily-visit-plans.update',
-                'description' => 'Daily visit plan update permission',
-                'key' => 'hrm.daily-visit-plans',
-            ],
-            [
-                'name' => 'Daily Visit Plan View',
-                'slug' => 'hrm.daily-visit-plans.show',
-                'description' => 'Daily visit plan show permission',
-                'key' => 'hrm.daily-visit-plans',
-            ],
-            [
-                'name' => 'Daily Visit Plan Delete',
-                'slug' => 'hrm.daily-visit-plans.destroy',
-                'description' => 'Daily visit plan delete permission',
-                'key' => 'hrm.daily-visit-plans',
-            ],
-            [
-                'name' => 'Daily Visit Plan Approve',
-                'slug' => 'hrm.daily-visit-plans.approve',
-                'description' => 'Daily visit plan approve permission',
-                'key' => 'hrm.daily-visit-plans',
-            ],
-            [
-                'name' => 'Daily Visit Plan Deny',
-                'slug' => 'hrm.daily-visit-plans.deny',
-                'description' => 'Daily visit plan deny permission',
-                'key' => 'hrm.daily-visit-plans',
-            ],
-
-            // Loans
-            [
-                'name' => 'Loans List',
-                'slug' => 'hrm.loans.index',
-                'description' => 'Loans list permission',
-                'key' => 'hrm.loans',
-            ],
-            [
-                'name' => 'Create Loan',
-                'slug' => 'hrm.loans.create',
-                'description' => 'Loan create permission',
-                'key' => 'hrm.loans',
-            ],
-            [
-                'name' => 'Loan Update',
-                'slug' => 'hrm.loans.update',
-                'description' => 'Loan update permission',
-                'key' => 'hrm.loans',
-            ],
-            [
-                'name' => 'Loan View',
-                'slug' => 'hrm.loans.show',
-                'description' => 'Loan show permission',
-                'key' => 'hrm.loans',
-            ],
-            [
-                'name' => 'Loan Delete',
-                'slug' => 'hrm.loans.destroy',
-                'description' => 'Loan delete permission',
-                'key' => 'hrm.loans',
-            ],
-            [
-                'name' => 'Loan Approve',
-                'slug' => 'hrm.loans.approve',
-                'description' => 'Loan approve permission',
-                'key' => 'hrm.loans',
-            ],
-            [
-                'name' => 'Loan Deny',
-                'slug' => 'hrm.loans.deny',
-                'description' => 'Loan deny permission',
-                'key' => 'hrm.loans',
-            ],
-
-            // Salary 
-            [
-                'name' => 'Payrolls View',
-                'slug' => 'hrm.payrolls',
-                'description' => 'Payrolls view permission',
-                'key' => 'hrm.salary-generates',
-            ],
-            [
-                'name' => 'Salary Generates List',
-                'slug' => 'hrm.salary-generates.index',
-                'description' => 'Salary generates list permission',
-                'key' => 'hrm.salary-generates',
-            ],
-            [
-                'name' => 'Create Salary Generate',
-                'slug' => 'hrm.salary-generates.create',
-                'description' => 'Salary generate create permission',
-                'key' => 'hrm.salary-generates',
-            ],
-            [
-                'name' => 'Salary Generate Update',
-                'slug' => 'hrm.salary-generates.update',
-                'description' => 'Salary generate update permission',
-                'key' => 'hrm.salary-generates',
-            ],
-            [
-                'name' => 'Salary Generate View',
-                'slug' => 'hrm.salary-generates.show',
-                'description' => 'Salary generate show permission',
-                'key' => 'hrm.salary-generates',
-            ], 
-
-            // Salary verification
-            [
-                'name' => 'Salary Vefication Department Head',
-                'slug' => 'hrm.salary-generates.check-by-department-head',
-                'description' => 'Salary Vefication Department Head permission',
-                'key' => 'hrm.salary-generates',
-            ],
-             [
-                'name' => 'Salary Vefication HR Head',
-                'slug' => 'hrm.salary-generates.check-by-hr-head',
-                'description' => 'Salary Vefication HR Head permission',
-                'key' => 'hrm.salary-generates',
-            ],
-             [
-                'name' => 'Salary Vefication Admin Head',
-                'slug' => 'hrm.salary-generates.check-by-admin-head',
-                'description' => 'Salary Vefication Admin Head permission',
-                'key' => 'hrm.salary-generates',
-            ],
-             [
-                'name' => 'Salary Vefication Account Head',
-                'slug' => 'hrm.salary-generates.check-by-account-head',
-                'description' => 'Salary Vefication Account Head permission',
-                'key' => 'hrm.salary-generates',
-            ],
-             [
-                'name' => 'Salary Vefication CEO',
-                'slug' => 'hrm.salary-generates.check-by-ceo',
-                'description' => 'Salary Vefication CEO permission',
-                'key' => 'hrm.salary-generates',
-            ],
-             [
-                'name' => 'Salary Vefication MD',
-                'slug' => 'hrm.salary-generates.check-by-md',
-                'description' => 'Salary Vefication MD permission',
-                'key' => 'hrm.salary-generates',
-            ],
-             [
-                'name' => 'Salary Vefication Chairman',
-                'slug' => 'hrm.salary-generates.check-by-chairman',
-                'description' => 'Salary Vefication Chairman permission',
-                'key' => 'hrm.salary-generates',
-            ],
-
-
-            // Settings: Leave Types
-            [
-                'name' => 'Leave Types List',
-                'slug' => 'hrm.settings.leave-types.index',
-                'description' => 'Leave types list permission',
-                'key' => 'hrm.settings.leave-types',
-            ],
-            [
-                'name' => 'Create Leave Type',
-                'slug' => 'hrm.settings.leave-types.create',
-                'description' => 'Leave type create permission',
-                'key' => 'hrm.settings.leave-types',
-            ],
-            [
-                'name' => 'Leave Type Update',
-                'slug' => 'hrm.settings.leave-types.update',
-                'description' => 'Leave type update permission',
-                'key' => 'hrm.settings.leave-types',
-            ],
-            [
-                'name' => 'Leave Type Delete',
-                'slug' => 'hrm.settings.leave-types.destroy',
-                'description' => 'Leave type delete permission',
-                'key' => 'hrm.settings.leave-types',
-            ],
-
-            // Settings: Shifts
-            [
-                'name' => 'Shifts List',
-                'slug' => 'hrm.settings.shifts.index',
-                'description' => 'Shifts list permission',
-                'key' => 'hrm.settings.shifts',
-            ],
-            [
-                'name' => 'Create Shift',
-                'slug' => 'hrm.settings.shifts.create',
-                'description' => 'Shift create permission',
-                'key' => 'hrm.settings.shifts',
-            ],
-            [
-                'name' => 'Shift Update',
-                'slug' => 'hrm.settings.shifts.update',
-                'description' => 'Shift update permission',
-                'key' => 'hrm.settings.shifts',
-            ],
-            [
-                'name' => 'Shift Delete',
-                'slug' => 'hrm.settings.shifts.destroy',
-                'description' => 'Shift delete permission',
-                'key' => 'hrm.settings.shifts',
-            ],
-
-            // Settings: Hotspots
-            [
-                'name' => 'Hotspots List',
-                'slug' => 'hrm.settings.hotspots.index',
-                'description' => 'Hotspots list permission',
-                'key' => 'hrm.settings.hotspots',
-            ],
-            [
-                'name' => 'Create Hotspot',
-                'slug' => 'hrm.settings.hotspots.create',
-                'description' => 'Hotspot create permission',
-                'key' => 'hrm.settings.hotspots',
-            ],
-            [
-                'name' => 'Hotspot Update',
-                'slug' => 'hrm.settings.hotspots.update',
-                'description' => 'Hotspot update permission',
-                'key' => 'hrm.settings.hotspots',
-            ],
-            [
-                'name' => 'Hotspot Delete',
-                'slug' => 'hrm.settings.hotspots.destroy',
-                'description' => 'Hotspot delete permission',
-                'key' => 'hrm.settings.hotspots',
-            ],
-
-            // Settings: Holidays
-            [
-                'name' => 'Holidays List',
-                'slug' => 'hrm.settings.holidays.index',
-                'description' => 'Holidays list permission',
-                'key' => 'hrm.settings.holidays',
-            ],
-            [
-                'name' => 'Create Holiday',
-                'slug' => 'hrm.settings.holidays.create',
-                'description' => 'Holiday create permission',
-                'key' => 'hrm.settings.holidays',
-            ],
-            [
-                'name' => 'Holiday Update',
-                'slug' => 'hrm.settings.holidays.update',
-                'description' => 'Holiday update permission',
-                'key' => 'hrm.settings.holidays',
-            ],
-
-            [
-                'name' => 'Holiday Delete',
-                'slug' => 'hrm.settings.holidays.destroy',
-                'description' => 'Holiday delete permission',
-                'key' => 'hrm.settings.holidays',
-            ],
-
-            // Settings: Notice Types
-            [
-                'name' => 'Notice Types List',
-                'slug' => 'hrm.settings.notice-types.index',
-                'description' => 'Notice types list permission',
-                'key' => 'hrm.settings.notice-types',
-            ],
-            [
-                'name' => 'Create Notice Type',
-                'slug' => 'hrm.settings.notice-types.create',
-                'description' => 'Notice type create permission',
-                'key' => 'hrm.settings.notice-types',
-            ],
-            [
-                'name' => 'Notice Type Update',
-                'slug' => 'hrm.settings.notice-types.update',
-                'description' => 'Notice type update permission',
-                'key' => 'hrm.settings.notice-types',
-            ],
-            [
-                'name' => 'Notice Type Delete',
-                'slug' => 'hrm.settings.notice-types.destroy',
-                'description' => 'Notice type delete permission',
-                'key' => 'hrm.settings.notice-types',
-            ],
-
-            // Settings: Expense Types
-            [
-                'name' => 'Expense Types List',
-                'slug' => 'hrm.settings.expense-types.index',
-                'description' => 'Expense types list permission',
-                'key' => 'hrm.settings.expense-types',
-            ],
-            [
-                'name' => 'Create Expense Type',
-                'slug' => 'hrm.settings.expense-types.create',
-                'description' => 'Expense type create permission',
-                'key' => 'hrm.settings.expense-types',
-            ],
-            [
-                'name' => 'Expense Type Update',
-                'slug' => 'hrm.settings.expense-types.update',
-                'description' => 'Expense type update permission',
-                'key' => 'hrm.settings.expense-types',
-            ],
-            [
-                'name' => 'Expense Type Delete',
-                'slug' => 'hrm.settings.expense-types.destroy',
-                'description' => 'Expense type delete permission',
-                'key' => 'hrm.settings.expense-types',
-            ],
-
-            // Settings: Transport Types
-            [
-                'name' => 'Transport Types List',
-                'slug' => 'hrm.settings.transport-types.index',
-                'description' => 'Transport types list permission',
-                'key' => 'hrm.settings.transport-types',
-            ],
-            [
-                'name' => 'Create Transport Type',
-                'slug' => 'hrm.settings.transport-types.create',
-                'description' => 'Transport type create permission',
-                'key' => 'hrm.settings.transport-types',
-            ],
-            [
-                'name' => 'Transport Type Update',
-                'slug' => 'hrm.settings.transport-types.update',
-                'description' => 'Transport type update permission',
-                'key' => 'hrm.settings.transport-types',
-            ],
-            [
-                'name' => 'Transport Type Delete',
-                'slug' => 'hrm.settings.transport-types.destroy',
-                'description' => 'Transport type delete permission',
-                'key' => 'hrm.settings.transport-types',
-            ],
-
-            // Settings: Departments
-            [
-                'name' => 'Departments List',
-                'slug' => 'hrm.settings.departments.index',
-                'description' => 'Departments list permission',
-                'key' => 'hrm.settings.departments',
-            ],
-            [
-                'name' => 'Create Department',
-                'slug' => 'hrm.settings.departments.create',
-                'description' => 'Department create permission',
-                'key' => 'hrm.settings.departments',
-            ],
-            [
-                'name' => 'Department Update',
-                'slug' => 'hrm.settings.departments.update',
-                'description' => 'Department update permission',
-                'key' => 'hrm.settings.departments',
-            ],
-            [
-                'name' => 'Department Delete',
-                'slug' => 'hrm.settings.departments.destroy',
-                'description' => 'Department delete permission',
-                'key' => 'hrm.settings.departments',
-            ],
-
-            // Settings: Designations
-            [
-                'name' => 'Designations List',
-                'slug' => 'hrm.settings.designations.index',
-                'description' => 'Designations list permission',
-                'key' => 'hrm.settings.designations',
-            ],
-            [
-                'name' => 'Create Designation',
-                'slug' => 'hrm.settings.designations.create',
-                'description' => 'Designation create permission',
-                'key' => 'hrm.settings.designations',
-            ],
-            [
-                'name' => 'Designation Update',
-                'slug' => 'hrm.settings.designations.update',
-                'description' => 'Designation update permission',
-                'key' => 'hrm.settings.designations',
-            ],
-            [
-                'name' => 'Designation Delete',
-                'slug' => 'hrm.settings.designations.destroy',
-                'description' => 'Designation delete permission',
-                'key' => 'hrm.settings.designations',
-            ],
-
-            // Settings: Salary Setups
-            [
-                'name' => 'Salary Setups List',
-                'slug' => 'hrm.settings.salary-setups.index',
-                'description' => 'Salary setups list permission',
-                'key' => 'hrm.settings.salary-setups',
-            ],
-            [
-                'name' => 'Create Salary Setup',
-                'slug' => 'hrm.settings.salary-setups.create',
-                'description' => 'Salary setup create permission',
-                'key' => 'hrm.settings.salary-setups',
-            ],
-            [
-                'name' => 'Salary Setup Update',
-                'slug' => 'hrm.settings.salary-setups.update',
-                'description' => 'Salary setup update permission',
-                'key' => 'hrm.settings.salary-setups',
-            ],
-
-            [
-                'name' => 'Salary Setup Delete',
-                'slug' => 'hrm.settings.salary-setups.destroy',
-                'description' => 'Salary setup delete permission',
-                'key' => 'hrm.settings.salary-setups',
-            ],
-
-            // Settings: Appraisal Policies
-            [
-                'name' => 'Appraisal Policies List',
-                'slug' => 'hrm.settings.appraisal-policies.index',
-                'description' => 'Appraisal policies list permission',
-                'key' => 'hrm.settings.appraisal-policies',
-            ],
-            [
-                'name' => 'Create Appraisal Policy',
-                'slug' => 'hrm.settings.appraisal-policies.create',
-                'description' => 'Appraisal policy create permission',
-                'key' => 'hrm.settings.appraisal-policies',
-            ],
-            [
-                'name' => 'Appraisal Policy Update',
-                'slug' => 'hrm.settings.appraisal-policies.update',
-                'description' => 'Appraisal policy update permission',
-                'key' => 'hrm.settings.appraisal-policies',
-            ],
-            [
-                'name' => 'Appraisal Policy Delete',
-                'slug' => 'hrm.settings.appraisal-policies.destroy',
-                'description' => 'Appraisal policy delete permission',
-                'key' => 'hrm.settings.appraisal-policies',
-            ],
-
-            // KPIs: KPI Setups
-            // Score Wise Suggestions
+            // Document Types
             [
-                'name' => 'Score Wise Suggestions List',
-                'slug' => 'hrm.kpis.score-wise-suggestions.index',
-                'description' => 'Score wise suggestions list permission',
-                'key' => 'hrm.kpis.score-wise-suggestions',
+                'name' => 'Create Document Type',
+                'slug' => 'cms.document-types.create',
+                'description' => 'Permission to create document types',
+                'key' => 'cms.document-types',
             ],
             [
-                'name' => 'Create Score Wise Suggestion',
-                'slug' => 'hrm.kpis.score-wise-suggestions.create',
-                'description' => 'Score wise suggestion create permission',
-                'key' => 'hrm.kpis.score-wise-suggestions',
+                'name' => 'List Document Types',
+                'slug' => 'cms.document-types.index',
+                'description' => 'Permission to view document types list',
+                'key' => 'cms.document-types',
             ],
             [
-                'name' => 'Score Wise Suggestion Update',
-                'slug' => 'hrm.kpis.score-wise-suggestions.update',
-                'description' => 'Score wise suggestion update permission',
-                'key' => 'hrm.kpis.score-wise-suggestions',
+                'name' => 'Edit Document Type',
+                'slug' => 'cms.document-types.update',
+                'description' => 'Permission to edit document types',
+                'key' => 'cms.document-types',
             ],
             [
-                'name' => 'Score Wise Suggestion Delete',
-                'slug' => 'hrm.kpis.score-wise-suggestions.destroy',
-                'description' => 'Score wise suggestion delete permission',
-                'key' => 'hrm.kpis.score-wise-suggestions',
+                'name' => 'Delete Document Type',
+                'slug' => 'cms.document-types.destroy',
+                'description' => 'Permission to delete document types',
+                'key' => 'cms.document-types',
             ],
 
-            // Responsibility Entries
+            // Document Heads
             [
-                'name' => 'Responsibility Entries List',
-                'slug' => 'hrm.kpis.responsibility-entries.index',
-                'description' => 'Responsibility entries list permission',
-                'key' => 'hrm.kpis.responsibility-entries',
+                'name' => 'Create Document Head',
+                'slug' => 'cms.document-heads.create',
+                'description' => 'Permission to create document heads',
+                'key' => 'cms.document-heads',
             ],
             [
-                'name' => 'Create Responsibility Entry',
-                'slug' => 'hrm.kpis.responsibility-entries.create',
-                'description' => 'Responsibility entry create permission',
-                'key' => 'hrm.kpis.responsibility-entries',
+                'name' => 'List Document Heads',
+                'slug' => 'cms.document-heads.index',
+                'description' => 'Permission to view document heads list',
+                'key' => 'cms.document-heads',
             ],
             [
-                'name' => 'Responsibility Entry Update',
-                'slug' => 'hrm.kpis.responsibility-entries.update',
-                'description' => 'Responsibility entry update permission',
-                'key' => 'hrm.kpis.responsibility-entries',
+                'name' => 'Edit Document Head',
+                'slug' => 'cms.document-heads.update',
+                'description' => 'Permission to edit document heads',
+                'key' => 'cms.document-heads',
             ],
             [
-                'name' => 'Responsibility Entry Delete',
-                'slug' => 'hrm.kpis.responsibility-entries.destroy',
-                'description' => 'Responsibility entry delete permission',
-                'key' => 'hrm.kpis.responsibility-entries',
+                'name' => 'Delete Document Head',
+                'slug' => 'cms.document-heads.destroy',
+                'description' => 'Permission to delete document heads',
+                'key' => 'cms.document-heads',
             ],
-
-            // KPI Templates
-            [
-                'name' => 'KPI Templates List',
-                'slug' => 'hrm.kpis.kpi-templates.index',
-                'description' => 'KPI templates list permission',
-                'key' => 'hrm.kpis.kpi-templates',
-            ],
-            [
-                'name' => 'Create KPI Template',
-                'slug' => 'hrm.kpis.kpi-templates.create',
-                'description' => 'KPI template create permission',
-                'key' => 'hrm.kpis.kpi-templates',
-            ],
-            [
-                'name' => 'KPI Template Update',
-                'slug' => 'hrm.kpis.kpi-templates.update',
-                'description' => 'KPI template update permission',
-                'key' => 'hrm.kpis.kpi-templates',
-            ],
-            [
-                'name' => 'KPI Template View',
-                'slug' => 'hrm.kpis.kpi-templates.show',
-                'description' => 'KPI template show permission',
-                'key' => 'hrm.kpis.kpi-templates',
-            ],
-            [
-                'name' => 'KPI Template Delete',
-                'slug' => 'hrm.kpis.kpi-templates.destroy',
-                'description' => 'KPI template delete permission',
-                'key' => 'hrm.kpis.kpi-templates',
-            ],
-
-            // KPI Assignments
-            [
-                'name' => 'KPI Assignments List',
-                'slug' => 'hrm.kpis.kpi-assignments.index',
-                'description' => 'KPI assignments list permission',
-                'key' => 'hrm.kpis.kpi-assignments',
-            ],
-            [
-                'name' => 'Create KPI Assignment',
-                'slug' => 'hrm.kpis.kpi-assignments.create',
-                'description' => 'KPI assignment create permission',
-                'key' => 'hrm.kpis.kpi-assignments',
-            ],
-            [
-                'name' => 'KPI Assignment Update',
-                'slug' => 'hrm.kpis.kpi-assignments.update',
-                'description' => 'KPI assignment update permission',
-                'key' => 'hrm.kpis.kpi-assignments',
-            ],
-            [
-                'name' => 'KPI Assignment View',
-                'slug' => 'hrm.kpis.kpi-assignments.show',
-                'description' => 'KPI assignment show permission',
-                'key' => 'hrm.kpis.kpi-assignments',
-            ],
-            [
-                'name' => 'KPI Assignment Delete',
-                'slug' => 'hrm.kpis.kpi-assignments.destroy',
-                'description' => 'KPI assignment delete permission',
-                'key' => 'hrm.kpis.kpi-assignments',
-            ],
-
-            // Monthly KPI Appraisals
-            [
-                'name' => 'Monthly KPI Appraisals List',
-                'slug' => 'hrm.kpis.monthly-kpi-appraisals.index',
-                'description' => 'Monthly KPI appraisals list permission',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-            ],
-            [
-                'name' => 'Create Monthly KPI Appraisal',
-                'slug' => 'hrm.kpis.monthly-kpi-appraisals.create',
-                'description' => 'Monthly KPI appraisal create permission',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-            ],
-            [
-                'name' => 'Monthly KPI Appraisal Update',
-                'slug' => 'hrm.kpis.monthly-kpi-appraisals.update',
-                'description' => 'Monthly KPI appraisal update permission',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-            ],
-            [
-                'name' => 'Monthly KPI Appraisal View',
-                'slug' => 'hrm.kpis.monthly-kpi-appraisals.show',
-                'description' => 'Monthly KPI appraisal show permission',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-            ],
-            [
-                'name' => 'Monthly KPI Appraisal Delete',
-                'slug' => 'hrm.kpis.monthly-kpi-appraisals.destroy',
-                'description' => 'Monthly KPI appraisal delete permission',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-            ],
-            [
-                'name' => 'Monthly KPI Appraisal Approve',
-                'slug' => 'hrm.kpis.monthly-kpi-appraisals.approve',
-                'description' => 'Monthly KPI appraisal approve permission',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-            ],
-            [
-                'name' => 'Monthly KPI Appraisal Reject',
-                'slug' => 'hrm.kpis.monthly-kpi-appraisals.reject',
-                'description' => 'Monthly KPI appraisal reject permission',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-            ],
-
-            // Jobs
-            [
-                'name' => 'Jobs List',
-                'slug' => 'hrm.jobs.index',
-                'description' => 'Jobs list permission',
-                'key' => 'hrm.jobs',
-            ],
-            [
-                'name' => 'Create Job',
-                'slug' => 'hrm.jobs.create',
-                'description' => 'Job create permission',
-                'key' => 'hrm.jobs',
-            ],
-            [
-                'name' => 'Job Update',
-                'slug' => 'hrm.jobs.update',
-                'description' => 'Job update permission',
-                'key' => 'hrm.jobs',
-            ],
-            [
-                'name' => 'Job View',
-                'slug' => 'hrm.jobs.show',
-                'description' => 'Job show permission',
-                'key' => 'hrm.jobs',
-            ],
-            [
-                'name' => 'Job Delete',
-                'slug' => 'hrm.jobs.destroy',
-                'description' => 'Job delete permission',
-                'key' => 'hrm.jobs',
-            ],
-
-            // Job Templates
-            [
-                'name' => 'Job Templates List',
-                'slug' => 'hrm.job-templates.index',
-                'description' => 'Job templates list permission',
-                'key' => 'hrm.job-templates',
-            ],
-            [
-                'name' => 'Create Job Template',
-                'slug' => 'hrm.job-templates.create',
-                'description' => 'Job template create permission',
-                'key' => 'hrm.job-templates',
-            ],
-            [
-                'name' => 'Job Template Update',
-                'slug' => 'hrm.job-templates.update',
-                'description' => 'Job template update permission',
-                'key' => 'hrm.job-templates',
-            ],
-
-            [
-                'name' => 'Job Template Delete',
-                'slug' => 'hrm.job-templates.destroy',
-                'description' => 'Job template delete permission',
-                'key' => 'hrm.job-templates',
-            ],
-
-            // Job Applications
-            [
-                'name' => 'Job Applications List',
-                'slug' => 'hrm.job-applications.index',
-                'description' => 'Job applications list permission',
-                'key' => 'hrm.job-applications',
-            ],
-
-
-            [
-                'name' => 'Job Application View',
-                'slug' => 'hrm.job-applications.show',
-                'description' => 'Job application show permission',
-                'key' => 'hrm.job-applications',
-            ],
-            [
-                'name' => 'Job Application Delete',
-                'slug' => 'hrm.job-applications.destroy',
-                'description' => 'Job application delete permission',
-                'key' => 'hrm.job-applications',
-            ],
-            [
-                'name' => 'Job Application Approve',
-                'slug' => 'hrm.job-applications.update-status',
-                'description' => 'Job application update status permission',
-                'key' => 'hrm.job-applications',
-            ],
-
-            // Reports
-            [
-                'name' => 'Daily Attendance Report',
-                'slug' => 'hrm.reports.daily-attendance-report',
-                'description' => 'Daily attendance report view permission',
-                'key' => 'hrm.reports',
-            ],
-            [
-                'name' => 'Monthly Attendance Report',
-                'slug' => 'hrm.reports.monthly-attendance-report',
-                'description' => 'Monthly attendance report view permission',
-                'key' => 'hrm.reports',
-            ],
-
-
-            // Custom Employee Routes
-            [
-                'name' => 'Employee Import',
-                'slug' => 'hrm.employees.import',
-                'description' => 'Employee import permission',
-                'key' => 'hrm.employees',
-            ],
-
-
-
-
 
+            
             //customers
             [
                 'name' => 'Create Customer',
@@ -1285,115 +290,7 @@ class PermissionTableSeed extends Seeder
                 'key' => 'crm.brokers'
             ],
 
-            //Customer Ratings
-            [
-                'name' => 'Create Rating',
-                'slug' => 'crm.customer-ratings.create',
-                'description' => 'Customer Rating create permission',
-                'key' => 'crm.customer-ratings'
-            ],
-
-            [
-                'name' => 'Rating List',
-                'slug' => 'crm.customer-ratings.index',
-                'description' => 'Customer Rating list permission',
-                'key' => 'crm.customer-ratings'
-            ],
-
-            [
-                'name' => 'Rating Update',
-                'slug' => 'crm.customer-ratings.update',
-                'description' => 'Customer Rating update permission',
-                'key' => 'crm.customer-ratings'
-            ],
-
-            [
-                'name' => 'Rating View',
-                'slug' => 'crm.customer-ratings.show',
-                'description' => 'Customer Rating show permission',
-                'key' => 'crm.customer-ratings'
-            ],
-
-            [
-                'name' => 'Rating Delete',
-                'slug' => 'crm.customer-ratings.destroy',
-                'description' => 'Customer Rating delete permission',
-                'key' => 'crm.customer-ratings'
-            ],
-
-            //customer-shippings
-            [
-                'name' => 'Create Shipping',
-                'slug' => 'crm.customer-shippings.create',
-                'description' => 'Customer Shipping create permission',
-                'key' => 'crm.customer-shippings'
-            ],
-
-            [
-                'name' => 'Shipping List',
-                'slug' => 'crm.customer-shippings.index',
-                'description' => 'Customer Shipping list permission',
-                'key' => 'crm.customer-shippings'
-            ],
-
-            [
-                'name' => 'Shipping Update',
-                'slug' => 'crm.customer-shippings.update',
-                'description' => 'Customer Shipping update permission',
-                'key' => 'crm.customer-shippings'
-            ],
-
-            [
-                'name' => 'Shipping View',
-                'slug' => 'crm.customer-shippings.show',
-                'description' => 'Customer Shipping show permission',
-                'key' => 'crm.customer-shippings'
-            ],
-
-            [
-                'name' => 'Shipping Delete',
-                'slug' => 'crm.customer-shippings.destroy',
-                'description' => 'Customer Shipping delete permission',
-                'key' => 'crm.customer-shippings'
-            ],
-
-            //customer-types
-            [
-                'name' => 'Create Customer Type',
-                'slug' => 'crm.customer-types.create',
-                'description' => 'Customer Type create permission',
-                'key' => 'crm.customer-types'
-            ],
-
-            [
-                'name' => 'Customer Type List',
-                'slug' => 'crm.customer-types.index',
-                'description' => 'Customer Type list permission',
-                'key' => 'crm.customer-types'
-            ],
-
-            [
-                'name' => 'Customer Type Update',
-                'slug' => 'crm.customer-types.update',
-                'description' => 'Customer Type update permission',
-                'key' => 'crm.customer-types'
-            ],
-
-            [
-                'name' => 'Customer Type View',
-                'slug' => 'crm.customer-types.show',
-                'description' => 'Customer Type show permission',
-                'key' => 'crm.customer-types'
-            ],
-
-            [
-                'name' => 'Customer Type Delete',
-                'slug' => 'crm.customer-types.destroy',
-                'description' => 'Customer Type delete permission',
-                'key' => 'crm.customer-types'
-            ],
-
-            //daily-calls
+             //daily-calls
             [
                 'name' => 'Create Daily Call',
                 'slug' => 'crm.daily-calls.create',
@@ -1458,834 +355,1292 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Credit Legal Task Assign permission',
                 'key' => 'crm.daily-credit-calls'
             ],
-
-
+            //customer-types
+            [
+                'name' => 'Create Customer Type',
+                'slug' => 'crm.customer-types.create',
+                'description' => 'Customer Type create permission',
+                'key' => 'crm.customer-types'
+            ],
 
+            [
+                'name' => 'Customer Type List',
+                'slug' => 'crm.customer-types.index',
+                'description' => 'Customer Type list permission',
+                'key' => 'crm.customer-types'
+            ],
 
-            //brands
             [
-                'name' => 'Create Brand',
-                'slug' => 'inv.brands.create',
-                'description' => 'Brand create permission',
-                'key' => 'inv.brands'
+                'name' => 'Customer Type Update',
+                'slug' => 'crm.customer-types.update',
+                'description' => 'Customer Type update permission',
+                'key' => 'crm.customer-types'
             ],
 
             [
-                'name' => 'Brand List',
-                'slug' => 'inv.brands.index',
-                'description' => 'Brand list permission',
-                'key' => 'inv.brands'
+                'name' => 'Customer Type View',
+                'slug' => 'crm.customer-types.show',
+                'description' => 'Customer Type show permission',
+                'key' => 'crm.customer-types'
             ],
 
             [
-                'name' => 'Brand Update',
-                'slug' => 'inv.brands.update',
-                'description' => 'Brand update permission',
-                'key' => 'inv.brands'
+                'name' => 'Customer Type Delete',
+                'slug' => 'crm.customer-types.destroy',
+                'description' => 'Customer Type delete permission',
+                'key' => 'crm.customer-types'
             ],
 
-            // [
-            //     'name'=> 'Brand View',
-            //     'slug'=> 'inv.brands.show',
-            //     'description'=> 'Brand show permission',
-            //     'key'=> 'inv.brands'
-            // ],
 
+            //Customer Ratings
             [
-                'name' => 'Brand Delete',
-                'slug' => 'inv.brands.destroy',
-                'description' => 'Brand delete permission',
-                'key' => 'inv.brands'
+                'name' => 'Create Rating',
+                'slug' => 'crm.customer-ratings.create',
+                'description' => 'Customer Rating create permission',
+                'key' => 'crm.customer-ratings'
             ],
 
-            //issue-products
-            // [
-            //     'name'=> 'Create Issue Product',
-            //     'slug'=> 'inv.issue-products.create',
-            //     'description'=> 'Issue Product create permission',
-            //     'key'=> 'inv.issue-products'
-            // ],
+            [
+                'name' => 'Rating List',
+                'slug' => 'crm.customer-ratings.index',
+                'description' => 'Customer Rating list permission',
+                'key' => 'crm.customer-ratings'
+            ],
 
-            // [
-            //     'name'=> 'Issue Product List',
-            //     'slug'=> 'inv.issue-products.index',
-            //     'description'=> 'Issue Product list permission',
-            //     'key'=> 'inv.issue-products'
-            // ],
+            [
+                'name' => 'Rating Update',
+                'slug' => 'crm.customer-ratings.update',
+                'description' => 'Customer Rating update permission',
+                'key' => 'crm.customer-ratings'
+            ],
 
-            // [
-            //     'name'=> 'Issue Product Update',
-            //     'slug'=> 'inv.issue-products.update',
-            //     'description'=> 'Issue Product update permission',
-            //     'key'=> 'inv.issue-products'
-            // ],
+            [
+                'name' => 'Rating View',
+                'slug' => 'crm.customer-ratings.show',
+                'description' => 'Customer Rating show permission',
+                'key' => 'crm.customer-ratings'
+            ],
 
-            // [
-            //     'name'=> 'Issue Product View',
-            //     'slug'=> 'inv.issue-products.show',
-            //     'description'=> 'Issue Product show permission',
-            //     'key'=> 'inv.issue-products'
-            // ],
+            [
+                'name' => 'Rating Delete',
+                'slug' => 'crm.customer-ratings.destroy',
+                'description' => 'Customer Rating delete permission',
+                'key' => 'crm.customer-ratings'
+            ],
+           
 
-            // [
-            //     'name'=> 'Issue Product Delete',
-            //     'slug'=> 'inv.issue-products.destroy',
-            //     'description'=> 'Issue Product delete permission',
-            //     'key'=> 'inv.issue-products'
-            // ],
+            //customer-shippings
+            [
+                'name' => 'Create Shipping',
+                'slug' => 'crm.customer-shippings.create',
+                'description' => 'Customer Shipping create permission',
+                'key' => 'crm.customer-shippings'
+            ],
 
-            //product-catalogs
             [
-                'name' => 'Create Product Catalog',
-                'slug' => 'inv.product-catalogs.create',
-                'description' => 'Product Catalog create permission',
-                'key' => 'inv.product-catalogs'
+                'name' => 'Shipping List',
+                'slug' => 'crm.customer-shippings.index',
+                'description' => 'Customer Shipping list permission',
+                'key' => 'crm.customer-shippings'
             ],
 
             [
-                'name' => 'Product Catalog List',
-                'slug' => 'inv.product-catalogs.index',
-                'description' => 'Product Catalog list permission',
-                'key' => 'inv.product-catalogs'
+                'name' => 'Shipping Update',
+                'slug' => 'crm.customer-shippings.update',
+                'description' => 'Customer Shipping update permission',
+                'key' => 'crm.customer-shippings'
             ],
 
             [
-                'name' => 'Product Catalog Update',
-                'slug' => 'inv.product-catalogs.update',
-                'description' => 'Product Catalog update permission',
-                'key' => 'inv.product-catalogs'
+                'name' => 'Shipping View',
+                'slug' => 'crm.customer-shippings.show',
+                'description' => 'Customer Shipping show permission',
+                'key' => 'crm.customer-shippings'
             ],
 
             [
-                'name' => 'Product Catalog View',
-                'slug' => 'inv.product-catalogs.show',
-                'description' => 'Product Catalog show permission',
-                'key' => 'inv.product-catalogs'
+                'name' => 'Shipping Delete',
+                'slug' => 'crm.customer-shippings.destroy',
+                'description' => 'Customer Shipping delete permission',
+                'key' => 'crm.customer-shippings'
             ],
 
+           
+            // CRM Reports
             [
-                'name' => 'Product Catalog Delete',
-                'slug' => 'inv.product-catalogs.destroy',
-                'description' => 'Product Catalog delete permission',
-                'key' => 'inv.product-catalogs'
+                'name' => 'Customer List (Machine Code) Report',
+                'description' => 'Permission to view CRM reports',
+                'slug' => 'crm.reports.customer-machine-code',
+                'key' => 'crm.reports',
             ],
             [
-                'name' => 'Product Catalog Settings',
-                'slug' => 'inv.product-catalogs.settings',
-                'description' => 'Product Catalog settings permission',
-                'key' => 'inv.product-catalogs'
+                'name' => 'Customer Balance Details Report',
+                'description' => 'Permission to view customer balance details',
+                'slug' => 'crm.reports.customer-balance-details',
+                'key' => 'crm.reports',
             ],
 
-            // product-transfers
+            //employees
             [
-                'name' => 'Create Product Transfer',
-                'slug' => 'inv.product-transfers.create',
-                'description' => 'Product Transfer create permission',
-                'key' => 'inv.product-transfers'
+                'name' => 'Create Employee',
+                'slug' => 'hrm.employees.create',
+                'description' => 'Employee create permission',
+                'key' => 'hrm.employees'
             ],
 
             [
-                'name' => 'Product Transfer List',
-                'slug' => 'inv.product-transfers.index',
-                'description' => 'Product Transfer list permission',
-                'key' => 'inv.product-transfers'
+                'name' => 'Employee List',
+                'slug' => 'hrm.employees.index',
+                'description' => 'Employee list permission',
+                'key' => 'hrm.employees'
             ],
 
             [
-                'name' => 'Product Transfer Update',
-                'slug' => 'inv.product-transfers.update',
-                'description' => 'Product Transfer update permission',
-                'key' => 'inv.product-transfers'
+                'name' => 'Employee Update',
+                'slug' => 'hrm.employees.update',
+                'description' => 'Employee update permission',
+                'key' => 'hrm.employees'
             ],
 
             [
-                'name' => 'Product Transfer View',
-                'slug' => 'inv.product-transfers.show',
-                'description' => 'Product Transfer show permission',
-                'key' => 'inv.product-transfers'
+                'name' => 'Employee View',
+                'slug' => 'hrm.employees.show',
+                'description' => 'Employee show permission',
+                'key' => 'hrm.employees'
             ],
 
             [
-                'name' => 'Product Transfer Delete',
-                'slug' => 'inv.product-transfers.destroy',
-                'description' => 'Product Transfer delete permission',
-                'key' => 'inv.product-transfers'
+                'name' => 'Employee Delete',
+                'slug' => 'hrm.employees.destroy',
+                'description' => 'Employee delete permission',
+                'key' => 'hrm.employees'
             ],
 
-            // product-transfer-requests
+            //Departments
             [
-                'name' => 'Create Product Transfer',
-                'slug' => 'inv.product-transfer-requests.create',
-                'description' => 'Product Transfer create permission',
-                'key' => 'inv.product-transfer-requests'
+                'name' => 'Departments List',
+                'slug' => 'hrm.departments.index',
+                'description' => 'Departments list permission',
+                'key' => 'hrm.departments',
             ],
-
             [
-                'name' => 'Product Transfer List',
-                'slug' => 'inv.product-transfer-requests.index',
-                'description' => 'Product Transfer list permission',
-                'key' => 'inv.product-transfer-requests'
+                'name' => 'Create Department',
+                'slug' => 'hrm.departments.create',
+                'description' => 'Department create permission',
+                'key' => 'hrm.departments',
             ],
-
             [
-                'name' => 'Product Transfer Update',
-                'slug' => 'inv.product-transfer-requests.update',
-                'description' => 'Product Transfer update permission',
-                'key' => 'inv.product-transfer-requests'
+                'name' => 'Department Update',
+                'slug' => 'hrm.departments.update',
+                'description' => 'Department update permission',
+                'key' => 'hrm.departments',
             ],
-
             [
-                'name' => 'Product Transfer View',
-                'slug' => 'inv.product-transfer-requests.show',
-                'description' => 'Product Transfer show permission',
-                'key' => 'inv.product-transfer-requests'
+                'name' => 'Department Delete',
+                'slug' => 'hrm.departments.destroy',
+                'description' => 'Department delete permission',
+                'key' => 'hrm.departments',
             ],
 
+            //Designations
             [
-                'name' => 'Product Transfer Delete',
-                'slug' => 'inv.product-transfer-requests.destroy',
-                'description' => 'Product Transfer delete permission',
-                'key' => 'inv.product-transfer-requests'
+                'name' => 'Designations List',
+                'slug' => 'hrm.designations.index',
+                'description' => 'Designations list permission',
+                'key' => 'hrm.designations',
             ],
-
+            [
+                'name' => 'Create Designation',
+                'slug' => 'hrm.designations.create',
+                'description' => 'Designation create permission',
+                'key' => 'hrm.designations',
+            ],
+            [
+                'name' => 'Designation Update',
+                'slug' => 'hrm.designations.update',
+                'description' => 'Designation update permission',
+                'key' => 'hrm.designations',
+            ],
+            [
+                'name' => 'Designation Delete',
+                'slug' => 'hrm.designations.destroy',
+                'description' => 'Designation delete permission',
+                'key' => 'hrm.designations',
+            ],
 
+            //attendance
             [
-                'name' => 'Product Transfer Approve',
-                'slug' => 'inv.product-transfer-requests.approve',
-                'description' => 'Product Transfer approve permission',
-                'key' => 'inv.product-transfer-requests'
+                'name' => 'Attendance List',
+                'slug' => 'hrm.attendances.index',
+                'description' => 'Attendance list permission',
+                'key' => 'hrm.attendances'
             ],
 
-            // product-offers
             [
-                'name' => 'Create Offers',
-                'slug' => 'inv.offers.create',
-                'description' => 'Offers create permission',
-                'key' => 'inv.offers'
+                'name' => 'Create Attendance',
+                'slug' => 'hrm.attendances.create',
+                'description' => 'Attendance create permission',
+                'key' => 'hrm.attendances'
             ],
 
+            [
+                'name' => 'Attendance Update',
+                'slug' => 'hrm.attendances.update',
+                'description' => 'Attendance update permission',
+                'key' => 'hrm.attendances'
+            ],
+ 
             [
-                'name' => 'Offers List',
-                'slug' => 'inv.offers.index',
-                'description' => 'Offers list permission',
-                'key' => 'inv.offers'
+                'name' => 'Attendance Delete',
+                'slug' => 'hrm.attendances.destroy',
+                'description' => 'Attendance delete permission',
+                'key' => 'hrm.attendances'
             ],
 
+            //attendance policy
             [
-                'name' => 'Offers Update',
-                'slug' => 'inv.offers.update',
-                'description' => 'Offers update permission',
-                'key' => 'inv.offers'
+                'name' => 'Attendance Policy',
+                'slug' => 'hrm.attendance-policies.index',
+                'description' => 'Attendance policy permission',
+                'key' => 'hrm.attendance-policies'
             ],
 
             [
-                'name' => 'Offers View',
-                'slug' => 'inv.offers.show',
-                'description' => 'Offers show permission',
-                'key' => 'inv.offers'
+                'name' => 'Create Attendance Policy',
+                'slug' => 'hrm.attendance-policies.create',
+                'description' => 'Attendance create permission',
+                'key' => 'hrm.attendance-policies'
             ],
 
             [
-                'name' => 'Offers Delete',
-                'slug' => 'inv.offers.destroy',
-                'description' => 'Offers delete permission',
-                'key' => 'inv.offers'
+                'name' => 'Attendance Policy Update ',
+                'slug' => 'hrm.attendance-policies.update',
+                'description' => 'Attendance update permission',
+                'key' => 'hrm.attendance-policies'
             ],
+ 
+            [
+                'name' => 'Attendance Policy Delete',
+                'slug' => 'hrm.attendance-policies.destroy',
+                'description' => 'Attendance delete permission',
+                'key' => 'hrm.attendance-policies'
+            ],
 
-            // [
-            //     'name'=> 'Create Stocks',
-            //     'slug'=> 'inv.stocks.create',
-            //     'description'=> 'Stocks create permission',
-            //     'key'=> 'inv.stocks'
-            // ],
+             //leave application
+            [
+                'name' => 'Leave Application List',
+                'slug' => 'hrm.leaves.index',
+                'description' => 'Leave application list permission',
+                'key' => 'hrm.leaves'
+            ],
 
             [
-                'name' => 'Stocks List',
-                'slug' => 'inv.stocks.index',
-                'description' => 'Stocks list permission',
-                'key' => 'inv.stocks'
+                'name' => 'Create Leave Application',
+                'slug' => 'hrm.leaves.create',
+                'description' => 'Leave application create permission',
+                'key' => 'hrm.leaves'
             ],
 
-            // [
-            //     'name'=> 'Stocks Update',
-            //     'slug'=> 'inv.stocks.update',
-            //     'description'=> 'Stocks update permission',
-            //     'key'=> 'inv.stocks'
-            // ],
+            [
+                'name' => 'Leave Application Update',
+                'slug' => 'hrm.leaves.update',
+                'description' => 'Leave application update permission',
+                'key' => 'hrm.leaves'
+            ],
 
-            // [
-            //     'name'=> 'Stocks View',
-            //     'slug'=> 'inv.stocks.show',
-            //     'description'=> 'Stocks show permission',
-            //     'key'=> 'inv.stocks'
-            // ],
 
-            // [
-            //     'name'=> 'Stocks Delete',
-            //     'slug'=> 'inv.stocks.destroy',
-            //     'description'=> 'Stocks delete permission',
-            //     'key'=> 'inv.stocks'
-            // ],
 
-            //branchs
-            //branchs
             [
-                'name' => 'Create Branches',
-                'slug' => 'access_control.branchs.create',
-                'description' => 'Branches create permission',
-                'key' => 'access_control.branchs'
+                'name' => 'Leave Application Delete',
+                'slug' => 'hrm.leaves.destroy',
+                'description' => 'Leave application delete permission',
+                'key' => 'hrm.leaves'
             ],
-
             [
-                'name' => 'Branches List',
-                'slug' => 'access_control.branchs.index',
-                'description' => 'Branches list permission',
-                'key' => 'access_control.branchs'
+                'name' => 'Leave Application Recommended',
+                'slug' => 'hrm.leaves.recommended',
+                'description' => 'Leave application recommended permission',
+                'key' => 'hrm.leaves'
             ],
 
             [
-                'name' => 'Branches Update',
-                'slug' => 'access_control.branchs.update',
-                'description' => 'Branches update permission',
-                'key' => 'access_control.branchs'
+                'name' => 'Leave Application Approved',
+                'slug' => 'hrm.leaves.approved',
+                'description' => 'Leave application approved permission',
+                'key' => 'hrm.leaves'
             ],
+             
 
+            //Leave Types
             [
-                'name' => 'Branches View',
-                'slug' => 'access_control.branchs.show',
-                'description' => 'Branches show permission',
-                'key' => 'access_control.branchs'
+                'name' => 'Leave Types List',
+                'slug' => 'hrm.leave-types.index',
+                'description' => 'Leave types list permission',
+                'key' => 'hrm.leave-types',
             ],
-
             [
-                'name' => 'Branches Delete',
-                'slug' => 'access_control.branchs.destroy',
-                'description' => 'Branches delete permission',
-                'key' => 'access_control.branchs'
+                'name' => 'Create Leave Type',
+                'slug' => 'hrm.leave-types.create',
+                'description' => 'Leave type create permission',
+                'key' => 'hrm.leave-types',
             ],
-
-
-            //units
             [
-                'name' => 'Create Unit',
-                'slug' => 'inv.settings.units.create',
-                'description' => 'Unit create permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Leave Type Update',
+                'slug' => 'hrm.leave-types.update',
+                'description' => 'Leave type update permission',
+                'key' => 'hrm.leave-types',
             ],
-
             [
-                'name' => 'Units List',
-                'slug' => 'inv.settings.units.index',
-                'description' => 'Units list permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Leave Type Delete',
+                'slug' => 'hrm.leave-types.destroy',
+                'description' => 'Leave type delete permission',
+                'key' => 'hrm.leave-types',
             ],
-
+ 
+ 
+            //Leave Group
             [
-                'name' => 'Units Update',
-                'slug' => 'inv.settings.units.update',
-                'description' => 'Units update permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Leave Group List',
+                'slug' => 'hrm.leave-group.index',
+                'description' => 'Leave group list permission',
+                'key' => 'hrm.leave-group',
             ],
-
-            // [
-            //     'name'=> 'Units View',
-            //     'slug'=> 'inv.settings.units.show',
-            //     'description'=> 'Units show permission',
-            //     'key'=> 'inv.settings.units'
-            // ],
-
             [
-                'name' => 'Units Delete',
-                'slug' => 'inv.settings.units.destroy',
-                'description' => 'Units delete permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Create Leave Group',
+                'slug' => 'hrm.leave-group.create',
+                'description' => 'Leave group create permission',
+                'key' => 'hrm.leave-group',
             ],
-
-            //product-types
             [
-                'name' => 'Create Product Type',
-                'slug' => 'inv.product-types.create',
-                'description' => 'Product Type create permission',
-                'key' => 'inv.product-types'
+                'name' => 'Leave Group Update',
+                'slug' => 'hrm.leave-group.update',
+                'description' => 'Leave group update permission',
+                'key' => 'hrm.leave-group',
             ],
-
             [
-                'name' => 'Product Type List',
-                'slug' => 'inv.product-types.index',
-                'description' => 'Product Type list permission',
-                'key' => 'inv.product-types'
+                'name' => 'Leave Group Delete',
+                'slug' => 'hrm.leave-group.destroy',
+                'description' => 'Leave group delete permission',
+                'key' => 'hrm.leave-group',
             ],
 
+ 
+            //Leave Year
             [
-                'name' => 'Product Type Update',
-                'slug' => 'inv.product-types.update',
-                'description' => 'Product Type update permission',
-                'key' => 'inv.product-types'
+                'name' => 'Leave Year List',
+                'slug' => 'hrm.leave-year.index',
+                'description' => 'Leave year list permission',
+                'key' => 'hrm.leave-year',
             ],
-
-            // [
-            //     'name'=> 'Product Type View',
-            //     'slug'=> 'inv.product-types.show',
-            //     'description'=> 'Product Type show permission',
-            //     'key'=> 'inv.product-types'
-            // ],
-
             [
-                'name' => 'Product Type Delete',
-                'slug' => 'inv.product-types.destroy',
-                'description' => 'Product Type delete permission',
-                'key' => 'inv.product-types'
+                'name' => 'Create Leave Year',
+                'slug' => 'hrm.leave-year.create',
+                'description' => 'Leave year create permission',
+                'key' => 'hrm.leave-year',
             ],
-
-            //products
-            // [
-            //     'name'=> 'Create Product',
-            //     'slug'=> 'inv.products.create',
-            //     'description'=> 'Product create permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            // [
-            //     'name'=> 'Product List',
-            //     'slug'=> 'inv.products.index',
-            //     'description'=> 'Product list permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            // [
-            //     'name'=> 'Product Update',
-            //     'slug'=> 'inv.products.update',
-            //     'description'=> 'Product update permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            // [
-            //     'name'=> 'Product View',
-            //     'slug'=> 'inv.products.show',
-            //     'description'=> 'Product show permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            // [
-            //     'name'=> 'Product Delete',
-            //     'slug'=> 'inv.products.destroy',
-            //     'description'=> 'Product delete permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            //products
             [
-                'name' => 'Product Price List',
-                'slug' => 'inv.products.price-list',
-                'description' => 'Product price list permission',
-                'key' => 'inv.products'
+                'name' => 'Leave Year Update',
+                'slug' => 'hrm.leave-year.update',
+                'description' => 'Leave year update permission',
+                'key' => 'hrm.leave-year',
             ],
-
-            // [
-            //     'name'=> 'Product List',
-            //     'slug'=> 'inv.products.index',
-            //     'description'=> 'Product list permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            // [
-            //     'name'=> 'Product Update',
-            //     'slug'=> 'inv.products.update',
-            //     'description'=> 'Product update permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            // [
-            //     'name'=> 'Product View',
-            //     'slug'=> 'inv.products.show',
-            //     'description'=> 'Product show permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            // [
-            //     'name'=> 'Product Delete',
-            //     'slug'=> 'inv.products.destroy',
-            //     'description'=> 'Product delete permission',
-            //     'key'=> 'inv.products'
-            // ],
-
-            //approvers
-            // [
-            //     'name'=> 'Create Approver',
-            //     'slug'=> 'inv.settings.approvers.create',
-            //     'description'=> 'Approver create permission',
-            //     'key'=> 'inv.settings.approvers'
-            // ],
+            [
+                'name' => 'Leave Year Delete',
+                'slug' => 'hrm.leave-year.destroy',
+                'description' => 'Leave year delete permission',
+                'key' => 'hrm.leave-year',
+            ],
+ 
+            //Leave Approver Setup
+            [
+                'name' => 'Leave Approver Setup List',
+                'slug' => 'hrm.leave-approver-setup.index',
+                'description' => 'Leave approver setup list permission',
+                'key' => 'hrm.leave-approver-setup',
+            ],
+            [
+                'name' => 'Create Leave Approver Setup',
+                'slug' => 'hrm.leave-approver-setup.create',
+                'description' => 'Leave approver setup create permission',
+                'key' => 'hrm.leave-approver-setup',
+            ],
+            [
+                'name' => 'Leave Approver Setup Update',
+                'slug' => 'hrm.leave-approver-setup.update',
+                'description' => 'Leave approver setup update permission',
+                'key' => 'hrm.leave-approver-setup',
+            ],
+            [
+                'name' => 'Leave Approver Setup Delete',
+                'slug' => 'hrm.leave-approver-setup.destroy',
+                'description' => 'Leave approver setup delete permission',
+                'key' => 'hrm.leave-approver-setup',
+            ],
+        
 
-            // [
-            //     'name'=> 'Approver List',
-            //     'slug'=> 'inv.settings.approvers.index',
-            //     'description'=> 'Approver list permission',
-            //     'key'=> 'inv.settings.approvers'
-            // ],
+            //Leave status
+            [
+                'name' => 'Leave Status List',
+                'slug' => 'hrm.leave-status.index',
+                'description' => 'Leave status list permission',
+                'key' => 'hrm.leave-status',
+            ],
+            [
+                'name' => 'Create Status Setup',
+                'slug' => 'hrm.leave-status.create',
+                'description' => 'Leave status create permission',
+                'key' => 'hrm.leave-status',
+            ],
+            [
+                'name' => 'Leave Status Update',
+                'slug' => 'hrm.leave-status.update',
+                'description' => 'Leave status update permission',
+                'key' => 'hrm.leave-status',
+            ],
+            [
+                'name' => 'Leave Statusp Delete',
+                'slug' => 'hrm.leave-status.destroy',
+                'description' => 'Leave status delete permission',
+                'key' => 'hrm.leave-status',
+            ],
+            
 
-            // [
-            //     'name'=> 'Approver Update',
-            //     'slug'=> 'inv.settings.approvers.update',
-            //     'description'=> 'Approver update permission',
-            //     'key'=> 'inv.settings.approvers'
-            // ],
+            //Leave Eligible Employees
+            [
+                'name' => 'Leave Eligible Employees List',
+                'slug' => 'hrm.leave-eligible-employee.index',
+                'description' => 'Leave eligible employee list permission',
+                'key' => 'hrm.leave-eligible-employee',
+            ],
+            [
+                'name' => 'Create Eligible Employees Setup',
+                'slug' => 'hrm.leave-eligible-employee.create',
+                'description' => 'Leave eligible employee create permission',
+                'key' => 'hrm.leave-eligible-employee',
+            ],
+            [
+                'name' => 'Leave Eligible Employees Update',
+                'slug' => 'hrm.leave-eligible-employee.update',
+                'description' => 'Leave eligible employee update permission',
+                'key' => 'hrm.leave-eligible-employee',
+            ],
+            [
+                'name' => 'Leave Eligible Employees Delete',
+                'slug' => 'hrm.leave-eligible-employee.destroy',
+                'description' => 'Leave eligible employee delete permission',
+                'key' => 'hrm.leave-eligible-employee',
 
-            // [
-            //     'name'=> 'Approver View',
-            //     'slug'=> 'inv.settings.approvers.show',
-            //     'description'=> 'Approver show permission',
-            //     'key'=> 'inv.settings.approvers'
-            // ],
 
-            // [
-            //     'name'=> 'Approver Delete',
-            //     'slug'=> 'inv.settings.approvers.destroy',
-            //     'description'=> 'Approver delete permission',
-            //     'key'=> 'inv.settings.approvers'
-            // ],
+            ],
+ 
+           
 
-            //tags
+            //Leave Adjustments
+            [
+                'name' => 'Leave Adjustments List',
+                'slug' => 'hrm.leave-adjustment.index',
+                'description' => 'Leave adjustment list permission',
+                'key' => 'hrm.leave-adjustment',
+            ],
+            [
+                'name' => 'Create Adjustments Setup',
+                'slug' => 'hrm.leave-adjustment.create',
+                'description' => 'Leave adjustment create permission',
+                'key' => 'hrm.leave-adjustment',
+            ],
+            [
+                'name' => 'Leave Adjustments Update',
+                'slug' => 'hrm.leave-adjustment.update',
+                'description' => 'Leave adjustment update permission',
+                'key' => 'hrm.leave-adjustment',
+            ],
             [
-                'name' => 'Create Tag',
-                'slug' => 'inv.settings.tags.create',
-                'description' => 'Tag create permission',
-                'key' => 'inv.settings.tags'
+                'name' => 'Leave Adjustments Delete',
+                'slug' => 'hrm.leave-adjustment.destroy',
+                'description' => 'Leave adjustment delete permission',
+                'key' => 'hrm.leave-adjustment',
             ],
+ 
 
+            // Salary generate
+            [
+                'name' => 'Payrolls View',
+                'slug' => 'hrm.payrolls',
+                'description' => 'Payrolls view permission',
+                'key' => 'hrm.salary-generates',
+            ],
+            [
+                'name' => 'Salary Generates List',
+                'slug' => 'hrm.salary-generates.index',
+                'description' => 'Salary generates list permission',
+                'key' => 'hrm.salary-generates',
+            ],
+            [
+                'name' => 'Create Salary Generate',
+                'slug' => 'hrm.salary-generates.create',
+                'description' => 'Salary generate create permission',
+                'key' => 'hrm.salary-generates',
+            ],
+            [
+                'name' => 'Salary Generate Update',
+                'slug' => 'hrm.salary-generates.update',
+                'description' => 'Salary generate update permission',
+                'key' => 'hrm.salary-generates',
+            ],
             [
+                'name' => 'Salary Generate View',
+                'slug' => 'hrm.salary-generates.show',
+                'description' => 'Salary generate show permission',
+                'key' => 'hrm.salary-generates',
+            ], 
 
-                'name' => 'Tag List',
-                'slug' => 'inv.settings.tags.index',
-                'description' => 'Tag list permission',
-                'key' => 'inv.settings.tags'
+            //Salary Setups
+            [
+                'name' => 'Salary Setups List',
+                'slug' => 'hrm.salary-setups.index',
+                'description' => 'Salary setups list permission',
+                'key' => 'hrm.salary-setups',
+            ],
+            [
+                'name' => 'Create Salary Setup',
+                'slug' => 'hrm.salary-setups.create',
+                'description' => 'Salary setup create permission',
+                'key' => 'hrm.salary-setups',
+            ],
+            [
+                'name' => 'Salary Setup Update',
+                'slug' => 'hrm.salary-setups.update',
+                'description' => 'Salary setup update permission',
+                'key' => 'hrm.salary-setups',
             ],
 
             [
-                'name' => 'Tag Update',
-                'slug' => 'inv.settings.tags.update',
-                'description' => 'Tag update permission',
-                'key' => 'inv.settings.tags'
+                'name' => 'Salary Setup Delete',
+                'slug' => 'hrm.salary-setups.destroy',
+                'description' => 'Salary setup delete permission',
+                'key' => 'hrm.salary-setups',
             ],
 
-            //  [
-            //     'name'=> 'Tag View',
-            //     'slug'=> 'inv.settings.tags.show',
-            //     'description'=> 'Tag show permission',
-            //     'key'=> 'inv.settings.tags'
-            //  ],
+ 
 
+            // Salary generation policy
             [
-                'name' => 'Tag Delete',
-                'slug' => 'inv.settings.tags.destroy',
-                'description' => 'Tag delete permission',
-                'key' => 'inv.settings.tags'
+                'name' => 'Salary Generation Policy List',
+                'slug' => 'hrm.salary-generation-policy.index',
+                'description' => 'Salary generation policy list permission',
+                'key' => 'hrm.salary-generation-policy',
             ],
-
-            //units
             [
-                'name' => 'Create Unit',
-                'slug' => 'inv.settings.units.create',
-                'description' => 'Unit create permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Create Generation Policy Setup',
+                'slug' => 'hrm.salary-generation-policy.create',
+                'description' => 'Salary generation policy create permission',
+                'key' => 'hrm.salary-generation-policy',
             ],
-
             [
-                'name' => 'Unit List',
-                'slug' => 'inv.settings.units.index',
-                'description' => 'Unit list permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Salary Generation Policy Update',
+                'slug' => 'hrm.salary-generation-policy.update',
+                'description' => 'Salary generation policy update permission',
+                'key' => 'hrm.salary-generation-policy',
             ],
 
             [
-                'name' => 'Unit Update',
-                'slug' => 'inv.settings.units.update',
-                'description' => 'Unit update permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Salary Generation Policy Delete',
+                'slug' => 'hrm.salary-generation-policy.destroy',
+                'description' => 'Salary generation policy delete permission',
+                'key' => 'hrm.salary-generation-policy',
             ],
 
-            //  [
-            //     'name'=> 'Unit View',
-            //     'slug'=> 'inv.settings.units.show',
-            //     'description'=> 'Unit show permission',
-            //     'key'=> 'inv.settings.units'
-            //  ],
 
+            // Salary deduction policy
             [
-                'name' => 'Unit Delete',
-                'slug' => 'inv.settings.units.destroy',
-                'description' => 'Unit delete permission',
-                'key' => 'inv.settings.units'
+                'name' => 'Salary Deduction Policy List',
+                'slug' => 'hrm.salary-deduction-policy.index',
+                'description' => 'Salary deduction policy list permission',
+                'key' => 'hrm.salary-deduction-policy',
             ],
-
-
-            //branch-types
             [
-                'name' => 'Create Branch Type',
-                'slug' => 'access_control.branch-types.create',
-                'description' => 'Branch Type create permission',
-                'key' => 'access_control.branch-types'
+                'name' => 'Create Deduction Policy Setup',
+                'slug' => 'hrm.salary-deduction-policy.create',
+                'description' => 'Salary deduction policy create permission',
+                'key' => 'hrm.salary-setups',
             ],
-
             [
-                'name' => 'Branch Type List',
-                'slug' => 'access_control.branch-types.index',
-                'description' => 'Branch Type list permission',
-                'key' => 'access_control.branch-types'
+                'name' => 'Salary Deduction Policy Update',
+                'slug' => 'hrm.salary-deduction-policy.update',
+                'description' => 'Salary deduction policy update permission',
+                'key' => 'hrm.salary-deduction-policy',
             ],
 
             [
-                'name' => 'Branch Type Update',
-                'slug' => 'access_control.branch-types.update',
-                'description' => 'Branch Type update permission',
-                'key' => 'access_control.branch-types'
+                'name' => 'Salary Deduction Policy Delete',
+                'slug' => 'hrm.salary-deduction-policy.destroy',
+                'description' => 'Salary deduction policy delete permission',
+                'key' => 'hrm.salary-deduction-policy',
             ],
-
+ 
+            //Salary Signatory
             [
-                'name' => 'Branch Type View',
-                'slug' => 'access_control.branch-types.show',
-                'description' => 'Branch Type show permission',
-                'key' => 'access_control.branch-types'
+                'name' => 'Salary Signatory List',
+                'slug' => 'hrm.salary-signatories.index',
+                'description' => 'Salary signatories list permission',
+                'key' => 'hrm.salary-signatories',
             ],
-
             [
-                'name' => 'Branch Type Delete',
-                'slug' => 'access_control.branch-types.destroy',
-                'description' => 'Branch Type delete permission',
-                'key' => 'access_control.branch-types'
+                'name' => 'Create Signatory Setup',
+                'slug' => 'hrm.salary-signatories.create',
+                'description' => 'Salary signatories create permission',
+                'key' => 'hrm.salary-signatories',
             ],
-
-
-
+            [
+                'name' => 'Salary Signatory Update',
+                'slug' => 'hrm.salary-signatories.update',
+                'description' => 'Salary signatories update permission',
+                'key' => 'hrm.salary-signatories',
+            ],
 
+            [
+                'name' => 'Salary Signatory Delete',
+                'slug' => 'hrm.salary-signatories.destroy',
+                'description' => 'Salary signatories delete permission',
+                'key' => 'hrm.salary-signatories',
+            ],
+ 
+            //bill
+            [
+                'name' => 'TA/DA List',
+                'slug' => 'hrm.bills.index',
+                'description' => 'TA/DA list permission',
+                'key' => 'hrm.bills'
+            ],
 
+            [
+                'name' => 'Create TA/DA',
+                'slug' => 'hrm.bills.create',
+                'description' => 'TA/DA create permission',
+                'key' => 'hrm.bills'
+            ],
 
-            //Divisions
+            [
+                'name' => 'TA/DA Update',
+                'slug' => 'hrm.bills.update',
+                'description' => 'TA/DA update permission',
+                'key' => 'hrm.bills'
+            ],
 
             [
-                'name' => 'Divisions Create',
-                'slug' => 'location_manager.divisions.create',
-                'description' => 'Divisions create permission',
-                'key' => 'location_manager.divisions'
+                'name' => 'TA/DA View',
+                'slug' => 'hrm.bills.show',
+                'description' => 'TA/DA show permission',
+                'key' => 'hrm.bills'
             ],
 
+            [
+                'name' => 'TA/DA Delete',
+                'slug' => 'hrm.bills.destroy',
+                'description' => 'TA/DA delete permission',
+                'key' => 'hrm.bills'
+            ],
             [
-                'name' => 'Divisions List',
-                'slug' => 'location_manager.divisions.index',
-                'description' => 'Divisions index permission',
-                'key' => 'location_manager.divisions'
+                'name' => 'TA/DA Team Leader Verify',
+                'slug' => 'hrm.bills.team_leader_verify',
+                'description' => 'TA/DA team leader verify permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Divisions Update',
-                'slug' => 'location_manager.divisions.update',
-                'description' => 'Divisions update permission',
-                'key' => 'location_manager.divisions'
+                'name' => 'TA/DA HR/Accounts Verify',
+                'slug' => 'hrm.bills.accounts_verify',
+                'description' => 'TA/DA HR/accounts verify permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Divisions View',
-                'slug' => 'location_manager.divisions.show',
-                'description' => 'Divisions show permission',
-                'key' => 'location_manager.divisions'
+                'name' => 'TA/DA Final Approve',
+                'slug' => 'hrm.bills.final_approve',
+                'description' => 'TA/DA final approve permission',
+                'key' => 'hrm.bills'
             ],
 
             [
-                'name' => 'Divisions Delete',
-                'slug' => 'location_manager.divisions.destroy',
-                'description' => 'Divisions delete permission',
-                'key' => 'location_manager.divisions'
+                'name' => 'TA/DA Verify',
+                'slug' => 'hrm.bills.verify',
+                'description' => 'TA/DA Verification List',
+                'key' => 'hrm.bills'
             ],
 
-            //districts
 
+             // Daily Visit Plans
             [
-                'name' => 'Create Districts',
-                'slug' => 'location_manager.districts.create',
-                'description' => 'Districts create permission',
-                'key' => 'location_manager.districts'
+                'name' => 'Daily Visit Plans List',
+                'slug' => 'hrm.daily-visit-plans.index',
+                'description' => 'Daily visit plans list permission',
+                'key' => 'hrm.daily-visit-plans',
             ],
-
             [
-                'name' => 'Districts List',
-                'slug' => 'location_manager.districts.index',
-                'description' => 'Districts index permission',
-                'key' => 'location_manager.districts'
+                'name' => 'Create Daily Visit Plan',
+                'slug' => 'hrm.daily-visit-plans.create',
+                'description' => 'Daily visit plan create permission',
+                'key' => 'hrm.daily-visit-plans',
             ],
-
+            [
+                'name' => 'Daily Visit Plan Update',
+                'slug' => 'hrm.daily-visit-plans.update',
+                'description' => 'Daily visit plan update permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan View',
+                'slug' => 'hrm.daily-visit-plans.show',
+                'description' => 'Daily visit plan show permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan Delete',
+                'slug' => 'hrm.daily-visit-plans.destroy',
+                'description' => 'Daily visit plan delete permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan Approve',
+                'slug' => 'hrm.daily-visit-plans.approve',
+                'description' => 'Daily visit plan approve permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
             [
-                'name' => 'Districts Update',
-                'slug' => 'location_manager.districts.update',
-                'description' => 'Districts update permission',
-                'key' => 'location_manager.districts'
+                'name' => 'Daily Visit Plan Deny',
+                'slug' => 'hrm.daily-visit-plans.deny',
+                'description' => 'Daily visit plan deny permission',
+                'key' => 'hrm.daily-visit-plans',
             ],
 
+            // Loans
+            [
+                'name' => 'Loans List',
+                'slug' => 'hrm.loans.index',
+                'description' => 'Loans list permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Create Loan',
+                'slug' => 'hrm.loans.create',
+                'description' => 'Loan create permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan Update',
+                'slug' => 'hrm.loans.update',
+                'description' => 'Loan update permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan View',
+                'slug' => 'hrm.loans.show',
+                'description' => 'Loan show permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan Delete',
+                'slug' => 'hrm.loans.destroy',
+                'description' => 'Loan delete permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan Approve',
+                'slug' => 'hrm.loans.approve',
+                'description' => 'Loan approve permission',
+                'key' => 'hrm.loans',
+            ],
             [
-                'name' => 'Districts View',
-                'slug' => 'location_manager.districts.show',
-                'description' => 'Districts show permission',
-                'key' => 'location_manager.districts'
+                'name' => 'Loan Deny',
+                'slug' => 'hrm.loans.deny',
+                'description' => 'Loan deny permission',
+                'key' => 'hrm.loans',
             ],
 
+           
+            // Monthly KPI Appraisals
+            [
+                'name' => 'Monthly KPI Appraisals List',
+                'slug' => 'hrm.kpis.monthly-kpi-appraisals.index',
+                'description' => 'Monthly KPI appraisals list permission',
+                'key' => 'hrm.kpis.monthly-kpi-appraisals',
+            ],
+            [
+                'name' => 'Create Monthly KPI Appraisal',
+                'slug' => 'hrm.kpis.monthly-kpi-appraisals.create',
+                'description' => 'Monthly KPI appraisal create permission',
+                'key' => 'hrm.kpis.monthly-kpi-appraisals',
+            ],
+            [
+                'name' => 'Monthly KPI Appraisal Update',
+                'slug' => 'hrm.kpis.monthly-kpi-appraisals.update',
+                'description' => 'Monthly KPI appraisal update permission',
+                'key' => 'hrm.kpis.monthly-kpi-appraisals',
+            ],
+            [
+                'name' => 'Monthly KPI Appraisal View',
+                'slug' => 'hrm.kpis.monthly-kpi-appraisals.show',
+                'description' => 'Monthly KPI appraisal show permission',
+                'key' => 'hrm.kpis.monthly-kpi-appraisals',
+            ],
+            [
+                'name' => 'Monthly KPI Appraisal Delete',
+                'slug' => 'hrm.kpis.monthly-kpi-appraisals.destroy',
+                'description' => 'Monthly KPI appraisal delete permission',
+                'key' => 'hrm.kpis.monthly-kpi-appraisals',
+            ],
+            [
+                'name' => 'Monthly KPI Appraisal Approve',
+                'slug' => 'hrm.kpis.monthly-kpi-appraisals.approve',
+                'description' => 'Monthly KPI appraisal approve permission',
+                'key' => 'hrm.kpis.monthly-kpi-appraisals',
+            ],
             [
-                'name' => 'Districts Delete',
-                'slug' => 'location_manager.districts.destroy',
-                'description' => 'Districts delete permission',
-                'key' => 'location_manager.districts'
+                'name' => 'Monthly KPI Appraisal Reject',
+                'slug' => 'hrm.kpis.monthly-kpi-appraisals.reject',
+                'description' => 'Monthly KPI appraisal reject permission',
+                'key' => 'hrm.kpis.monthly-kpi-appraisals',
             ],
 
+             // KPI Assignments
+            [
+                'name' => 'KPI Assignments List',
+                'slug' => 'hrm.kpis.kpi-assignments.index',
+                'description' => 'KPI assignments list permission',
+                'key' => 'hrm.kpis.kpi-assignments',
+            ],
+            [
+                'name' => 'Create KPI Assignment',
+                'slug' => 'hrm.kpis.kpi-assignments.create',
+                'description' => 'KPI assignment create permission',
+                'key' => 'hrm.kpis.kpi-assignments',
+            ],
+            [
+                'name' => 'KPI Assignment Update',
+                'slug' => 'hrm.kpis.kpi-assignments.update',
+                'description' => 'KPI assignment update permission',
+                'key' => 'hrm.kpis.kpi-assignments',
+            ],
+            [
+                'name' => 'KPI Assignment View',
+                'slug' => 'hrm.kpis.kpi-assignments.show',
+                'description' => 'KPI assignment show permission',
+                'key' => 'hrm.kpis.kpi-assignments',
+            ],
+            [
+                'name' => 'KPI Assignment Delete',
+                'slug' => 'hrm.kpis.kpi-assignments.destroy',
+                'description' => 'KPI assignment delete permission',
+                'key' => 'hrm.kpis.kpi-assignments',
+            ],
+            // KPI Templates
+            [
+                'name' => 'KPI Templates List',
+                'slug' => 'hrm.kpis.kpi-templates.index',
+                'description' => 'KPI templates list permission',
+                'key' => 'hrm.kpis.kpi-templates',
+            ],
+            [
+                'name' => 'Create KPI Template',
+                'slug' => 'hrm.kpis.kpi-templates.create',
+                'description' => 'KPI template create permission',
+                'key' => 'hrm.kpis.kpi-templates',
+            ],
+            [
+                'name' => 'KPI Template Update',
+                'slug' => 'hrm.kpis.kpi-templates.update',
+                'description' => 'KPI template update permission',
+                'key' => 'hrm.kpis.kpi-templates',
+            ],
+            [
+                'name' => 'KPI Template View',
+                'slug' => 'hrm.kpis.kpi-templates.show',
+                'description' => 'KPI template show permission',
+                'key' => 'hrm.kpis.kpi-templates',
+            ],
+            [
+                'name' => 'KPI Template Delete',
+                'slug' => 'hrm.kpis.kpi-templates.destroy',
+                'description' => 'KPI template delete permission',
+                'key' => 'hrm.kpis.kpi-templates',
+            ],
 
-            //thanas
+            // Responsibility Entries
+            [
+                'name' => 'Responsibility Entries List',
+                'slug' => 'hrm.kpis.responsibility-entries.index',
+                'description' => 'Responsibility entries list permission',
+                'key' => 'hrm.kpis.responsibility-entries',
+            ],
+            [
+                'name' => 'Create Responsibility Entry',
+                'slug' => 'hrm.kpis.responsibility-entries.create',
+                'description' => 'Responsibility entry create permission',
+                'key' => 'hrm.kpis.responsibility-entries',
+            ],
+            [
+                'name' => 'Responsibility Entry Update',
+                'slug' => 'hrm.kpis.responsibility-entries.update',
+                'description' => 'Responsibility entry update permission',
+                'key' => 'hrm.kpis.responsibility-entries',
+            ],
+            [
+                'name' => 'Responsibility Entry Delete',
+                'slug' => 'hrm.kpis.responsibility-entries.destroy',
+                'description' => 'Responsibility entry delete permission',
+                'key' => 'hrm.kpis.responsibility-entries',
+            ],
+            // Score Wise Suggestions
+            [
+                'name' => 'Score Wise Suggestions List',
+                'slug' => 'hrm.kpis.score-wise-suggestions.index',
+                'description' => 'Score wise suggestions list permission',
+                'key' => 'hrm.kpis.score-wise-suggestions',
+            ],
+            [
+                'name' => 'Create Score Wise Suggestion',
+                'slug' => 'hrm.kpis.score-wise-suggestions.create',
+                'description' => 'Score wise suggestion create permission',
+                'key' => 'hrm.kpis.score-wise-suggestions',
+            ],
+            [
+                'name' => 'Score Wise Suggestion Update',
+                'slug' => 'hrm.kpis.score-wise-suggestions.update',
+                'description' => 'Score wise suggestion update permission',
+                'key' => 'hrm.kpis.score-wise-suggestions',
+            ],
+            [
+                'name' => 'Score Wise Suggestion Delete',
+                'slug' => 'hrm.kpis.score-wise-suggestions.destroy',
+                'description' => 'Score wise suggestion delete permission',
+                'key' => 'hrm.kpis.score-wise-suggestions',
+            ],
 
+            //notice board
             [
-                'name' => 'Create Thanas',
-                'slug' => 'location_manager.thanas.create',
-                'description' => 'Thanas create permission',
-                'key' => 'location_manager.thanas'
+                'name' => 'Notice Board List',
+                'slug' => 'hrm.noticeboards.index',
+                'description' => 'Notice board list permission',
+                'key' => 'hrm.noticeboards'
             ],
 
             [
-                'name' => 'Thanas List',
-                'slug' => 'location_manager.thanas.index',
-                'description' => 'Thanas index permission',
-                'key' => 'location_manager.thanas'
+                'name' => 'Create Notice Board',
+                'slug' => 'hrm.noticeboards.create',
+                'description' => 'Notice board create permission',
+                'key' => 'hrm.noticeboards'
             ],
 
             [
-                'name' => 'Thanas Update',
-                'slug' => 'location_manager.thanas.update',
-                'description' => 'Thanas update permission',
-                'key' => 'location_manager.thanas'
+                'name' => 'Notice Board Update',
+                'slug' => 'hrm.noticeboards.update',
+                'description' => 'Notice board update permission',
+                'key' => 'hrm.noticeboards'
             ],
 
             [
-                'name' => 'Thanas View',
-                'slug' => 'location_manager.thanas.show',
-                'description' => 'Thanas show permission',
-                'key' => 'location_manager.thanas'
+                'name' => 'Notice Board View',
+                'slug' => 'hrm.noticeboards.show',
+                'description' => 'Notice board show permission',
+                'key' => 'hrm.noticeboards'
             ],
 
             [
-                'name' => 'Thanas Delete',
-                'slug' => 'location_manager.thanas.destroy',
-                'description' => 'Thanas delete permission',
-                'key' => 'location_manager.thanas'
+                'name' => 'Notice Board Delete',
+                'slug' => 'hrm.noticeboards.destroy',
+                'description' => 'Notice board delete permission',
+                'key' => 'hrm.noticeboards'
             ],
 
+            
+            //Notice Types
+            [
+                'name' => 'Notice Types List',
+                'slug' => 'hrm.notice-types.index',
+                'description' => 'Notice types list permission',
+                'key' => 'hrm.notice-types',
+            ],
+            [
+                'name' => 'Create Notice Type',
+                'slug' => 'hrm.notice-types.create',
+                'description' => 'Notice type create permission',
+                'key' => 'hrm.notice-types',
+            ],
+            [
+                'name' => 'Notice Type Update',
+                'slug' => 'hrm.notice-types.update',
+                'description' => 'Notice type update permission',
+                'key' => 'hrm.notice-types',
+            ],
+            [
+                'name' => 'Notice Type Delete',
+                'slug' => 'hrm.notice-types.destroy',
+                'description' => 'Notice type delete permission',
+                'key' => 'hrm.notice-types',
+            ],
 
 
-            //Areas
+            // Reports
             [
-                'name' => 'Create Areas',
-                'slug' => 'location_manager.areas.create',
-                'description' => 'Areas create permission',
-                'key' => 'location_manager.areas'
+                'name' => 'Daily Attendance Report',
+                'slug' => 'hrm.reports.daily-attendance-report',
+                'description' => 'Daily attendance report view permission',
+                'key' => 'hrm.reports',
             ],
-
             [
-                'name' => 'Areas List',
-                'slug' => 'location_manager.areas.index',
-                'description' => 'Areas list permission',
-                'key' => 'location_manager.areas'
+                'name' => 'Monthly Attendance Report',
+                'slug' => 'hrm.reports.monthly-attendance-report',
+                'description' => 'Monthly attendance report view permission',
+                'key' => 'hrm.reports',
             ],
-
+           
+            // Jobs
             [
-                'name' => 'Areas Update',
-                'slug' => 'location_manager.areas.update',
-                'description' => 'Areas update permission',
-                'key' => 'location_manager.areas'
+                'name' => 'Jobs List',
+                'slug' => 'hrm.jobs.index',
+                'description' => 'Jobs list permission',
+                'key' => 'hrm.jobs',
             ],
-
             [
-                'name' => 'Areas View',
-                'slug' => 'location_manager.areas.show',
-                'description' => 'Areas show permission',
-                'key' => 'location_manager.areas'
+                'name' => 'Create Job',
+                'slug' => 'hrm.jobs.create',
+                'description' => 'Job create permission',
+                'key' => 'hrm.jobs',
             ],
-
             [
-                'name' => 'Areas Delete',
-                'slug' => 'location_manager.areas.destroy',
-                'description' => 'Areas delete permission',
-                'key' => 'location_manager.areas'
+                'name' => 'Job Update',
+                'slug' => 'hrm.jobs.update',
+                'description' => 'Job update permission',
+                'key' => 'hrm.jobs',
             ],
-
-            //location-types
             [
-                'name' => 'Create Location Type',
-                'slug' => 'location_manager.location-types.create',
-                'description' => 'Location type create permission',
-                'key' => 'location_manager.location-types'
+                'name' => 'Job View',
+                'slug' => 'hrm.jobs.show',
+                'description' => 'Job show permission',
+                'key' => 'hrm.jobs',
             ],
-
             [
-                'name' => 'Location Type List',
-                'slug' => 'location_manager.location-types.index',
-                'description' => 'Location type list permission',
-                'key' => 'location_manager.location-types'
+                'name' => 'Job Delete',
+                'slug' => 'hrm.jobs.destroy',
+                'description' => 'Job delete permission',
+                'key' => 'hrm.jobs',
             ],
 
+            // Job Templates
             [
-                'name' => 'Location Type Update',
-                'slug' => 'location_manager.location-types.update',
-                'description' => 'Location type update permission',
-                'key' => 'location_manager.location-types'
+                'name' => 'Job Templates List',
+                'slug' => 'hrm.job-templates.index',
+                'description' => 'Job templates list permission',
+                'key' => 'hrm.job-templates',
             ],
-
+            [
+                'name' => 'Create Job Template',
+                'slug' => 'hrm.job-templates.create',
+                'description' => 'Job template create permission',
+                'key' => 'hrm.job-templates',
+            ],
             [
-                'name' => 'Location Type View',
-                'slug' => 'location_manager.location-types.show',
-                'description' => 'Location type show permission',
-                'key' => 'location_manager.location-types'
+                'name' => 'Job Template Update',
+                'slug' => 'hrm.job-templates.update',
+                'description' => 'Job template update permission',
+                'key' => 'hrm.job-templates',
             ],
 
             [
-                'name' => 'Location Type Delete',
-                'slug' => 'location_manager.location-types.destroy',
-                'description' => 'Location type delete permission',
-                'key' => 'location_manager.location-types'
+                'name' => 'Job Template Delete',
+                'slug' => 'hrm.job-templates.destroy',
+                'description' => 'Job template delete permission',
+                'key' => 'hrm.job-templates',
             ],
 
-            //locations
-            //  [
-            //     'name'=> 'Create Location',
-            //     'slug'=> 'location_manager.locations.create',
-            //     'description'=> 'Location create permission',
-            //     'key'=> 'location_manager.locations'
-            //  ],
+            // Job Applications
+            [
+                'name' => 'Job Applications List',
+                'slug' => 'hrm.job-applications.index',
+                'description' => 'Job applications list permission',
+                'key' => 'hrm.job-applications',
+            ],
 
-            //  [
-            //     'name'=> 'Location List',
-            //     'slug'=> 'location_manager.locations.index',
-            //     'description'=> 'Location list permission',
-            //     'key'=> 'location_manager.locations'
-            //  ],
 
-            //  [
-            //     'name'=> 'Location Update',
-            //     'slug'=> 'location_manager.locations.update',
-            //     'description'=> 'Location update permission',
-            //     'key'=> 'location_manager.locations'
-            //  ],
+            [
+                'name' => 'Job Application View',
+                'slug' => 'hrm.job-applications.show',
+                'description' => 'Job application show permission',
+                'key' => 'hrm.job-applications',
+            ],
+            [
+                'name' => 'Job Application Delete',
+                'slug' => 'hrm.job-applications.destroy',
+                'description' => 'Job application delete permission',
+                'key' => 'hrm.job-applications',
+            ],
+            [
+                'name' => 'Job Application Approve',
+                'slug' => 'hrm.job-applications.update-status',
+                'description' => 'Job application update status permission',
+                'key' => 'hrm.job-applications',
+            ],
+           
+             // Settings: Shifts
+            [
+                'name' => 'Shifts List',
+                'slug' => 'hrm.settings.shifts.index',
+                'description' => 'Shifts list permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+            [
+                'name' => 'Create Shift',
+                'slug' => 'hrm.settings.shifts.create',
+                'description' => 'Shift create permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+            [
+                'name' => 'Shift Update',
+                'slug' => 'hrm.settings.shifts.update',
+                'description' => 'Shift update permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+            [
+                'name' => 'Shift Delete',
+                'slug' => 'hrm.settings.shifts.destroy',
+                'description' => 'Shift delete permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+            // Settings: Holidays
+            [
+                'name' => 'Holidays List',
+                'slug' => 'hrm.settings.holidays.index',
+                'description' => 'Holidays list permission',
+                'key' => 'hrm.settings.holidays',
+            ],
+            [
+                'name' => 'Create Holiday',
+                'slug' => 'hrm.settings.holidays.create',
+                'description' => 'Holiday create permission',
+                'key' => 'hrm.settings.holidays',
+            ],
+            [
+                'name' => 'Holiday Update',
+                'slug' => 'hrm.settings.holidays.update',
+                'description' => 'Holiday update permission',
+                'key' => 'hrm.settings.holidays',
+            ],
 
-            //  [
-            //     'name'=> 'Location View',
-            //     'slug'=> 'location_manager.locations.show',
-            //     'description'=> 'Location show permission',
-            //     'key'=> 'location_manager.locations'
-            //  ],
+            [
+                'name' => 'Holiday Delete',
+                'slug' => 'hrm.settings.holidays.destroy',
+                'description' => 'Holiday delete permission',
+                'key' => 'hrm.settings.holidays',
+            ],
 
-            //  [
-            //     'name'=> 'Location Delete',
-            //     'slug'=> 'location_manager.locations.destroy',
-            //     'description'=> 'Location delete permission',
-            //     'key'=> 'location_manager.locations'
-            //  ],
+            
+            // Settings: Hotspots
+            [
+                'name' => 'Hotspots List',
+                'slug' => 'hrm.settings.hotspots.index',
+                'description' => 'Hotspots list permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Create Hotspot',
+                'slug' => 'hrm.settings.hotspots.create',
+                'description' => 'Hotspot create permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Update',
+                'slug' => 'hrm.settings.hotspots.update',
+                'description' => 'Hotspot update permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Delete',
+                'slug' => 'hrm.settings.hotspots.destroy',
+                'description' => 'Hotspot delete permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
 
+            
+            // Settings: Appraisal Policies
+            [
+                'name' => 'Appraisal Policies List',
+                'slug' => 'hrm.settings.appraisal-policies.index',
+                'description' => 'Appraisal policies list permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
+            [
+                'name' => 'Create Appraisal Policy',
+                'slug' => 'hrm.settings.appraisal-policies.create',
+                'description' => 'Appraisal policy create permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
+            [
+                'name' => 'Appraisal Policy Update',
+                'slug' => 'hrm.settings.appraisal-policies.update',
+                'description' => 'Appraisal policy update permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
+            [
+                'name' => 'Appraisal Policy Delete',
+                'slug' => 'hrm.settings.appraisal-policies.destroy',
+                'description' => 'Appraisal policy delete permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
 
+          
 
+            // Settings: Expense Types
+            [
+                'name' => 'Expense Types List',
+                'slug' => 'hrm.settings.expense-types.index',
+                'description' => 'Expense types list permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
+            [
+                'name' => 'Create Expense Type',
+                'slug' => 'hrm.settings.expense-types.create',
+                'description' => 'Expense type create permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
+            [
+                'name' => 'Expense Type Update',
+                'slug' => 'hrm.settings.expense-types.update',
+                'description' => 'Expense type update permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
+            [
+                'name' => 'Expense Type Delete',
+                'slug' => 'hrm.settings.expense-types.destroy',
+                'description' => 'Expense type delete permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
 
-            //Requisition
+            // Settings: Transport Types
+            [
+                'name' => 'Transport Types List',
+                'slug' => 'hrm.settings.transport-types.index',
+                'description' => 'Transport types list permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+            [
+                'name' => 'Create Transport Type',
+                'slug' => 'hrm.settings.transport-types.create',
+                'description' => 'Transport type create permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+            [
+                'name' => 'Transport Type Update',
+                'slug' => 'hrm.settings.transport-types.update',
+                'description' => 'Transport type update permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+            [
+                'name' => 'Transport Type Delete',
+                'slug' => 'hrm.settings.transport-types.destroy',
+                'description' => 'Transport type delete permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+//Requisition
             [
                 'name' => 'Requisition Create',
                 'slug' => 'purchase.requisitions.create',
@@ -2608,49 +1963,7 @@ class PermissionTableSeed extends Seeder
             //     'key'=> 'sales.sales-orders'
             //  ],
 
-            // Deliveries
-            [
-                'name' => 'Sales Order Deliveries Create',
-                'slug' => 'sales.deliveries.create',
-                'description' => 'Sales Order Deliveries create permission',
-                'key' => 'sales.deliveries'
-            ],
-
-            [
-                'name' => 'Sales Order Deliveries List',
-                'slug' => 'sales.deliveries.index',
-                'description' => 'Sales Order Deliveries list permission',
-                'key' => 'sales.deliveries'
-            ],
-
-            //  [
-            //     'name'=> 'Sales Order Deliveries Update',
-            //     'slug'=> 'sales.deliveries.update',
-            //     'description'=> 'Sales Order Deliveries update permission',
-            //     'key'=> 'sales.deliveries'
-            //  ],
-
-            [
-                'name' => 'Sales Order Deliveries View',
-                'slug' => 'sales.deliveries.show',
-                'description' => 'Sales Order Deliveries show permission',
-                'key' => 'sales.deliveries'
-            ],
-
-            //  [
-            //     'name'=> 'Sales Order Deliveries Delete',
-            //     'slug'=> 'sales.deliveries.destroy',
-            //     'description'=> 'Sales Order Deliveries delete permission',
-            //     'key'=> 'sales.deliveries'
-            //  ],
-
-            //  [
-            //     'name'=> 'Sales Order Deliveries Approve',
-            //     'slug'=> 'sales.deliveries.approve',
-            //     'description'=> 'Sales Order Deliveries approve permission',
-            //     'key'=> 'sales.deliveries'
-            //  ],
-
+            
             //sales order deliveries
 
             //  [
@@ -2701,18 +2014,77 @@ class PermissionTableSeed extends Seeder
             //     'description'=> 'Sales Order Deliveries receive permission',
             //     'key'=> 'sales.sales-order-deliveries'
             //  ],
+// Deliveries
+            [
+                'name' => 'Sales Order Deliveries Create',
+                'slug' => 'sales.deliveries.create',
+                'description' => 'Sales Order Deliveries create permission',
+                'key' => 'sales.deliveries'
+            ],
 
+            [
+                'name' => 'Sales Order Deliveries List',
+                'slug' => 'sales.deliveries.index',
+                'description' => 'Sales Order Deliveries list permission',
+                'key' => 'sales.deliveries'
+            ],
+
+            //  [
+            //     'name'=> 'Sales Order Deliveries Update',
+            //     'slug'=> 'sales.deliveries.update',
+            //     'description'=> 'Sales Order Deliveries update permission',
+            //     'key'=> 'sales.deliveries'
+            //  ],
+
+            [
+                'name' => 'Sales Order Deliveries View',
+                'slug' => 'sales.deliveries.show',
+                'description' => 'Sales Order Deliveries show permission',
+                'key' => 'sales.deliveries'
+            ],
+
+            //  [
+            //     'name'=> 'Sales Order Deliveries Delete',
+            //     'slug'=> 'sales.deliveries.destroy',
+            //     'description'=> 'Sales Order Deliveries delete permission',
+            //     'key'=> 'sales.deliveries'
+            //  ],
+
+            //  [
+            //     'name'=> 'Sales Order Deliveries Approve',
+            //     'slug'=> 'sales.deliveries.approve',
+            //     'description'=> 'Sales Order Deliveries approve permission',
+            //     'key'=> 'sales.deliveries'
+            //  ],
+
+            //shipment
             [
                 'name' => 'Shipments verifes access',
                 'slug' => 'sales.shipment-verifies.index',
                 'description' => 'Shipments verifes access permission',
                 'key' => 'sales.shipment-verifies'
             ],
+
+
+            
+            //sales.condition-amount-collects
+            [
+                'name' => 'Sales Condition Collects List',
+                'slug' => 'sales.condition-amount-collects.index',
+                'description' => 'Sales Condition Amount Collects list permission',
+                'key' => 'sales.condition-amount-collects'
+            ],
+
+            [
+                'name' => 'Sales Condition Collects Approval',
+                'slug' => 'sales.condition-amount-collects.approved-list',
+                'description' => 'Sales Condition Amount Collects approval permission',
+                'key' => 'sales.condition-amount-collects'
+            ],
+
             
 
-
-
-            //sales.condition-amount-collects
+            //sales.condition approval
 
             [
                 'name' => 'Sales Condition Collects List',
@@ -2728,6 +2100,46 @@ class PermissionTableSeed extends Seeder
                 'key' => 'sales.condition-amount-collects'
             ],
 
+
+            
+            //Fake Invoices
+
+            [
+                'name' => 'Fake Invoices Create',
+                'slug' => 'sales.fake-invoices.create',
+                'description' => 'Fake Invoices create permission',
+                'key' => 'sales.fake-invoices'
+            ],
+
+            [
+                'name' => 'Fake Invoices List',
+                'slug' => 'sales.fake-invoices.index',
+                'description' => 'Fake Invoices list permission',
+                'key' => 'sales.fake-invoices'
+            ],
+
+            [
+                'name' => 'Fake Invoices Update',
+                'slug' => 'sales.fake-invoices.update',
+                'description' => 'Fake Invoices update permission',
+                'key' => 'sales.fake-invoices'
+            ],
+
+            [
+                'name' => 'Fake Invoices View',
+                'slug' => 'sales.fake-invoices.show',
+                'description' => 'Fake Invoices show permission',
+                'key' => 'sales.fake-invoices'
+            ],
+
+            [
+                'name' => 'Fake Invoices Delete',
+                'slug' => 'sales.fake-invoices.destroy',
+                'description' => 'Fake Invoices delete permission',
+                'key' => 'sales.fake-invoices'
+            ],
+
+            
             //sales requisitions
 
             [
@@ -2830,6 +2242,7 @@ class PermissionTableSeed extends Seeder
                 'key' => 'sales.sales-returns'
             ],
 
+            
             //Sales Commissions
 
             [
@@ -2853,42 +2266,6 @@ class PermissionTableSeed extends Seeder
                 'key' => 'sales.sales-commissions'
             ],
 
-            //Fake Invoices
-
-            [
-                'name' => 'Fake Invoices Create',
-                'slug' => 'sales.fake-invoices.create',
-                'description' => 'Fake Invoices create permission',
-                'key' => 'sales.fake-invoices'
-            ],
-
-            [
-                'name' => 'Fake Invoices List',
-                'slug' => 'sales.fake-invoices.index',
-                'description' => 'Fake Invoices list permission',
-                'key' => 'sales.fake-invoices'
-            ],
-
-            [
-                'name' => 'Fake Invoices Update',
-                'slug' => 'sales.fake-invoices.update',
-                'description' => 'Fake Invoices update permission',
-                'key' => 'sales.fake-invoices'
-            ],
-
-            [
-                'name' => 'Fake Invoices View',
-                'slug' => 'sales.fake-invoices.show',
-                'description' => 'Fake Invoices show permission',
-                'key' => 'sales.fake-invoices'
-            ],
-
-            [
-                'name' => 'Fake Invoices Delete',
-                'slug' => 'sales.fake-invoices.destroy',
-                'description' => 'Fake Invoices delete permission',
-                'key' => 'sales.fake-invoices'
-            ],
 
             //backup challans
 
@@ -2989,7 +2366,7 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Quotations convert to sales order permission',
                 'key' => 'sales.quotations'
             ],
-            //Qurier information
+            //Courier information
 
             [
                 'name' => 'Sales Couriers List',
@@ -3021,10 +2398,1163 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Sales couriers delete permission',
                 'key' => 'sales.couriers'
             ],
+ 
+            // Sales Reports
+            [
+                'name' => 'Sales Report',
+                'description' => 'Permission to view sales report',
+                'slug' => 'sales.reports.sales-report',
+                'key' => 'sales.reports',
+            ],
+            [
+                'name' => 'Fake Sales Report',
+                'description' => 'Permission to view fake sales report',
+                'slug' => 'sales.reports.fake-sales',
+                'key' => 'sales.reports',
+            ],
+            [
+                'name' => 'Broker Commission Report',
+                'description' => 'Permission to view broker commission report',
+                'slug' => 'sales.reports.broker-commissions',
+                'key' => 'sales.reports',
+            ],
+            [
+                'name' => 'Brand Supplier Sales Report',
+                'description' => 'Permission to view brand supplier sales report',
+                'slug' => 'sales.reports.brand-supplier-sales-report',
+                'key' => 'sales.reports',
+            ],
+            [
+                'name' => 'Shipment Explorer Report',
+                'description' => 'Permission to view shipment explorer report',
+                'slug' => 'sales.reports.shipment-explorer',
+                'key' => 'sales.reports',
+            ],
 
+
+            //Sales Target Acheivement List
+            [
+                'name' => 'Sales Target Acheivement List',
+                'description' => 'Permission to view sales target acheivement',
+                'slug' => 'sales_target.perfomence.index',
+                'key' => 'sales_target.perfomence',
+            ],
+            [
+                'name' => 'Sales Target Acheivement List Create',
+                'description' => 'Permission to create sales target acheivement',
+                'slug' => 'sales_target.perfomence.create',
+                'key' => 'sales_target.perfomence',
+            ],
+            [
+                'name' => 'Sales Target Acheivement List Update',
+                'description' => 'Permission to update sales target acheivement',
+                'slug' => 'sales_target.perfomence.update',
+                'key' => 'sales_target.perfomence',
+            ],
+            [
+                'name' => 'Sales Target Acheivement List Delete',
+                'description' => 'Permission to delete sales target acheivement',
+                'slug' => 'sales_target.perfomence.destroy',
+                'key' => 'sales_target.perfomence',
+            ],
+            [
+                'name' => 'Sales Target Acheivement List Details',
+                'description' => 'Permission to view sales target acheivement details',
+                'slug' => 'sales_target.target.show',
+                'key' => 'sales_target.target',
+            ],
+
+
+
+            //sales target setup
+            [
+                'name' => 'Sales Target Setup',
+                'description' => 'Permission to view sales target setup',
+                'slug' => 'sales_target.target.index',
+                'key' => 'sales_target.target',
+            ],
+            [
+                'name' => 'Sales Target Setup Create',
+                'description' => 'Permission to create sales target setup',
+                'slug' => 'sales_target.target.create',
+                'key' => 'sales_target.target',
+            ],
+            [
+                'name' => 'Sales Target Setup Update',
+                'description' => 'Permission to update sales target setup',
+                'slug' => 'sales_target.target.update',
+                'key' => 'sales_target.target',
+            ],
+            [
+                'name' => 'Sales Target Setup Delete',
+                'description' => 'Permission to delete sales target setup',
+                'slug' => 'sales_target.target.destroy',
+                'key' => 'sales_target.target',
+            ],
+            [
+                'name' => 'Sales Target Setup Details',
+                'description' => 'Permission to view sales target setup details',
+                'slug' => 'sales_target.target.show',
+                'key' => 'sales_target.target',
+            ],
+
+
+            //sales incentive setup
+            [
+                'name' => 'Sales Incentive Setup',
+                'description' => 'Permission to view sales incentive setup',
+                'slug' => 'sales_target.incentives.index',
+                'key' => 'sales_target.incentives',
+            ],
+            [
+                'name' => 'Sales Incentive Setup Create',
+                'description' => 'Permission to create sales incentive setup',
+                'slug' => 'sales_target.incentives.create',
+                'key' => 'sales_target.incentives',
+            ],
+            [
+                'name' => 'Sales Incentive Setup Update',
+                'description' => 'Permission to update sales incentive setup',
+                'slug' => 'sales_target.incentives.update',
+                'key' => 'sales_target.incentives',
+            ],
+            [
+                'name' => 'Sales Incentive Setup Delete',
+                'description' => 'Permission to delete sales incentive setup',
+                'slug' => 'sales_target.incentives.destroy',
+                'key' => 'sales_target.incentives',
+            ],
+            [
+                'name' => 'Sales Incentive Setup Details',
+                'description' => 'Permission to view sales incentive setup details',
+                'slug' => 'sales_target.incentives.show',
+                'key' => 'sales_target.incentives',
+            ],
+           
+
+            //product-catalogs
+            [
+                'name' => 'Create Product Catalog',
+                'slug' => 'inventory.product-catalogs.create',
+                'description' => 'Product Catalog create permission',
+                'key' => 'inventory.product-catalogs'
+            ],
+
+            [
+                'name' => 'Product Catalog List',
+                'slug' => 'inventory.product-catalogs.index',
+                'description' => 'Product Catalog list permission',
+                'key' => 'inventory.product-catalogs'
+            ],
+
+            [
+                'name' => 'Product Catalog Update',
+                'slug' => 'inventory.product-catalogs.update',
+                'description' => 'Product Catalog update permission',
+                'key' => 'inventory.product-catalogs'
+            ],
+
+            [
+                'name' => 'Product Catalog View',
+                'slug' => 'inventory.product-catalogs.show',
+                'description' => 'Product Catalog show permission',
+                'key' => 'inventory.product-catalogs'
+            ],
+
+            [
+                'name' => 'Product Catalog Delete',
+                'slug' => 'inventory.product-catalogs.destroy',
+                'description' => 'Product Catalog delete permission',
+                'key' => 'inventory.product-catalogs'
+            ],
+            [
+                'name' => 'Product Catalog Settings',
+                'slug' => 'inventory.product-catalogs.settings',
+                'description' => 'Product Catalog settings permission',
+                'key' => 'inventory.product-catalogs'
+            ],
+
+
+            // product-transfer-requests
+            [
+                'name' => 'Create Product Transfer',
+                'slug' => 'inventory.product-transfer-requests.create',
+                'description' => 'Product Transfer create permission',
+                'key' => 'inventory.product-transfer-requests'
+            ],
+
+            [
+                'name' => 'Product Transfer List',
+                'slug' => 'inventory.product-transfer-requests.index',
+                'description' => 'Product Transfer list permission',
+                'key' => 'inventory.product-transfer-requests'
+            ],
+
+            [
+                'name' => 'Product Transfer Update',
+                'slug' => 'inventory.product-transfer-requests.update',
+                'description' => 'Product Transfer update permission',
+                'key' => 'inventory.product-transfer-requests'
+            ],
+
+            [
+                'name' => 'Product Transfer View',
+                'slug' => 'inventory.product-transfer-requests.show',
+                'description' => 'Product Transfer show permission',
+                'key' => 'inventory.product-transfer-requests'
+            ],
+
+            [
+                'name' => 'Product Transfer Delete',
+                'slug' => 'inventory.product-transfer-requests.destroy',
+                'description' => 'Product Transfer delete permission',
+                'key' => 'inventory.product-transfer-requests'
+            ],
 
 
             [
+                'name' => 'Product Transfer Approve',
+                'slug' => 'inventory.product-transfer-requests.approve',
+                'description' => 'Product Transfer approve permission',
+                'key' => 'inventory.product-transfer-requests'
+            ],
+
+            
+            // product-transfers
+            [
+                'name' => 'Create Product Transfer',
+                'slug' => 'inventory.product-transfers.create',
+                'description' => 'Product Transfer create permission',
+                'key' => 'inventory.product-transfers'
+            ],
+
+            [
+                'name' => 'Product Transfer List',
+                'slug' => 'inventory.product-transfers.index',
+                'description' => 'Product Transfer list permission',
+                'key' => 'inventory.product-transfers'
+            ],
+
+            [
+                'name' => 'Product Transfer Update',
+                'slug' => 'inventory.product-transfers.update',
+                'description' => 'Product Transfer update permission',
+                'key' => 'inventory.product-transfers'
+            ],
+
+            [
+                'name' => 'Product Transfer View',
+                'slug' => 'inventory.product-transfers.show',
+                'description' => 'Product Transfer show permission',
+                'key' => 'inventory.product-transfers'
+            ],
+
+            [
+                'name' => 'Product Transfer Delete',
+                'slug' => 'inventory.product-transfers.destroy',
+                'description' => 'Product Transfer delete permission',
+                'key' => 'inventory.product-transfers'
+            ],
+
+            
+
+            
+            // product-transfers receive
+            [
+                'name' => 'Create Product Transfer Receive',
+                'slug' => 'inventory.product-transfers-receives.create',
+                'description' => 'Product Transfer receive create permission',
+                'key' => 'inventory.product-transfers-receives'
+            ],
+
+            [
+                'name' => 'Product Transfer Receive List',
+                'slug' => 'inventory.product-transfers-receives.index',
+                'description' => 'Product Transfer receive list permission',
+                'key' => 'inventory.product-transfers-receives'
+            ],
+
+            [
+                'name' => 'Product Transfer Receive Update',
+                'slug' => 'inventory.product-transfers-receives.update',
+                'description' => 'Product Transfer receive update permission',
+                'key' => 'inventory.product-transfers-receives'
+            ],
+
+            [
+                'name' => 'Product Transfer Receive View',
+                'slug' => 'inventory.product-transfers-receives.show',
+                'description' => 'Product Transfer receive show permission',
+                'key' => 'inventory.product-transfers-receives'
+            ],
+
+            [
+                'name' => 'Product Transfer Receive Delete',
+                'slug' => 'inventory.product-transfers-receives.destroy',
+                'description' => 'Product Transfer receive delete permission',
+                'key' => 'inventory.product-transfers-receives'
+            ],
+
+            
+            
+            // product-offers
+            [
+                'name' => 'Create Offers',
+                'slug' => 'inventory.offers.create',
+                'description' => 'Offers create permission',
+                'key' => 'inventory.offers'
+            ],
+
+            [
+                'name' => 'Offers List',
+                'slug' => 'inventory.offers.index',
+                'description' => 'Offers list permission',
+                'key' => 'inventory.offers'
+            ],
+
+            [
+                'name' => 'Offers Update',
+                'slug' => 'inventory.offers.update',
+                'description' => 'Offers update permission',
+                'key' => 'inventory.offers'
+            ],
+
+            [
+                'name' => 'Offers View',
+                'slug' => 'inventory.offers.show',
+                'description' => 'Offers show permission',
+                'key' => 'inventory.offers'
+            ],
+
+            [
+                'name' => 'Offers Delete',
+                'slug' => 'inventory.offers.destroy',
+                'description' => 'Offers delete permission',
+                'key' => 'inventory.offers'
+            ],
+
+            //products price list
+            [
+                'name' => 'Product Price List',
+                'slug' => 'inventory.products.price-list',
+                'description' => 'Product price list permission',
+                'key' => 'inventory.products'
+            ],
+            //stock list
+            [
+                'name' => 'Stocks List',
+                'slug' => 'inventory.stocks.index',
+                'description' => 'Stocks list permission',
+                'key' => 'inventory.stocks'
+            ],
+
+
+             //units
+            [
+                'name' => 'Create Unit',
+                'slug' => 'inventory.settings.units.create',
+                'description' => 'Unit create permission',
+                'key' => 'inventory.settings.units'
+            ],
+
+            [
+                'name' => 'Units List',
+                'slug' => 'inventory.settings.units.index',
+                'description' => 'Units list permission',
+                'key' => 'inventory.settings.units'
+            ],
+
+            [
+                'name' => 'Units Update',
+                'slug' => 'inventory.settings.units.update',
+                'description' => 'Units update permission',
+                'key' => 'inventory.settings.units'
+            ],
+
+
+            [
+                'name' => 'Units Delete',
+                'slug' => 'inventory.settings.units.destroy',
+                'description' => 'Units delete permission',
+                'key' => 'inventory.settings.units'
+            ],
+
+            //product-types
+            [
+                'name' => 'Create Product Type',
+                'slug' => 'inventory.settings.product-types.create',
+                'description' => 'Product Type create permission',
+                'key' => 'inventory.settings.product-types'
+            ],
+
+            [
+                'name' => 'Product Type List',
+                'slug' => 'inventory.settings.product-types.index',
+                'description' => 'Product Type list permission',
+                'key' => 'inventory.settings.product-types'
+            ],
+
+            [
+                'name' => 'Product Type Update',
+                'slug' => 'inventory.settings.product-types.update',
+                'description' => 'Product Type update permission',
+                'key' => 'inventory.settings.product-types'
+            ],
+
+         
+            [
+                'name' => 'Product Type Delete',
+                'slug' => 'inventory.settings.product-types.destroy',
+                'description' => 'Product Type delete permission',
+                'key' => 'inventory.settings.product-types'
+            ],
+
+            //tags
+            [
+                'name' => 'Create Tag',
+                'slug' => 'inventory.settings.tags.create',
+                'description' => 'Tag create permission',
+                'key' => 'inventory.settings.tags'
+            ],
+
+            [
+
+                'name' => 'Tag List',
+                'slug' => 'inventory.settings.tags.index',
+                'description' => 'Tag list permission',
+                'key' => 'inventory.settings.tags'
+            ],
+
+            [
+                'name' => 'Tag Update',
+                'slug' => 'inventory.settings.tags.update',
+                'description' => 'Tag update permission',
+                'key' => 'inventory.settings.tags'
+            ], 
+
+            [
+                'name' => 'Tag Delete',
+                'slug' => 'inventory.settings.tags.destroy',
+                'description' => 'Tag delete permission',
+                'key' => 'inventory.settings.tags'
+            ],
+            
+
+            //brands
+            [
+                'name' => 'Create Brand',
+                'slug' => 'inventory.brands.create',
+                'description' => 'Brand create permission',
+                'key' => 'inventory.settings.brands'
+            ],
+
+            [
+                'name' => 'Brand List',
+                'slug' => 'inventory.brands.index',
+                'description' => 'Brand list permission',
+                'key' => 'inventory.settings.brands'
+            ],
+
+            [
+                'name' => 'Brand Update',
+                'slug' => 'inventory.brands.update',
+                'description' => 'Brand update permission',
+                'key' => 'inventory.settings.brands'
+            ], 
+
+            [
+                'name' => 'Brand Delete',
+                'slug' => 'inventory.brands.destroy',
+                'description' => 'Brand delete permission',
+                'key' => 'inventory.settings.brands'
+            ],
+
+            // Inventory Reports
+            [
+                'name' => 'Product Wise Stock Report',
+                'description' => 'Permission to view product stock report',
+                'slug' => 'inventory.reports.product-stock',
+                'key' => 'inventory.reports',
+            ],
+            [
+                'name' => 'Product Transfer Report',
+                'description' => 'Permission to view product transfer report',
+                'slug' => 'inventory.reports.product-transfer',
+                'key' => 'inventory.reports',
+            ],
+            [
+                'name' => 'Catalogue Report',
+                'description' => 'Permission to view catalogue report',
+                'slug' => 'inventory.reports.catalogue-report',
+                'key' => 'inventory.reports',
+            ],
+            [
+                'name' => 'Stock Balance Report',
+                'description' => 'Permission to view stock balance report',
+                'slug' => 'inventory.reports.stock-balance',
+                'key' => 'inventory.reports',
+            ],
+            [
+                'name' => 'Center Stock Report',
+                'description' => 'Permission to view center-wise stock report',
+                'slug' => 'inventory.reports.center-stock',
+                'key' => 'inventory.reports',
+            ],
+
+
+
+            //Divisions
+
+            [
+                'name' => 'Divisions Create',
+                'slug' => 'location_manager.divisions.create',
+                'description' => 'Divisions create permission',
+                'key' => 'location_manager.divisions'
+            ],
+
+            [
+                'name' => 'Divisions List',
+                'slug' => 'location_manager.divisions.index',
+                'description' => 'Divisions index permission',
+                'key' => 'location_manager.divisions'
+            ],
+
+            [
+                'name' => 'Divisions Update',
+                'slug' => 'location_manager.divisions.update',
+                'description' => 'Divisions update permission',
+                'key' => 'location_manager.divisions'
+            ],
+
+            [
+                'name' => 'Divisions View',
+                'slug' => 'location_manager.divisions.show',
+                'description' => 'Divisions show permission',
+                'key' => 'location_manager.divisions'
+            ],
+
+            [
+                'name' => 'Divisions Delete',
+                'slug' => 'location_manager.divisions.destroy',
+                'description' => 'Divisions delete permission',
+                'key' => 'location_manager.divisions'
+            ],
+
+            //districts
+
+            [
+                'name' => 'Create Districts',
+                'slug' => 'location_manager.districts.create',
+                'description' => 'Districts create permission',
+                'key' => 'location_manager.districts'
+            ],
+
+            [
+                'name' => 'Districts List',
+                'slug' => 'location_manager.districts.index',
+                'description' => 'Districts index permission',
+                'key' => 'location_manager.districts'
+            ],
+
+            [
+                'name' => 'Districts Update',
+                'slug' => 'location_manager.districts.update',
+                'description' => 'Districts update permission',
+                'key' => 'location_manager.districts'
+            ],
+
+            [
+                'name' => 'Districts View',
+                'slug' => 'location_manager.districts.show',
+                'description' => 'Districts show permission',
+                'key' => 'location_manager.districts'
+            ],
+
+            [
+                'name' => 'Districts Delete',
+                'slug' => 'location_manager.districts.destroy',
+                'description' => 'Districts delete permission',
+                'key' => 'location_manager.districts'
+            ],
+
+
+            //thanas
+
+            [
+                'name' => 'Create Thanas',
+                'slug' => 'location_manager.thanas.create',
+                'description' => 'Thanas create permission',
+                'key' => 'location_manager.thanas'
+            ],
+
+            [
+                'name' => 'Thanas List',
+                'slug' => 'location_manager.thanas.index',
+                'description' => 'Thanas index permission',
+                'key' => 'location_manager.thanas'
+            ],
+
+            [
+                'name' => 'Thanas Update',
+                'slug' => 'location_manager.thanas.update',
+                'description' => 'Thanas update permission',
+                'key' => 'location_manager.thanas'
+            ],
+
+            [
+                'name' => 'Thanas View',
+                'slug' => 'location_manager.thanas.show',
+                'description' => 'Thanas show permission',
+                'key' => 'location_manager.thanas'
+            ],
+
+            [
+                'name' => 'Thanas Delete',
+                'slug' => 'location_manager.thanas.destroy',
+                'description' => 'Thanas delete permission',
+                'key' => 'location_manager.thanas'
+            ],
+
+
+
+            //Areas
+            [
+                'name' => 'Create Areas',
+                'slug' => 'location_manager.areas.create',
+                'description' => 'Areas create permission',
+                'key' => 'location_manager.areas'
+            ],
+
+            [
+                'name' => 'Areas List',
+                'slug' => 'location_manager.areas.index',
+                'description' => 'Areas list permission',
+                'key' => 'location_manager.areas'
+            ],
+
+            [
+                'name' => 'Areas Update',
+                'slug' => 'location_manager.areas.update',
+                'description' => 'Areas update permission',
+                'key' => 'location_manager.areas'
+            ],
+
+            [
+                'name' => 'Areas View',
+                'slug' => 'location_manager.areas.show',
+                'description' => 'Areas show permission',
+                'key' => 'location_manager.areas'
+            ],
+
+            [
+                'name' => 'Areas Delete',
+                'slug' => 'location_manager.areas.destroy',
+                'description' => 'Areas delete permission',
+                'key' => 'location_manager.areas'
+            ],
+
+            //location-types
+            [
+                'name' => 'Create Location Type',
+                'slug' => 'location_manager.location-types.create',
+                'description' => 'Location type create permission',
+                'key' => 'location_manager.location-types'
+            ],
+
+            [
+                'name' => 'Location Type List',
+                'slug' => 'location_manager.location-types.index',
+                'description' => 'Location type list permission',
+                'key' => 'location_manager.location-types'
+            ],
+
+            [
+                'name' => 'Location Type Update',
+                'slug' => 'location_manager.location-types.update',
+                'description' => 'Location type update permission',
+                'key' => 'location_manager.location-types'
+            ],
+
+            [
+                'name' => 'Location Type View',
+                'slug' => 'location_manager.location-types.show',
+                'description' => 'Location type show permission',
+                'key' => 'location_manager.location-types'
+            ],
+
+            [
+                'name' => 'Location Type Delete',
+                'slug' => 'location_manager.location-types.destroy',
+                'description' => 'Location type delete permission',
+                'key' => 'location_manager.location-types'
+            ],
+
+
+            //Dongle Or Serial Entries
+            [
+                'name' => 'Dongle Or Serial Entries Create',
+                'slug' => 'licenses.dongle-or-serial-entries.create',
+                'description' => 'Dongle Or Serial Entries create permission',
+                'key' => 'licenses.dongle-or-serial-entries'
+            ],
+
+            [
+                'name' => 'Dongle Or Serial Entries List',
+                'slug' => 'licenses.dongle-or-serial-entries.index',
+                'description' => 'Dongle Or Serial Entries list permission',
+                'key' => 'licenses.dongle-or-serial-entries'
+            ],
+
+            [
+                'name' => 'Dongle Or Serial Entries Update',
+                'slug' => 'licenses.dongle-or-serial-entries.update',
+                'description' => 'Dongle Or Serial Entries update permission',
+                'key' => 'licenses.dongle-or-serial-entries'
+            ],
+
+            [
+                'name' => 'Dongle Or Serial Entries View',
+                'slug' => 'licenses.dongle-or-serial-entries.show',
+                'description' => 'Dongle Or Serial Entries show permission',
+                'key' => 'licenses.dongle-or-serial-entries'
+            ],
+
+            [
+                'name' => 'Dongle Or Serial Entries Delete',
+                'slug' => 'licenses.dongle-or-serial-entries.destroy',
+                'description' => 'Dongle Or Serial Entries delete permission',
+                'key' => 'licenses.dongle-or-serial-entries'
+            ],
+
+            //usg-opg-license-requisitions
+            [
+                'name' => 'USG OPG License Requisitions Create',
+                'slug' => 'licenses.usg-opg-license-requisitions.create',
+                'description' => 'USG OPG License Requisitions create permission',
+                'key' => 'licenses.usg-opg-license-requisitions'
+            ],
+
+            [
+                'name' => 'USG OPG License Requisitions List',
+                'slug' => 'licenses.usg-opg-license-requisitions.index',
+                'description' => 'USG OPG License Requisitions list permission',
+                'key' => 'licenses.usg-opg-license-requisitions'
+            ],
+
+            [
+                'name' => 'USG OPG License Requisitions Update',
+                'slug' => 'licenses.usg-opg-license-requisitions.update',
+                'description' => 'USG OPG License Requisitions update permission',
+                'key' => 'licenses.usg-opg-license-requisitions'
+            ],
+
+            [
+                'name' => 'USG OPG License Requisitions View',
+                'slug' => 'licenses.usg-opg-license-requisitions.show',
+                'description' => 'USG OPG License Requisitions show permission',
+                'key' => 'licenses.usg-opg-license-requisitions'
+            ],
+
+            [
+                'name' => 'USG OPG License Requisitions Delete',
+                'slug' => 'licenses.usg-opg-license-requisitions.destroy',
+                'description' => 'USG OPG License Requisitions delete permission',
+                'key' => 'licenses.usg-opg-license-requisitions'
+            ],
+            [
+                'name' => 'USG OPG License Requisitions Approve',
+                'slug' => 'licenses.usg-opg-license-requisitions.approve',
+                'description' => 'USG OPG License Requisitions approve permission',
+                'key' => 'licenses.usg-opg-license-requisitions'
+            ],
+
+
+            //cbc-license-requisitions
+            [
+                'name' => 'CBC License Requisitions Create',
+                'slug' => 'licenses.cbc-license-requisitions.create',
+                'description' => 'CBC License Requisitions create permission',
+                'key' => 'licenses.cbc-license-requisitions'
+            ],
+
+            [
+                'name' => 'CBC License Requisitions List',
+                'slug' => 'licenses.cbc-license-requisitions.index',
+                'description' => 'CBC License Requisitions list permission',
+                'key' => 'licenses.cbc-license-requisitions'
+            ],
+
+            [
+                'name' => 'CBC License Requisitions Update',
+                'slug' => 'licenses.cbc-license-requisitions.update',
+                'description' => 'CBC License Requisitions update permission',
+                'key' => 'licenses.cbc-license-requisitions'
+            ],
+
+            [
+                'name' => 'CBC License Requisitions View',
+                'slug' => 'licenses.cbc-license-requisitions.show',
+                'description' => 'CBC License Requisitions show permission',
+                'key' => 'licenses.cbc-license-requisitions'
+            ],
+
+            [
+                'name' => 'CBC License Requisitions Delete',
+                'slug' => 'licenses.cbc-license-requisitions.destroy',
+                'description' => 'CBC License Requisitions delete permission',
+                'key' => 'licenses.cbc-license-requisitions'
+            ],
+            [
+                'name' => 'CBC License Requisitions Approve',
+                'slug' => 'licenses.cbc-license-requisitions.approve',
+                'description' => 'CBC License Requisitions delete permission',
+                'key' => 'licenses.cbc-license-requisitions'
+            ],
+            [
+                'name' => 'CBC License Requisitions Approve',
+                'slug' => 'licenses.cbc-license-requisitions.approve',
+                'description' => 'CBC License Requisitions delete permission',
+                'key' => 'licenses.cbc-license-requisitions'
+            ],
+
+            //licenses.usg-opg-sms
+            [
+                'name' => 'USG OPG SMS Update',
+                'slug' => 'licenses.usg-opg-sms.update',
+                'description' => 'USG OPG SMS update permission',
+                'key' => 'licenses.usg-opg-sms'
+            ],
+            [
+                'name' => 'CBC SMS Update',
+                'slug' => 'licenses.cbc-sms.update',
+                'description' => 'CBC SMS update permission',
+                'key' => 'licenses.cbc-sms'
+            ],
+
+            //reports
+            [
+                'name' => 'Report List',
+                'slug' => 'licenses.reports.index',
+                'description' => 'Report list permission',
+                'key' => 'licenses.reports'
+            ],
+
+            // License Reports
+            [
+                'name' => 'License Report',
+                'description' => 'Permission to view license reports',
+                'slug' => 'licenses.reports.index',
+                'key' => 'licenses.reports',
+            ],
+
+
+            //service
+            [
+                'name' => 'Service Create',
+                'slug' => 'services.service.create',
+                'description' => 'Service create permission',
+                'key' => 'services.service',
+                'parent_key' => 'services',
+            ],
+
+            [
+                'name' => 'Service List',
+                'slug' => 'services.service.index',
+                'description' => 'Service list permission',
+                'key' => 'services.service',
+                'parent_key' => 'services',
+            ],
+
+            [
+                'name' => 'Service Update',
+                'slug' => 'services.service.update',
+                'description' => 'Service update permission',
+                'key' => 'services.service',
+                'parent_key' => 'services',
+            ],
+
+            [
+                'name' => 'Service View',
+                'slug' => 'services.service.show',
+                'description' => 'Service show permission',
+                'key' => 'services.service',
+                'parent_key' => 'services',
+            ],
+
+            [
+                'name' => 'Service Delete',
+                'slug' => 'services.service.destroy',
+                'description' => 'Service delete permission',
+                'key' => 'services.service',
+                'parent_key' => 'services',
+            ],
+
+            [
+                'name' => 'Service Type Create',
+                'slug' => 'services.settings.service-types.create',
+                'description' => 'Service type create permission',
+                'key' => 'services.settings.service-types',
+                'parent_key' => 'services.settings',
+            ],
+
+            [
+                'name' => 'Service Type List',
+                'slug' => 'services.settings.service-types.index',
+                'description' => 'Service type list permission',
+                'key' => 'services.settings.service-types',
+                'parent_key' => 'services.settings',
+            ],
+
+            [
+                'name' => 'Service Type Update',
+                'slug' => 'services.settings.service-types.update',
+                'description' => 'Service type update permission',
+                'key' => 'services.settings.service-types',
+                'parent_key' => 'services.settings',
+            ],
+ 
+
+            [
+                'name' => 'Service Type Delete',
+                'slug' => 'services.settings.service-types.destroy',
+                'description' => 'Service type delete permission',
+                'key' => 'services.settings.service-types',
+                'parent_key' => 'services.settings',
+            ], 
+
+            [
+                'name' => 'Service Assign List',
+                'slug' => 'services.service-assign.index',
+                'description' => 'Service assign list permission',
+                'key' => 'services.service-assign',
+                'parent_key' => 'services',
+            ], 
+
+            [
+                'name' => 'Service My Task Details',
+                'slug' => 'services.service-my-task.create',
+                'description' => 'Service my task create permission',
+                'key' => 'services.service-my-task',
+                'parent_key' => 'services',
+            ],
+
+            [
+                'name' => 'Service My Task List',
+                'slug' => 'services.service-my-task.index',
+                'description' => 'Service my task list permission',
+                'key' => 'services.service-my-task',
+                'parent_key' => 'services',
+            ], 
+
+            [
+                'name' => 'Service My Task Solution Verification',
+                'slug' => 'services.service-my-task.solution-verification',
+                'description' => 'Service my task solution verification permission',
+                'key' => 'services.service-my-task',
+            ],
+
+            //service Document Entry
+            [
+                'name' => 'Document Entry Create',
+                'slug' => 'services.document-entries.create',
+                'description' => 'Document entry create permission',
+                'key' => 'services.document-entries',
+
+            ],
+
+            [
+                'name' => 'Document Entry List',
+                'slug' => 'services.document-entries.index',
+                'description' => 'Document entry list permission',
+                'key' => 'services.document-entries',
+
+            ],
+
+            [
+                'name' => 'Document Entry Update',
+                'slug' => 'services.document-entries.update',
+                'description' => 'Document entry update permission',
+                'key' => 'services.document-entries',
+
+            ], 
+
+            [
+                'name' => 'Document Entry download',
+                'slug' => 'services.document-entries.download',
+                'description' => 'Document entry print permission',
+                'key' => 'services.document-entries',
+            ],
+
+            [
+                'name' => 'Document Entry Delete',
+                'slug' => 'services.document-entries.destroy',
+                'description' => 'Document entry delete permission',
+                'key' => 'services.document-entries',
+            ],
+            //service Quotation 
+ 
+            [
+                'name' => 'Quotation Create',
+                'slug' => 'services.quotations.create',
+                'description' => 'Quotation create permission',
+                'key' => 'services.quotations',
+
+            ],
+            [
+                'name' => 'Quotation List',
+                'slug' => 'services.quotations.index',
+                'description' => 'Quotation list permission',
+                'key' => 'services.quotations',
+
+            ],
+
+            [
+                'name' => 'Quotation Update',
+                'slug' => 'services.quotations.update',
+                'description' => 'Quotation update permission',
+                'key' => 'services.quotations',
+            ],
+
+            [
+                'name' => 'Quotation Sales Order',
+                'slug' => 'services.quotations.sales-order',
+                'description' => 'Quotation sales order list permission',
+                'key' => 'services.quotations',
+            ], 
+
+            [
+                'name' => 'Quotation Print',
+                'slug' => 'services.quotations.print',
+                'description' => 'Quotation print permission',
+                'key' => 'services.quotations',
+
+            ],
+
+            [
+                'name' => 'Quotation Delete',
+                'slug' => 'services.quotations.destroy',
+                'description' => 'Quotation delete permission',
+                'key' => 'services.quotations',
+            ],
+
+
+            // Service Reports
+            [
+                'name' => 'Service Report',
+                'description' => 'Permission to view service reports',
+                'slug' => 'services.reports.service-reports',
+                'key' => 'services.reports',
+            ],
+            [
+                'name' => 'Warranty Check Report',
+                'description' => 'Permission to view warranty check report',
+                'slug' => 'services.reports.warranty-check',
+                'key' => 'services.reports',
+            ],
+            [
+                'name' => 'Service Explorer Report',
+                'description' => 'Permission to view service explorer report',
+                'slug' => 'services.reports.service-explorer-reports',
+                'key' => 'services.reports',
+            ],
+            [
+                'name' => 'Monthly Service Report',
+                'description' => 'Permission to view monthly service report',
+                'slug' => 'services.reports.monthly-service-reports',
+                'key' => 'services.reports',
+            ],
+            [
+                'name' => 'Installation & Servicing Report',
+                'description' => 'Permission to view installation report',
+                'slug' => 'services.reports.installation-reports',
+                'key' => 'services.reports',
+            ],
+
+            // Legal Entries (resource)
+            [
+                'name' => 'Create Legal Entry',
+                'slug' => 'legal.legal-entries.create',
+                'description' => 'Permission to create legal entries',
+                'key' => 'legal.legal-entries',
+            ],
+            [
+                'name' => 'List Legal Entries',
+                'slug' => 'legal.legal-entries.index',
+                'description' => 'Permission to view legal entries',
+                'key' => 'legal.legal-entries',
+            ],
+            [
+                'name' => 'Edit Legal Entry',
+                'slug' => 'legal.legal-entries.update',
+                'description' => 'Permission to edit legal entries',
+                'key' => 'legal.legal-entries',
+            ],
+            [
+                'name' => 'Delete Legal Entry',
+                'slug' => 'legal.legal-entries.destroy',
+                'description' => 'Permission to delete legal entries',
+                'key' => 'legal.legal-entries',
+            ],
+
+            // ✅ Custom Legal Entry Actions
+            [
+                'name' => 'Approve Legal Entry',
+                'slug' => 'legal.legal-entries.approve',
+                'description' => 'Permission to approve legal entries',
+                'key' => 'legal.legal-entries',
+            ],
+            [
+                'name' => 'Deny Legal Entry',
+                'slug' => 'legal.legal-entries.deny',
+                'description' => 'Permission to deny legal entries',
+                'key' => 'legal.legal-entries',
+            ],
+            [
+                'name' => 'Update Legal Schedule',
+                'slug' => 'legal.legal-entries.legal-schedule-update',
+                'description' => 'Permission to update legal schedule',
+                'key' => 'legal.legal-entries',
+            ],
+            [
+                'name' => 'Legal Report',
+                'slug' => 'legal.legal-entries.reports',
+                'description' => 'Permission to update legal Report',
+                'key' => 'legal.legal-entries',
+            ],
+
+            // 📂 Legal Bill Entries (resource)
+            [
+                'name' => 'Create Legal Bill Entry',
+                'slug' => 'legal.legal-bill-entries.create',
+                'description' => 'Permission to create legal bill entries',
+                'key' => 'legal.legal-bill-entries',
+            ],
+            [
+                'name' => 'List Legal Bill Entries',
+                'slug' => 'legal.legal-bill-entries.index',
+                'description' => 'Permission to view legal bill entries',
+                'key' => 'legal.legal-bill-entries',
+            ],
+            [
+                'name' => 'Edit Legal Bill Entry',
+                'slug' => 'legal.legal-bill-entries.update',
+                'description' => 'Permission to edit legal bill entries',
+                'key' => 'legal.legal-bill-entries',
+            ],
+            [
+                'name' => 'Delete Legal Bill Entry',
+                'slug' => 'legal.legal-bill-entries.destroy',
+                'description' => 'Permission to delete legal bill entries',
+                'key' => 'legal.legal-bill-entries',
+            ],
+            [
+                'name' => 'View Legal Bill Entry',
+                'slug' => 'legal.legal-bill-entries.show',
+                'description' => 'Permission to view legal bill schedule',
+                'key' => 'legal.legal-bill-entries',
+            ],
+
+ [
                 'name' => 'Account Group List',
                 'slug' => 'account.account-setup.account-groups.index',
                 'description' => 'Account group list permission',
@@ -4296,664 +4826,148 @@ class PermissionTableSeed extends Seeder
                 'key' => 'account.cash-transfers'
             ],
 
-            //Dongle Or Serial Entries
+             // Users Crud
             [
-                'name' => 'Dongle Or Serial Entries Create',
-                'slug' => 'licenses.dongle-or-serial-entries.create',
-                'description' => 'Dongle Or Serial Entries create permission',
-                'key' => 'licenses.dongle-or-serial-entries'
+                'name' => 'Create Role',
+                'slug' => 'access_control.roles.create',
+                'description' => 'Role create permission',
+                'key' => 'access_control.roles'
             ],
-
-            [
-                'name' => 'Dongle Or Serial Entries List',
-                'slug' => 'licenses.dongle-or-serial-entries.index',
-                'description' => 'Dongle Or Serial Entries list permission',
-                'key' => 'licenses.dongle-or-serial-entries'
-            ],
-
-            [
-                'name' => 'Dongle Or Serial Entries Update',
-                'slug' => 'licenses.dongle-or-serial-entries.update',
-                'description' => 'Dongle Or Serial Entries update permission',
-                'key' => 'licenses.dongle-or-serial-entries'
-            ],
-
-            [
-                'name' => 'Dongle Or Serial Entries View',
-                'slug' => 'licenses.dongle-or-serial-entries.show',
-                'description' => 'Dongle Or Serial Entries show permission',
-                'key' => 'licenses.dongle-or-serial-entries'
-            ],
-
-            [
-                'name' => 'Dongle Or Serial Entries Delete',
-                'slug' => 'licenses.dongle-or-serial-entries.destroy',
-                'description' => 'Dongle Or Serial Entries delete permission',
-                'key' => 'licenses.dongle-or-serial-entries'
-            ],
-
-            //usg-opg-license-requisitions
-            [
-                'name' => 'USG OPG License Requisitions Create',
-                'slug' => 'licenses.usg-opg-license-requisitions.create',
-                'description' => 'USG OPG License Requisitions create permission',
-                'key' => 'licenses.usg-opg-license-requisitions'
-            ],
-
-            [
-                'name' => 'USG OPG License Requisitions List',
-                'slug' => 'licenses.usg-opg-license-requisitions.index',
-                'description' => 'USG OPG License Requisitions list permission',
-                'key' => 'licenses.usg-opg-license-requisitions'
-            ],
-
-            [
-                'name' => 'USG OPG License Requisitions Update',
-                'slug' => 'licenses.usg-opg-license-requisitions.update',
-                'description' => 'USG OPG License Requisitions update permission',
-                'key' => 'licenses.usg-opg-license-requisitions'
-            ],
-
-            [
-                'name' => 'USG OPG License Requisitions View',
-                'slug' => 'licenses.usg-opg-license-requisitions.show',
-                'description' => 'USG OPG License Requisitions show permission',
-                'key' => 'licenses.usg-opg-license-requisitions'
-            ],
-
-            [
-                'name' => 'USG OPG License Requisitions Delete',
-                'slug' => 'licenses.usg-opg-license-requisitions.destroy',
-                'description' => 'USG OPG License Requisitions delete permission',
-                'key' => 'licenses.usg-opg-license-requisitions'
-            ],
-            [
-                'name' => 'USG OPG License Requisitions Approve',
-                'slug' => 'licenses.usg-opg-license-requisitions.approve',
-                'description' => 'USG OPG License Requisitions approve permission',
-                'key' => 'licenses.usg-opg-license-requisitions'
-            ],
-
-
-            //cbc-license-requisitions
-            [
-                'name' => 'CBC License Requisitions Create',
-                'slug' => 'licenses.cbc-license-requisitions.create',
-                'description' => 'CBC License Requisitions create permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-
-            [
-                'name' => 'CBC License Requisitions List',
-                'slug' => 'licenses.cbc-license-requisitions.index',
-                'description' => 'CBC License Requisitions list permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-
-            [
-                'name' => 'CBC License Requisitions Update',
-                'slug' => 'licenses.cbc-license-requisitions.update',
-                'description' => 'CBC License Requisitions update permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-
-            [
-                'name' => 'CBC License Requisitions View',
-                'slug' => 'licenses.cbc-license-requisitions.show',
-                'description' => 'CBC License Requisitions show permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-
-            [
-                'name' => 'CBC License Requisitions Delete',
-                'slug' => 'licenses.cbc-license-requisitions.destroy',
-                'description' => 'CBC License Requisitions delete permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-            [
-                'name' => 'CBC License Requisitions Approve',
-                'slug' => 'licenses.cbc-license-requisitions.approve',
-                'description' => 'CBC License Requisitions delete permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-            [
-                'name' => 'CBC License Requisitions Approve',
-                'slug' => 'licenses.cbc-license-requisitions.approve',
-                'description' => 'CBC License Requisitions delete permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-
-            //licenses.usg-opg-sms
-            [
-                'name' => 'USG OPG SMS Update',
-                'slug' => 'licenses.usg-opg-sms.update',
-                'description' => 'USG OPG SMS update permission',
-                'key' => 'licenses.usg-opg-sms'
-            ],
-            [
-                'name' => 'CBC SMS Update',
-                'slug' => 'licenses.cbc-sms.update',
-                'description' => 'CBC SMS update permission',
-                'key' => 'licenses.cbc-sms'
-            ],
-
-            //reports
-            [
-                'name' => 'Report List',
-                'slug' => 'licenses.reports.index',
-                'description' => 'Report list permission',
-                'key' => 'licenses.reports'
-            ],
-
-            //service
-            [
-                'name' => 'Service Create',
-                'slug' => 'services.service.create',
-                'description' => 'Service create permission',
-                'key' => 'services.service',
-                'parent_key' => 'services',
-            ],
-
-            [
-                'name' => 'Service List',
-                'slug' => 'services.service.index',
-                'description' => 'Service list permission',
-                'key' => 'services.service',
-                'parent_key' => 'services',
-            ],
-
-            [
-                'name' => 'Service Update',
-                'slug' => 'services.service.update',
-                'description' => 'Service update permission',
-                'key' => 'services.service',
-                'parent_key' => 'services',
-            ],
-
-            [
-                'name' => 'Service View',
-                'slug' => 'services.service.show',
-                'description' => 'Service show permission',
-                'key' => 'services.service',
-                'parent_key' => 'services',
-            ],
-
-            [
-                'name' => 'Service Delete',
-                'slug' => 'services.service.destroy',
-                'description' => 'Service delete permission',
-                'key' => 'services.service',
-                'parent_key' => 'services',
-            ],
-
-            [
-                'name' => 'Service Type Create',
-                'slug' => 'services.settings.service-types.create',
-                'description' => 'Service type create permission',
-                'key' => 'services.settings.service-types',
-                'parent_key' => 'services.settings',
-            ],
-
-            [
-                'name' => 'Service Type List',
-                'slug' => 'services.settings.service-types.index',
-                'description' => 'Service type list permission',
-                'key' => 'services.settings.service-types',
-                'parent_key' => 'services.settings',
-            ],
-
-            [
-                'name' => 'Service Type Update',
-                'slug' => 'services.settings.service-types.update',
-                'description' => 'Service type update permission',
-                'key' => 'services.settings.service-types',
-                'parent_key' => 'services.settings',
-            ],
-
-            // [
-            //     'name'=> 'Service Type View',
-            //     'slug'=> 'services.settings.service-types.show',
-            //     'description'=> 'Service type show permission',
-            //     'key'=> 'services.settings.service-types',
-            //     'parent_key' => 'services.settings',
-            // ],
-
-            [
-                'name' => 'Service Type Delete',
-                'slug' => 'services.settings.service-types.destroy',
-                'description' => 'Service type delete permission',
-                'key' => 'services.settings.service-types',
-                'parent_key' => 'services.settings',
-            ],
-
-            //service-assign
-            // [
-            //     'name'=> 'Service Assign Create',
-            //     'slug'=> 'services.service-assign.create',
-            //     'description'=> 'Service assign create permission',
-            //     'key'=> 'services.service-assign',
-            //     'parent_key' => 'services',
-            // ],
-
-            [
-                'name' => 'Service Assign List',
-                'slug' => 'services.service-assign.index',
-                'description' => 'Service assign list permission',
-                'key' => 'services.service-assign',
-                'parent_key' => 'services',
-            ],
-
-            // [
-            //     'name'=> 'Service Assign Update',
-            //     'slug'=> 'services.service-assign.update',
-            //     'description'=> 'Service assign update permission',
-            //     'key'=> 'services.service-assign',
-            //     'parent_key' => 'services',
-            // ],
-
-            // [
-            //     'name'=> 'Service Assign View',
-            //     'slug'=> 'services.service-assign.show',
-            //     'description'=> 'Service assign show permission',
-            //     'key'=> 'services.service-assign',
-            //     'parent_key' => 'services',
-            // ],
-
-            // [
-            //     'name'=> 'Service Assign Delete',
-            //     'slug'=> 'services.service-assign.destroy',
-            //     'description'=> 'Service assign delete permission',
-            //     'key'=> 'services.service-assign',
-            //     'parent_key' => 'services',
-            // ],
-
-            [
-                'name' => 'Service My Task Details',
-                'slug' => 'services.service-my-task.create',
-                'description' => 'Service my task create permission',
-                'key' => 'services.service-my-task',
-                'parent_key' => 'services',
-            ],
-
-            [
-                'name' => 'Service My Task List',
-                'slug' => 'services.service-my-task.index',
-                'description' => 'Service my task list permission',
-                'key' => 'services.service-my-task',
-                'parent_key' => 'services',
-            ],
-
-            // [
-            //     'name'=> 'Service My Task Update',
-            //     'slug'=> 'services.service-my-task.update',
-            //     'description'=> 'Service my task update permission',
-            //     'key'=> 'services.service-my-task',
-            //     'parent_key' => 'services',
-            // ],
-
-            // [
-            //     'name'=> 'Service My Task View',
-            //     'slug'=> 'services.service-my-task.show',
-            //     'description'=> 'Service my task show permission',
-            //     'key'=> 'services.service-my-task',
-            //     'parent_key' => 'services',
-            // ],
-
-            // [
-            //     'name'=> 'Service My Task Delete',
-            //     'slug'=> 'services.service-my-task.destroy',
-            //     'description'=> 'Service my task delete permission',
-            //     'key'=> 'services.service-my-task',
-            // ],
-
-            [
-                'name' => 'Service My Task Solution Verification',
-                'slug' => 'services.service-my-task.solution-verification',
-                'description' => 'Service my task solution verification permission',
-                'key' => 'services.service-my-task',
-            ],
-
-            //Document Entry
             [
-                'name' => 'Document Entry Create',
-                'slug' => 'services.document-entries.create',
-                'description' => 'Document entry create permission',
-                'key' => 'services.document-entries',
-
+                'name' => 'Role List',
+                'slug' => 'access_control.roles.index',
+                'description' => 'Role list permission',
+                'key' => 'access_control.roles'
             ],
 
             [
-                'name' => 'Document Entry List',
-                'slug' => 'services.document-entries.index',
-                'description' => 'Document entry list permission',
-                'key' => 'services.document-entries',
-
+                'name' => 'Update Role',
+                'slug' => 'access_control.roles.update',
+                'description' => 'Role update permission',
+                'key' => 'access_control.roles'
             ],
 
             [
-                'name' => 'Document Entry Update',
-                'slug' => 'services.document-entries.update',
-                'description' => 'Document entry update permission',
-                'key' => 'services.document-entries',
-
+                'name' => 'Delete Role',
+                'slug' => 'access_control.roles.destroy',
+                'description' => 'Role delete permission',
+                'key' => 'access_control.roles'
             ],
-
-            // [
-            //     'name'=> 'Document Entry View',
-            //     'slug'=> 'services.document-entries.show',
-            //     'description'=> 'Document entry show permission',
-            //     'key'=> 'services.document-entries',
-
-            // ],
-
+            //Global Settings
             [
-                'name' => 'Document Entry download',
-                'slug' => 'services.document-entries.download',
-                'description' => 'Document entry print permission',
-                'key' => 'services.document-entries',
+                'name' => 'Global Settings',
+                'slug' => 'access_control.global-settings.update',
+                'description' => 'Global Settings permission',
+                'key' => 'access_control.global-settings'
             ],
 
-            [
-                'name' => 'Document Entry Delete',
-                'slug' => 'services.document-entries.destroy',
-                'description' => 'Document entry delete permission',
-                'key' => 'services.document-entries',
-            ],
-            //Quotation 
-// services.quotations.index
-            [
-                'name' => 'Quotation Create',
-                'slug' => 'services.quotations.create',
-                'description' => 'Quotation create permission',
-                'key' => 'services.quotations',
 
-            ],
+            //verification.verification-requests
             [
-                'name' => 'Quotation List',
-                'slug' => 'services.quotations.index',
-                'description' => 'Quotation list permission',
-                'key' => 'services.quotations',
-
+                'name' => 'Verification Requests',
+                'slug' => 'verification.verification-requests',
+                'description' => 'Verification Requests permission',
+                'key' => 'verification'
             ],
-
+             
+            // Custom Employee Routes
             [
-                'name' => 'Quotation Update',
-                'slug' => 'services.quotations.update',
-                'description' => 'Quotation update permission',
-                'key' => 'services.quotations',
+                'name' => 'Employee Import',
+                'slug' => 'hrm.employees.import',
+                'description' => 'Employee import permission',
+                'key' => 'hrm.employees',
             ],
+ 
 
+         
+ 
+            //branchs
+            //branchs
             [
-                'name' => 'Quotation Sales Order',
-                'slug' => 'services.quotations.sales-order',
-                'description' => 'Quotation sales order list permission',
-                'key' => 'services.quotations',
+                'name' => 'Create Branches',
+                'slug' => 'access_control.branchs.create',
+                'description' => 'Branches create permission',
+                'key' => 'access_control.branchs'
             ],
-            // [
-            //     'name'=> 'Quotation View',
-            //     'slug'=> 'services.quotations.show',
-            //     'description'=> 'Quotation show permission',
-            //     'key'=> 'services.quotations',
 
-            // ],
-
             [
-                'name' => 'Quotation Print',
-                'slug' => 'services.quotations.print',
-                'description' => 'Quotation print permission',
-                'key' => 'services.quotations',
-
+                'name' => 'Branches List',
+                'slug' => 'access_control.branchs.index',
+                'description' => 'Branches list permission',
+                'key' => 'access_control.branchs'
             ],
 
             [
-                'name' => 'Quotation Delete',
-                'slug' => 'services.quotations.destroy',
-                'description' => 'Quotation delete permission',
-                'key' => 'services.quotations',
+                'name' => 'Branches Update',
+                'slug' => 'access_control.branchs.update',
+                'description' => 'Branches update permission',
+                'key' => 'access_control.branchs'
             ],
 
-
-            // 📂 Legal Entries (resource)
-            [
-                'name' => 'Create Legal Entry',
-                'slug' => 'legal.legal-entries.create',
-                'description' => 'Permission to create legal entries',
-                'key' => 'legal.legal-entries',
-            ],
             [
-                'name' => 'List Legal Entries',
-                'slug' => 'legal.legal-entries.index',
-                'description' => 'Permission to view legal entries',
-                'key' => 'legal.legal-entries',
+                'name' => 'Branches View',
+                'slug' => 'access_control.branchs.show',
+                'description' => 'Branches show permission',
+                'key' => 'access_control.branchs'
             ],
-            [
-                'name' => 'Edit Legal Entry',
-                'slug' => 'legal.legal-entries.update',
-                'description' => 'Permission to edit legal entries',
-                'key' => 'legal.legal-entries',
-            ],
-            [
-                'name' => 'Delete Legal Entry',
-                'slug' => 'legal.legal-entries.destroy',
-                'description' => 'Permission to delete legal entries',
-                'key' => 'legal.legal-entries',
-            ],
 
-            // ✅ Custom Legal Entry Actions
-            [
-                'name' => 'Approve Legal Entry',
-                'slug' => 'legal.legal-entries.approve',
-                'description' => 'Permission to approve legal entries',
-                'key' => 'legal.legal-entries',
-            ],
-            [
-                'name' => 'Deny Legal Entry',
-                'slug' => 'legal.legal-entries.deny',
-                'description' => 'Permission to deny legal entries',
-                'key' => 'legal.legal-entries',
-            ],
             [
-                'name' => 'Update Legal Schedule',
-                'slug' => 'legal.legal-entries.legal-schedule-update',
-                'description' => 'Permission to update legal schedule',
-                'key' => 'legal.legal-entries',
+                'name' => 'Branches Delete',
+                'slug' => 'access_control.branchs.destroy',
+                'description' => 'Branches delete permission',
+                'key' => 'access_control.branchs'
             ],
-            [
-                'name' => 'Legal Report',
-                'slug' => 'legal.legal-entries.reports',
-                'description' => 'Permission to update legal Report',
-                'key' => 'legal.legal-entries',
-            ],
 
-            // 📂 Legal Bill Entries (resource)
-            [
-                'name' => 'Create Legal Bill Entry',
-                'slug' => 'legal.legal-bill-entries.create',
-                'description' => 'Permission to create legal bill entries',
-                'key' => 'legal.legal-bill-entries',
-            ],
-            [
-                'name' => 'List Legal Bill Entries',
-                'slug' => 'legal.legal-bill-entries.index',
-                'description' => 'Permission to view legal bill entries',
-                'key' => 'legal.legal-bill-entries',
-            ],
-            [
-                'name' => 'Edit Legal Bill Entry',
-                'slug' => 'legal.legal-bill-entries.update',
-                'description' => 'Permission to edit legal bill entries',
-                'key' => 'legal.legal-bill-entries',
-            ],
-            [
-                'name' => 'Delete Legal Bill Entry',
-                'slug' => 'legal.legal-bill-entries.destroy',
-                'description' => 'Permission to delete legal bill entries',
-                'key' => 'legal.legal-bill-entries',
-            ],
-            [
-                'name' => 'View Legal Bill Entry',
-                'slug' => 'legal.legal-bill-entries.show',
-                'description' => 'Permission to view legal bill schedule',
-                'key' => 'legal.legal-bill-entries',
-            ],
 
+            
+          
 
-            // CRM Reports
-            [
-                'name' => 'Customer List (Machine Code) Report',
-                'description' => 'Permission to view CRM reports',
-                'slug' => 'crm.reports.customer-machine-code',
-                'key' => 'crm.reports',
-            ],
+            
+            //branch-types
             [
-                'name' => 'Customer Balance Details Report',
-                'description' => 'Permission to view customer balance details',
-                'slug' => 'crm.reports.customer-balance-details',
-                'key' => 'crm.reports',
+                'name' => 'Create Branch Type',
+                'slug' => 'access_control.branch-types.create',
+                'description' => 'Branch Type create permission',
+                'key' => 'access_control.branch-types'
             ],
 
-            // Inventory Reports
             [
-                'name' => 'Product Wise Stock Report',
-                'description' => 'Permission to view product stock report',
-                'slug' => 'inv.reports.product-stock',
-                'key' => 'inv.reports',
+                'name' => 'Branch Type List',
+                'slug' => 'access_control.branch-types.index',
+                'description' => 'Branch Type list permission',
+                'key' => 'access_control.branch-types'
             ],
-            [
-                'name' => 'Product Transfer Report',
-                'description' => 'Permission to view product transfer report',
-                'slug' => 'inv.reports.product-transfer',
-                'key' => 'inv.reports',
-            ],
-            [
-                'name' => 'Catalogue Report',
-                'description' => 'Permission to view catalogue report',
-                'slug' => 'inv.reports.catalogue-report',
-                'key' => 'inv.reports',
-            ],
-            [
-                'name' => 'Stock Balance Report',
-                'description' => 'Permission to view stock balance report',
-                'slug' => 'inv.reports.stock-balance',
-                'key' => 'inv.reports',
-            ],
-            [
-                'name' => 'Center Stock Report',
-                'description' => 'Permission to view center-wise stock report',
-                'slug' => 'inv.reports.center-stock',
-                'key' => 'inv.reports',
-            ],
 
-            // Sales Reports
-            [
-                'name' => 'Sales Report',
-                'description' => 'Permission to view sales report',
-                'slug' => 'sales.reports.sales-report',
-                'key' => 'sales.reports',
-            ],
-            [
-                'name' => 'Fake Sales Report',
-                'description' => 'Permission to view fake sales report',
-                'slug' => 'sales.reports.fake-sales',
-                'key' => 'sales.reports',
-            ],
-            [
-                'name' => 'Broker Commission Report',
-                'description' => 'Permission to view broker commission report',
-                'slug' => 'sales.reports.broker-commissions',
-                'key' => 'sales.reports',
-            ],
-            [
-                'name' => 'Brand Supplier Sales Report',
-                'description' => 'Permission to view brand supplier sales report',
-                'slug' => 'sales.reports.brand-supplier-sales-report',
-                'key' => 'sales.reports',
-            ],
             [
-                'name' => 'Shipment Explorer Report',
-                'description' => 'Permission to view shipment explorer report',
-                'slug' => 'sales.reports.shipment-explorer',
-                'key' => 'sales.reports',
+                'name' => 'Branch Type Update',
+                'slug' => 'access_control.branch-types.update',
+                'description' => 'Branch Type update permission',
+                'key' => 'access_control.branch-types'
             ],
 
-            // Service Reports
-            [
-                'name' => 'Service Report',
-                'description' => 'Permission to view service reports',
-                'slug' => 'services.reports.service-reports',
-                'key' => 'services.reports',
-            ],
-            [
-                'name' => 'Warranty Check Report',
-                'description' => 'Permission to view warranty check report',
-                'slug' => 'services.reports.warranty-check',
-                'key' => 'services.reports',
-            ],
-            [
-                'name' => 'Service Explorer Report',
-                'description' => 'Permission to view service explorer report',
-                'slug' => 'services.reports.service-explorer-reports',
-                'key' => 'services.reports',
-            ],
             [
-                'name' => 'Monthly Service Report',
-                'description' => 'Permission to view monthly service report',
-                'slug' => 'services.reports.monthly-service-reports',
-                'key' => 'services.reports',
+                'name' => 'Branch Type View',
+                'slug' => 'access_control.branch-types.show',
+                'description' => 'Branch Type show permission',
+                'key' => 'access_control.branch-types'
             ],
-            [
-                'name' => 'Installation & Servicing Report',
-                'description' => 'Permission to view installation report',
-                'slug' => 'services.reports.installation-reports',
-                'key' => 'services.reports',
-            ],
 
-            // License Reports
             [
-                'name' => 'License Report',
-                'description' => 'Permission to view license reports',
-                'slug' => 'licenses.reports.index',
-                'key' => 'licenses.reports',
+                'name' => 'Branch Type Delete',
+                'slug' => 'access_control.branch-types.destroy',
+                'description' => 'Branch Type delete permission',
+                'key' => 'access_control.branch-types'
             ],
 
-            // Achievement Based Salary Policy view page
-            [
-                'name' => 'Achievement Based Salary Policy',
-                'description' => 'Permission to view achievement based salary policy',
-                'slug' => 'sales_target.settings.achievement-based-salary-policy.index',
-                'key' => 'sales_target.settings.achievement-based-salary-policy',
-            ],
-            //create
-            [
-                'name' => 'Achievement Based Salary Policy Create',
-                'description' => 'Permission to create achievement based salary policy',
-                'slug' => 'sales_target.settings.achievement-based-salary-policy.create',
-                'key' => 'sales_target.settings.achievement-based-salary-policy',
-            ],
-            //update
-            [
-                'name' => 'Achievement Based Salary Policy Update',
-                'description' => 'Permission to update achievement based salary policy',
-                'slug' => 'sales_target.settings.achievement-based-salary-policy.update',
-                'key' => 'sales_target.settings.achievement-based-salary-policy',
-            ],
-            //delete
-            [
-                'name' => 'Achievement Based Salary Policy Delete',
-                'description' => 'Permission to delete achievement based salary policy',
-                'slug' => 'sales_target.settings.achievement-based-salary-policy.destroy',
-                'key' => 'sales_target.settings.achievement-based-salary-policy',
-            ],
-            //details   
-            [
-                'name' => 'Achievement Based Salary Policy Details',
-                'description' => 'Permission to view achievement based salary policy details',
-                'slug' => 'sales_target.settings.achievement-based-salary-policy.show',
-                'key' => 'sales_target.settings.achievement-based-salary-policy',
-            ],
 
 
            
+
+            
+            
+
+
+
 
         ];
 
@@ -4968,9 +4982,7 @@ class PermissionTableSeed extends Seeder
                 //     'description' => $permission['description']
                 // ]);
 
-                DB::table('permissions')->insert([
-
-                ]);
+               
                 Permission::updateOrCreate([
                     'slug' => $permission['slug'],
                 ], [
