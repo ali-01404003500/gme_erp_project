@@ -1,7 +1,4 @@
-{{-- Company: Wreetu Helth. --}}
-{{-- Author: Md Shadhin --}}
-{{-- Developer: Md Shadhin --}}
-{{-- Copywrite: 2024 --}}
+
 <script>
     $('#zero-config').DataTable({
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +

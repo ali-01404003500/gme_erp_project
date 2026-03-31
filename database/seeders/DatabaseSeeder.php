@@ -30,8 +30,7 @@ class DatabaseSeeder extends Seeder
             'company_name' => 'Global Medical Engineering (BD) Ltd. ',
             'company_email' => 'info@gmebd.com',
             'company_phone' => '+880 17 11 020 555',
-            'company_address' => '17/2, Topkhana Road (2nd Floor), Dhaka – 1000, Bangladesh.',
-            // 'company_logo' => 'https://opzo.app/wp-content/uploads/2024/03/Opzp.app-Logo-White-03-300x69.png',
+            'company_address' => '17/2, Topkhana Road (2nd Floor), Dhaka – 1000, Bangladesh.', 
             'company_logo' => public_path('assets/img/gme-logo.png'),
         ]);
 

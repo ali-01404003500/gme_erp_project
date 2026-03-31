@@ -1,7 +1,4 @@
-{{-- Company: Opzo. --}}
-{{-- Author: Md Shadhin --}}
-{{-- Developer: Md Shadhin --}}
-{{-- Copywrite: 2024 --}}
+
 
 @if ($data->lastPage() > 1)
     <nav aria-label="Page navigation">

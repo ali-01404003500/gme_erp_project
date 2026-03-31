@@ -1,7 +1,4 @@
-{{-- Company: Wreetu Helth. --}}
-{{-- Author: Md Shadhin --}}
-{{-- Developer: Md Shadhin --}}
-{{-- Copywrite: 2024 --}}
+
 
 @extends('layout.app')
 
