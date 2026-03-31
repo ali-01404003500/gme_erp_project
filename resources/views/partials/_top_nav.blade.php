@@ -1,32 +1,37 @@
 <nav class="navbar navbar-light">
     <div class="navbar-left">
-       <div class="logo-area">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                @php
-                    use App\Models\AccessControl\CompanyInfo;
-                    $companyInfo = cache()->remember('company_info', now()->addHours(24), function () { 
-                        return CompanyInfo::first();
-                    }); 
-                @endphp 
+         
+        @php
+            use App\Models\AccessControl\CompanyInfo;
+            $companyInfo = cache()->remember('company_info', now()->addHours(24), function () { 
+                return CompanyInfo::first();
+            }); 
+        @endphp 
+        
+        <div class="logo-area d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center"> 
                 <!-- By default text dekhaabe -->
                 <span class="company-title ms-2" id="companyText">
                     {{ $companyInfo?->software_title ?? 'GME ERP' }}
                 </span>
 
-                <!-- Logo initially hide -->
+                  <!-- Logo initially hide -->
                 @if(!empty($companyInfo?->company_logo))
                     <img src="{{ url($companyInfo->company_logo) }}" 
                         alt="{{ $companyInfo->software_title }}" 
-                        class="company-logo ms-2 company-logo " 
+                        class="company-logo ms-2 " 
                         id="companyLogo"
                         style="height:60px; object-fit:contain; display:none;">
                 @endif
-            </a>
+            </div>
 
-            <a href="#" class="sidebar-toggle ms-3"  id="companyToggle" >
+            <!-- Toggle Button -->
+            <a href="#" class="sidebar-toggle ms-3" id="companyToggle">
                 <img class="svg" src="{{ asset('assets/img/svg/align-center-alt.svg') }}" alt="Toggle Sidebar">
             </a>
+            
         </div>
+
     </div>
     <div class="navbar-right">
         <ul class="navbar-right__menu"> 

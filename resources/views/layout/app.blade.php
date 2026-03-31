@@ -59,16 +59,7 @@
 
 
      {{-- Custom JS --}}
-    <script>
-        jQuery(document).ready(function($) {
-            // Sidebar toggle
-            $('.sidebar-toggle').on('click', function(e) {
-                e.preventDefault();
-                $('body').toggleClass('sidebar-collapsed');
-            });
-            
-        });
-
+    <script> 
 
         $(document).ready(function() {
             $('#companyToggle').on('click', function(e) {
@@ -104,58 +95,38 @@
     @include('partials.app_script_js')
 
 
-     {{-- ===== Inline CSS for logo + title ===== --}}
-    <style>
-        .company-title {
-            display: inline-block;
-            transition: opacity 0.3s ease, width 0.3s ease;
-            white-space: nowrap;
-        }
-
-        body.sidebar-collapsed .company-title {
-            opacity: 0;
-            width: 0;
-            overflow: hidden;
-        }
-
-        .company-logo {
-            transition: margin 0.3s ease;
-        }
-
-        body.sidebar-collapsed .company-logo {
-            margin-right: 0; /* adjust spacing when title hidden */
-        }
  
-    </style>
 
 
     {{-- Sidebar Toggle Button JS & CSS --}}
 
 
     <style>
-        /* Sidebar Toggle Button Position & Transition */
+
+       .logo-area {
+            width: 100%;
+            padding: 10px 20px;
+            box-sizing: border-box;
+        }
+
+        /* Flex layout ensures everything inline */
+        .logo-area .company-title,
+        .logo-area .company-logo {
+            display: inline-block;
+            white-space: nowrap;
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+
         .sidebar-toggle {
-            position: fixed; /* fixed so always visible */
-            top: 20px;
-            left: 20px; /* initial position */
-            z-index: 1000;
             cursor: pointer;
-            transition: left 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
-        /* Move button when sidebar opens */
-        body.sidebar-collapsed .sidebar-toggle {
-            left: 20px; /* stays in same place when collapsed */
+        /* Optional smooth show/hide */
+        #companyLogo {
+            transition: all 0.3s ease;
         }
 
-        body:not(.sidebar-collapsed) .sidebar-toggle {
-            left: 270px; /* shift to left side of sidebar when open */
-        }
-
-        /* Sidebar transition already handled by your classes */
-        .sidebar.sidebar-collapse {
-            transition: left 0.3s ease;
-        }
     </style>
 
 </body>
