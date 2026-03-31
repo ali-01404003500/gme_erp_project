@@ -19,12 +19,12 @@ class Attendance extends BaseModel
     /**
      * Create a new factory instance for the model.
      *
-     * @return \Illuminate\database\Eloquent\Factories\Factory
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    protected static function newFactory()
-    { 
-        return AttendanceFactory::new();
-    }
+    // protected static function newFactory()
+    // {
+    //     return AttendanceFactory::new();
+    // }
 
 
     protected $guarded = [];
