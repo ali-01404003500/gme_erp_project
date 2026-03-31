@@ -15,7 +15,7 @@
 
                 <!-- Logo initially hide -->
                 @if(!empty($companyInfo?->company_logo))
-                    <img src="{{ $companyInfo->company_logo }}" 
+                    <img src="{{ asset($companyInfo->company_logo) }}" 
                         alt="{{ $companyInfo->software_title }}" 
                         class="company-logo ms-2 company-logo " 
                         id="companyLogo"
