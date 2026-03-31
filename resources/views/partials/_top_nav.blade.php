@@ -3,6 +3,7 @@
        <div class="logo-area">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 @php
+                    use App\Models\CompanyInfo;
                     $companyInfo = cache()->remember('company_info', now()->addHours(24), function () { 
                         return CompanyInfo::first();
                     }); 
