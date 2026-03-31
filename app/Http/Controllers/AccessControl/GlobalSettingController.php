@@ -65,7 +65,8 @@ class GlobalSettingController extends Controller
     {
         // dd($request->all(), $id);
         $validate = $request->validate([
-            'company_name'      => 'required|string|max:255',
+            'company_name'      => 'required|string|max:255', 
+            'software_title'     => 'nullable|string|max:255',
             'company_email'     => 'nullable|string|max:255',
             'company_phone'     => 'required|string|max:255',
             'company_address'   => 'required|string',

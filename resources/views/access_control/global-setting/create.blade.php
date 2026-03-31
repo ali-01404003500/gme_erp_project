@@ -91,6 +91,16 @@
                                                                                 value="{{ old('company_name', $setting->company_name) }}">
                                                                         </div>
                                                                     </div>
+                                                                     <div class="col-md-4">
+                                                                        <div class="form-group mb-3">
+                                                                            <label for="software_title"
+                                                                                class="col-form-label">Software Title</label>
+                                                                            <input type="text" name="software_title"
+                                                                                class="form-control" id="software_title"
+                                                                                placeholder="Software Title"
+                                                                                value="{{ old('software_title', $setting->software_title) }}">
+                                                                        </div>
+                                                                    </div>
 
                                                                     <div class="col-md-4">
                                                                         <div class="form-group mb-3">
@@ -136,7 +146,7 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-12">
                                                                         <div class="form-group mb-3">
                                                                             <label for="model"
                                                                                 class="col-form-label">Company Bio</label>
