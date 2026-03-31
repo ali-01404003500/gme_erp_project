@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\HRMS\database\Factories;
+namespace Modules\HRMS\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\HRMS\Models\Settings\Shift;
