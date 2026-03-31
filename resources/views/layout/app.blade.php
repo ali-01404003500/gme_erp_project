@@ -60,15 +60,22 @@
 
      {{-- Custom JS --}}
     <script>
-    
+        jQuery(document).ready(function($) {
+            // Sidebar toggle
+            $('.sidebar-toggle').on('click', function(e) {
+                e.preventDefault();
+                $('body').toggleClass('sidebar-collapsed');
+            });
+            
+        });
 
-         $(document).ready(function() {
+
+        $(document).ready(function() {
             $('#companyToggle').on('click', function(e) {
                 e.preventDefault(); // link click prevent
 
                 $('#companyText').toggle(); // text hide/show
                 $('#companyLogo').toggle(); // logo hide/show
-                $('body').toggleClass('sidebar-collapsed');
             });
         });
         
