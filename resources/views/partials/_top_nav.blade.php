@@ -2,6 +2,11 @@
     <div class="navbar-left">
        <div class="logo-area">
             <a class="navbar-brand d-flex align-items-center" href="#">
+                @php
+                    $companyInfo = cache()->remember('company_info', now()->addHours(24), function () { 
+                        return CompanyInfo::first();
+                    }); 
+                @endphp 
                 @if(!empty($companyInfo?->company_logo))
                     <img src="{{ asset($companyInfo->company_logo) }}" 
                         alt="{{ $companyInfo->software_title }}" 
