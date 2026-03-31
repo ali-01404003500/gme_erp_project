@@ -646,15 +646,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'sales',
             ],
  
-            //Sales Target Acheivement List
-            [
-                'title' => 'Sales Target Acheivement List',
-                'description' => "Permission of Add, Remove, Update, Delete Sales Target Acheivement List",
-                'key' => 'sales_target.perfomence',
-                'parent_key' => 'hrm',
-            ],
-
-
+            
 
             // Sales Target
             [
@@ -668,16 +660,23 @@ class PermissionMasterTableSeeder extends Seeder
                 'title' => 'Sales Target Setup',
                 'description' => "Permission of Add, Remove, Update, Delete Sales Target Setup",
                 'key' => 'sales_target.target',
-                'parent_key' => 'hrm',
+                'parent_key' => 'sales_target',
             ],
- 
-          
+            
+            //Sales Target Acheivement List
+            [
+                'title' => 'Sales Target Acheivement List',
+                'description' => "Permission of Add, Remove, Update, Delete Sales Target Acheivement List",
+                'key' => 'sales_target.perfomence',
+                'parent_key' => 'sales_target',
+            ],
+
             //Sales Incentive Setup
             [
                 'title' => 'Sales Incentive Setup',
                 'description' => "Permission of Add, Remove, Update, Delete Sales Incentive Setup",
                 'key' => 'sales_target.incentives',
-                'parent_key' => 'hrm',
+                'parent_key' => 'sales_target',
             ],
 
             //inventory
