@@ -3,7 +3,7 @@
 namespace Modules\HRMS\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\SalaryBreakdown;
+use Modules\HRMS\Models\SalaryBreakdown;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\EmployeeSalary;
 use Modules\HRMS\Models\SalaryGenerate;

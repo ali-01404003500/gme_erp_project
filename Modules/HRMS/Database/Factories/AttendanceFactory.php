@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\HRMS\Database\Factories;
+namespace Modules\HRMS\database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\HRMS\Models\Attendance;

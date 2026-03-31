@@ -18,11 +18,11 @@ class Attendance extends BaseModel
     /**
      * Create a new factory instance for the model.
      *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @return \Illuminate\database\Eloquent\Factories\Factory
      */
     protected static function newFactory()
     {
-        return \Modules\HRMS\Database\Factories\AttendanceFactory::new();
+        return \Modules\HRMS\database\Factories\AttendanceFactory::new();
     }
 
 
