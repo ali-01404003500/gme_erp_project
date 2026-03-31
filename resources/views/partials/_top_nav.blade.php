@@ -1,23 +1,26 @@
 <nav class="navbar navbar-light">
     <div class="navbar-left">
        <div class="logo-area">
-            <a class="navbar-brand d-flex align-items-center" href="#">
+            <a class="navbar-brand d-flex align-items-center" href="#" id="companyToggle">
                 @php
                     use App\Models\AccessControl\CompanyInfo;
                     $companyInfo = cache()->remember('company_info', now()->addHours(24), function () { 
                         return CompanyInfo::first();
                     }); 
                 @endphp 
+                <!-- By default text dekhaabe -->
+                <span class="company-title ms-2" id="companyText">
+                    {{ $companyInfo?->software_title ?? 'GME ERP' }}
+                </span>
+
+                <!-- Logo initially hide -->
                 @if(!empty($companyInfo?->company_logo))
                     <img src="{{ asset($companyInfo->company_logo) }}" 
                         alt="{{ $companyInfo->software_title }}" 
-                        class="company-logo"
-                        style="height:60px; object-fit:contain;">
+                        class="company-logo ms-2" 
+                        id="companyLogo"
+                        style="height:60px; object-fit:contain; display:none;">
                 @endif
-
-                <span class="company-title ms-2">
-                    {{ $companyInfo?->software_title ?? 'GME' }}
-                </span>
             </a>
 
             <a href="#" class="sidebar-toggle ms-3" >
