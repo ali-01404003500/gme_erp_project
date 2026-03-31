@@ -59,7 +59,8 @@
 
 
      {{-- Custom JS --}}
-    <script> 
+    <script>
+    
 
          $(document).ready(function() {
             $('#companyToggle').on('click', function(e) {
@@ -67,6 +68,7 @@
 
                 $('#companyText').toggle(); // text hide/show
                 $('#companyLogo').toggle(); // logo hide/show
+                $('body').toggleClass('sidebar-collapsed');
             });
         });
         
