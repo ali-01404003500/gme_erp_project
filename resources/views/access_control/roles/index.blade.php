@@ -164,10 +164,22 @@
                     plugins: ['remove_button'],
                     render: {
                         option: function(data, escape) {
-                            console.log(data.avater, data.email);
-                            return '<div>' + escape(data.text) + "<p class='text-muted'>" +
-                                data.email +
-                                "</p></div>";
+                            let tag = '';
+
+                            // length check
+                            if (data.email && data.email.length > 11) {
+                                tag = "<span class='badge bg-success ms-2'>Employee</span>";
+                            } else {
+                                tag = "<span class='badge bg-info ms-2'>Customer</span>";
+                            }
+
+                            return `
+                                <div>
+                                    ${escape(data.text)} ${tag}
+                                    <p class='text-muted mb-0'>${data.email ?? ''}</p>
+                                </div>
+                            `;
+
                         }
                     }
                 });
