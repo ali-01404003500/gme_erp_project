@@ -65,7 +65,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
     Route::resource('salary-generates', SalaryGenerateController::class);
 
-    Route::post('salary-generates/paid/{id}', [SalaryGenerateController::class, 'paid'])->name('salary-generates.paid');
+    Route::post('salary-generates/paid/{id}', [SalaryGenerateController::class, 'paid'])->name('salary-generates.paid'); 
+    Route::get('salary-generates/salary-sheet/{id}', [SalaryGenerateController::class,'salarySheet'])->name('salary-generates.salary-sheet');
+
     Route::post('salary-generates/partially-paid/{id}', [SalaryGenerateController::class, 'partiallyPaid'])->name('salary-generates.partially-paid');
     Route::post('salary-generates/paid-all', [SalaryGenerateController::class, 'paidAll'])->name('salary-generates.paid-all');
     Route::post('salary-generates/partially-paid-all', [SalaryGenerateController::class, 'partiallyPaidAll'])->name('salary-generates.partially-paid-all');
@@ -107,7 +109,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     //======== salary Routes ========
     Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
     Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
-    Route::get('payrolls', [SalaryGenerateController::class, 'payrolls'])->name('payrolls');
+    Route::get('payrolls', [SalaryGenerateController::class, 'payrolls'])->name('payrolls'); 
     Route::resource('salary-setups', SalarySetupController::class);
 
     //======== salary Signatory Routes ========

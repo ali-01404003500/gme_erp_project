@@ -893,7 +893,13 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Salary generate show permission',
                 'key' => 'hrm.salary-generates',
             ], 
-
+            [
+                'name' => 'Salary Sheet View',
+                'slug' => 'hrm.salary-generates.salary-sheet',
+                'description' => 'Salary sheet show permission',
+                'key' => 'hrm.salary-generates',
+            ], 
+ 
             //Salary Setups
             [
                 'name' => 'Salary Setups List',

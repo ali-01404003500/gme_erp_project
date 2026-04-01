@@ -30,6 +30,16 @@ class SalaryGenerateService
             ->paginate($limit);
     }
 
+
+    public function getSalary(int $payrollId)
+    {  
+        return SalaryGenerate::with('verifications.employee')
+            ->where('payroll_id', $payrollId)
+            ->whereIn('status', ['Pending','recomended']) 
+            ->orderBy('department_id', 'asc')
+            ->get();
+    }
+ 
    public function store($data, $request)
     {
         DB::beginTransaction();
@@ -367,7 +377,7 @@ class SalaryGenerateService
                 // Create salary record 
                 $totalDeduction = $salaryData['absent_deduction']-$salaryData['late_deduction']-$salaryData['loan_deduction']-$salaryData['advance_deduction']-$salaryData['tax_deduction'];
                 $totalSalary += $salaryData['gross_salary'];
-                $netEarning = $salaryData['gross_salary'] - $salaryData['tax_deduction'] - $totalDeduction;
+                $netEarning = $salaryData['gross_salary'] - $totalDeduction;
   
                 SalaryGenerate::updateOrInsert(
                     [ 
@@ -434,11 +444,12 @@ class SalaryGenerateService
                                     ->first();
                                     
                 SalaryVerification::where('payroll_id', $payroll->id)->where('salary_id',$salaryGenerate->id)->delete();
-
-                foreach ($SalarySignatorySteps as $key => $step) { 
+ 
+                foreach ($SalarySignatorySteps as $key => $step) {  
                     SalaryVerification::create([ 
                         'salary_id' => $salaryGenerate->id,
                         'payroll_id'=> $payroll->id,
+                        'role_name'=> $step->role_name,
                         'approver_level'=>$key+1,
                         'reference_type'=>SalaryGenerate::class,
                         'approver_id'=>$step->employee_id,

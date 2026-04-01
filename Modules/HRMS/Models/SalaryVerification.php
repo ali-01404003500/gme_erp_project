@@ -11,11 +11,11 @@ class SalaryVerification extends Model
 
     protected $table = 'salary_verifications';
 
-    protected $fillable = ['salary_id', 'payroll_id', 'approver_id', 'reference_type', 'approver_level', 'status', 'approved_at'];
+    protected $fillable = ['salary_id', 'payroll_id', 'approver_id', 'role_name', 'reference_type', 'approver_level', 'status', 'approved_at'];
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
+        return $this->belongsTo(Employee::class, 'approver_id');
     }
  
   

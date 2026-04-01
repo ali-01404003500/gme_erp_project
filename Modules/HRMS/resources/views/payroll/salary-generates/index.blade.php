@@ -225,10 +225,10 @@
                                                             <input type="hidden" name="approver_status" id="approver_status{{ $item->id }}" value="">
                                                             <input type="hidden" name="payroll_id"  value="{{ request()->payroll_id }}"> 
                                                             <input type="hidden" name="id" value="{{ $item->id }}" >
-
+                                                            
                                                             @foreach($item->verifications as $verification) 
                                                             
-                                                                @if($item->current_approval_level == $verification->approver_level && $verification->approver_id == auth()->user()->employee->id)  
+                                                                @if($item->current_approval_level == $verification->approver_level && $verification->approver_id == optional(auth()->user()->employee)->id)  
                                                             
                                                                     <!-- Approve / Reject buttons --> 
                                                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
@@ -287,6 +287,7 @@
                                                 </tr>
                                                 
                                             @endforeach 
+                                            
                                         </tbody>
                                         <tfoot> 
                                                 

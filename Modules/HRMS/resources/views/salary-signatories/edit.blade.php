@@ -39,6 +39,17 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        <label for="role_name">Role Name <span class="text-danger">*</span></label>
+                                        <input type="text" name="role_name" id="role_name" 
+                                            class="form-control @error('role_name') is-invalid @enderror"
+                                            value="{{ old('role_name', $salarySignatory->role_name) }}" required>
+                                        @error('role_name')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
                                         <label for="signatory_tag">Signatory Tag <span class="text-danger">*</span></label>
                                         <input type="text" name="signatory_tag" id="signatory_tag" 
                                             class="form-control @error('signatory_tag') is-invalid @enderror"
@@ -48,6 +59,8 @@
                                         @enderror
                                     </div>
                                 </div>
+
+ 
  
                                 <div class="col-md-2">
                                     <div class="form-group">
