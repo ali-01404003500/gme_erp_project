@@ -198,6 +198,7 @@ class SalaryGenerateService
         $id = $data['id'];
         $remarks = $data['remarks'];  
        
+        $payroll = Payroll::find($id);
         $salary = SalaryGenerate::find($id);
         if ($salary) {
             $nextStep = SalaryVerification::where('payroll_id',$salary->payroll_id) 
@@ -219,6 +220,10 @@ class SalaryGenerateService
                     'remarks' => $remarks ?? null,
                     'current_approval_level'=>$nextStep->approver_level,
                     'status'=>'approved'
+                ]);
+
+                $payroll->update([
+                    'status' => 'approved'
                 ]);
 
             }  
