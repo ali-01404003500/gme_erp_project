@@ -22,6 +22,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Employee Name</th>
+                                        <th>Role Name</th>
                                         <th>Signatory Tag</th>
                                         <th>Approver Level</th>
                                         <th>Status</th>
@@ -35,6 +36,7 @@
                                         <tr>
                                             <td>{{ $signatory->id }}</td>
                                             <td>{{ $signatory->employee->full_name ?? 'N/A' }}</td>
+                                            <td>{{ $signatory->role_name }}</td>
                                             <td>{{ $signatory->signatory_tag }}</td>
                                             <td>Level {{ $signatory->approver_level }}</td>
                                             <td>

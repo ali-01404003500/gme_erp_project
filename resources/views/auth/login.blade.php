@@ -40,7 +40,7 @@
                                 </div>
                                 
                                 <div class="card-header">
-                                    <div class="edit-profile__title">
+                                    <div class="edit-profile__title text-center">
                                         <h6>Sign in  <br>{{ App\Models\AccessControl\CompanyInfo::first()->company_name??'GME' }}</h6>
                                     </div>
                                 </div>

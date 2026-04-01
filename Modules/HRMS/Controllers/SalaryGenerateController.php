@@ -3,6 +3,8 @@
 namespace Modules\HRMS\Controllers;
 
 use App\Http\Controllers\Controller;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Modules\HRMS\Models\SalaryBreakdown;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\EmployeeSalary;
@@ -17,6 +19,7 @@ use Modules\HRMS\Models\Payroll;
 use Modules\HRMS\Models\SalarySignatory;
 use Modules\HRMS\Models\Settings\Designation;
 use PDO;
+ini_set('memory_limit', '512M');
 
 class SalaryGenerateController extends Controller
 {
@@ -59,6 +62,36 @@ class SalaryGenerateController extends Controller
         $data['salarySignatories'] = SalarySignatory::get();
         $data['accounts'] = Account::orderBy('account_group_id', 'asc')->get();
         return view("HRMS::payroll.salary-generates.index", $data);
+    }
+
+    public function salarySheet( Request $request, $id)
+    {  
+        $data['salaryGenerates'] = $this->service->getSalary($id); 
+        $data['payrool'] =  Payroll::where('id', $id)->first();
+        $data['salaryBreakdowns'] = SalaryBreakdown::where('status',1)->get();   
+        $data['salarySignatories'] = SalarySignatory::get(); 
+         
+        if ($request->export_type == "pdf") {
+          
+            set_time_limit(1000);
+            return  $html = view('HRMS::payroll.salary-generates.salarySheetView', $data)->render();
+            // dd($html);
+
+            // Set Dompdf options
+            // $options = new Options(); 
+            // $options->setIsHtml5ParserEnabled(true);
+            // $options->setIsRemoteEnabled(true);
+            
+            // $dompdf = new Dompdf($options);
+            // $dompdf->loadHtml($html);
+            // $dompdf->setPaper('Legal', 'landscape');
+            // $dompdf->render();
+
+            // return $dompdf->stream('salary_sheet_' . date('Y-m-d') . '.pdf', ['Attachment' => false]);
+        }
+
+        return view("HRMS::payroll.salary-generates.salary_sheets", $data);
+        
     }
 
     /**

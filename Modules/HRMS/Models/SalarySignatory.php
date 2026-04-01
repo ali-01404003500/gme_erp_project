@@ -18,7 +18,8 @@ class SalarySignatory extends Model
 
     protected $fillable = [
         'employee_id',  
-        'signatory_tag',
+        'role_name',
+        'signatory_tag', 
         'approver_level',
         'status',
         'description',
