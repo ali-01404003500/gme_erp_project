@@ -35,8 +35,8 @@
                                     <img class="light" src="{{ asset('assets/img/logo-white.png') }}" alt=""> --}}
                                     {{-- <img class="dark" src="{{ asset('assets/img/icon.png') }}" alt="" style="width:100px !important; height:100px!important ">
                                     <img class="light" src="{{ asset('assets/img/icon.png') }}" alt="" style="width:100px !important; height:100px!important "> --}}
-                                    <img class="dark" src="{{ s3FileToBase64(App\Models\AccessControl\CompanyInfo::first()->company_logo??'assets/img/logo-dark.png') }}" alt="" style="height:100px!important; width: auto; ">
-                                    <img class="light" src="{{ s3FileToBase64(App\Models\AccessControl\CompanyInfo::first()->company_logo??'assets/img/logo-white.png') }}" alt=""  style="height:100px!important; width: auto; ">
+                                    <img class="dark" src="{{ asset('assets/img/gme-logo.png'??'assets/img/logo-dark.png') }}" alt="" style="height:100px!important; width: auto; ">
+                                    <img class="light" src="{{ asset('assets/img/gme-logo.png'??'assets/img/logo-white.png') }}" alt=""  style="height:100px!important; width: auto; ">
                                 </div>
                                 
                                 <div class="card-header">
