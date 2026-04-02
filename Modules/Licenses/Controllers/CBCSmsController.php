@@ -61,7 +61,7 @@ class CBCSmsController extends Controller
         $template = $sms->template_body;
 
         $placeholders = array_map(fn($key) => '$' . $key, array_keys($validate));
-
+ 
         $values = [];
         foreach ($validate as $key => $value) {
             switch ($key) {

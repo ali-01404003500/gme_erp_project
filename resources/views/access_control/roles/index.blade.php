@@ -173,13 +173,15 @@
                                 tag = "<span class='badge bg-info ms-2'>Customer</span>";
                             }
 
+                            console.log(data.avater, data.email);
+
                             return `
                                 <div>
                                     ${escape(data.text)} ${tag}
                                     <p class='text-muted mb-0'>${data.email ?? ''}</p>
                                 </div>
                             `;
-
+ 
                         }
                     }
                 });
