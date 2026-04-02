@@ -7,7 +7,7 @@ use App\Models\AccessControl\ServiceName;
 class ServiceNameService
 {
     
-    public function getAll(int $limit = 20) {
+    public function getAll(int $limit = 50) {
         return ServiceName::query()->paginate($limit);
     }
     

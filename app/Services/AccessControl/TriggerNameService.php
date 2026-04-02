@@ -7,7 +7,7 @@ use App\Models\AccessControl\TriggerName;
 class TriggerNameService
 {
     
-    public function getAll(int $limit = 20) {
+    public function getAll(int $limit = 50) {
         return TriggerName::query()->paginate($limit);
     }
     
