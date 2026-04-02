@@ -11,8 +11,7 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Create New Salary Signatory</h3>
-                        <a href="{{ route('hrm.salary-signatories.index') }}"
-                            class="btn btn-secondary float-right">
+                        <a href="{{ route('hrm.salary-signatories.index') }}" class="btn btn-secondary float-right">
                             <i class="fas fa-arrow-left"></i> Back
                         </a>
                     </div>
@@ -29,7 +28,7 @@
                                             <option value="">Select Employee</option>
                                             @foreach($employees as $employee)
                                                 <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
-                                                    {{ $employee->full_name }} ({{ $employee->employee_id ?? 'N/A' }})
+                                                    {{ $employee->full_name }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -106,8 +105,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Create Signatory
                             </button>
-                            <a href="{{ route('hrm.salary-signatories.index') }}"
-                                class="btn btn-secondary">Cancel</a>
+                            <a href="{{ route('hrm.salary-signatories.index') }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

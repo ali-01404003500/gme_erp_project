@@ -20,7 +20,7 @@ class SalaryApprovalController extends Controller
     {
         $pendingRequests = $this->approvalService->getPendingRequestsForUser(Auth::id());
 
-        // FIX: view path correct
+
         return view('HRMS::salary-approvals.verification', compact('pendingRequests'));
     }
 
@@ -28,7 +28,7 @@ class SalaryApprovalController extends Controller
     {
         $history = $this->approvalService->getApprovalHistory($salaryApprovalRequest);
 
-        // FIX: view path correct
+
         return view('HRMS::salary-approvals.show', compact('salaryApprovalRequest', 'history'));
     }
 
@@ -45,7 +45,6 @@ class SalaryApprovalController extends Controller
                 $request->input('remarks')
             );
 
-            // FIX: route name correct
             return redirect()->route('hrm.salary-approvals.verification')
                 ->with('success', $result['message']);
         } catch (\Exception $e) {
@@ -67,7 +66,6 @@ class SalaryApprovalController extends Controller
                 $request->input('remarks')
             );
 
-            // FIX: route name correct
             return redirect()->route('hrm.salary-approvals.verification')
                 ->with('success', $result['message']);
         } catch (\Exception $e) {
@@ -88,7 +86,6 @@ class SalaryApprovalController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        // FIX: view path correct
         return view('HRMS::salary-approvals.history', compact('histories'));
     }
 }
