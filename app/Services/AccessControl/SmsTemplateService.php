@@ -7,7 +7,7 @@ use App\Models\AccessControl\SmsTemplate;
 class SmsTemplateService
 {
     
-    public function getAll(int $limit = 20) {
+    public function getAll(int $limit = 50) {
         return SmsTemplate::query()
         ->searchByFields(['template_name', 'service_name_id','trigger_name_id'])
         ->searchLikes(['template_title'])

@@ -57,7 +57,7 @@
                                     @csrf
                                     @foreach ($serviceNames as $key => $item)
                                         <tr>
-                                            <td class="text-center">{{ $key }}</td>
+                                            <td class="text-center">{{ ($serviceNames->currentPage() - 1) * $serviceNames->perPage() + $loop->iteration  }}</td>
                                             <td class="text-center">{{ $item->code }}</td>
                                             <td class="text-center">{{ $item->name }}</td>
                                             <td class="text-center">
@@ -184,7 +184,7 @@
                         <div class="row mb-4">
                             <label for="code" class="col-sm-12 col-form-label">Code</label>
                             <div class="col-sm-12">
-                                <input name="code" id="code" class="form-control" type="text" readonly>
+                                <input name="code" id="code" class="form-control" type="text">
                             </div>
                         </div>
                         <div class="row mb-4">
