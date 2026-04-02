@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('attendance:auto-create')->dailyAt('00:10')->timezone('Asia/Dhaka')->withoutOverlapping();
         $schedule->command('bills:generate')->dailyAt('00:11')->timezone('Asia/Dhaka')->withoutOverlapping();
+        $schedule->command('sms:send-pending')->everyMinute()->timezone('Asia/Dhaka')->withoutOverlapping();
         
     }
     /**
@@ -25,4 +26,6 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+
+    
 }
