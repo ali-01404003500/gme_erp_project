@@ -52,39 +52,39 @@ class SmsService
     }
 
     public function sendBulk(array $destinations, string $message): array
-{
-    Log::info("Starting bulk SMS", [
-        'count' => count($destinations),
-        'destinations' => $destinations
-    ]);
-    
-    $results = [];
-    
-    // Filter out empty/invalid numbers
-    $destinations = array_filter($destinations, function($destination) {
-        return !empty($destination) && is_string($destination);
-    });
-    
-    Log::info("After filtering", ['count' => count($destinations)]);
-    
-    foreach ($destinations as $index => $originalDestination) {
-        $formattedDestination = $originalDestination;
-        
-        if (substr($formattedDestination, 0, 2) === '01') {
-            $formattedDestination = '880' . substr($formattedDestination, 1);
-        }
-        
-        Log::info("Sending to", [
-            'index' => $index,
-            'original' => $originalDestination,
-            'formatted' => $formattedDestination
+    {
+        Log::info("Starting bulk SMS", [
+            'count' => count($destinations),
+            'destinations' => $destinations
         ]);
         
-        $results[$originalDestination] = $this->send($formattedDestination, $message);
-    }
-    
-    Log::info("Bulk SMS completed", ['results' => $results]);
+        $results = [];
+        
+        // Filter out empty/invalid numbers
+        $destinations = array_filter($destinations, function($destination) {
+            return !empty($destination) && is_string($destination);
+        });
+        
+        Log::info("After filtering", ['count' => count($destinations)]);
+        
+        foreach ($destinations as $index => $originalDestination) {
+            $formattedDestination = $originalDestination;
+            
+            if (substr($formattedDestination, 0, 2) === '01') {
+                $formattedDestination = '880' . substr($formattedDestination, 1);
+            }
+            
+            Log::info("Sending to", [
+                'index' => $index,
+                'original' => $originalDestination,
+                'formatted' => $formattedDestination
+            ]);
+            
+            $results[$originalDestination] = $this->send($formattedDestination, $message);
+        }
+        
+        Log::info("Bulk SMS completed", ['results' => $results]);
 
-    return $results;
-}
+        return $results;
+    }
 }

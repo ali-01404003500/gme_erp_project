@@ -102,7 +102,7 @@
 
                                 @foreach ($smsTemplates as $value)
                                     <tr>
-                                            <td class="text-center">{{ ($smsTemplates->currentPage() - 1) * $smsTemplates->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">{{ $key  }}</td>
                                         <td>
                                             {{ optional($value->serviceNames)->name }}
                                         </td>
