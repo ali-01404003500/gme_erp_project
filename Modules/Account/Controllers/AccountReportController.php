@@ -434,7 +434,7 @@ public function customerLedgerReport(Request $request)
                 $advanceCheques = AdvanceChequeEntry::where('customer_id', $customer->id)
                     ->where('status', 'Approved')
                     ->with(['details' => function($q) {
-                        $q->whereNotIn('status', ['Honored', 'Returned', 'Converted']);
+                        $q->whereNotIn('status', ['Honored', 'Returned', 'Converted','Approved']);
                     }])
                     ->get();
                 
