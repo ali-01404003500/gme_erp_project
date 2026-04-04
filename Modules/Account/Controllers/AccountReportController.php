@@ -438,7 +438,7 @@ public function customerLedgerReport(Request $request)
                     }])
                     ->get();
 
-                dd($advanceCheques);
+                
                 
                 $data['collected_cheque_amount'] = $advanceCheques->sum(function($entry) {
                     return $entry->details->sum('amount');
