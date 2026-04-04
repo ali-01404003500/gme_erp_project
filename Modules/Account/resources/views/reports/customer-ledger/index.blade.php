@@ -396,12 +396,8 @@
                                             $documents = is_string($cheque['document']) ? json_decode($cheque['document'], true) : $cheque['document'];
                                         @endphp
                                         @if (!empty($documents) && is_array($documents))
-                                            @foreach ($documents as $doc)
-                                                @php
-                                                    $path = public_path($doc);
-                                                @endphp
-
-                                                @if (!empty($doc) && file_exists($path))
+                                            @foreach ($documents as $doc) 
+                                                @if (!empty($doc) && file_exists(url($doc)))
                                                 <a href="{{ url($doc) }}" target="_blank">  <i class="fa fa-image"></i>  </a>
                                                 @endif 
                                             @endforeach
