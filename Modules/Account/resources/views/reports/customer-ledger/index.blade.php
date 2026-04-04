@@ -397,9 +397,9 @@
                                         @endphp
                                         @if (!empty($documents) && is_array($documents))
                                             @foreach ($documents as $doc) 
-                                                @if (!empty($doc) && file_exists(url($doc)))
+                                                
                                                 <a href="{{ url($doc) }}" target="_blank">  <i class="fa fa-image"></i>  </a>
-                                                @endif 
+                                                
                                             @endforeach
                                         @endif
                                         {{-- @if($cheque['attachment'])
