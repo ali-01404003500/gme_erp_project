@@ -274,18 +274,68 @@
 
             // Get the input values
             // Get the input values
-            let basic = parseFloat($('#basic').val()) || 0;
-            let houseRent = parseFloat($('#house_rent').val()) || 0;
-            let conveyance = parseFloat($('#conveyance').val()) || 0;
-            let medical = parseFloat($('#medical').val()) || 0;
-            let entertainment = parseFloat($('#entertainment').val()) || 0;
-            let leave_fare = parseFloat($('#leave_fare').val()) || 0;
-            let utility = parseFloat($('#utility').val()) || 0;
-            let unkeep = parseFloat($('#unkeep').val()) || 0; 
-            let others = parseFloat($('#others').val()) || 0;
+           // Get the input values
+            let basic = parseFloat($('#basic').val()) || 0; 
+            let houseRent = b_houseRent = conveyance = b_conveyance = medical = b_medical = entertainment = b_entertainment = leave_fare = b_leave_fare = utility = b_utility = unkeep = b_unkeep = others = b_others = 0;
+            if ($('#is_house_rent_basic').is(':checked')) {
+                b_houseRent = parseFloat($('#house_rent').val()) || 0;
+            } else {
+                houseRent = parseFloat($('#house_rent').val()) || 0;
+            }
 
-            total =  basic + houseRent + conveyance + medical + entertainment + leave_fare + utility + unkeep + others;
+            if ($('#is_conveyance_basic').is(':checked')) {
+                b_conveyance = parseFloat($('#conveyance').val()) || 0;
+            } else {
+                conveyance = parseFloat($('#conveyance').val()) || 0;
+            }
 
+            if ($('#is_medical_basic').is(':checked')) {
+                b_medical = parseFloat($('#medical').val()) || 0;
+            } else {
+                medical = parseFloat($('#medical').val()) || 0;
+            }
+
+            if ($('#is_entertainment_basic').is(':checked')) {
+                b_entertainment = parseFloat($('#entertainment').val()) || 0;
+            } else {
+                entertainment = parseFloat($('#entertainment').val()) || 0;
+            }
+
+            if ($('#is_leave_fare_basic').is(':checked')) {
+                b_leave_fare = parseFloat($('#leave_fare').val()) || 0;
+            } else {
+                leave_fare = parseFloat($('#leave_fare').val()) || 0;
+            }
+
+            if ($('#is_utility_basic').is(':checked')) {
+                b_utility = parseFloat($('#utility').val()) || 0;
+            } else {
+                utility = parseFloat($('#utility').val()) || 0;
+            }
+
+            if ($('#is_unkeep_basic').is(':checked')) {
+                b_unkeep = parseFloat($('#unkeep').val()) || 0; 
+            } else {
+                unkeep = parseFloat($('#unkeep').val()) || 0; 
+            }
+
+            if ($('#is_others_basic').is(':checked')) {
+                b_others = parseFloat($('#others').val()) || 0;
+            } else {
+                others = parseFloat($('#others').val()) || 0;
+            }
+            
+            let remDiff = 100 - basic;
+            let remSum = houseRent + conveyance + medical + entertainment + leave_fare + utility + unkeep + others;
+            let b_remSum =  b_houseRent + b_conveyance + b_medical + b_entertainment + b_leave_fare + b_utility + b_unkeep + b_others;
+
+            if( remDiff === remSum)
+                total = basic + remSum;
+            else if( b_remSum === 100)
+                total = b_remSum;
+            else 
+                total = 0;
+     
 
 
             if (total !== 100) {
