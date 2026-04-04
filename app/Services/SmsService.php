@@ -13,11 +13,13 @@ class SmsService
     protected string $source;
     /*https://apibd.rmlconnect.net:8443/bulksms/personalizedbulksms?username=GMELBDENT&password=8op7jCng&source=8801894953797&destination=xxxxx&message=xxxxx*/
     public function __construct()
-    {
-        $this->username = config('services.sms.username');
-        $this->password = config('services.sms.password');
-        $this->source = config('services.sms.source');
+    { 
+        $this->username = config('services.sms.username', '');
+        $this->password = config('services.sms.password', '');
+        $this->source   = config('services.sms.source', '');
     }
+
+    
 
     public function send(string $destination, string $message): bool
     {
