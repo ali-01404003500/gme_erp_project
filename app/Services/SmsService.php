@@ -22,9 +22,12 @@ class SmsService
     public function send(string $destination, string $message): bool
     {
         try {
+            if( strlen($destination) === 11 )
+                $destination = '88'. $destination;
+            
             $response = Http::get($this->baseUrl, [
                 'username' => $this->username,
-                'password' => $this->password,
+                'password' => $this->password, 
                 'source' => $this->source,
                 'destination' => $destination,
                 'message' => $message
@@ -53,6 +56,7 @@ class SmsService
 
     public function sendBulk(array $destinations, string $message): array
     {
+        
         Log::info("Starting bulk SMS", [
             'count' => count($destinations),
             'destinations' => $destinations
@@ -68,11 +72,9 @@ class SmsService
         Log::info("After filtering", ['count' => count($destinations)]);
         
         foreach ($destinations as $index => $originalDestination) {
-            $formattedDestination = $originalDestination;
-            
-            if (substr($formattedDestination, 0, 2) === '01') {
-                $formattedDestination = '880' . substr($formattedDestination, 1);
-            }
+            if( strlen($originalDestination) === 11 )
+                $formattedDestination = '88'. $originalDestination;
+ 
             
             Log::info("Sending to", [
                 'index' => $index,

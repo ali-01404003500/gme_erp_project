@@ -143,4 +143,14 @@ class SalesOrder extends BaseModel
         );
     }
 
+
+    public function getAccount()
+    {
+        if ($this->accounts->where('account_subsidiary_id', 1005)->first() == null) {
+            $this->createAccount();
+            $this->load('accounts'); // Reload relationship to reflect new creation
+        }
+        return $this->accounts->where('account_subsidiary_id', 1005)->first();
+    }
+
 }
