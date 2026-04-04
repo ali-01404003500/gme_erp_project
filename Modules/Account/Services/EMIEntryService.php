@@ -55,7 +55,7 @@ class EMIEntryService
 
     public function store(array $data, array $emiDetails)
     {
-        //$data['emi_number'] = $this->getEMINumber();
+        $data['emi_number'] = $this->getEMINumber();
 
         $result['eMIEntry'] = EMIEntry::create([
             'emi_number' => $data['emi_number'],
@@ -352,8 +352,7 @@ class EMIEntryService
         $salesOrderId = $salesOrder->id ?? "";
 
         // Prepare main data (root level)
-        $data = [ 
-            'emi_number' =>  $jsonData['emi_number'],
+        $data = [
             'customer_id' => $customerId,
             'sales_order_id' => $salesOrderId,
             'start_date' => $jsonData['start_date'],
