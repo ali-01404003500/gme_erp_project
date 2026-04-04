@@ -339,7 +339,7 @@
                         <div class="header-content">
                             @if(!empty($company_info->company_logo))
                             <div class="company-logo">
-                                <img src="{{ asset($company_info->company_logo) }}" alt="Company Logo">
+                                <img src="{{ url($company_info->company_logo) }}" alt="Company Logo">
                             </div>
                             @endif
                             <div class="company-info-text">
@@ -392,17 +392,20 @@
                                     </td>
                                     <td>{{ $cheque['cheque_type'] }}</td>
                                     <td class="text-center">
-                                         @php
-                                                        $documents = is_string($cheque['document'])
-                                                            ? json_decode($cheque['document'], true)
-                                                            : $cheque['document'];
-                                                    @endphp
-                                                    @if (!empty($documents) && is_array($documents))
-                                                        @foreach ($documents as $doc)
-                                                            <a href="{{ $doc }}" target="_blank"><i
-                                                                    class="fa fa-image"></i></a>
-                                                        @endforeach
-                                                    @endif
+                                        @php
+                                            $documents = is_string($cheque['document']) ? json_decode($cheque['document'], true) : $cheque['document'];
+                                        @endphp
+                                        @if (!empty($documents) && is_array($documents))
+                                            @foreach ($documents as $doc)
+                                                @php
+                                                    $path = public_path($doc);
+                                                @endphp
+
+                                                @if (!empty($doc) && file_exists($path))
+                                                <a href="{{ url($doc) }}" target="_blank">  <i class="fa fa-image"></i>  </a>
+                                                @endif 
+                                            @endforeach
+                                        @endif
                                         {{-- @if($cheque['attachment'])
                                         <a href="{{ $cheque['attachment'] }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                             <i class="fa fa-file-image"></i>
