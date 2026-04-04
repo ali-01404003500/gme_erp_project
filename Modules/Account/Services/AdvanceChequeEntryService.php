@@ -199,6 +199,7 @@ class AdvanceChequeEntryService
             'cheque_no' => [],
             'cheque_date' => [],
             'amount' => [],
+            'status' => [],
             'documents' => [],
             'is_security_cheque' => [],
         ];
@@ -216,6 +217,7 @@ class AdvanceChequeEntryService
             $details['cheque_date'][] = $cheque['cheque_date'];
             $details['amount'][] = $cheque['amount'];
             $details['documents'][] = $cheque['document'] ?? null;
+            $details['status'][] = $cheque['status'] ?? null;
             $details['is_security_cheque'][] = $cheque['is_security_cheque'] ? 1 : 0;
             // Assign EMI detail ID if available and matches the order
             $details['emi_detail_id'][] = $dueEmiDetails->get($key)->id ?? null;
