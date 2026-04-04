@@ -437,6 +437,8 @@ public function customerLedgerReport(Request $request)
                         $q->whereNotIn('status', ['Honored', 'Returned', 'Converted']);
                     }])
                     ->get();
+
+                dd($advanceCheques);
                 
                 $data['collected_cheque_amount'] = $advanceCheques->sum(function($entry) {
                     return $entry->details->sum('amount');
