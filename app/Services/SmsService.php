@@ -8,36 +8,40 @@ use Illuminate\Support\Facades\Log;
 class SmsService
 {
     protected string $baseUrl = 'https://apibd.rmlconnect.net:8443/bulksms/personalizedbulksms';
-    protected string $username;
-    protected string $password; 
-    protected string $source;
+    // protected string $username;
+    // protected string $password; 
+    // protected string $source;
     /*https://apibd.rmlconnect.net:8443/bulksms/personalizedbulksms?username=GMELBDENT&password=8op7jCng&source=8801894953797&destination=xxxxx&message=xxxxx*/
     public function __construct()
-    {  
-        $this->username = config('services.sms.username') ?? '';
-        $this->password = config('services.sms.password') ?? '';
-        $this->source   = config('services.sms.source') ?? '';
+    {
+        // $this->username = config('services.sms.username');
+        // $this->password = config('services.sms.password');
+        // $this->source = config('services.sms.source');
     }
-
-    
 
     public function send(string $destination, string $message): bool
     {
+        $config = config('services.sms');
+
+        $username = $config['username'] ?? '';
+        $password = $config['password'] ?? '';
+        $source = $config['source'] ?? '';
+
         try {
             if( strlen($destination) === 11 )
                 $destination = '88'. $destination;
             
             $response = Http::get($this->baseUrl, [
-                'username' => $this->username,
-                'password' => $this->password, 
-                'source' => $this->source,
+                'username' => $username,
+                'password' => $password, 
+                'source' => $source,
                 'destination' => $destination,
                 'message' => $message
             ]);
             Log::info("SMS sent to {$destination}", [
-                'username' => $this->username,
-                'password' => $this->password,
-                'source' => $this->source,
+                'username' => $username,
+                'password' => $password,
+                'source' => $source,
                 'destination' => $destination,
                 'message' => $message,
                 'baseUrl' => $this->baseUrl
