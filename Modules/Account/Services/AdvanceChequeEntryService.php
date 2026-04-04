@@ -38,6 +38,7 @@ class AdvanceChequeEntryService
                 'cheque_date' => $details['cheque_date'][$key],
                 'amount' => $details['amount'][$key],
                 'document' => $details['documents'][$key],
+                'status' => $details['status'][$key], 
                 'is_security_cheque' => $details['is_security_cheque'][$key],
             ]);
         }
