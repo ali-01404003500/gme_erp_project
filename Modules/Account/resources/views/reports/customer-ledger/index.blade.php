@@ -215,12 +215,12 @@
                         </div>
                         
                     </div>
-                     @if(isset($deed_document))
-                    <div class="deed-icons"> Deed/Document :
-                        <a href="{{ $deed_document }}" target="_blank" title="View Deed">
+                    @if(isset($deed_document))
+                    <div class="deed-icons"> Deed :
+                        <a href="{{ url($deed_document) }}" target="_blank" title="View Deed">
                             <i class="fa fa-eye"></i>
                         </a>
-                        <a href="{{ $deed_document }}" download title="Download Deed">
+                        <a href="{{ url($deed_document) }}" download title="Download Deed">
                             <i class="fa fa-download"></i>
                         </a>
                     </div>
