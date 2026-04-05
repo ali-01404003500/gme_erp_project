@@ -152,6 +152,7 @@ class CustomerBalanceReportController extends Controller
                 'sales'            => $aggregated['period_sales'][$customerId]     ?? 0,
                 'sales_return'     => $aggregated['period_returns'][$customerId]   ?? 0,
                 'collection'       => $aggregated['period_collections'][$customerId] ?? 0,
+                'charge'           => $aggregated['period_charges'][$customerId] ?? 0,
             ];
 
             $row['due']             = $row['sales'] - $row['sales_return'] - $row['collection'];
@@ -233,7 +234,7 @@ class CustomerBalanceReportController extends Controller
         $machineCodes       = [];
         $salesData          = [];
         $returnsData        = [];
-        $openingBalances2021 = [];
+        $openingBalances2021 = []; 
         $accountMap         = []; // customer_id => account_id
 
         foreach ($chunks as $chunk) {
@@ -321,6 +322,7 @@ class CustomerBalanceReportController extends Controller
 
         $openingCollections = $this->fetchBulkCollections($accountIds, $accountIdToCustomer, null, $beforeStartDate);
         $periodCollections  = $this->fetchBulkCollections($accountIds, $accountIdToCustomer, $start, $end);
+        $periodCharges      = $this->fetchBulkCharges($accountIds, $accountIdToCustomer, $start, $end);
 
         // ---- Assemble final arrays -----------------------------------------
         $openingBalances = [];
@@ -348,6 +350,7 @@ class CustomerBalanceReportController extends Controller
             'period_sales'        => $periodSales,
             'period_returns'      => $periodReturns,
             'period_collections'  => $periodCollections,
+            'period_charges'       => $periodCharges,
         ];
     }
 
@@ -401,6 +404,45 @@ class CustomerBalanceReportController extends Controller
         return $result;
     }
 
+    private function fetchBulkCharges(
+        array $accountIds,
+        array $accountIdToCustomer,
+        ?Carbon $startDate,
+        ?Carbon $endDate
+    ): array {
+        if (empty($accountIds)) {
+            return [];
+        } 
+
+        $query = DB::table('transactions')
+            ->whereIn('account_id', $accountIds)
+            ->where('balance_type', 'debit')
+            ->where('description', 'Collection Charge')
+            ->whereNull('deleted_at')
+            ->groupBy('account_id')
+            ->selectRaw('account_id, SUM(debit_amount) AS total');
+
+        if ($startDate) {
+            $query->whereDate('created_at', '>=', $startDate->startOfDay());
+        }
+        if ($endDate) {
+            $query->whereDate('created_at', '<=', $endDate->endOfDay());
+        }
+
+        $result = [];
+        foreach ($query->pluck('total', 'account_id') as $accountId => $amount) {
+            $customerId = $accountIdToCustomer[$accountId] ?? null;
+            if ($customerId !== null) {
+                $result[$customerId] = (float) $amount;
+            }
+        }
+
+        return $result;
+    }
+
+
+    
+
     // =========================================================================
     // TOTALS
     // =========================================================================
@@ -414,6 +456,7 @@ class CustomerBalanceReportController extends Controller
             'total_collection'      => $reportData->sum('collection'),
             'total_due'             => $reportData->sum('due'),
             'total_closing_balance' => $reportData->sum('closing_balance'),
+            'total_charge'         => $reportData->sum('charge'),
         ];
     }
 

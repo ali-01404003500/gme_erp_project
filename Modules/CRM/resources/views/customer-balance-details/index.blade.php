@@ -195,8 +195,11 @@
                                                 ৳{{ number_format($totals['total_sales_return']) }}</td>
                                             </th>
                                             <th class="text-right" style="width: 10%;">Collection <br>
-                                                ৳{{ number_format($totals['total_collection']) }}</td>
+                                                ৳{{ number_format($totals['total_collection'] - $totals['total_sales_return']) }}</td>
                                             </th>
+                                            <th class="text-right" style="width: 10%;">Charge <br>
+                                                ৳{{ number_format($totals['total_charge']) }}</td>
+                                            </th> 
                                             <th class="text-right" style="width: 10%;">Due <br>
                                                 ৳{{ number_format($totals['total_due']) }}</td>
                                             </th>
@@ -233,10 +236,9 @@
                                                 <td class="text-right">
                                                     ৳{{ number_format($customer['opening_balance']) }}</td>
                                                 <td class="text-right">৳{{ number_format($customer['sales']) }}</td>
-                                                <td class="text-right">৳{{ number_format($customer['sales_return']) }}
-                                                </td>
-                                                <td class="text-right">৳{{ number_format($customer['collection']) }}
-                                                </td>
+                                                <td class="text-right">৳{{ number_format($customer['sales_return']) }} </td>
+                                                <td class="text-right">৳{{ number_format($customer['collection']-$customer['sales_return']) }}</td>
+                                                <td class="text-right">৳{{ number_format($customer['charge']) }}</td>
                                                 <td class="text-right">
                                                     <span
                                                         class="{{ $customer['due'] >= 0 ? 'text-danger' : 'text-success' }}">
@@ -258,7 +260,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="9" class="text-center py-4">
+                                                <td colspan="10" class="text-center py-4">
                                                     <i class="las la-inbox" style="font-size: 48px; color: #ddd;"></i>
                                                     <p class="mb-0">No records found</p>
                                                 </td>
@@ -276,7 +278,9 @@
                                                 <td class="text-right text-warning">
                                                     ৳{{ number_format($totals['total_sales_return']) }}</td>
                                                 <td class="text-right text-info">
-                                                    ৳{{ number_format($totals['total_collection']) }}</td>
+                                                    ৳{{ number_format($totals['total_collection']-$totals['total_sales_return']) }}</td>
+                                                <td class="text-right text-info">
+                                                    ৳{{ number_format($totals['total_charge']) }}</td>
                                                 <td class="text-right text-danger">
                                                     ৳{{ number_format($totals['total_due']) }}</td>
                                                 <td class="text-right text-danger">
