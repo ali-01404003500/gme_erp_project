@@ -29,7 +29,8 @@ class GlobalSettingService
         // $request->company_fav = $this->uploadFile($request->company_fav, 'global_settings/company_fav');
 
         $companyInfo = $globalSetting->update([
-            'company_name'      => $request->company_name,
+            'company_name'      => $request->company_name, 
+            'software_title'     => $request->software_title,
             'company_email'     => $request->company_email,
             'company_phone'     => $request->company_phone,
             'company_address'   => $request->company_address,

@@ -52,6 +52,7 @@ class AttendancePolicyController extends Controller
         ]);
 
         try {
+            
             $this->service->storePolicy($request->all());
             return redirect()->route('hrm.settings.attendance-policies.index')
                 ->with('success', 'Attendance Policy created successfully.');

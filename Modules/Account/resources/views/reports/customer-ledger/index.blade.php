@@ -215,12 +215,12 @@
                         </div>
                         
                     </div>
-                     @if(isset($deed_document))
-                    <div class="deed-icons"> Deed/Document :
-                        <a href="{{ $deed_document }}" target="_blank" title="View Deed">
+                    @if(isset($deed_document))
+                    <div class="deed-icons"> Deed :
+                        <a href="{{ url($deed_document) }}" target="_blank" title="View Deed">
                             <i class="fa fa-eye"></i>
                         </a>
-                        <a href="{{ $deed_document }}" download title="Download Deed">
+                        <a href="{{ url($deed_document) }}" download title="Download Deed">
                             <i class="fa fa-download"></i>
                         </a>
                     </div>
@@ -314,9 +314,9 @@
                                 </tfoot>
                             </table>
                         </div>
-                        @if(isset($transactions))
+                        {{-- @if(isset($transactions))
                         @include('partials._paginate', ['data' => $transactions])
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
             </div>
@@ -339,7 +339,7 @@
                         <div class="header-content">
                             @if(!empty($company_info->company_logo))
                             <div class="company-logo">
-                                <img src="{{ asset($company_info->company_logo) }}" alt="Company Logo">
+                                <img src="{{ url($company_info->company_logo) }}" alt="Company Logo">
                             </div>
                             @endif
                             <div class="company-info-text">
@@ -392,17 +392,15 @@
                                     </td>
                                     <td>{{ $cheque['cheque_type'] }}</td>
                                     <td class="text-center">
-                                         @php
-                                                        $documents = is_string($cheque['document'])
-                                                            ? json_decode($cheque['document'], true)
-                                                            : $cheque['document'];
-                                                    @endphp
-                                                    @if (!empty($documents) && is_array($documents))
-                                                        @foreach ($documents as $doc)
-                                                            <a href="{{ $doc }}" target="_blank"><i
-                                                                    class="fa fa-image"></i></a>
-                                                        @endforeach
-                                                    @endif
+                                        @php
+                                            $documents = is_string($cheque['document']) ? json_decode($cheque['document'], true) : $cheque['document'];
+                                        @endphp
+                                        @if (!empty($documents) && is_array($documents))
+                                            @foreach ($documents as $doc)  
+                                                <a href="{{ url($doc) }}" target="_blank">  <i class="fa fa-image"></i>  </a>
+                                             
+                                            @endforeach
+                                        @endif
                                         {{-- @if($cheque['attachment'])
                                         <a href="{{ $cheque['attachment'] }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                             <i class="fa fa-file-image"></i>

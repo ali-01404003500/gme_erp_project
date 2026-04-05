@@ -54,17 +54,27 @@ class SalarySetupController extends Controller
         $validate = $request->validate([
             'title' => 'required|string|max:255',
             'effective_date' => 'required|date|after_or_equal:today',
-            'basic' => 'nullable|numeric|min:1',
+            'basic' => 'nullable|numeric|min:0',
             'house_rent' => 'nullable|numeric|min:0',
-            'conveyance' => 'nullable|numeric|min:0',
-            'is_conveyance_fixed' => 'nullable|in:0,1',
-            'medical' => 'nullable|numeric|min:0',
-            'is_medical_fixed' => 'nullable|in:0,1',
+            'is_house_rent_basic' => 'nullable|numeric|in:0,1',
+            'conveyance' => 'nullable|min:0',
+            'is_conveyance_basic' => 'nullable|numeric|in:0,1',
+            'medical' => 'nullable|min:0',
+            'is_medical_basic' => 'nullable|numeric|in:0,1',
+            'entertainment' => 'nullable|min:0',
+            'is_entertainment_basic' => 'nullable|numeric|in:0,1',
+            'leave_fare' => 'nullable|numeric|min:0',
+            'is_leave_fare_basic' => 'nullable|numeric|in:0,1', 
+            'utility' => 'nullable|numeric|min:0',
+            'is_utility_basic' => 'nullable|in:0,1',
+            'unkeep' => 'nullable|numeric|min:0',
+            'is_unkeep_basic' => 'nullable|in:0,1',
             'others' => 'nullable|numeric|min:0',
             'is_others_fixed' => 'nullable|in:0,1',
+ 
         ]);
         $this->service->store($validate);
-        return redirect()->route('hrm.settings.salary-setups.index')->with('success', 'SalarySetup created successfully.');
+        return redirect()->route('hrm.salary-setups.index')->with('success', 'SalarySetup created successfully.');
     }
 
     /**
@@ -90,30 +100,34 @@ class SalarySetupController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, SalarySetup $salarySetup)
-    {
-        
-         $request->merge([
-        'is_conveyance_fixed' => $request->has('is_conveyance_fixed') ? 1 : 0,
-        'is_medical_fixed'    => $request->has('is_medical_fixed') ? 1 : 0,
-        'is_others_fixed'     => $request->has('is_others_fixed') ? 1 : 0,
-    ]);
+    { 
         $validate = $request->validate([
             'title' => 'required|string|max:255',
             'effective_date' => 'required|date|after_or_equal:today',
-            'basic' => 'nullable|numeric|min:1',
+            'basic' => 'nullable|numeric|min:0',
             'house_rent' => 'nullable|numeric|min:0',
-            'conveyance' => 'nullable|numeric|min:0',
-            'is_conveyance_fixed' => 'nullable|in:0,1',
-            'medical' => 'nullable|numeric|min:0',
-            'is_medical_fixed' => 'nullable|in:0,1',
+            'is_house_rent_basic' => 'nullable|numeric|in:0,1',
+            'conveyance' => 'nullable|min:0',
+            'is_conveyance_basic' => 'nullable|numeric|in:0,1',
+            'medical' => 'nullable|min:0',
+            'is_medical_basic' => 'nullable|numeric|in:0,1',
+            'entertainment' => 'nullable|min:0',
+            'is_entertainment_basic' => 'nullable|numeric|in:0,1',
+            'leave_fare' => 'nullable|numeric|min:0',
+            'is_leave_fare_basic' => 'nullable|numeric|in:0,1', 
+            'utility' => 'nullable|numeric|min:0',
+            'is_utility_basic' => 'nullable|in:0,1',
+            'unkeep' => 'nullable|numeric|min:0',
+            'is_unkeep_basic' => 'nullable|in:0,1',
             'others' => 'nullable|numeric|min:0',
             'is_others_fixed' => 'nullable|in:0,1',
+ 
         ]);
         // dd($validate);
 
         $this->service->update($salarySetup, $validate);
 
-        return redirect()->route('hrm.settings.salary-setups.index')->with('success', 'SalarySetup updated successfully.');
+        return redirect()->route('hrm.salary-setups.index')->with('success', 'SalarySetup updated successfully.');
     }
 
     /**
@@ -122,6 +136,6 @@ class SalarySetupController extends Controller
     public function destroy(SalarySetup $salarySetup)
     {
         $this->service->delete($salarySetup);
-        return redirect()->route('hrm.settings.salary-setups.index')->with('success', 'SalarySetup deleted successfully.');
+        return redirect()->route('hrm.salary-setups.index')->with('success', 'SalarySetup deleted successfully.');
     }
 }

@@ -343,12 +343,13 @@ class EMIEntryService
     function mapEmiEntryJson(array $jsonData): array
     {
         // Map customer name to ID
-        $customerId = Customer::where('company_name', $jsonData['customer_name'])
+        $customerId = Customer::where('customer_id', $jsonData['customer_name'])
             ->value('id') ?? throw new \Exception("Customer not found: {$jsonData['customer_name']}");
 
         // Map sales order reference to ID
         $salesOrder = SalesOrder::where('sales_order_id', $jsonData['sales_order_reference'])->first();
-        $salesOrderId = $salesOrder->id ?? throw new \Exception("Sales order not found: {$jsonData['sales_order_reference']}");
+        // $salesOrderId = $salesOrder->id ?? throw new \Exception("Sales order not found: {$jsonData['sales_order_reference']}");
+        $salesOrderId = $salesOrder->id ?? "";
 
         // Prepare main data (root level)
         $data = [

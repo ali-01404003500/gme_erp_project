@@ -216,9 +216,12 @@
                                                         <a class="btn btn-outline-primary" href="{{ route('sales.shipment-verifies.show', $shipmentVerify->id) }}" target="_blank">
                                                             <i class="fa fa-truck"></i>
                                                         </a> 
-                                                        <a class="btn btn-outline-primary" href="{{ route('sales.sales-orders.show', $shipmentVerify->source?->source?->id) }}" target="_blank">
+                                                      
+                                                        <a class="btn btn-outline-primary" 
+                                                            href="{{ $shipmentVerify->source?->source?->id ? route('sales.sales-orders.show', $shipmentVerify->source?->source?->id) : '#' }}" 
+                                                            target="_blank">
                                                             <i class="fas fa-eye"></i>
-                                                        </a>   
+                                                        </a>
                                                     </div>
                                                 </td>
                                             </tr>

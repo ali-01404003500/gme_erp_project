@@ -318,6 +318,7 @@ class EmployeeController extends Controller
         if($request->tab_type == 'job_status'){
             $employementDetails = $request->validate([ 
                 'date_of_joining' => 'required|date',
+                'date_of_termination' => 'nullable|date', 
                 'employment_type_id' => 'nullable',
                 'department_id' => 'required|exists:departments,id',
                 'designation_id' => 'required|exists:designations,id',

@@ -1,5 +1,5 @@
-@section('title', 'Salary Generate Details')
-@section('description', 'Salary Generate Details')
+@section('title', 'Salary Verification')
+@section('description', 'Salary Verification')
 @extends('layout.app')
 @section('content')
 @section('content')
@@ -14,7 +14,7 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="/"><i class="las la-home"></i>Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        {{ trans('Salary Generate Details') }}</li>
+                                        {{ trans('Salary Verification') }}</li>
                                 </ol>
                             </nav>
                         </div>
@@ -37,7 +37,7 @@
                 <div class="col-md-12" style="padding-bottom: 20px">
                     <div class="row" style="width: 100%">
                         <div class="col-md-6">
-                            <h4 class="text-capitalize breadcrumb-title">{{ trans('Salary Generate Details') }}</h4>
+                            <h4 class="text-capitalize breadcrumb-title">{{ trans('Salary Verification') }}</h4>
                         </div>
                     </div>
                     <x-error-alart />
@@ -46,192 +46,427 @@
                     <div class="card">
                         <div class="card-body">
                             <form>
-                                <div class="col-sm-12">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <td>
-                                                <select name="employee_id" id="employee_id" class="form-select tom-select"
-                                                    data-placeholder="Select Employee">
-                                                    <option value=""></option>
-                                                    @foreach ($employees as $key => $value)
-                                                        <option {{ request('employee_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ optional($value)->full_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="department_id" id="department_id"
-                                                    class="form-select tom-select" data-placeholder="Select Department">
-                                                    <option value=""> </option>
-                                                    @foreach ($departments as $key => $value)
-                                                        <option
-                                                            {{ request('department_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ $value->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="text" name="year_month"
-                                                    class="form-control input-sm flatmonth"
-                                                    value="{{ request('year_month') }}">
-                                            </td>
-                                            <td colspan="5" class="text-right">
-                                                <div class="btn-group btn-corner">
-                                                    <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
-                                                        Search</button>
-                                                    <a href="{{ request()->url() }}" class="btn btn-xs btn-warning"><i
-                                                            class="fa fa-refresh"></i> Refresh</a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                <div class="col-sm-12 d-flex justify-content-end">
+                                    <div class="btn-group btn-corner"> 
+                                        <a  href="{{ route('hrm.salary-generates.index', request()->query()) }}" class="btn btn-xs btn-warning"><i
+                                                class="fa fa-refresh"></i> Refresh</a>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salaryGenerates])' style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th><input type="checkbox" id="checkAll" class="form-check-input"></th>
-                                            <th class="text-center" style="width: 8%">Sl</th>
-                                            <th class="text-center">Employee</th>
-                                            <th class="text-center">Department</th>
-                                            <th class="text-center">Month</th>
-                                            <th class="text-center">Year</th>
-                                            <th class="text-center">Net Salary</th>
-                                            <th class="text-center">Deduction</th>
-                                            <th class="text-center">Due Amount</th>
-                                            <th class="text-center">Pay Date</th> 
-                                            <th class="text-center no-content">Is paid</th>
-                                            <th class="text-center no-content" >Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @csrf
-                                        @foreach ($salaryGenerates as $key => $item)
+                </div> 
+                    <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="zero-config"class="table table-bordered  table-bordered  dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salaryGenerates])' style="width:100%">  
+                                        <thead>  
                                             <tr>
-                                                <td>
-                                                    @if ($item->status == 'UnPaid' || $item->status == 'Partially Paid' && $item->net_earning - $item->salaryGeneratePayments->sum('amount') != 0 )
-                                                        <input type="checkbox" name="id[]" value="{{ $item->id }}" class="checkBoxClass">
-                                                    @else
-                                                        <input type="checkbox" disabled>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">{{ $key + 1 }}</td>
-                                                <td class="text-center">
-                                                    @if ($item->status == 'UnPaid' || $item->status == 'Partially Paid')
-                                                        <a href="{{ route('hrm.salary-generates.edit', $item->id) }}" target="_blank">{{ $item->employee->full_name }}</a>
-                                                    @else
-                                                        <a href="{{ route('hrm.salary-generates.show', $item->id) }}" target="_blank">{{ $item->employee->full_name }}</a>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">{{ optional(optional(optional($item->employee)->employementDetail)->department)->name }}</td>
-                                                <td class="text-center">{{ date('F', strtotime($item->year_month)) }}</td>
-                                                <td class="text-center">{{ date('Y', strtotime($item->year_month)) }}</td>
-                                                <td class="text-center">{{ numberFormat($item->net_earning) }}</td>
-                                                <td class="text-center">{{ numberFormat($item->total_deductions) }}</td>
-                                                <td class="text-center">
-                                                    @if ($item->status == 'Partially Paid' && ($item->net_earning - $item->salaryGeneratePayments->sum('amount')) > 0)
-                                                        {{ numberFormat($item->net_earning - $item->total_deductions - $item->salaryGeneratePayments->sum('amount')) ?? 0 }}
-                                                    @elseif ($item->status == 'UnPaid')
-                                                        {{ numberFormat($item->net_earning - $item->total_deductions) ?? 0 }}
-                                                    @else
-                                                        0
-                                                    @endif
+                                                <th colspan="2" class="text-center ">Employee</th>
+                                                <th colspan="2" class="text-center ">Attendance</th>
+                                                <th colspan="5" class="text-center d-none">Attendance</th>
+                                                <th colspan="{{ $salaryBreakdowns->count()+2 }}" class="text-center ">Salary Breakdown</th>
+                                                <th class="text-center ">&nbsp;</th>
+                                                <th colspan="6" class="text-center ">Deductions</th>
+                                                <th colspan="7" class="text-center ">&nbsp;</th>
+                                            </tr>
 
-                                                </td>
-                                                <td class="text-center">{{ $item->pay_date }}</td>
-                                                <td class="text-center">
-                                                    @if ($item->status == 'UnPaid')
-                                                        <div class="btn-group btn-group-xs text-center">
-                                                            @if (hasPermission('hrm.salary-generates.show'))
-                                                                <a href={{ $item->id }} data-amount="{{ $item->net_earning - $item->total_deductions ?? 0 }}"
-                                                                    data-action="{{ route('hrm.salary-generates.paid', $item->id) }}"
-                                                                    data-toggle="tooltip" data-placement="top"
-                                                                    data-bs-toggle="modal" data-bs-target="#paidModal" class="btn btn-paid btn-xs btn-outline-primary" title="Paid">
-                                                                    Paid
-                                                                </a>
-                                                                <a href={{ $item->id }} class="btn btn-edit btn-xs btn-outline-warning"
-                                                                    data-paymentable_amount="{{ $item->net_earning- $item->total_deductions - $item->salaryGeneratePayments->sum('amount') ?? 0 }}"
-                                                                    data-action="{{ route('hrm.salary-generates.partially-paid', $item->id) }}"
-                                                                    data-toggle="tooltip" data-placement="top" title="Edit"
-                                                                    data-bs-toggle="modal" data-bs-target="#editModal">
-                                                                    Partial Paid
-                                                                </a>
-                                                            @endif
-                                                        </div>
-                                                        
-                                                    @elseif($item->status == 'Paid' || $item->net_earning - $item->salaryGeneratePayments->sum('amount') == 0)
-                                                        <span class="badge badge-round badge-success">Paid</span>
-                                                    @elseif($item->status == 'Partially Paid' && $item->net_earning - $item->salaryGeneratePayments->sum('amount') > 0)
-                                                    <div class="btn-group btn-group-xs text-center" >
+                                            <tr> 
+                                                <th class="text-center rotate-header bg-none">Sl</th>
+                                                <th class="text-center bg-none">Employee</th> 
+                                                <th class="text-center rotate-header bg-none  d-none">Days of <br>Month</th>
+                                                <th class="text-center rotate-header bg-none d-none">Weekend</th>
+                                                <th class="text-center rotate-header bg-none d-none">Holiday</th>
+                                                <th class="text-center rotate-header bg-none">Absent</th>
+                                                <th class="text-center rotate-header bg-none">Late</th>
+                                                <th class="text-center rotate-header bg-none d-none">Leave</th>
+                                                <th class="text-center rotate-header bg-none d-none">Worked <br>Days</th> 
 
-                                                        <a href={{ $item->id }} class="btn btn-edit btn-xs btn-outline-warning"
-                                                            data-paymentable_amount="{{ $item->net_earning - $item->salaryGeneratePayments->sum('amount')??0 }}"
-                                                            data-action="{{ route('hrm.salary-generates.partially-paid', $item->id) }}"
-                                                            data-toggle="tooltip" data-placement="top" title="Edit"
-                                                            data-bs-toggle="modal" data-bs-target="#editModal">
-                                                            Partial Paid
-                                                        </a>
-                                                    </div>
-                                                    @endif
-                                                </td>
-                                                <td class="text-center">
-                                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                                                        @if ($item->status == 'UnPaid')
-                                                            @if (hasPermission('hrm.salary-generates.update'))
-                                                                <a href="{{ route('hrm.salary-generates.edit', $item->id) }}" class="btn btn-edit btn-outline-warning" title="Edit">
-                                                                    <i class="far fa-edit"></i>
-                                                                </a>
-                                                            @endif
-                                                            {{-- @if (hasPermission('hrm.salary-generates.destroy'))
-                                                                <button type="button" data-action="{{ route('hrm.salary-generates.destroy', $item->id) }}" class="btn btn-outline-danger delete-confirm" title="Delete">
-                                                                    <i class="far fa-trash-alt"></i>
-                                                                </button>
-                                                            @endif --}}
-                                                        @endif
-                                                        @if (hasPermission('hrm.salary-generates.show'))
-                                                            <a href="{{ route('hrm.salary-generates.show', $item->id) }}" class="btn btn-outline-primary" title="View">
-                                                                <i class="fas fa-eye"></i>
-                                                            </a>
-                                                        @endif
-                                                    </div>
-                                                </td>
+                                                @foreach($salaryBreakdowns as $item)
+                                                    <th class="text-center rotate-header bg-none"> 
+                                                        {{ $item->type }}
+                                                    </th>
+                                                @endforeach 
+
+                                                <th class="text-center rotate-header bg-none">Increment <br>Amount</th> 
+                                                <th class="text-center rotate-header bg-none">Gross <br>Salary</th> 
+                                                <th class="text-center rotate-header bg-none">Approved <br>Salary in (%)</th> 
+                                                <th class="text-center rotate-header bg-none">Absent <br>Deduction</th>  
+                                                <th class="text-center rotate-header bg-none">Late <br>Deduction</th> 
+                                                <th class="text-center rotate-header bg-none">Advance <br>Deduction</th> 
+                                                <th class="text-center rotate-header bg-none">Loan <br>Deduction</th> 
+                                                <th class="text-center rotate-header bg-none">Tax <br>Deduction</th> 
+                                                <th class="text-center rotate-header bg-none">Total <br>Deduction</th> 
+                                                <th class="text-center rotate-header bg-none">Net <br>Payable</th> 
+                                                <th class="text-center rotate-header bg-none">Payment <br>Method</th>  
+                                                <th class="text-center bg-none">Status</th>
+                                                <th class="text-center bg-none">Remarks</th> 
+                                                <th class="text-center bg-none no-content" >Action</th>
                                             </tr>
                                             
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="d-none">
-                                <form class="delete-form" action="" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
-                                <button type="submit" id="paidAll" name="status" value="Paid"
-                                    class="btn btn-primary btn-sm paid-all" data-bs-toggle="modal" data-bs-target="#paidAllModal"
-                                    formaction="{{ route('hrm.salary-generates.paid-all') }}">Paid All</button>
-                                <button type="submit" id="partiallyPaidAll" name="status" value="Partially Paid"
-                                    class="btn btn-warning btn-sm partially-paid" data-bs-toggle="modal" data-bs-target="#partiallyPaidModal"
-                                    formaction="{{ route('hrm.salary-generates.partially-paid-all') }}">Partially Paid
-                                    All</button>
-                            </div>
-                        </div>
-                    </div>
+                                        </thead>
+                                        <tbody> 
+                                            @php
+                                                $total_basic = 0;
+                                                $total_house_rent = 0;
+                                                $total_medical = 0;
+                                                $total_conveyance = 0;
+                                                $total_entertainment = 0;
+                                                $total_leave_fare = 0;
+                                                $total_utility = 0;
+                                                $total_unkeep = 0;
+                                                $total_others = 0;
+                                                $totalincrement = 0;
+                                                $totalgross = 0;
 
-                </div>
+                                                $totalabsent = 0;
+                                                $totallate = 0;
+                                                $totaladvance = 0;
+                                                $totalloan = 0;
+                                                $totaltax = 0;
+                                                $totaldeduction = 0;
+                                                $totalearning = 0;
+                                                $department = '';
+                                                
+                                            @endphp 
+                                            {{-- @dd($salaryGenerates) --}}
+                                            @foreach ($salaryGenerates as $key => $item)
+                                                @php
+                                                    $total_basic += $item->basic;
+                                                    $total_house_rent += $item->house_rent;
+                                                    $total_medical += $item->medical;
+                                                    $total_conveyance += $item->conveyance;
+                                                    $total_entertainment += $item->entertainment;
+                                                    $total_leave_fare += $item->leave_fare;
+                                                    $total_utility += $item->utility;
+                                                    $total_unkeep += $item->unkeep;
+                                                    $total_others += $item->others;
+                                                    $totalincrement += 0; 
+                                                    $totalgross += $item->gross;
+
+                                                    $totalabsent += $item->absent_deduction;
+                                                    $totallate += $item->late_deduction;
+                                                    $totaladvance += $item->advance;
+                                                    $totalloan += $item->loan;
+                                                    $totaltax += $item->tax;
+                                                    $totaldeduction += $item->total_deductions;
+                                                    $totalearning += $item->net_earning;
+                                                    
+                                                @endphp
+                                                @if ($department != $item->employee->employementDetail->department->name)
+                                                <tr>
+                                                    <th colspan="34" class="text-start">{{ optional(optional(optional($item->employee)->employementDetail)->department)->name }}</th>
+                                                </tr>
+                                                @php
+                                                    $department = $item->employee->employementDetail->department->name;
+                                                @endphp
+                                                @endif
+                                                
+                                                <tr> 
+                                                    <td class="text-center">{{ $key + 1 }}</td>
+                                                    <td class="text-start">
+                                                        @if ($item->status == 'UnPaid' || $item->status == 'Partially Paid')
+                                                            <a href="{{ route('hrm.salary-generates.edit', $item->id) }}" target="_blank">{{ $item->employee->full_name }}</a>
+                                                        @else
+                                                            <a href="{{ route('hrm.salary-generates.show', $item->id) }}" target="_blank">{{ $item->employee->full_name }}</a>
+                                                        @endif
+                                                        <span class="text-muted d-none">({{ optional(optional($item->employee)->employementDetail)->card_no }})</span> <br>  
+                                                        <span class="text-muted"> {{ optional(optional(optional($item->employee)->employementDetail)->designation)->name }}</span>
+
+                                                    </td>    
+                                                    <td class="text-center d-none">{{ $item->total_days }}</td>
+                                                    <td class="text-center d-none">{{ $item->weekend }}</td>
+                                                    <td class="text-center d-none">{{ $item->holidays }}</td>
+                                                    <td class="text-center">{{ $item->absent_days }}</td>
+                                                    <td class="text-center">{{ $item->late_days }}</td>
+                                                    <td class="text-center d-none">{{ $item->leave_days }}</td>
+                                                    <td class="text-center d-none">{{ $item->working_days }}</td>
+
+                                                    @foreach($salaryBreakdowns as $sb)
+                                                        <td class="text-center"> 
+                                                            {{ $sb->value && optional($item)->{$sb->value} !== null ? number_format(optional($item)->{$sb->value}) : 0}}
+                                                        </td>
+                                                    @endforeach 
+
+
+                                                    <td class="text-center">{{ 0 }}</td>
+                                                    <td class="text-center">{{ numberFormat($item->gross) }}</td>
+                                                    <td class="text-center">{{ numberFormat($item->approved_salary_ratio) }}%</td>
+                                                    <td class="text-center">{{ numberFormat($item->absent_deduction) }}</td>
+                                                    <td class="text-center">{{ numberFormat($item->late_deduction) }}</td>
+                                                    <td class="text-center">{{ numberFormat($item->advance) }}</td>
+                                                    <td class="text-center">{{ numberFormat($item->loan) }}</td>
+                                                    <td class="text-center">{{ numberFormat($item->tax) }}</td>
+                                                    <td class="text-center">{{ numberFormat($item->total_deductions) }}</td> 
+                                                    <td class="text-center highlight-col">{{ numberFormat($item->net_earning) }}</td> 
+                                                    <td class="text-center">
+                                                        @php
+                                                            $badgeClass = match(strtolower($item->payment_method)) {
+                                                                'cash' => 'bg-success',
+                                                                'bank' => 'bg-primary',
+                                                                default => 'bg-info',
+                                                            };
+                                                        @endphp
+                                                        <span class="badge {{ $badgeClass }}">
+                                                            {{ ucfirst(strtolower($item->payment_method)) }}
+                                                        </span>
+                                                    </td>   
+                                                    <td class="text-center">{{ ucwords(str_replace('_', ' ', $item->status)) }} - {{ $item->current_approval_level }}</td>
+
+                                                    <form action="{{ route('hrm.salary-generates.update', request()->payroll_id)}}" method="POST" enctype="multipart/form-data">
+                                                        <td class="text-center">
+                                                            <input type="text" name="remarks" class="form-control form-control-sm" placeholder="Note" value="{{ $item->remarks }}">
+                                                        </td>
+                                                        <td class="text-center">  
+                                                            @csrf
+                                                            @method('PUT')
+                                                        
+                                                            <input type="hidden" name="approver_status" id="approver_status{{ $item->id }}" value="">
+                                                            <input type="hidden" name="payroll_id"  value="{{ request()->payroll_id }}"> 
+                                                            <input type="hidden" name="id" value="{{ $item->id }}" >
+                                                            
+                                                            @foreach($item->verifications as $verification) 
+                                                            
+                                                                @if($item->current_approval_level == $verification->approver_level && $verification->approver_id == optional(auth()->user()->employee)->id)  
+                                                            
+                                                                    <!-- Approve / Reject buttons --> 
+                                                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                                                        <button type="submit" class="btn btn-sm btn-primary status-btn" data-status="approved"  data-id="{{ $item->id }}"
+                                                                            data-level="{{ $item->current_approval_level }}" onclick="$('#approver_status{{ $item->id }}').val('approved')">
+                                                                            <i class="fas fa-check-circle"></i>
+                                                                        </button>
+
+                                                                        <button type="submit" class="btn btn-sm btn-danger status-btn" data-status="rejected" data-id="{{ $item->id }}"
+                                                                            data-level="{{ $item->current_approval_level }}" onclick="$('#approver_status{{ $item->id }}').val('rejected')">
+                                                                            <i class="fas fa-times-circle"></i>
+                                                                        </button>
+                                                                    </div> 
+                                                                @endif
+                                                                
+                                                            @endforeach
+                                                        
+                                                        </td>
+                                                    </form>
+                                                    {{-- <td class="text-center">
+                                                        @if ($item->status == 'UnPaid')
+                                                            <div class="btn-group btn-group-xs text-center">
+                                                                @if (hasPermission('hrm.salary-generates.show'))
+                                                                    <a href={{ $item->id }} data-amount="{{ $item->net_earning - $item->total_deductions ?? 0 }}"
+                                                                        data-action="{{ route('hrm.salary-generates.paid', $item->id) }}"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        data-bs-toggle="modal" data-bs-target="#paidModal" class="btn btn-paid btn-xs btn-outline-primary" title="Paid">
+                                                                        Paid
+                                                                    </a>
+                                                                    <a href={{ $item->id }} class="btn btn-edit btn-xs btn-outline-warning"
+                                                                        data-paymentable_amount="{{ $item->net_earning- $item->total_deductions - $item->salaryGeneratePayments->sum('amount') ?? 0 }}"
+                                                                        data-action="{{ route('hrm.salary-generates.partially-paid', $item->id) }}"
+                                                                        data-toggle="tooltip" data-placement="top" title="Edit"
+                                                                        data-bs-toggle="modal" data-bs-target="#editModal">
+                                                                        Partial Paid
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                            
+                                                        @elseif($item->status == 'Paid' || $item->net_earning - $item->salaryGeneratePayments->sum('amount') == 0)
+                                                            <span class="badge badge-round badge-success">Paid</span>
+                                                        @elseif($item->status == 'Partially Paid' && $item->net_earning - $item->salaryGeneratePayments->sum('amount') > 0)
+                                                        <div class="btn-group btn-group-xs text-center" >
+
+                                                            <a href={{ $item->id }} class="btn btn-edit btn-xs btn-outline-warning"
+                                                                data-paymentable_amount="{{ $item->net_earning - $item->salaryGeneratePayments->sum('amount')??0 }}"
+                                                                data-action="{{ route('hrm.salary-generates.partially-paid', $item->id) }}"
+                                                                data-toggle="tooltip" data-placement="top" title="Edit"
+                                                                data-bs-toggle="modal" data-bs-target="#editModal">
+                                                                Partial Paid
+                                                            </a>
+                                                        </div>
+                                                        @endif
+                                                    </td> --}}
+                                                    
+                                                </tr>
+                                                
+                                            @endforeach 
+                                            
+                                        </tbody>
+                                        <tfoot> 
+                                                
+                                            <tr>
+                                                <th colspan="4" class="text-end d-none">Total</th>
+                                                <th colspan="5" class="text-end">Total</th>
+
+                                                @foreach($salaryBreakdowns as $sb)
+                                                    @php
+                                                        $varName = 'total_' . $sb->value;
+                                                    @endphp
+
+                                                    <th class="text-center">
+                                                        {{ isset($$varName) ? number_format($$varName) : 0 }}
+                                                    </th> 
+                                                @endforeach  
+
+                                            
+
+                                                <th class="text-center">{{ numberFormat($totalincrement) }}</th> 
+                                                <th class="text-center">{{ numberFormat($totalgross) }}</th> 
+                                            
+
+                                                <th class="text-center ">&nbsp;</th>
+
+                                                <th class="text-center">{{ numberFormat($totalabsent) }}</th> 
+                                                <th class="text-center">{{ numberFormat($totallate) }}</th> 
+                                                <th class="text-center">{{ numberFormat($totaladvance) }}</th> 
+                                                <th class="text-center">{{ numberFormat($totalloan) }}</th> 
+                                                <th class="text-center">{{ numberFormat($totaltax) }}</th> 
+                                                <th class="text-center">{{ numberFormat($totaldeduction) }}</th> 
+
+                                                <th class="text-center">{{ numberFormat($totalearning) }}</th>  
+                                                <th colspan="3" class="text-center ">&nbsp;</th>
+                                                <th class="text-center ">&nbsp;</th>
+                                            </tr> 
+                                        </tfoot>
+                                    </table>
+                                </div> 
+                            </div>
+                            <div class="card-footer">
+ 
+                                {{-- <input type="hidden" name="approver_status" id="approver_status" value="">
+                                <input type="hidden" name="payroll_id"  value="{{ request()->payroll_id }}"> 
+                                 
+                                
+                                @foreach($item->verifications as $verification)
+
+                                    @if($item->current_approval_level == $verification->approver_level && ($item->status == 'Pending' || $item->status == 'recomended')  && $verification->approver_id == auth()->user()->employee->id)  
+                                   
+                                        <!-- Approve / Reject buttons --> 
+                                        <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                            <button type="submit" class="btn btn-sm btn-primary status-btn" data-status="approved" 
+                                                data-level="{{ $item->current_approval_level + 1 }}" onclick="$('#approver_status').val('approved')">
+                                                <i class="fas fa-check-circle"></i> Check
+                                            </button>
+
+                                            <button type="submit" class="btn btn-sm btn-danger status-btn" data-status="rejected"
+                                                data-level="{{ $item->current_approval_level + 1 }}" onclick="$('#approver_status').val('rejected')">
+                                                <i class="fas fa-times-circle"></i> Deny
+                                            </button>
+                                        </div> 
+                                    @endif
+                                    
+                                @endforeach --}}
+                                
+
+
+                                
+                                {{-- <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                    <button type="submit" id="paidAll" name="status" value="Paid"
+                                        class="btn btn-primary btn-sm paid-all" data-bs-toggle="modal" data-bs-target="#paidAllModal"
+                                        formaction="{{ route('hrm.salary-generates.paid-all') }}">Paid All</button>
+                                    <button type="submit" id="partiallyPaidAll" name="status" value="Partially Paid"
+                                        class="btn btn-warning btn-sm partially-paid" data-bs-toggle="modal" data-bs-target="#partiallyPaidModal"
+                                        formaction="{{ route('hrm.salary-generates.partially-paid-all') }}">Partially Paid
+                                        All</button>
+                                </div> --}} 
+                                
+                                {{-- @if ($item->status == "Create" && hasPermission('hrm.salary-generates.check-by-department-head'))
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                        <button type="submit" class="btn btn-sm btn-primary status-btn" 
+                                            data-status="department_head_checked" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-check-circle"></i> Department Head Check
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-danger status-btn" 
+                                            data-status="department_head_deny" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-times-circle"></i> Department Head Deny
+                                        </button>
+                                    </div> 
+                                @elseif ($item->status == "department_head_checked" && hasPermission('hrm.salary-generates.check-by-hr-head'))
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                        <button type="submit" class="btn btn-sm btn-primary status-btn" 
+                                            data-status="hr_head_checked" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-check-circle"></i> HR Check
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-danger status-btn" 
+                                            data-status="hr_head_deny" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-times-circle"></i> HR Deny
+                                        </button>
+                                    </div> 
+                                @elseif ($item->status == "hr_head_checked" && hasPermission('hrm.salary-generates.check-by-admin-head'))
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                        <button type="submit" class="btn btn-sm btn-primary status-btn" 
+                                            data-status="admin_head_checked" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-check-circle"></i> Admin Check
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-danger status-btn" 
+                                            data-status="admin_head_deny" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-times-circle"></i> Admin Deny
+                                        </button>
+                                    </div>
+                                @elseif ($item->status == "admin_head_checked" && hasPermission('hrm.salary-generates.check-by-account-head'))
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                        <button type="submit" class="btn btn-sm btn-primary status-btn" 
+                                            data-status="account_head_checked" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-check-circle"></i> A/C Check
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-danger status-btn" 
+                                            data-status="account_head_deny" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-times-circle"></i> A/C Deny
+                                        </button>
+                                    </div>
+                                @elseif ($item->status == "account_head_checked" && hasPermission('hrm.salary-generates.check-by-ceo'))
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                        <button type="submit" class="btn btn-sm btn-primary status-btn" 
+                                            data-status="ceo_checked" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-check-circle"></i> CEO Check
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-danger status-btn" 
+                                            data-status="ceo_deny" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-times-circle"></i> CEO Deny
+                                        </button>
+                                    </div>
+                                @elseif ($item->status == "ceo_checked" && hasPermission('hrm.salary-generates.check-by-md'))
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                        <button type="submit" class="btn btn-sm btn-primary status-btn" 
+                                            data-status="md_checked" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-check-circle"></i> Managing Director Check
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-danger status-btn" 
+                                            data-status="md_deny" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-times-circle"></i> Managing Director Deny
+                                        </button>
+                                    </div>
+                                @elseif ($item->status == "md_checked" && hasPermission('hrm.salary-generates.check-by-chairman'))
+                                    <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+                                        <button type="submit" class="btn btn-sm btn-primary status-btn" 
+                                            data-status="chairman_checked" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-check-circle"></i> Chairman Check
+                                        </button>
+
+                                        <button type="submit" class="btn btn-sm btn-danger status-btn" 
+                                            data-status="chairman_deny" onclick="$('#status').val(this.dataset.status)">
+                                            <i class="fas fa-times-circle"></i> Chairman Deny
+                                        </button>
+                                    </div>
+                                @endif --}}
+                                    
+                            </div>
+                        </div>
+
+                    </div> 
             </div>
+
+            <div class="d-none">
+                <form class="delete-form" action="" method="POST">
+                    @csrf
+                    @method('DELETE')
+                </form>
+            </div>
+
+            
 
             <!-- Create Modal -->
             <div class="modal fade inputForm-modal" id="createModal" tabindex="-1" role="dialog"
@@ -432,7 +667,7 @@
                                     </label>
                                     <div class="col-sm-12">
                                         <select required="required" name="credit_account_id" 
-                                                id="paidAllCreditAccountId" class="form-control tom-select required" <!-- Updated ID -->
+                                                id="paidAllCreditAccountId" class="form-control tom-select required"
                                                 data-placeholder="- Select Account -" required>
                                             <option></option>
                                             @foreach ($accounts as $id => $value)
@@ -631,6 +866,38 @@
     }
 });
 
+    $(document).ready(function(){
+
+       $(document).on('click', '.status-btn', function () {
+
+            let status = $(this).data('status');
+            let id = $(this).data('id');
+            let form = $(this).closest('form');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to " + status + " this request?",
+                icon: status === 'approved' ? 'success' : 'warning',
+                showCancelButton: true,
+                confirmButtonColor: status === 'approved' ? '#3085d6' : '#d33',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Yes, ' + status + ' it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    // hidden input set
+                    $('#approver_status' + id).val(status);
+
+                    // form submit
+                    form.submit();
+                }
+            });
+        });
+
+    });
+
+
+
     </script>
 
 {{-- <script>
@@ -737,4 +1004,36 @@
     }
 });
 </script> --}}
+
+<style>
+    thead th {
+        position: sticky;
+        top: 0; 
+    }
+    tfoot td {
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 2;
+    }
+
+    .highlight-col {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .highlight-col {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    input[type="checkbox"] {
+        transform: scale(1.2);
+    }
+    .rotate-header {
+        writing-mode: vertical-rl; /* vertical */
+        transform: rotate(225deg); /* optional for direction */
+        text-align: center; 
+    }
+</style>
 @endsection

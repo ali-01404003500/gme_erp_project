@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('extreme_delay_policies', function (Blueprint $table) {
@@ -16,15 +13,12 @@ return new class extends Migration
             $table->boolean('consider_extreme_delay');
             $table->boolean('deduct_from_salary');
             $table->boolean('consider_consecutive_extreme_delay');
-            $table->integer('extreme_delay_limit'); 
-            $table->integer('adjust_days');  
+            $table->integer('extreme_delay_limit');
+            $table->integer('adjust_days');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('extreme_delay_policies');

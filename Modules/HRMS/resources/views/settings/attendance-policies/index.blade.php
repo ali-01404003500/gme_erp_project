@@ -7,13 +7,15 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                 <h5 class="mb-0 text-primary fw-bold">Attendance Policy</h5>
-                <a href="{{ route('hrm.settings.attendance-policies.create') }}" class="btn btn-primary shadow-sm">
-                    <i class="fas fa-plus"></i> Add new
-                </a>
+                @if (hasPermission('hrm.attendance-policies.create'))
+                    <a href="{{ route('hrm.settings.attendance-policies.create') }}" class="btn btn-primary shadow-sm">
+                        <i class="fas fa-plus"></i> Add new
+                    </a>
+                @endif
             </div>
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-md-12"> 
+                    <div class="col-md-12">
                         <form action="{{ route('hrm.settings.attendance-policies.index') }}" method="GET"
                             class="d-flex gap-2">
                             <div class="input-group">
@@ -25,7 +27,6 @@
                                     placeholder="Search and press enter">
                             </div>
 
-                          
                             <a href="{{ route('hrm.settings.attendance-policies.index') }}"
                                 class="btn btn-outline-secondary shadow-sm" title="Refresh">
                                 <i class="fas fa-sync-alt"></i>Refresh
@@ -50,10 +51,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($policies as $policy) 
+                            @forelse($policies as $policy)
                                 <tr>
                                     <td class="fw-bold text-secondary">{{ $policy->name }}</td>
-                                    <td>{{ $policy->effective_from->format('d-m-Y') }}</td>
+                                    <td>{{ $policy->effective_from->format('d/m/Y') }}</td>
                                     <td>{{ $policy->in_time }}</td>
                                     <td>{{ $policy->delay_buffer }}</td>
                                     <td>{{ $policy->ex_delay_buffer }}</td>
@@ -63,22 +64,25 @@
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center align-items-center">
 
-                                            <a href="{{ route('hrm.settings.attendance-policies.edit', $policy->id) }}"
-                                                class="text-muted me-3" title="Edit">
-                                                <i class="fas fa-pen"></i>
-                                            </a>
+                                            @if (hasPermission('hrm.attendance-policies.edit'))
+                                                <a href="{{ route('hrm.settings.attendance-policies.edit', $policy->id) }}"
+                                                    class="text-muted me-3" title="Edit">
+                                                    <i class="fas fa-pen"></i>
+                                                </a>
+                                            @endif
 
-
-                                            <form action="{{ route('hrm.settings.attendance-policies.destroy', $policy->id) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('Are you sure you want to delete this policy?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-danger p-0 border-0 bg-transparent"
-                                                    title="Delete">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @if (hasPermission('hrm.attendance-policies.destroy')) 
+                                                <form action="{{ route('hrm.settings.attendance-policies.destroy', $policy->id) }}"
+                                                    method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to delete this policy?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-danger p-0 border-0 bg-transparent"
+                                                        title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>

@@ -93,7 +93,7 @@ class RoleController extends Controller
     public function addUserToRoleView($id)
     {
         $data['role'] = Role::find($id);
-        $data['users'] = User::select('id', 'name', 'email')->get();
+        $data['users'] = User::select('id', 'name', 'email')->where('user_status', 'active')->get();
         return view('access_control.roles.add_user', $data);
     }
     public function addUserToRole($id, Request $request)

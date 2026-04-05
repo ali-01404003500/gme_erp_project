@@ -12,16 +12,13 @@ class ExtremeDelayPolicy extends Model
 
     protected $fillable = [
         'consider_extreme_delay',
-        'deduct_from_salary',
-        'consider_consecutive_extreme_delay',
+        'deduct_from_gross_salary', 
         'extreme_delay_limit',
         'adjust_days',
     ];
-
     protected $casts = [
         'consider_extreme_delay'             => 'boolean',
-        'deduct_from_salary'                 => 'boolean',
-        'consider_consecutive_extreme_delay' => 'boolean',
+        'deduct_from_gross_salary'                 => 'boolean', 
         'extreme_delay_limit'                => 'integer',
         'adjust_days'                        => 'integer',
     ];

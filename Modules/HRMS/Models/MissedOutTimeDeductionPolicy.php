@@ -7,21 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class MissedOutTimeDeductionPolicy extends Model
 {
     use HasFactory;
-
     protected $table = 'missed_out_time_deduction_policies';
 
     protected $fillable = [
         'consider_missed_out',
-        'deduct_from_gross',
-        'consider_consecutive',
+        'deduct_from_gross', 
         'missed_out_limit',
         'adjust_days',
     ];
 
     protected $casts = [
         'consider_missed_out'  => 'boolean',
-        'deduct_from_gross'    => 'boolean',
-        'consider_consecutive' => 'boolean',
+        'deduct_from_gross'    => 'boolean', 
         'missed_out_limit'     => 'integer',
         'adjust_days'          => 'integer',
     ];

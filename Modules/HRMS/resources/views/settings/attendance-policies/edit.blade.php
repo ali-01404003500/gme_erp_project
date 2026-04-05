@@ -28,9 +28,10 @@
 
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Working Hours *</label>
-                            <input type="text" id="working_hours" name="working_hours" class="form-control working_hours"
+                            <input type="text" id="working_hours" name="working_hours" class="form-control"
                                 value="{{ $policy->working_hours }}">
                         </div>
+                        
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">In time *</label>
                             <input type="time" id="in_time" name="in_time" class="form-control in_time" value="{{ $policy->in_time }}">
@@ -98,22 +99,22 @@
                                     <tr>
                                         <td class="fw-bold small text-muted">{{ $day }}</td>
                                         <td><input type="time" name="days[{{ $day }}][in_time]"
-                                                class="form-control form-control-sm" value="{{ $dayData['in_time'] ?? '' }}">
+                                                class="form-control form-control-sm in_time" value="{{ $dayData['in_time'] ?? '' }}">
                                         </td>
                                         <td><input type="text" name="days[{{ $day }}][working_hours]"
-                                                class="form-control form-control-sm"
+                                                class="form-control form-control-sm working_hours"
                                                 value="{{ $dayData['working_hours'] ?? '00:00' }}"></td>
                                         <td><input type="number" name="days[{{ $day }}][delay_buffer]"
-                                                class="form-control form-control-sm"
+                                                class="form-control form-control-sm delay_buffer"
                                                 value="{{ $dayData['delay_buffer'] ?? 0 }}"></td>
                                         <td><input type="number" name="days[{{ $day }}][ex_delay_buffer]"
-                                                class="form-control form-control-sm"
+                                                class="form-control form-control-sm ex_delay_buffer"
                                                 value="{{ $dayData['ex_delay_buffer'] ?? 0 }}"></td>
                                         <td><input type="time" name="days[{{ $day }}][early_out_time]"
-                                                class="form-control form-control-sm"
+                                                class="form-control form-control-sm early_out_time"
                                                 value="{{ $dayData['early_out_time'] ?? '' }}"></td>
                                         <td><input type="number" name="days[{{ $day }}][break_time]"
-                                                class="form-control form-control-sm" value="{{ $dayData['break_time'] ?? 0 }}">
+                                                class="form-control form-control-sm break_time" value="{{ $dayData['break_time'] ?? 0 }}">
                                         </td>
                                         <td>
                                             <select name="days[{{ $day }}][working_type]" class="form-select form-select-sm">

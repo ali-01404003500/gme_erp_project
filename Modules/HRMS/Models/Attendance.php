@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\HRMS\Database\Factories\AttendanceFactory;
 use Modules\HRMS\Models\Settings\Shift;
 
 class Attendance extends BaseModel
@@ -20,18 +21,18 @@ class Attendance extends BaseModel
      *
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    protected static function newFactory()
-    {
-        return \Modules\HRMS\Database\Factories\AttendanceFactory::new();
-    }
+    // protected static function newFactory()
+    // {
+    //     return AttendanceFactory::new();
+    // }
 
 
     protected $guarded = [];
-
+ 
     public function employee()
     {
-        return $this->belongsTo(Employee::class);
-    }
+        return $this->belongsTo(Employee::class, 'employee_id');
+    } 
 
     public function createdBy(){
         return $this->belongsTo(User::class, 'created_by');

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class UnderworkDeductionPolicy extends Model
 {
     use HasFactory;
-
     protected $table = 'underwork_deduction_policies';
 
     protected $fillable = [

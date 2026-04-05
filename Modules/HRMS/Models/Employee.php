@@ -1,6 +1,7 @@
 <?php
 namespace Modules\HRMS\Models;
 
+use App\Models\AccessControl\Branch;
 use App\Models\BaseModel;
 use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
@@ -11,6 +12,7 @@ use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
 use Modules\HRMS\Models\ApproverStep;
 use Modules\HRMS\Models\Kpi\Assessment;
+use Modules\HRMS\Models\Settings\Department;
 use Modules\HRMS\Models\Settings\Designation;
 // use Modules\Inventory\Models\Settings\Approver;
 
@@ -411,6 +413,21 @@ class Employee extends BaseModel
         return $this->belongsTo(Designation::class, 'designation_id');
     }
   
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function salarySignatory()
+    {
+        return $this->hasOne(SalarySignatory::class, 'employee_id');
+    }
+
 
 }
 

@@ -171,10 +171,10 @@ class AdvanceChequeEntryService
     public function mapJson(array $jsonData): array
     {
         // dd($jsonData);
-        $customer = Customer::where('company_name', $jsonData['customer_name'])->firstOrFail();
+        $customer = Customer::where('customer_id', $jsonData['customer_name'])->firstOrFail();
 
-        if (!empty($jsonData['reference'])) {
-            $emiEntry = EMIEntry::where('emi_number', $jsonData['reference'])->first();
+        if (!empty($jsonData['emi_number'])) {
+            $emiEntry = EMIEntry::where('emi_number', $jsonData['emi_number'])->first();
             // dd($emiEntry);
             if ($emiEntry) {
                 $dueEmiDetails = $emiEntry->emiDetails()->where('status', 'due')->get();
