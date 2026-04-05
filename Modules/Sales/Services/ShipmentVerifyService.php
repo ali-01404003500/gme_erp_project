@@ -14,7 +14,7 @@ class ShipmentVerifyService
 
     use S3FileHandler;
 
-    public function getAll(int $limit = 20, $filters = [])
+    public function getAll(int $limit = 100, $filters = [])
     {
         $query = ShipmentVerify::query()->with(['customer', 'courier', 'source.source.shipment']);
 

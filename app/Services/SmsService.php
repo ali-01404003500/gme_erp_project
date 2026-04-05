@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Log;
 class SmsService
 {
     protected string $baseUrl = 'https://apibd.rmlconnect.net:8443/bulksms/personalizedbulksms';
-    protected string $username;
-    protected string $password; 
-    protected string $source;
+    protected ?string $username;
+    protected ?string $password; 
+    protected ?string $source;
     /*https://apibd.rmlconnect.net:8443/bulksms/personalizedbulksms?username=GMELBDENT&password=8op7jCng&source=8801894953797&destination=xxxxx&message=xxxxx*/
     public function __construct()
     {
