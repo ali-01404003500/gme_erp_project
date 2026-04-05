@@ -314,9 +314,9 @@
                                 </tfoot>
                             </table>
                         </div>
-                        @if(isset($transactions))
+                        {{-- @if(isset($transactions))
                         @include('partials._paginate', ['data' => $transactions])
-                        @endif
+                        @endif --}}
                     </div>
                 </div>
             </div>
