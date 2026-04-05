@@ -508,7 +508,7 @@ public function customerLedgerReport(Request $request)
                 
                 $data['transactions'] = $request->print??$request->filled('export_type')
                     ? $data['transactions']->get()
-                    : $data['transactions']->paginate(30);
+                    : $data['transactions']->get();
             }
         }
         
