@@ -157,7 +157,7 @@ class CustomerBalanceReportController extends Controller
             ];
 
             $row['due']             = $row['sales'] - $row['sales_return'] - $row['collection'];
-            $row['closing_balance'] = $row['opening_balance'] + $row['sales'] - $row['collection'] + $row['charge'] - $row['waiver'];
+            $row['closing_balance'] = $row['opening_balance'] + $row['sales'] - $row['collection'] + $row['charge'];
 
             $recoveryPerc = 0;
             if ($row['opening_balance'] > 0) {
