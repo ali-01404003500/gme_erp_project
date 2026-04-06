@@ -295,7 +295,7 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-m-Y') }}</td>
-                                            <td class="text-left">{{ $particulars }} - {{ $transaction->transactionable_type }}</td>
+                                            <td class="text-left">{{ $particulars }} - {{ $transaction->transactionable_type }} - {{ $transaction->balance_type }}</td>
                                             <td class="text-center">{!! $transaction->getClickableVoucherNo() !!}</td>
                                             <td class="text-right pr-1">{{ number_format($debitAmount) }}</td>
                                             <td class="text-right pr-1">{{ number_format($creditAmount) }}</td>
