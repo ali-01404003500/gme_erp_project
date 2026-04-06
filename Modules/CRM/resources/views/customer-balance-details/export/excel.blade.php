@@ -56,6 +56,7 @@
                 <th>Sales Return</th>
                 <th>Collection</th>
                 <th>Charge</th>
+                <th>Waiver</th>
                 <th>Due</th>
                 <th>Closing Balance</th>
                 <th>Recovery %</th>
@@ -94,7 +95,9 @@
                     <td style="text-align:right; vertical-align: middle;">
                         ৳{{ number_format($customer['charge']) }}
                     </td>
-                    
+                    <td style="text-align:right; vertical-align: middle;">
+                        ৳{{ number_format($customer['waiver']) }}
+                    </td>
                     <td style="text-align:right; vertical-align: middle;">
                         <span style="color:{{ $customer['due'] >= 0 ? '#dc3545' : '#28a745' }};">
                             ৳{{ number_format($customer['due']) }}
@@ -141,6 +144,9 @@
                     </td>
                     <td style="text-align:right;font-size:12px;">
                         <strong>৳{{ number_format($totals['total_charge']) }}</strong>
+                    </td>
+                     <td style="text-align:right;font-size:12px;">
+                        <strong>৳{{ number_format($totals['total_waiver']) }}</strong>
                     </td>
                     <td style="text-align:right;color:#dc3545;font-size:12px;">
                         <strong>৳{{ number_format($totals['total_due']) }}</strong>

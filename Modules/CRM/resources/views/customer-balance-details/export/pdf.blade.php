@@ -164,6 +164,7 @@
                 <th style="width: 11%;" class="text-right">Sales Return</th>
                 <th style="width: 11%;" class="text-right">Collection</th>
                 <th style="width: 11%;" class="text-right">Charge</th>
+                <th style="width: 11%;" class="text-right">Waiver</th>
                 <th style="width: 11%;" class="text-right">Due</th>
                 <th style="width: 11%;" class="text-right">Closing Balance</th>
                 <th style="width: 8%;" class="text-center">Recovery %</th>
@@ -186,6 +187,7 @@
                     <td class="text-right">{{ number_format($customer['sales_return']) }}</td>
                     <td class="text-right">{{ number_format($customer['collection']-$customer['sales_return']) }}</td>
                     <td class="text-right">{{ number_format($customer['charge']) }}</td>
+                    <td class="text-right">{{ number_format($customer['waiver']) }}</td>
                     <td class="text-right">
                         <span class="{{ $customer['due'] >= 0 ? 'text-danger' : 'text-success' }}">
                             {{ number_format($customer['due']) }}
@@ -214,6 +216,7 @@
                     <td class="text-right"><strong>{{ number_format($totals['total_sales_return']) }}</strong></td>
                     <td class="text-right"><strong>{{ number_format($totals['total_collection']- $totals['total_sales_return']) }}</strong></td>
                     <td class="text-right"><strong>{{ number_format($totals['total_charge']) }}</strong></td>
+                     <td class="text-right"><strong>{{ number_format($totals['total_waiver']) }}</strong></td>
                     <td class="text-right text-danger"><strong>{{ number_format($totals['total_due']) }}</strong></td>
                     <td class="text-right text-danger"><strong>{{ number_format($totals['total_closing_balance']) }}</strong></td>
                     <td class="text-center">-</td>
