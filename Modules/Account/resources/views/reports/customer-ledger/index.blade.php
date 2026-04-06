@@ -281,7 +281,7 @@
 
                                             if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='debit')
                                                 $particulars = 'MFS Charge';
-                                            else if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='credit')
+                                            else if($transaction->transactionable_type=='Modules\Account\Models\Collections\Collection' && $transaction->balance_type=='credit') 
                                                 $particulars = 'Collection';
                                             else if($transaction->transactionable_type=='Modules\Sales\Models\ShipmentVerify' && $transaction->balance_type=='debit')
                                                 $particulars = 'Courier Charge'; 
@@ -295,7 +295,7 @@
                                         <tr>
                                             <td class="text-center">{{ $loop->iteration }}</td>
                                             <td class="text-center">{{ \Carbon\Carbon::parse($transaction->transaction_date)->format('d-m-Y') }}</td>
-                                            <td class="text-left">{{ $particulars }} - {{ $transaction->transactionable_type }} - {{ $transaction->balance_type }}</td>
+                                            <td class="text-left">{{ $particulars }}</td>
                                             <td class="text-center">{!! $transaction->getClickableVoucherNo() !!}</td>
                                             <td class="text-right pr-1">{{ number_format($debitAmount) }}</td>
                                             <td class="text-right pr-1">{{ number_format($creditAmount) }}</td>
