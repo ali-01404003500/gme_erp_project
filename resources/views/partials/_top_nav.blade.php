@@ -1,149 +1,41 @@
 <nav class="navbar navbar-light">
     <div class="navbar-left">
-        <div class="logo-area">
-            <a class="navbar-brand" href="#">
-                @php
-                    $companyInfo = cache()->remember('company_info', now()->addHours(24), function () {
-                        return \App\Models\AccessControl\CompanyInfo::first();
-                    });
-                @endphp
-                @if ($companyInfo?->company_logo != null)
-                    <img class="dark" src="{{ $companyInfo->company_logo }}" alt="{{ $companyInfo->company_name }}" style="height:60px!important; object-fit:contain ">
-                    <img class="light" src="{{ $companyInfo->company_logo }}" alt="{{ $companyInfo->company_name }}" style="height:60px!important; object-fit:contain ">
-                @else
-                <h3>
-                    {{ $companyInfo?->company_name }}
-                </h3>
-                @endif
-
-                   
-
-                {{-- {{ App\Models\AccessControl\CompanyInfo::first()->company_name }}
-                <img class="dark" src="{{ asset('assets/img/logo-white.svg') }}" alt="svg">
-                <img class="light" src="{{ asset('assets/img/logo-white.svg') }}" alt="img"> --}}
-            </a>
-            <a href="#" class="sidebar-toggle">
-                <img class="svg" src="{{ asset('assets/img/svg/align-center-alt.svg') }}" alt="img">
-            </a>
-        </div>
+         
+        @php
+            use App\Models\AccessControl\CompanyInfo;
+            $companyInfo = cache()->remember('company_info', now()->addHours(24), function () { 
+                return CompanyInfo::first();
+            }); 
+        @endphp 
         
-        {{-- <div class="top-menu">
-            <div class="gmeproject-top-menu position-relative">
-                <ul>
+        <div class="logo-area d-flex align-items-center justify-content-between">
 
-                    <li>
-                        <a href="{{ route('pages.blank',app()->getLocale()) }}" class="{{ Request::is(app()->getLocale().'/pages/blank') ? 'active':'' }}">
-                            <span class="nav-icon uil uil-circle"></span>
-                            <span class="menu-text">{{ trans('menu.blank-menu-title') }}</span>
-                        </a>
-                    </li> 
-                </ul>
-            </div>
-        </div> --}}
+            <a href="{{ request()->getSchemeAndHttpHost() }}" class="d-flex align-items-center"> 
+                <!-- By default text dekhaabe -->
+                <span class="company-title ms-2" id="companyText" style="font-size: 25px; font-weight: bold;  background: linear-gradient(to right, green, red); -webkit-background-clip: text;  -webkit-text-fill-color: transparent;">
+                    {{ $companyInfo?->software_title ?? 'GME ERP' }}
+                </span>
+
+                <!-- Logo initially hide -->
+                @if(!empty($companyInfo?->company_logo))
+                    <img src="{{ url($companyInfo->company_logo) }}" 
+                        alt="{{ $companyInfo->software_title }}" 
+                        class="company-logo ms-2 " 
+                        id="companyLogo"
+                        style="height:60px; object-fit:contain; display:none;">
+                @endif
+            </a>
+
+            <!-- Toggle Button -->
+            <a href="#" class="sidebar-toggle ms-3" id="companyToggle">
+                <img class="svg" src="{{ asset('assets/img/svg/align-center-alt.svg') }}" alt="Toggle Sidebar">
+            </a>
+            
+        </div>
+
     </div>
     <div class="navbar-right">
-        <ul class="navbar-right__menu">
-            {{-- <li class="nav-search">
-                <a href="#" class="search-toggle">
-                    <i class="uil uil-search"></i>
-                    <i class="uil uil-times"></i>
-                </a>
-                <form action="/" class="search-form-topMenu">
-                    <span class="search-icon uil uil-search"></span>
-                    <input class="form-control me-sm-2 box-shadow-none" type="search" placeholder="Search..." aria-label="Search">
-                </form>
-            </li>
-            <li class="nav-message">
-                <div class="dropdown-custom">
-                    <a href="javascript:;" class="nav-item-toggle icon-active">
-                        <img class="svg" src="{{ asset('assets/img/svg/message.svg') }}" alt="img">
-                    </a>
-                    <div class="dropdown-wrapper">
-                        <h2 class="dropdown-wrapper__title">Messages <span class="badge-circle badge-success ms-1">2</span></h2>
-                        <ul>
-                            <li class="author-online has-new-message">
-                                <div class="user-avater">
-                                    <img src="{{ asset('assets/img/team-1.png') }}" alt="">
-                                </div>
-                                <div class="user-message">
-                                    <p>
-                                        <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Web Design</a>
-                                        <span class="time-posted">3 hrs ago</span>
-                                    </p>
-                                    <p>
-                                        <span class="desc text-truncate" style="max-width: 215px;">Lorem ipsum
-                                            dolor amet cosec Lorem ipsum</span>
-                                        <span class="msg-count badge-circle badge-success badge-sm">1</span>
-                                    </p>
-                                </div>
-                            </li>
-                            <li class="author-offline has-new-message">
-                                <div class="user-avater">
-                                    <img src="{{ asset('assets/img/team-1.png') }}" alt="">
-                                </div>
-                                <div class="user-message">
-                                    <p>
-                                        <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Web Design</a>
-                                        <span class="time-posted">3 hrs ago</span>
-                                    </p>
-                                    <p>
-                                        <span class="desc text-truncate" style="max-width: 215px;">Lorem ipsum
-                                            dolor amet cosec Lorem ipsum</span>
-                                        <span class="msg-count badge-circle badge-success badge-sm">1</span>
-                                    </p>
-                                </div>
-                            </li>
-                            <li class="author-online has-new-message">
-                                <div class="user-avater">
-                                    <img src="{{ asset('assets/img/team-1.png') }}" alt="">
-                                </div>
-                                <div class="user-message">
-                                    <p>
-                                        <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Web Design</a>
-                                        <span class="time-posted">3 hrs ago</span>
-                                    </p>
-                                    <p>
-                                        <span class="desc text-truncate" style="max-width: 215px;">Lorem ipsum
-                                            dolor amet cosec Lorem ipsum</span>
-                                        <span class="msg-count badge-circle badge-success badge-sm">1</span>
-                                    </p>
-                                </div>
-                            </li>
-                            <li class="author-offline">
-                                <div class="user-avater">
-                                    <img src="{{ asset('assets/img/team-1.png') }}" alt="">
-                                </div>
-                                <div class="user-message">
-                                    <p>
-                                        <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Web Design</a>
-                                        <span class="time-posted">3 hrs ago</span>
-                                    </p>
-                                    <p>
-                                        <span class="desc text-truncate" style="max-width: 215px;">Lorem ipsum
-                                            dolor amet cosec Lorem ipsum</span>
-                                    </p>
-                                </div>
-                            </li>
-                            <li class="author-offline">
-                                <div class="user-avater">
-                                    <img src="{{ asset('assets/img/team-1.png') }}" alt="">
-                                </div>
-                                <div class="user-message">
-                                    <p>
-                                        <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Web Design</a>
-                                        <span class="time-posted">3 hrs ago</span>
-                                    </p>
-                                    <p>
-                                        <span class="desc text-truncate" style="max-width: 215px;">Lorem ipsum
-                                            dolor amet cosec Lorem ipsum</span>
-                                    </p>
-                                </div>
-                            </li>
-                        </ul>
-                        <a href="" class="dropdown-wrapper__more">See All Message</a>
-                    </div>
-                </div>
-            </li> --}}
+        <ul class="navbar-right__menu"> 
             <li class="nav-notification">
                 <div class="dropdown-custom">
                     <a href="javascript:;" id="notification-dropdown-icon" class="nav-item-toggle icon-active">
@@ -161,72 +53,7 @@
                         <a href="" class="dropdown-wrapper__more">See all incoming activity</a>
                     </div>
                 </div>
-            </li>
-            {{-- <li class="nav-settings">
-                <div class="dropdown-custom">
-                    <a href="javascript:;" class="nav-item-toggle">
-                        <img src="{{ asset('assets/img/setting.png') }}" alt="img">
-                    </a>
-                    <div class="dropdown-wrapper dropdown-wrapper--large">
-                        <ul class="list-settings">
-                            <li class="d-flex">
-                                <div class="me-3"><img src="{{ asset('assets/img/mail.png') }}" alt=""></div>
-                                <div class="flex-grow-1">
-                                    <h6>
-                                        <a href="" class="stretched-link">All Features</a>
-                                    </h6>
-                                    <p>Introducing Increment subscriptions </p>
-                                </div>
-                            </li>
-                            <li class="d-flex">
-                                <div class="me-3"><img src="{{ asset('assets/img/color-palette.png') }}" alt=""></div>
-                                <div class="flex-grow-1">
-                                    <h6>
-                                        <a href="" class="stretched-link">Themes</a>
-                                    </h6>
-                                    <p>Third party themes that are compatible</p>
-                                </div>
-                            </li>
-                            <li class="d-flex">
-                                <div class="me-3"><img src="{{ asset('assets/img/home.png') }}" alt=""></div>
-                                <div class="flex-grow-1">
-                                    <h6>
-                                        <a href="" class="stretched-link">Payments</a>
-                                    </h6>
-                                    <p>We handle billions of dollars</p>
-                                </div>
-                            </li>
-                            <li class="d-flex">
-                                <div class="me-3"><img src="{{ asset('assets/img/video-camera.png') }}" alt=""></div>
-                                <div class="flex-grow-1">
-                                    <h6>
-                                        <a href="" class="stretched-link">Design Mockups</a>
-                                    </h6>
-                                    <p>Share planning visuals with clients</p>
-                                </div>
-                            </li>
-                            <li class="d-flex">
-                                <div class="me-3"><img src="{{ asset('assets/img/document.png') }}" alt=""></div>
-                                <div class="flex-grow-1">
-                                    <h6>
-                                        <a href="" class="stretched-link">Content Planner</a>
-                                    </h6>
-                                    <p>Centralize content gethering and editing</p>
-                                </div>
-                            </li>
-                            <li class="d-flex">
-                                <div class="me-3"><img src="{{ asset('assets/img/microphone.png') }}" alt=""></div>
-                                <div class="flex-grow-1">
-                                    <h6>
-                                        <a href="" class="stretched-link">Diagram Maker</a>
-                                    </h6>
-                                    <p>Plan user flows & test scenarios</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </li> --}}
+            </li> 
             <li class="nav-flag-select">
                 <div class="dropdown-custom">
                     @switch(app()->getLocale())

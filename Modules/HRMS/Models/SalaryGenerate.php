@@ -34,8 +34,14 @@ class SalaryGenerate extends BaseModel
     {
         return $this->belongsTo(Department::class, 'department_id');
     }
-    public function approvalRequest()
+
+    public function getRouteKeyName()
     {
-        return $this->hasOne(SalaryApprovalRequest::class, 'salary_generate_id');
+        return 'payroll_id';
     }
+    public function verifications()
+    {
+        return $this->hasMany(SalaryVerification::class, 'salary_id', 'id')->orderBy('approver_level'); // optional: approvals order
+    }
+
 }

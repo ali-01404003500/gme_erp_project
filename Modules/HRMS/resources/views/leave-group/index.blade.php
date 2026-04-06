@@ -1,3 +1,6 @@
+
+@section('title', 'Leave Group')
+@section('description', 'Leave Group')
 @extends('layout.app')
 @section('title', 'Leave Group Management')
 @section('content')
@@ -134,7 +137,7 @@
                 $('#modalTitle').text('Edit Leave Group');
                 $('#group_name').val(name);
                 $('#formMethod').val('PUT');
-                $('#leaveGroupForm').attr('action', '/hrm/settings/leave-groups/' + id);
+                $('#leaveGroupForm').attr('action', '/hrm/leave-groups/' + id);
 
                 let selectedIds = details.map(d => d.id.toString());
                 $('#leave_type_select').val(selectedIds).trigger('change');

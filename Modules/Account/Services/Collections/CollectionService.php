@@ -377,7 +377,7 @@ class CollectionService
                         'amount' => $payment->amount,
                         'debit_amount' => $payment->amount,
                         'credit_amount' => 0,
-                        'description' => 'Collection Payment',
+                        'description' => 'Customer Waiver Payment',
                         'transaction_date' => $collection->collection_date,
                     ]);
 
@@ -391,7 +391,7 @@ class CollectionService
                         'amount' => $payment->amount,
                         'debit_amount' => $payment->amount,
                         'credit_amount' => 0,
-                        'description' => 'Collection Payment',
+                        'description' => 'Customer Waiver Payment',
                         'transaction_date' => $collection->collection_date,
                     ]);
 

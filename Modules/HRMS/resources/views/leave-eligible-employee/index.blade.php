@@ -28,6 +28,8 @@
                                     <td>{{ $item->eligibility }}</td>
                                     <td class="text-end pe-4">
                                         <div class="d-flex justify-content-end gap-2">
+
+
                                             <a href="{{ route('hrm.leave-eligible-employees.edit', $item->id) }}"
                                                 class="btn btn-sm border text-secondary">
                                                 <i class="fas fa-edit"></i>
@@ -52,7 +54,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="addEligibleModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow-lg border-0">

@@ -51,6 +51,7 @@
                                         <th class="text-center">Code</th>
                                         <th class="text-center">Service Name</th>
                                         <th class="text-center">Trigger Name</th>
+                                        <th class="text-center">Send Time(Minutes)</th>
                                         <th class="text-center no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -62,6 +63,7 @@
                                             <td class="text-center">{{ $item->code }}</td>
                                             <td class="text-center">{{ $item->serviceNames->name }}</td>
                                             <td class="text-center">{{ $item->name }}</td>
+                                            <td class="text-center">{{ $item->after_send_time }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
@@ -141,6 +143,18 @@
                                                 required>
                                         </div>
                                     </div>
+
+
+                                    <div class="row mb-4">
+                                        <label class="col-sm-12 col-form-label">Send Time (Minutes)</label>
+                                        <div class="col-sm-12">
+                                            <input type="number" name="after_send_time" class="form-control" placeholder=" Send Time"
+                                                required>
+                                        </div>
+                                    </div>
+
+
+                                    
                                     <div class="row mb-4">
                                         <label for="inputError" class="col-sm-3 control-label bolder">
                                             Status</label>
@@ -219,6 +233,16 @@
                         </div>
 
                         <div class="row mb-4">
+                            <label class="col-sm-12 col-form-label">Send Time (Minutes)</label>
+                            <div class="col-sm-12">
+                                <input type="number" name="after_send_time" class="form-control" placeholder=" Send Time"
+                                    required>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="row mb-4">
                             <label for="inputError" class="col-sm-3 control-label bolder">
                                 Status</label>
 
@@ -257,6 +281,7 @@
                 console.log($(this).data('name'));
                 $('#name').val($(this).data('name'));
                 $('#code').val($(this).data('code'));
+                $('#after_send_time').val($(this).data('after_send_time'));
                 $('input[name=status][value=' + $(this).data('status') + ']').prop('checked', true);
                 $("#editModal select[name=service_name_id]").val($(this).data('service_name_id'));
 

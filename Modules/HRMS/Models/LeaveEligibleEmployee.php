@@ -1,9 +1,15 @@
 <?php
 namespace Modules\HRMS\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-class LeaveEligibleEmployee extends Model
+class LeaveEligibleEmployee extends BaseModel
 {
-    protected $fillable = ['condition_type', 'eligibility'];
+    protected $table = 'leave_eligible_employees';
+
+    protected $fillable = [
+        'condition_type',
+        'eligibility',
+        'status',
+    ];
 }

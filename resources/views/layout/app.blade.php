@@ -1,7 +1,5 @@
-{{-- Company: Wreetu Helth. --}}
-{{-- Author: Md Shadhin --}}
-{{-- Developer: Md Shadhin --}}
-{{-- Copywrite: 2024 --}}
+ {{-- resources/views/layouts/app.blade.php --}}
+
 @include('partials._header')
 
 <body class="layout-{{request()->session()->get('dark_mode') ? "dark" : "light"}} side-menu">
@@ -29,6 +27,8 @@
             @include('partials._footer')
         </footer>
     </main>
+
+    {{-- Overlays / Loader --}}
     <div id="overlayer">
         <span class="loader-overlay">
             <div class="dm-spin-dots spin-lg">
@@ -47,6 +47,30 @@
     </div>
 
     @stack('modals')
+    
+    {{-- ===== jQuery FIRST ===== --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {{-- Plugins --}}
+    <script src="{{ asset('/assets/js/plugins.min.js') }}"></script>
+    <script src="{{ asset('/assets/js/script.min.js') }}"></script>
+    <script src="{{ asset('/js/app.min.js') }}"></script>
+    <script src="{{ asset('/js/custom.js') }}"></script>
+
+
+     {{-- Custom JS --}}
+    <script> 
+
+        $(document).ready(function() {
+            $('#companyToggle').on('click', function(e) {
+                e.preventDefault(); // link click prevent
+
+                $('#companyText').toggle(); // text hide/show
+                $('#companyLogo').toggle(); // logo hide/show
+            });
+        });
+        
+    </script>
 
     <script>
         var env = {
@@ -56,27 +80,55 @@
             mapClockIcon: "{{ asset('assets/img/svg/clock-ticket1.sv') }}g"
         }
     </script>
-    {{--
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDduF2tLXicDEPDMAtC6-NLOekX0A5vlnY"></script> --}}
-    <script src="{{ asset('/assets/js/plugins.min.js') }}"></script>
-    <script src="{{ asset('/assets/js/script.min.js') }}"></script>
-    <script src="{{ asset('/js/app.min.js') }}"></script>
-    <script src="{{ asset('/js/custom.js') }}"></script>
+ 
     @vite('resources/js/custom.js')
 
-    <script src="{{ asset('/assets/plugins/tom-select/tom-select.complete.js')}}"></script>
-    <script src="{{ asset('/assets/plugins/toastr/toastr.min.js')}}"></script>
-    {{-- sweetalert public\assets\plugins\sweetalerts2\sweetalerts2.min.js
-    public\assets\plugins\sweetalerts2\custom-sweetalert.js--}}
-    {{--
-    <script src="{{ asset('/assets/plugins/sweetalerts2/custom-sweetalerlt.js') }}"></script> --}}
+    {{-- Other plugins --}}
+    <script src="{{ asset('/assets/plugins/tom-select/tom-select.complete.js') }}"></script>
+    <script src="{{ asset('/assets/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('/assets/plugins/sweetalerts2/sweetalerts2.min.js') }}"></script>
-    {{-- datatables --}}
     <script src="{{ asset('/assets/plugins/datatable/datatables.js') }}"></script>
     <script src="{{ asset('/assets/plugins/file-preview/file-preview.js') }}"></script>
+
     @yield('page_scripts')
 
     @include('partials.app_script_js')
+
+
+ 
+
+
+    {{-- Sidebar Toggle Button JS & CSS --}}
+
+
+    <style>
+
+       .logo-area {
+            width: 100%;
+            padding: 10px 20px;
+            box-sizing: border-box;
+        }
+
+        /* Flex layout ensures everything inline */
+        .logo-area .company-title,
+        .logo-area .company-logo {
+            display: inline-block;
+            white-space: nowrap;
+            transition: opacity 0.3s ease, width 0.3s ease;
+        }
+
+        .sidebar-toggle {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        /* Optional smooth show/hide */
+        #companyLogo {
+            transition: all 0.3s ease;
+        }
+
+    </style>
+
 </body>
 
 </html>

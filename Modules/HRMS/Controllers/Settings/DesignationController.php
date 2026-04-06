@@ -49,7 +49,7 @@ class DesignationController extends Controller
             'status' => 'required'
         ]);
         $this->service->store($validate);
-        return redirect()->route('hrm.settings.designations.index')->with('success', 'Designation created successfully.');
+        return redirect()->route('hrm.designations.index')->with('success', 'Designation created successfully.');
     }
 
     /**
@@ -84,7 +84,7 @@ class DesignationController extends Controller
         ]);
         $this->service->update($designation, $validate);
 
-        return redirect()->route('hrm.settings.designations.index')->with('success', 'Designation updated successfully.');
+        return redirect()->route('hrm.designations.index')->with('success', 'Designation updated successfully.');
     }
 
     /**
@@ -93,6 +93,6 @@ class DesignationController extends Controller
     public function destroy(Designation $designation)
     {
         $this->service->delete($designation);
-        return redirect()->route('hrm.settings.designations.index')->with('success', 'Designation deleted successfully.');
+        return redirect()->route('hrm.designations.index')->with('success', 'Designation deleted successfully.');
     }
 }

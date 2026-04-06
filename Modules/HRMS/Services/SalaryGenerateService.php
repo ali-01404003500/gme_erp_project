@@ -10,6 +10,8 @@ use Modules\HRMS\Models\Loan;
 use Modules\HRMS\Models\Payroll;
 use Modules\HRMS\Models\SalaryGenerate;
 use Modules\HRMS\Models\SalaryGenerationPolicy;
+use Modules\HRMS\Models\SalarySignatory;
+use Modules\HRMS\Models\SalaryVerification;
 
 class SalaryGenerateService
 {
@@ -20,12 +22,24 @@ class SalaryGenerateService
     }
 
     public function getAll(int $limit = 20)
-    {
-        return SalaryGenerate::query()
-            ->searchByFields(['payroll_id', 'employee_id', 'department_id', 'year_month'])
+    { 
+        return SalaryGenerate::with('verifications')
+            ->whereIn('status', ['Pending','recomended'])
+            ->searchByFields(['payroll_id', 'employee_id', 'department_id', 'year_month','status'])
+            ->orderBy('department_id', 'asc')
             ->paginate($limit);
     }
 
+
+    public function getSalary(int $payrollId)
+    {  
+        return SalaryGenerate::with('verifications.employee')
+            ->where('payroll_id', $payrollId)
+            ->whereIn('status', ['Pending','recomended']) 
+            ->orderBy('department_id', 'asc')
+            ->get();
+    }
+ 
    public function store($data, $request)
     {
         DB::beginTransaction();
@@ -179,6 +193,54 @@ class SalaryGenerateService
         $salaryGenerate->update($data);
         return $salaryGenerate;
     }
+    public function updateSingle(array $data)
+    { 
+        $id = $data['id'];
+        $remarks = $data['remarks'];  
+       
+        $payroll = Payroll::find($id);
+        $salary = SalaryGenerate::find($id);
+        if ($salary) {
+            $nextStep = SalaryVerification::where('payroll_id',$salary->payroll_id) 
+                ->where('salary_id',$id)
+                ->where('approver_level','>', $salary->current_approval_level)
+                ->orderBy('approver_level')
+                ->first();
+
+            if($nextStep){ 
+                $salary->update([
+                    'remarks' => $remarks ?? null,
+                    'current_approval_level'=>$nextStep->approver_level,
+                    'status'=>'recomended'
+                ]);
+
+            }else{
+
+                $salary->update([
+                    'remarks' => $remarks ?? null,
+                    'current_approval_level'=>$nextStep->approver_level,
+                    'status'=>'approved'
+                ]);
+
+                $payroll->update([
+                    'status' => 'approved'
+                ]);
+
+            }  
+
+
+            $verification = SalaryVerification::where('payroll_id',$salary->payroll_id)->where('salary_id',$id)->where('approver_id', auth()->user()->employee->id)->first();
+
+            if($verification){
+                $verification->update([
+                    'status' => $data['approver_status'],
+                    'approved_at' => now(),
+                ]);
+            }
+        }
+     
+        
+    }
 
     public function delete(SalaryGenerate $salaryGenerate)
     {
@@ -285,6 +347,7 @@ class SalaryGenerateService
                 $totalDays = $data->total_days;
             }
             $count = 0;
+            $SalarySignatorySteps = SalarySignatory::where('status','active')->orderBy('id')->get();
 
             foreach ($employees as $employee) {
                 $count = $count + 1;
@@ -319,11 +382,12 @@ class SalaryGenerateService
                 // Create salary record 
                 $totalDeduction = $salaryData['absent_deduction']-$salaryData['late_deduction']-$salaryData['loan_deduction']-$salaryData['advance_deduction']-$salaryData['tax_deduction'];
                 $totalSalary += $salaryData['gross_salary'];
-                $netEarning = $salaryData['gross_salary'] - $salaryData['tax_deduction'] - $totalDeduction;
+                $netEarning = $salaryData['gross_salary'] - $totalDeduction;
   
                 SalaryGenerate::updateOrInsert(
                     [ 
                         'employee_id' => $employee->id,
+                        'department_id' => $employee->employementDetail->department->id,
                         'year_month'       => $month
                     ],
                     [   
@@ -358,7 +422,7 @@ class SalaryGenerateService
                         'tax'    => $salaryData['tax_deduction'], 
                         'gross'    => $salaryData['gross_salary'],
 
-                        'status'        => "Create",
+                        'status'        => "Pending",
                         'net_earning'        => $netEarning,
                         'total_deductions'        => $totalDeduction, 
                         
@@ -377,14 +441,34 @@ class SalaryGenerateService
                     'employee_name' => $employee->name,
                     'salary' => $salaryData
                 ]; 
-                 
+ 
+                $salaryGenerate = SalaryGenerate::where('employee_id', $employee->id)
+                                    ->where('department_id', $employee->employementDetail->department->id) 
+                                    ->where('payroll_id', $payroll->id)
+                                    ->where('year_month', $month)
+                                    ->first();
+                                    
+                SalaryVerification::where('payroll_id', $payroll->id)->where('salary_id',$salaryGenerate->id)->delete();
+ 
+                foreach ($SalarySignatorySteps as $key => $step) {  
+                    SalaryVerification::create([ 
+                        'salary_id' => $salaryGenerate->id,
+                        'payroll_id'=> $payroll->id,
+                        'role_name'=> $step->role_name,
+                        'approver_level'=>$key+1,
+                        'reference_type'=>SalaryGenerate::class,
+                        'approver_id'=>$step->employee_id,
+                        'status'=>'pending'
+                    ]); 
+
+                }    
             }
 
             $payroll->update([
                 'total_net_earning' => $totalSalary,
                 'total_employees' => $count
             ]); 
-
+ 
             return $allSalaries;
  
 

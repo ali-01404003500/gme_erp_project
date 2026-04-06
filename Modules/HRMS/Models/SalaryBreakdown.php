@@ -1,0 +1,18 @@
+<?php
+
+
+namespace Modules\HRMS\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class SalaryBreakdown extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'type',
+        'value',
+        'status'
+    ];
+}
+

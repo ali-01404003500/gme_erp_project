@@ -2,12 +2,18 @@
 
 namespace Modules\Sales\Services;
 
+use App\Models\AccessControl\ServiceName;
+use App\Models\AccessControl\SmsTemplate;
+use App\Models\AccessControl\TriggerName;
 use App\Models\OtpVerification;
+use App\Models\SmsInfo;
+use App\Services\SmsService;
 use Modules\Sales\Models\Delivery;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderDetails;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Account\Controllers\Collections\CollectionController;
 use Modules\Account\Models\Account;
 use Modules\Account\Services\AccountTransactionService;
 use Modules\Account\Services\Collections\CollectionService;
@@ -27,12 +33,16 @@ class SalesOrderService
 {
     private $transactionService;
     private $collectionService;
+    private $smsService;
 
     public function __construct(AccountTransactionService $transactionService, CollectionService $collectionService)
     {
         $this->transactionService = $transactionService;
-        $this->collectionService = $collectionService;
+        $this->collectionService = $collectionService; 
     }
+
+ 
+
 
     public function getSalesOrderId($supplier_id)
     {
@@ -104,6 +114,8 @@ class SalesOrderService
         $data['user_ref_id'] = Customer::find($data['customer_id'])->user_ref_id;
         $result['salesOrder'] = SalesOrder::create($data);
         $result['salesOrderDetails'] = [];
+        $cashCollectionAmount = 0;
+        $paymentDate = '';
 
         // Store sales order details
         foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
@@ -155,6 +167,8 @@ class SalesOrderService
             ], [
                 'delivery_date' => $data['delivery_date'] ?? $data['invoice_date'],
             ]);
+ 
+            
         } elseif ($data['status'] == 'pending') {
             $result['salesOrder']->update(['status' => 'pending']);
             // Remove delivery if it exists
@@ -201,6 +215,12 @@ class SalesOrderService
                     'verified' => $payments['payments_verified'][$key] ?? false,
                     'remarks' => $payments['payments_remark'][$key] ?? null,
                 ]);
+                
+                /*count cash collection amount*/ 
+                if ($payMode == 'Cash') {
+                    $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;  
+                    $paymentDate = $payments['payments_date'][$key] ?? null;
+                } 
             }
         }
         // Process payments
@@ -215,6 +235,7 @@ class SalesOrderService
         // $this->makeTransaction($result['salesOrder']);
         // Commit the transaction
         if ($result['salesOrder']->status == 'approved') {
+
             $this->makeDummyTransaction($result['salesOrder']);
 
             // Check if there are payments and create collection
@@ -228,6 +249,100 @@ class SalesOrderService
 
             if (count($result['salesOrder']->payments) > 0) {
                 $this->collectionService->storeForSales($collectionData, $result['salesOrder']->payments, $result['salesOrder']);
+            }
+
+
+            /**Create:: sms send for sales invoice create */  
+
+            $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
+            $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
+            $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+            $smsTemplate = $sms->template_body;
+
+            $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first(); 
+
+            $phone =   $customerInfo->contact_for_sms;
+            $customerName = $customerInfo->company_name;
+            $invoiceAmount = $result['salesOrder']->net_amount; 
+            $smsdata = [
+                'customer_name' =>  $customerName,
+                'invoice_amount' => $invoiceAmount
+            ];  
+
+            foreach ($smsdata as $key => $value) {
+                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            } 
+
+            $time = Carbon::parse(now()); 
+            $newTime = $time->addMinutes($triggerName->after_send_time);
+
+            SmsInfo::updateOrCreate(
+                [
+                    'sms_reference' => $result['salesOrder']->id,
+                    'sms_mem_id' => $result['salesOrder']->customer_id,
+                    'sms_status' => 'pending', // condition
+                    'trigger_name' => 'T08', 
+                ],
+                [
+                    'sms_send_time' => $newTime,
+                    'sms_to' => $phone,
+                    'sms_text' => $smsTemplate, 
+                ]
+            );
+            
+            
+    
+
+            
+            /*Create:: sms send for cash collection*/ 
+            if ($cashCollectionAmount > 0) {
+
+                $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
+                $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
+                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+                $smsTemplate = $sms->template_body;
+
+                $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first(); 
+
+                $phone =   $customerInfo->contact_for_sms; 
+                $customerName = $customerInfo->company_name; 
+                $customerPreBalance = Customer::find($result['salesOrder']->customer_id)->getAccount()->balance;
+                $collectionAmount = $cashCollectionAmount; 
+                $receivedDate = $paymentDate; 
+                $customerBalance =  $customerPreBalance +  $result['salesOrder']->net_amount - $collectionAmount;
+                
+                $data = [
+                    'customer_name' => $customerName,
+                    'customer_pre_balance ' => $customerPreBalance,
+                    'collection_amount' => $collectionAmount,
+                    'received_date' => $receivedDate,
+                    'customer_current_balance ' => $customerBalance
+                ];   
+
+                foreach ($data as $key => $value) {
+                    $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                } 
+
+                $time = Carbon::parse(now()); 
+                $newTime = $time->addMinutes($triggerName->after_send_time);
+
+                SmsInfo::updateOrCreate(
+                    [
+                        'sms_reference' => $result['salesOrder']->id,
+                        'sms_mem_id' => $result['salesOrder']->customer_id,
+                        'sms_status' => 'pending', // condition
+                        'trigger_name' => 'T03', 
+                          
+                    ],
+                    [
+                        'sms_send_time' => $newTime,
+                        'sms_to' => $phone,
+                        'sms_text' => $smsTemplate, 
+                    ]
+                );
+
+                
+                // dd($smsTemplate);  
             }
         }
 
@@ -1185,6 +1300,9 @@ class SalesOrderService
         $result['salesOrder']->update($data);
         $result['salesOrder']->salesOrderDetails()->whereNotIn('id', $salesOrderDetails['sales_order_detail_id'])->delete();
         $result['salesOrderDetails'] = [];
+        $cashCollectionAmount = 0; // Initialize cash collection amount for SMS
+        $paymentDate  = '';
+
         foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
             $detailData = [
                 'product_id' => $productId,
@@ -1272,6 +1390,15 @@ class SalesOrderService
                     'verified' => $payments['payments_verified'][$key] ?? false,
                     'remarks' => $payments['payments_remark'][$key] ?? null,
                 ]);
+
+
+                
+
+                /*count cash collection amount*/ 
+                if ($payMode == 'Cash') {
+                    $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;  
+                    $paymentDate = $payments['payments_date'][$key] ?? null;
+                }
             }
         }
 
@@ -1289,6 +1416,93 @@ class SalesOrderService
                 if (count($result['salesOrder']->payments) > 0) {
                     $this->collectionService->storeForSales($collectionData, $result['salesOrder']->payments, $salesOrder);
                 }
+            }
+
+            /*Update:: send sms for invoice create */ 
+    
+            $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
+            $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
+            $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+            $smsTemplate = $sms->template_body;
+
+            $customerInfo = Customer::where('id', $salesOrder->customer_id)->first(); 
+
+            $phone =   $customerInfo->contact_for_sms;
+            $customerName = $customerInfo->company_name;
+            $invoiceAmount = $salesOrder->net_amount;
+
+            $smsdata = [
+                'customer_name' =>  $customerName,
+                'invoice_amount' => $invoiceAmount
+            ];  
+
+            foreach ($smsdata as $key => $value) {
+                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            } 
+
+            $time = Carbon::parse(now()); 
+            $newTime = $time->addMinutes($triggerName->after_send_time);
+
+            SmsInfo::updateOrCreate(
+                [
+                    'sms_reference' => $salesOrder->id,
+                    'sms_mem_id' => $salesOrder->customer_id,
+                    'sms_status' => 'pending', // condition
+                    'trigger_name' => 'T08', 
+                ],
+                [
+                    'sms_send_time' => $newTime,
+                    'sms_to' => $phone,
+                    'sms_text' => $smsTemplate, 
+                ]
+            );
+
+                
+            /*Update:: send sms for cash collection */
+            if ($cashCollectionAmount > 0) {
+    
+                $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
+                $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
+                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+                $smsTemplate = $sms->template_body;
+
+                $customerInfo = Customer::where('id', $data['customer_id'])->first(); 
+
+                $phone =   $customerInfo->contact_for_sms; 
+                $customerName = $customerInfo->company_name; 
+                $customerPreBalance = Customer::find($data['customer_id'])->getAccount()->balance; 
+                $collectionAmount = $cashCollectionAmount; 
+                $receivedDate = $paymentDate; 
+                $customerBalance =  $customerPreBalance +  $result['salesOrder']->net_amount - $collectionAmount;
+                
+                $data = [
+                    'customer_name' => $customerName,
+                    'customer_pre_balance ' => $customerPreBalance,
+                    'collection_amount' => $collectionAmount,
+                    'received_date' => $receivedDate,
+                    'customer_current_balance ' => $customerBalance
+                ];   
+
+                foreach ($data as $key => $value) {
+                    $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                } 
+
+                $time = Carbon::parse(now()); 
+                $newTime = $time->addMinutes($triggerName->after_send_time);
+
+                SmsInfo::updateOrCreate(
+                    [
+                        'sms_reference' => $salesOrder->id,
+                        'sms_mem_id' => $salesOrder->customer_id,
+                        'sms_status' => 'pending', // condition
+                        'trigger_name' => 'T03', 
+                    ],
+                    [
+                        'sms_send_time' => $newTime,
+                        'sms_to' => $phone,
+                        'sms_text' => $smsTemplate, 
+                    ]
+                );
             }
         }
 

@@ -110,13 +110,20 @@
                                                 <td class="text-center">{{ $item->total_employees }}</td> 
                                                 <td class="text-center">{{ numberFormat($item->total_net_earning) }}</td> 
                                                 <td class="text-center">                                       
-                                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                                                        
+                                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group"> 
                                                         @if (hasPermission('hrm.salary-generates.index'))
-                                                            <a href="{{ route('hrm.salary-generates.index', ['payroll_id' => $item->id]) }}" class="btn btn-outline-primary" title="View">
+                                                            <a href="{{ route('hrm.salary-generates.index', ['payroll_id' => $item->id]) }}" class="btn btn-outline-primary" title="Verify">
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if (hasPermission('hrm.salary-generates.index'))
+                                                            <a href="{{ route('hrm.salary-generates.salary-sheet', ['id' => $item->id]) }}" class="btn btn-outline-primary" title="View">
                                                                 <i class="fas fa-eye"></i>
                                                             </a>
                                                         @endif
+
+
+                                                        
                                                     </div>
                                                 </td>
                                             </tr>

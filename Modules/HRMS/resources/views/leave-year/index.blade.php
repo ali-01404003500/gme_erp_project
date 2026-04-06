@@ -1,3 +1,6 @@
+
+@section('title', 'Leave Year')
+@section('description', 'Leave Year')
 @extends('layout.app')
 @section('title', 'Leave Year Management')
 @section('content')

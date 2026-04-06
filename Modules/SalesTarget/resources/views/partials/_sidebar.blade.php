@@ -55,54 +55,31 @@
                     <a href="{{ route('sales_target.perfomence.achievement') }}"
                         class="{{ request()->routeIs('sales_target.perfomence.achievement') ? 'active' : '' }}">
                         <span class="fas fa-trophy" style="margin-right: 20px;"></span>
-                        {{ t_('menu.Achievement List') }}
+                        {{ t_('menu.Target Achievement List') }}
                     </a>
                 </li>
             @endif
 
-            {{-- <hr style="border-top: 1px solid #444; margin: 5px 20px;"> --}}
-
+       
             @if (hasPermission('sales_target.settings.target.index'))
                 <li>
                     <a href="{{ route('sales_target.settings.target.index') }}"
                         class="{{ request()->routeIs('sales_target.settings.target.index') ? 'active' : '' }}">
                         <span class="fas fa-list" style="margin-right: 20px;"></span>
-                        {{ t_('menu.Target Summary') }}
+                        {{ t_('menu.Sales Target Setup') }}
                     </a>
                 </li>
             @endif
-
-            {{-- @if (hasPermission('sales_target.settings.target.create'))
-                <li>
-                    <a href="{{ route('sales_target.settings.target.create') }}"
-                        class="{{ request()->routeIs('sales_target.settings.target.create') ? 'active' : '' }}">
-                        <span class="fas fa-plus-circle" style="margin-right: 20px;"></span>
-                        {{ t_('menu.Create Target') }}
-                    </a>
-                </li>
-            @endif --}}
-
-            {{-- <hr style="border-top: 1px solid #444; margin: 5px 20px;"> --}}
-
+ 
             @if (hasPermission('sales_target.settings.incentives.index'))
                 <li>
                     <a href="{{ route('sales_target.settings.incentives.index') }}"
                         class="{{ request()->routeIs('sales_target.settings.incentives.index') ? 'active' : '' }}">
                         <span class="fas fa-table" style="margin-right: 20px;"></span>
-                        {{ t_('menu.Incentive Summary') }}
+                        {{ t_('menu.Sales Incentive Setup') }}
                     </a>
                 </li>
-            @endif
-
-            {{-- @if (hasPermission('sales_target.settings.incentives.create'))
-                <li>
-                    <a href="{{ route('sales_target.settings.incentives.create') }}"
-                        class="{{ request()->routeIs('sales_target.settings.incentives.create') ? 'active' : '' }}">
-                        <span class="fas fa-plus-circle" style="margin-right: 20px;"></span>
-                        {{ t_('menu.Incentive Setup') }}
-                    </a>
-                </li>
-            @endif --}}
+            @endif 
         </ul>
     </li>
 @endif

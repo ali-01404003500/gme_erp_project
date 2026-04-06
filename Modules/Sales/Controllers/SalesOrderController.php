@@ -5,12 +5,16 @@ namespace Modules\Sales\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Models\AccessControl\ServiceName;
+use App\Models\AccessControl\SmsTemplate;
+use App\Models\AccessControl\TriggerName;
 use App\Services\AutocompleteService;
 use Modules\Inventory\Models\Product;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Sales\Models\Courier;
 use Modules\Sales\Models\SalesOrder;
 use App\Services\Notifications\GeneralNotificationService;
+use App\Services\SmsService;
 use Modules\Sales\Services\SalesOrderService;
 use Illuminate\Http\Request;
 use Dompdf\Dompdf;
@@ -25,6 +29,8 @@ use Modules\Sales\Models\FreeSalesInvoice;
 use Illuminate\Support\Facades\Session;
 use Modules\HRMS\Models\Employee;
 use Modules\Services\Models\Service;
+use App\Models\SmsInfo;
+use Carbon\Carbon;
 
 class SalesOrderController extends Controller
 {
@@ -41,6 +47,7 @@ class SalesOrderController extends Controller
      * @var GeneralNotificationService
      */
     private $generalNotificationService;
+
     function __construct(SalesOrderService $service, GeneralNotificationService $generalNotificationService)
     {
         $this->service = $service;
@@ -207,6 +214,8 @@ class SalesOrderController extends Controller
 
 
         $result = $this->service->store($validate, $salesOrderDetails, $salesOrderShipments, $payments);
+
+       
         $this->generalNotificationService->store([
             'title' => 'New Sales Order Added',
             'description' => 'New Sales Order Added needed approval',
@@ -440,7 +449,7 @@ class SalesOrderController extends Controller
 
         $salesOrder = SalesOrder::findOrFail($id);
         $this->service->update($salesOrder, $validate, $salesOrderDetails, $salesOrderShipments, $payments);
-
+ 
         return redirect()->route('sales.sales-orders.edit', $id)->with('success', 'SalesOrder updated successfully.');
     }
 

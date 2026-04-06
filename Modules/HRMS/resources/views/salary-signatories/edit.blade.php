@@ -1,4 +1,3 @@
-
 @extends('layout.app')
 
 @section('title', 'Edit Salary Signatory')
@@ -23,22 +22,33 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="user_id">Employee <span class="text-danger">*</span></label>
-                                        <select name="user_id" id="user_id" class="form-control @error('user_id') is-invalid @enderror" required>
+                                        <label for="employee_id">Employee <span class="text-danger">*</span></label>
+                                        <select name="employee_id" id="employee_id" class="form-control @error('employee_id') is-invalid @enderror" required>
                                             <option value="">Select Employee</option>
-                                            @foreach($users as $user)
-                                                <option value="{{ $user->id }}" {{ old('user_id', $salarySignatory->user_id) == $user->id ? 'selected' : '' }}>
-                                                    {{ $user->name }} ({{ $user->email }})
+                                            @foreach($employees as $employee)
+                                                <option value="{{ $employee->id }}" {{ old('employee_id', $salarySignatory->employee_id) == $employee->id ? 'selected' : '' }}>
+                                                    {{ $employee->full_name }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('user_id')
+                                        @error('employee_id')
                                             <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="role_name">Role Name <span class="text-danger">*</span></label>
+                                        <input type="text" name="role_name" id="role_name" 
+                                            class="form-control @error('role_name') is-invalid @enderror"
+                                            value="{{ old('role_name', $salarySignatory->role_name) }}" required>
+                                        @error('role_name')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="signatory_tag">Signatory Tag <span class="text-danger">*</span></label>
                                         <input type="text" name="signatory_tag" id="signatory_tag" 
@@ -50,24 +60,9 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="level">Approval Level <span class="text-danger">*</span></label>
-                                        <select name="level" id="level" class="form-control @error('level') is-invalid @enderror" required>
-                                            <option value="">Select Level</option>
-                                            @foreach($levels as $level)
-                                                <option value="{{ $level }}" {{ old('level', $salarySignatory->level) == $level ? 'selected' : '' }}>
-                                                    Level {{ $level }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('level')
-                                            <span class="invalid-feedback">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
+ 
+ 
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="status">Status <span class="text-danger">*</span></label>
                                         <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
@@ -98,7 +93,6 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Update Signatory
                             </button>
-                            <a href="{{ route('hrm.salary-signatories.index') }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

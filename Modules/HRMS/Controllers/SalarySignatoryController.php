@@ -11,81 +11,42 @@ class SalarySignatoryController extends Controller
 {
     public function index()
     {
-        $signatories = SalarySignatory::with('employee')
-            ->orderBy('level', 'asc')
+        $data['signatories'] = SalarySignatory::with('employee')
+            ->orderBy('approver_level', 'asc')
             ->get();
 
-        return view('HRMS::salary-signatories.index', compact('signatories'));
+        $data['employees'] = Employee::where('status', 1)->get();
+
+        return view('HRMS::salary-signatories.index', $data);
     }
 
     public function create()
     {
-        $employees = Employee::select('id', 'full_name') 
-            ->where('status', 1)
-            ->whereDoesntHave('salarySignatory')
-            ->whereHas('employementDetail', function ($q) {
-                $q->whereIn('department_id', [5, 6])
-                    ->where('status', 1);
-            })
-            ->orderBy('full_name', 'asc')
-            ->get();
 
-        $levels = $this->getAvailableLevels();
-
-        return view('HRMS::salary-signatories.create', compact('employees', 'levels'));
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'employee_id'   => 'required|exists:employees,id|unique:salary_signatories,employee_id',
-            'signatory_tag' => 'required|string|max:100|unique:salary_signatories,signatory_tag',
-            'level'         => 'required|integer|min:1|unique:salary_signatories,level',
-            'status'        => 'required|in:active,inactive',
-            'description'   => 'nullable|string|max:500',
-        ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        SalarySignatory::create($request->all());
-
-        return redirect()->route('hrm.salary-signatories.index')
-            ->with('success', 'Salary signatory created successfully');
     }
 
-    public function edit(SalarySignatory $salarySignatory)
+    public function edit($id)
     {
-        $employees = Employee::where(function ($query) use ($salarySignatory) {
-            $query->whereDoesntHave('salarySignatory')
-                ->orWhere('id', $salarySignatory->employee_id);
-        })
-            ->orderBy('id')
-            ->get();
+        $data['salarySignatory'] = SalarySignatory::findOrFail($id);
 
-        $levels = $this->getAvailableLevels($salarySignatory->id);
+        $data['employees'] = Employee::where('status', 1)->get();
 
-        return view('HRMS::salary-signatories.edit', compact('salarySignatory', 'employees', 'levels'));
+        return view('HRMS::salary-signatories.edit', $data);
     }
 
     public function update(Request $request, SalarySignatory $salarySignatory)
     {
         $validator = Validator::make($request->all(), [
-            'employee_id'   => 'required|exists:employees,id|unique:salary_signatories,employee_id,' . $salarySignatory->id,
+            'employee_id'   => 'required|exists:employees,id,' . $salarySignatory->id,
             'signatory_tag' => 'required|string|max:100|unique:salary_signatories,signatory_tag,' . $salarySignatory->id,
-            'level'         => 'required|integer|min:1|unique:salary_signatories,level,' . $salarySignatory->id,
             'status'        => 'required|in:active,inactive',
             'description'   => 'nullable|string|max:500',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
 
         $salarySignatory->update($request->all());
 
@@ -106,13 +67,4 @@ class SalarySignatoryController extends Controller
             ->with('success', 'Salary signatory deleted successfully');
     }
 
-    private function getAvailableLevels($excludeId = null)
-    {
-        $usedLevels = SalarySignatory::when($excludeId, function ($query) use ($excludeId) {
-            $query->where('id', '!=', $excludeId);
-        })->pluck('level')->toArray();
-
-        $allLevels = range(1, 10);
-        return array_diff($allLevels, $usedLevels);
-    }
 }

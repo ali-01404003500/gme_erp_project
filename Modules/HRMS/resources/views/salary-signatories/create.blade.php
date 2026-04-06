@@ -1,4 +1,3 @@
-{{-- Modules/HRMS/resources/views/salary-signatories/create.blade.php --}}
 @extends('layout.app')
 
 @section('title', 'Create Salary Signatory')

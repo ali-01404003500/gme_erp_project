@@ -52,7 +52,8 @@ class TriggerNameController extends Controller
         $validate = $request->validate([
             'service_name_id' => 'required|exists:service_names,id',
             'name' => 'required|unique:trigger_names,name,NULL,id,deleted_at,NULL,service_name_id,' . $request->input('service_name_id'),
-            'code' => 'nullable',
+            'code' => 'required',
+            'after_send_time' => 'required|integer|min:0',
             'status' => 'required',
         ]);
         $this->service->store($validate);
@@ -87,7 +88,8 @@ class TriggerNameController extends Controller
         $validate = $request->validate([
             'service_name_id' => 'required|exists:service_names,id',
             'name' => 'required|unique:trigger_names,name,' . $triggerName->id . ',id,deleted_at,NULL',
-            'code' => 'nullable',
+            'code' => 'required',
+            'after_send_time' => 'required|integer|min:0',
             'status' => 'required',
         ]);
         $this->service->update($triggerName, $validate);

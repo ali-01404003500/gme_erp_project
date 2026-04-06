@@ -136,17 +136,11 @@
                                         <div class="col-md-6">
                                             <div class="card p-3">
                                                 <label class="form-label">Add Salary Breakup <span class="text-danger">*</span></label>
-                                                <select id="salaryBreakupSelect" class="form-select mb-3">
+                                                <select id="salaryBreakupSelect" class="form-select mb-3"> 
                                                     <option value="">Select Salary Breakup</option>
-                                                    <option value="basic">Basic</option>
-                                                    <option value="house_rent">House Rent</option>
-                                                    <option value="conveyance">Conveyance</option>
-                                                    <option value="medical">Medical</option>
-                                                    <option value="entertainment">Entertainment</option>
-                                                    <option value="leave_fare">Leave Fare</option>
-                                                    <option value="utility">Utility</option>
-                                                    <option value="unkeep">Unkeep</option>
-                                                    <option value="others">Others</option>
+                                                    @foreach ($salaryBreakdown as $key => $sb)
+                                                        <option value="{{ $sb->value}}">{{ $sb->type}}</option>
+                                                    @endforeach 
                                                 </select>
 
                                                 <div class="table-responsive">
@@ -444,77 +438,70 @@
                 increaseBasic = (increaseAmt * basicPercentage)/100; 
             }
             if( houseRentPercentage != 0)
-            {
-                if(isHouseRent!=0)
-                    salaryAmt = basic;
-
+            { 
                 houseRent = (salaryAmt * houseRentPercentage)/100;
                 increaseHouseRent = (increaseAmt * houseRentPercentage)/100; 
+                 
+
             }
             
             if( conveyancePercentage != 0)
-            {
-                if(isConveyance!=0)
-                    salaryAmt = basic;
-
+            { 
                 conveyance = (salaryAmt * conveyancePercentage)/100;
                 increaseConveyance = (increaseAmt * conveyancePercentage)/100; 
+
+
             }
 
             if( medicalPercentage != 0)
             {
-                if(isMedical!=0)
-                    salaryAmt = basic;
-
                 medical = (salaryAmt * medicalPercentage)/100;
                 increaseMedical = (increaseAmt * medicalPercentage)/100; 
+
+
+
             }
 
             if( entertainmentPercentage != 0)
-            {
-                if(isEntertainment!=0)
-                    salaryAmt = basic;
-
+            { 
                 entertainment = (salaryAmt * entertainmentPercentage)/100;
                 increaseEntertainment = (increaseAmt * entertainmentPercentage)/100; 
+
+
             }
 
             if( leave_farePercentage != 0)
-            {
-                if(isLeaveFare!=0)
-                    salaryAmt = basic;
-
+            { 
                 leaveFare = (salaryAmt * leave_farePercentage)/100;
                 increaseLeaveFare = (increaseAmt * leave_farePercentage)/100; 
+
+                
+
             }
 
             if( utilityPercentage != 0)
-            {
-                if(isUtility!=0)
-                    salaryAmt = basic;
-
+            {  
                 utility = (salaryAmt * utilityPercentage)/100;
                 increaseUtility = (increaseAmt * utilityPercentage)/100; 
+ 
             }
 
             
             if( unkeepPercentage != 0)
-            {
-                if(isUnkeep!=0)
-                    salaryAmt = basic;
-
+            {  
                 unkeep = (salaryAmt * unkeepPercentage)/100;
                 increaseUnkeep = (increaseAmt * unkeepPercentage)/100; 
+
+
             }
 
             
             if( othersPercentage != 0)
-            {
-                if(isothers!=0)
-                    salaryAmt = basic;
-
+            {  
                 others = (salaryAmt * othersPercentage)/100;
                 increaseOthers = (increaseAmt * othersPercentage)/100; 
+
+
             }
  
                     

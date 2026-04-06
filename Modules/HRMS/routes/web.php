@@ -65,10 +65,20 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
     Route::resource('salary-generates', SalaryGenerateController::class);
 
+
     Route::post('salary-generates/paid/{id}', [SalaryGenerateController::class, 'paid'])->name('salary-generates.paid');
     Route::post('salary-generates/partially-paid/{id}', [SalaryGenerateController::class, 'partiallyPaid'])->name('salary-generates.partially-paid');
     Route::post('salary-generates/paid-all', [SalaryGenerateController::class, 'paidAll'])->name('salary-generates.paid-all');
     Route::post('salary-generates/partially-paid-all', [SalaryGenerateController::class, 'partiallyPaidAll'])->name('salary-generates.partially-paid-all');
+
+    Route::post('salary-generates/paid/{id}', [SalaryGenerateController::class, 'paid'])->name('salary-generates.paid'); 
+    Route::get('salary-generates/salary-sheet/{id}', [SalaryGenerateController::class,'salarySheet'])->name('salary-generates.salary-sheet');
+
+    Route::post('salary-generates/partially-paid/{id}', [SalaryGenerateController::class, 'partiallyPaid'])->name('salary-generates.partially-paid');
+    Route::post('salary-generates/paid-all', [SalaryGenerateController::class, 'paidAll'])->name('salary-generates.paid-all');
+    Route::post('salary-generates/partially-paid-all', [SalaryGenerateController::class, 'partiallyPaidAll'])->name('salary-generates.partially-paid-all');
+
+
     Route::resource('leaves', LeaveApplicationController::class);
     Route::resource('noticeboards', NoticeBoardController::class);
     Route::get('get-leave-response', [LeaveApplicationController::class, 'getLeaveResponse'])->name('get.leave.response');
@@ -96,6 +106,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::resource('leave-statuses', LeaveStatusController::class);
     Route::get('hrm/leave-statuses/get-balance', [LeaveStatusController::class, 'getEmployeeBalance'])->name('leave-statuses.get-balance');
     Route::get('hrm/leave-statuses/get-balance', [LeaveStatusController::class, 'getEmployeeBalance'])->name('leave-statuses.get-balance');
+
     Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class);
     Route::resource('leaveAdjustment', LeaveAdjustmentController::class);
     Route::resource('leave-salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
@@ -103,6 +114,19 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
     Route::get('payrolls', [SalaryGenerateController::class, 'payrolls'])->name('payrolls');
     Route::resource('salary-setups', SalarySetupController::class);
+
+ 
+    Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class)->except(['show', 'edit', 'create']);
+    Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class)->except(['destroy']);
+
+    Route::resource('leaveAdjustment', LeaveAdjustmentController::class); 
+    //======== salary Routes ========
+    Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
+    Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
+    Route::get('payrolls', [SalaryGenerateController::class, 'payrolls'])->name('payrolls'); 
+    Route::resource('salary-setups', SalarySetupController::class);
+
+
     //======== salary Signatory Routes ========
     Route::resource('salary-signatories', SalarySignatoryController::class);
 
@@ -117,11 +141,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
 
 
 
+
         // Route::resource('leave-statuses', LeaveStatusController::class);
         Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class);
         Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
         Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
         Route::resource('attendance-policies', AttendancePolicyController::class);
+
+
+
 
     });
 
@@ -165,6 +193,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         });
     });
 
+
     // Salary Approval Routes
     Route::group(['prefix' => 'salary-approvals', 'as' => 'salary-approvals.'], function () {
         Route::get('/verification', [SalaryApprovalController::class, 'verificationPage'])->name('verification');
@@ -173,6 +202,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::put('/{salaryApprovalRequest}/approve', [SalaryApprovalController::class, 'approve'])->name('approve');
         Route::put('/{salaryApprovalRequest}/deny', [SalaryApprovalController::class, 'deny'])->name('deny');
     });
+
+ 
+
 });
 
 Route::group(['prefix' => 'carrier', 'as' => 'carrier.'], function () {

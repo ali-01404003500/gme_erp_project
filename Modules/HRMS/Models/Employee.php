@@ -420,6 +420,7 @@ class Employee extends BaseModel
     {
         return $this->belongsTo(Branch::class);
     }
+
     public function salarySignatory()
     {
         return $this->hasOne(SalarySignatory::class, 'employee_id');

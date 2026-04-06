@@ -437,6 +437,8 @@ public function customerLedgerReport(Request $request)
                         $q->whereNotIn('status', ['Honored', 'Returned', 'Converted']);
                     }])
                     ->get();
+
+                
                 
                 $data['collected_cheque_amount'] = $advanceCheques->sum(function($entry) {
                     return $entry->details->sum('amount');
@@ -506,7 +508,7 @@ public function customerLedgerReport(Request $request)
                 
                 $data['transactions'] = $request->print??$request->filled('export_type')
                     ? $data['transactions']->get()
-                    : $data['transactions']->paginate(30);
+                    : $data['transactions']->get();
             }
         }
         

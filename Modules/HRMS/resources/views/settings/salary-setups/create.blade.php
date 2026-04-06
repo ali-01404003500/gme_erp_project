@@ -286,10 +286,14 @@
 
             total =  basic + houseRent + conveyance + medical + entertainment + leave_fare + utility + unkeep + others;
 
-
-
-            if (total !== 100) {
+ 
+            if (total <= 100) {
                 toastr.error('The total percentage must equal 100.');
+                return false;
+            }
+            else if (total > 100 && (total - basic) < 100) {
+                toastr.error('The total percentage excluding basic must be at least 100.');
+                return false;
             } else {
                 $(this).off('submit').submit();
             }

@@ -24,7 +24,6 @@ class LeaveEligibleEmployeeController extends Controller
         return redirect()->back()->with('success', 'Data saved successfully!');
     }
 
- 
     public function edit($id)
     {
         $item = LeaveEligibleEmployee::findOrFail($id);

@@ -6,7 +6,7 @@
 
 
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ $title }} - GMEProject</title>
+    <title>{{ $title }} - GME DMS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/plugin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}">
@@ -20,15 +20,7 @@
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-xxl-3 col-xl-4 col-md-6 col-sm-8">
-                        <div class="edit-profile">
-                            <div class="edit-profile__logos">
-                                {{-- <img class="dark" src="{{ asset('assets/img/logo-dark.png') }}" alt="">
-                                <img class="light" src="{{ asset('assets/img/logo-white.png') }}" alt=""> --}}
-                                {{-- <img class="dark" src="{{ asset('assets/img/icon.png') }}" alt="" style="width:100px !important; height:100px!important ">
-                                <img class="light" src="{{ asset('assets/img/icon.png') }}" alt="" style="width:100px !important; height:100px!important "> --}}
-                                <img class="dark" src="{{ s3FileToBase64(App\Models\AccessControl\CompanyInfo::first()->company_logo??'assets/img/logo-dark.png') }}" alt="" style="height:100px!important; width: auto; ">
-                                <img class="light" src="{{ s3FileToBase64(App\Models\AccessControl\CompanyInfo::first()->company_logo??'assets/img/logo-white.png') }}" alt=""  style="height:100px!important; width: auto; ">
-                            </div>
+                        <div class="edit-profile"> 
                             <div id="login-buttons" class="d-flex flex-column gap-1 d-none">
                                 <a href="https://gmartbd.net"  class="btn btn-white w-100">
                                     Go to Old System
@@ -38,16 +30,25 @@
                                 </button>
                             </div>
                             <div class="card border-0" id="login-card" >
+                                <div class="edit-profile__logos pt-5">
+                                    {{-- <img class="dark" src="{{ asset('assets/img/logo-dark.png') }}" alt="">
+                                    <img class="light" src="{{ asset('assets/img/logo-white.png') }}" alt=""> --}}
+                                    {{-- <img class="dark" src="{{ asset('assets/img/icon.png') }}" alt="" style="width:100px !important; height:100px!important ">
+                                    <img class="light" src="{{ asset('assets/img/icon.png') }}" alt="" style="width:100px !important; height:100px!important "> --}}
+                                    <img class="dark" src="{{ asset('assets/img/gme-logo.png'??'assets/img/logo-dark.png') }}" alt="" style="height:100px!important; width: auto; ">
+                                    <img class="light" src="{{ asset('assets/img/gme-logo.png'??'assets/img/logo-white.png') }}" alt=""  style="height:100px!important; width: auto; ">
+                                </div>
+                                
                                 <div class="card-header">
-                                    <div class="edit-profile__title">
-                                        <h6>Sign in  {{ App\Models\AccessControl\CompanyInfo::first()->company_name??'GME' }}</h6>
+                                    <div class="edit-profile__title text-center">
+                                        <h6>Sign in  <br>{{ App\Models\AccessControl\CompanyInfo::first()->company_name??'GME' }}</h6>
                                     </div>
                                 </div>
                                 <div class="card-body" id="login-form">
                                     <form action="{{ route('login') }}" method="POST">
                                         @csrf
                                         <div class="edit-profile__body">
-                                            <div class="form-group mb-20">
+                                            <div class="form-group mb-20 pt-3">
                                                 <label for="email">Username Or Email Address</label>
                                                 <input type="text" class="form-control" id="email" name="email" placeholder="Email address">
                                                 @if($errors->has('email'))
@@ -73,8 +74,8 @@
                                                 </div> --}}
                                                 <a href="{{ route('password.request') }}">forget password?</a>
                                             </div>
-                                            <div class="admin__button-group button-group d-flex pt-1 justify-content-md-start justify-content-center">
-                                                <button class="btn btn-primary btn-default w-100 btn-squared text-capitalize lh-normal px-50 signIn-createBtn" style="background-color: #0b2e33">
+                                            <div class="admin__button-group button-group d-flex pt-1 justify-content-md-start justify-content-center pb-5">
+                                                <button class="btn btn-primary btn-default w-100 btn-squared text-capitalize lh-normal px-50 signIn-createBtn" style="background-color: #0b2e33"">
                                                     sign in
                                                 </button>
                                             </div>

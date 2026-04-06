@@ -55,6 +55,8 @@
                 <th>Sales</th>
                 <th>Sales Return</th>
                 <th>Collection</th>
+                <th>Charge</th>
+                <th>Waiver</th>
                 <th>Due</th>
                 <th>Closing Balance</th>
                 <th>Recovery %</th>
@@ -88,15 +90,19 @@
                     </td>
                     
                     <td style="text-align:right; vertical-align: middle;">
-                        ৳{{ number_format($customer['collection']) }}
+                        ৳{{ number_format($customer['collection']-$customer['sales_return']-$customer['waiver']) }}
                     </td>
-                    
+                    <td style="text-align:right; vertical-align: middle;">
+                        ৳{{ number_format($customer['charge']) }}
+                    </td>
+                    <td style="text-align:right; vertical-align: middle;">
+                        ৳{{ number_format($customer['waiver']) }}
+                    </td>
                     <td style="text-align:right; vertical-align: middle;">
                         <span style="color:{{ $customer['due'] >= 0 ? '#dc3545' : '#28a745' }};">
                             ৳{{ number_format($customer['due']) }}
                         </span>
-                    </td>
-                    
+                    </td> 
                     <td style="text-align:right; vertical-align: middle;">
                         <strong style="color:{{ $customer['closing_balance'] >= 0 ? '#dc3545' : '#28a745' }};">
                             ৳{{ number_format($customer['closing_balance']) }}
@@ -109,7 +115,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="10" style="text-align:center;padding:20px;font-style:italic;">
+                    <td colspan="11" style="text-align:center;padding:20px;font-style:italic;">
                         No records found matching the selected filters
                     </td>
                 </tr>
@@ -134,7 +140,13 @@
                         <strong>৳{{ number_format($totals['total_sales_return']) }}</strong>
                     </td>
                     <td style="text-align:right;font-size:12px;">
-                        <strong>৳{{ number_format($totals['total_collection']) }}</strong>
+                        <strong>৳{{ number_format($totals['total_collection'] - $totals['total_sales_return']-$totals['total_waiver']) }}</strong>
+                    </td>
+                    <td style="text-align:right;font-size:12px;">
+                        <strong>৳{{ number_format($totals['total_charge']) }}</strong>
+                    </td>
+                     <td style="text-align:right;font-size:12px;">
+                        <strong>৳{{ number_format($totals['total_waiver']) }}</strong>
                     </td>
                     <td style="text-align:right;color:#dc3545;font-size:12px;">
                         <strong>৳{{ number_format($totals['total_due']) }}</strong>

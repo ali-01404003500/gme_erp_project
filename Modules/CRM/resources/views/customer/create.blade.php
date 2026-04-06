@@ -186,7 +186,7 @@
                                             </div>
                                             <div class="form-group col-md-4 mb-25">
                                                 <label for="profession"
-                                                    class="color-dark fs-14 fw-500 align-center">Alternative Contact Number</label>
+                                                    class="color-dark fs-14 fw-500 align-center">Contact Number (SMS)</label>
                                                 <input type="text"
                                                     class="form-control ip-gray radius-xs b-light px-15"
                                                     name="contact_for_sms" id="contact_for_sms"
