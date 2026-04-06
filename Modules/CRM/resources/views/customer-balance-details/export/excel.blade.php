@@ -90,7 +90,7 @@
                     </td>
                     
                     <td style="text-align:right; vertical-align: middle;">
-                        ৳{{ number_format($customer['collection']-$customer['sales_return']) }}
+                        ৳{{ number_format($customer['collection']-$customer['sales_return']-$customer['waiver']) }}
                     </td>
                     <td style="text-align:right; vertical-align: middle;">
                         ৳{{ number_format($customer['charge']) }}
@@ -140,7 +140,7 @@
                         <strong>৳{{ number_format($totals['total_sales_return']) }}</strong>
                     </td>
                     <td style="text-align:right;font-size:12px;">
-                        <strong>৳{{ number_format($totals['total_collection'] - $totals['total_sales_return']) }}</strong>
+                        <strong>৳{{ number_format($totals['total_collection'] - $totals['total_sales_return']-$totals['total_waiver']) }}</strong>
                     </td>
                     <td style="text-align:right;font-size:12px;">
                         <strong>৳{{ number_format($totals['total_charge']) }}</strong>
