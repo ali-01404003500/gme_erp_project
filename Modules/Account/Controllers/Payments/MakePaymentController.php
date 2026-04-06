@@ -192,9 +192,17 @@ class MakePaymentController extends Controller
             case 'supplier':
                 $data['accounts'] = Supplier::where('status', '1')->select('id', 'company_name as name')->get();
                 break;
+  
             case 'customer':
-                $data['accounts'] = Customer::where('status', '2')->select('id', 'company_name as name')->get();
-                break;
+                $data['accounts'] = Customer::activeCustomers()->select('id', 'company_name', 'company_place_id')->with('area')->get()
+                    ->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->company_name.' - '.$item->area?->area, // alias here
+                        ];
+                    });
+                break; 
+
             case 'vendor':
                 $data['accounts'] = Vendor::where('status', '1')->select('id', 'company_name as name')->get();
                 break;
