@@ -410,8 +410,8 @@ class SalesReturnService
             'customer_id' => $customer->id,
             'return_date' => $jsonData['date'] ?? now()->toDateString(),
             'reference_invoice' => $jsonData['invoice_no'] ?? null,
-            'deliveries_id' => 1,
-            'sales_order_id' => 1,
+            'deliveries_id' => $jsonData['invoice_no'] ?? null,
+            'sales_order_id' => $jsonData['invoice_no'] ?? null,
             'total_amount' => 0, // Will be calculated
             'discount' => 0, // Will be calculated
             'net_amount' => 0, // Will be calculated
