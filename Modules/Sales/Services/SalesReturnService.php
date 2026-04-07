@@ -411,7 +411,7 @@ class SalesReturnService
             'return_date' => $jsonData['date'] ?? now()->toDateString(),
             'reference_invoice' => $jsonData['invoice_no'] ?? null,
             'deliveries_id' => '240231',
-            'sales_order_id' => 'SCT-02-SC-01-20250224-USR-000294-SL-00004',
+            'sales_order_id' => '240241',
             'total_amount' => 0, // Will be calculated
             'discount' => 0, // Will be calculated
             'net_amount' => 0, // Will be calculated
