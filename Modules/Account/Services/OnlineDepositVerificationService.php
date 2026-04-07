@@ -102,7 +102,7 @@ class OnlineDepositVerificationService
     {
         /**
          */
-        // dd($onlineDepositVerification->payments);
+         dd($onlineDepositVerification->payments);
         $onlineDepositVerification->transactions()->delete();
 
          
