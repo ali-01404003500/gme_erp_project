@@ -526,8 +526,8 @@ class SalesReturnService
         $mainData['discount'] = $totalDiscount;
         $mainData['net_amount'] = $totalAmount - $totalDiscount;
 
-        if (isset($jsonData['payments']) && is_array($jsonData['payments'])) {
-            foreach ($jsonData['payments'] as $key => $payment) {
+        if (isset($jsonData['payments']['payment_details']) && is_array($jsonData['payments']['payment_details'])) {
+            foreach ($jsonData['payments']['payment_details'] as $key => $payment) { 
                 $paymentDetails['payments_pay_mode'][] = $payment['pay_mode'] ?? null;
                 $paymentDetails['payments_amount'][] = $payment['amount'] ?? 0;
                 $paymentDetails['payments_date'][] = $payment['date'] ?? null;
