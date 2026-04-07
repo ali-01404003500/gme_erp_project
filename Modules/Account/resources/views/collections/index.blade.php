@@ -73,8 +73,8 @@
                                                         value="pending">Pending</option>
                                                     <option {{ request('status') == 'approved' ? 'selected' : '' }}
                                                         value="approved">Approved</option>
-                                                    <option {{ request('status') == 'rejected' ? 'selected' : '' }}
-                                                        value="rejected">Rejected</option>
+                                                    <option {{ request('status') == 'denied' ? 'selected' : '' }}
+                                                        value="denied">Denied</option>
                                                 </select>
                                             </td>
                                             <td colspan="5" class="text-right">
