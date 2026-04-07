@@ -66,11 +66,12 @@ class OnlineDepositVerificationService
 
     public function updateStatus(OnlineDepositVerification $entry, array $data)
     {
-            dd($entry);
+         
         
         try {
             DB::beginTransaction(); // dd($data);
             $entry->update($data);
+               dd($entry,$data);
 
             if($entry->status === 'approved') { 
                 $this->makeDummyTransaction($entry);
