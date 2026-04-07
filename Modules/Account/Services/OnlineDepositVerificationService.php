@@ -68,8 +68,7 @@ class OnlineDepositVerificationService
     {
         
         try {
-            DB::beginTransaction(); 
-            dd($data);
+            DB::beginTransaction(); // dd($data);
             $entry->update($data);
 
             if($entry->status === 'approved') { 

@@ -110,7 +110,7 @@ class OnlineDepositVerificationController extends Controller
         ]);
 
         $entry = OnlineDepositVerification::findOrFail($id);
-
+        dd($entry);
         $this->service->updateStatus($entry, $validated);
 
 
