@@ -66,6 +66,7 @@ class OnlineDepositVerificationService
 
     public function updateStatus(OnlineDepositVerification $entry, array $data)
     {
+            dd($entry);
         
         try {
             DB::beginTransaction(); // dd($data);
