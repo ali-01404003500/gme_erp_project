@@ -80,7 +80,7 @@ class SalesReturnService
         }
 
 
-        /*if (!empty($payments['payments_pay_mode'])) {
+        if (!empty($payments['payments_pay_mode'])) {
             foreach ($payments['payments_pay_mode'] as $key => $payment) {
                 $paymentDetail = $salesReturn->paymentDetails()->create([
                     'pay_mode' => $payments['payments_pay_mode'][$key] ?? null,
@@ -94,7 +94,7 @@ class SalesReturnService
                 ]);
                 $result['make_payment_details'][] = $paymentDetail;
             }
-        }*/
+        }
 
         return $result;
     }
@@ -526,7 +526,7 @@ class SalesReturnService
         $mainData['discount'] = $totalDiscount;
         $mainData['net_amount'] = $totalAmount - $totalDiscount;
 
-       /* if (isset($jsonData['payments']) && is_array($jsonData['payments'])) {
+        if (isset($jsonData['payments']) && is_array($jsonData['payments'])) {
             foreach ($jsonData['payments'] as $key => $payment) {
                 $paymentDetails['payments_pay_mode'][] = $payment['pay_mode'] ?? null;
                 $paymentDetails['payments_amount'][] = $payment['amount'] ?? 0;
@@ -547,7 +547,7 @@ class SalesReturnService
                 $paymentDetails['payments_transaction_id'][] = $payment['transaction_id'] ?? null;
                 $paymentDetails['payments_remark'][] = $payment['remark'] ?? null;
             }
-        }*/
+        }
 
         return [
             'main_data' => $mainData,
