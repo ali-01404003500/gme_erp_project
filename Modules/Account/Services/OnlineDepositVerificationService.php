@@ -114,8 +114,7 @@ class OnlineDepositVerificationService
         $onlineDepositVerification->transactions()->create([
             'account_id' => $onlineDepositVerification->bankAccount->getAccount()->id,
             'balance_type' => 'debit',
-            // 'invoice_no' => $onlineDepositVerification->source->collection_id, 
-            'invoice_no' => 'invoice_not_found',
+            'invoice_no' => $onlineDepositVerification->source->collection_id, 
             'debit_amount' => $onlineDepositVerification->amount,
             'credit_amount' => 0,
             'description' => "Collection through Online Deposit",
@@ -126,8 +125,7 @@ class OnlineDepositVerificationService
         $onlineDepositVerification->transactions()->create([
             'account_id' => $customerReceivableAccount->id,
             'balance_type' => 'credit',
-            // 'invoice_no' => $onlineDepositVerification->source->collection_id, 
-             'invoice_no' => 'invoice_not_found',
+            'invoice_no' => $onlineDepositVerification->source->collection_id, 
             'debit_amount' => 0,
             'credit_amount' => $onlineDepositVerification->amount,
             'description' => "Collection through Online Deposit",
