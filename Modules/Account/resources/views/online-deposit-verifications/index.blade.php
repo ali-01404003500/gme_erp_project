@@ -284,7 +284,7 @@
         $("#charge").val(charge);
 
         // change modal title + button based on status
-        if (status === "pending" || status === "approved") {
+        if (status === "pending" || status === "approved" || status === "verified" ) {
             $("#statusModalTitle").html(
                 '<i class="fas fa-check-circle text-primary"></i> Confirm Online Deposit'
             );
@@ -295,6 +295,7 @@
             $("#statusModalTitle").html(
                 '<i class="fas fa-times-circle text-danger"></i> Confirm Online Deposit Deny'
             );
+
             $("#statusSubmitBtn").removeClass("btn-primary").addClass("btn-danger").html(
                 '<i class="fas fa-times"></i> Confirm Online Deposit Deny'
             );
