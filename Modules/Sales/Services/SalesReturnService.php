@@ -188,7 +188,7 @@ class SalesReturnService
             ]
         );
         $result['return'] = $return;
-        /*foreach ($returnDetails['product_ids'] as $key => $product_id) {
+        foreach ($returnDetails['product_ids'] as $key => $product_id) {
 
             $returnDetail = $return->salesReturnDetails()->where('product_id', $product_id)->first();
 
@@ -218,7 +218,7 @@ class SalesReturnService
                     $result['returnStock'][$returnDetail->id][] = $returnStock;
                 }
             }
-        }*/
+        }
         $this->makeDummyTransaction($return);
         // dd ($result, $result['return']->transactions);
         DB::commit();
@@ -401,17 +401,17 @@ class SalesReturnService
             $salerOrder = SalesOrder::where('sales_order_id', $jsonData['invoice_no'])->first();
         }
 
-        // if (!$salerOrder) {
-        //     throw new \Exception("Sales Order not found: " . $jsonData['invoice_no']);
-        // }
+        if (!$salerOrder) {
+            throw new \Exception("Sales Order not found: " . $jsonData['invoice_no']);
+        }
 
         // Prepare main sales return data
         $mainData = [
             'customer_id' => $customer->id,
             'return_date' => $jsonData['date'] ?? now()->toDateString(),
             'reference_invoice' => $jsonData['invoice_no'] ?? null,
-            'deliveries_id' => '240231',
-            'sales_order_id' => '240241',
+            'deliveries_id' => $salerOrder->delivery->id,
+            'sales_order_id' => $salerOrder->id,
             'total_amount' => 0, // Will be calculated
             'discount' => 0, // Will be calculated
             'net_amount' => 0, // Will be calculated
@@ -502,7 +502,7 @@ class SalesReturnService
                 }
 
                 // Auto-load product price if not provided
-                $price = $item['price'];
+                $price = $item['price'] ?? $product->mrp ?? 0;
                 $quantity = $item['quantity'] ?? 1;
                 $unitDiscount = $item['unit_discount'] ?? 0;
                 $totalDiscountForRow = $quantity * $unitDiscount;
@@ -526,8 +526,8 @@ class SalesReturnService
         $mainData['discount'] = $totalDiscount;
         $mainData['net_amount'] = $totalAmount - $totalDiscount;
 
-        if (isset($jsonData['payments']['payment_details']) && is_array($jsonData['payments']['payment_details'])) {
-            foreach ($jsonData['payments']['payment_details'] as $key => $payment) { 
+        if (isset($jsonData['payments']) && is_array($jsonData['payments'])) {
+            foreach ($jsonData['payments'] as $key => $payment) {
                 $paymentDetails['payments_pay_mode'][] = $payment['pay_mode'] ?? null;
                 $paymentDetails['payments_amount'][] = $payment['amount'] ?? 0;
                 $paymentDetails['payments_date'][] = $payment['date'] ?? null;
