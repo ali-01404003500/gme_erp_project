@@ -68,7 +68,8 @@ class OnlineDepositVerificationService
     {
         
         try {
-            DB::beginTransaction(); // dd($data);
+            DB::beginTransaction(); 
+            dd($data);
             $entry->update($data);
 
             if($entry->status === 'approved') { 
@@ -102,7 +103,7 @@ class OnlineDepositVerificationService
     {
         /**
          */
-         dd($onlineDepositVerification->payments);
+        // dd($onlineDepositVerification->payments);
         $onlineDepositVerification->transactions()->delete();
 
          
