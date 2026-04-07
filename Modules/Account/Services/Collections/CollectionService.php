@@ -29,6 +29,10 @@ class CollectionService
             ->when(request()->filled('customer_id'), function ($query) {
                 $query->where('collection_from_type', Customer::class)->where('collection_from_id', request('customer_id'));
             })
+            ->when(request()->filled('status'), function ($query) {
+                $query->where('status', request('status'));
+            })
+            
             ->likeSearch('collection_id')
             ->paginate($limit);
     }
