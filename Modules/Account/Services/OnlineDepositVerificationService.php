@@ -71,7 +71,7 @@ class OnlineDepositVerificationService
         try {
             DB::beginTransaction(); // dd($data);
             $entry->update($data);
-               dd($entry,$data);
+            
 
             if($entry->status === 'approved') { 
                 $this->makeDummyTransaction($entry);
@@ -104,7 +104,7 @@ class OnlineDepositVerificationService
     {
         /**
          */
-        // dd($onlineDepositVerification->payments);
+         dd($onlineDepositVerification);
         $onlineDepositVerification->transactions()->delete();
 
          
