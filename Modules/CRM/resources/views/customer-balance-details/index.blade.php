@@ -213,10 +213,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                       
                                         @forelse($reportData as $index => $customer)
                                             <tr>
                                                 <td class="text-center">{{ $index + 1 }}</td>
-                                                <td>
+                                                {{-- <td>
                                                     <a target="_blank" 
                                                         href="{{ route('account.report.customer-ledger', [
                                                         'account_id' => $customer['account_id'],
@@ -235,9 +236,11 @@
                                                         </span>
                                                     @endif
                                                   
-                                                </td>
-                                                <td class="text-right">
-                                                    ৳{{ number_format($customer['opening_balance']) }}</td>
+                                                </td> --}}
+                                                  <td>  {{ $customer['cusid'] }}</td>
+                                                <td>  {{ $customer['customer_name'] }}</td> 
+                                                {{-- <td class="text-right">
+                                                    ৳{{ number_format($customer['opening_balance']) }}</td> --}}
                                                 <td class="text-right">৳{{ number_format($customer['sales']) }}</td>
                                                 <td class="text-right">৳{{ number_format($customer['sales_return']) }} </td>
                                                 <td class="text-right">৳{{ number_format($customer['collection']-$customer['sales_return']-$customer['waiver']) }}</td>

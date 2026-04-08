@@ -141,10 +141,15 @@ class CustomerBalanceReportController extends Controller
                 continue;
             }
 
+
+            $cusid = Customer::actived()
+            ->where('id', $customerId)
+            ->value('customer_id');
             $row = [
                 'customer_id'      => $customerId,
                 'account_id'       => $aggregated['account_ids'][$customerId]  ?? null,
                 'customer_name'    => $customer->company_name,
+                'cusid'            => $cusid,
                 'address'          => $customer->address,
                 'phone'            => $customer->phone,
                 'has_machine_code' => $aggregated['machine_codes'][$customerId] ?? false,
