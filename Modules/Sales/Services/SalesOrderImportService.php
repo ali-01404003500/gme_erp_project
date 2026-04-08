@@ -436,9 +436,9 @@ class SalesOrderImportService
                         $stockQuantity = $stock['quantity'] ?? 1;
 
                         //if any of this null thow error
-                        // if (empty($batchNo) || !in_array($stockType, ['lot', 'serial'])) {
-                        //     throw new Exception('Invalid stock details');
-                        // }
+                        if (empty($batchNo) || !in_array($stockType, ['lot', 'serial'])) {
+                            throw new Exception('Invalid stock details');
+                        }
 
                         if ($stockType === 'lot') {
                             $deliveryStockDetails['lot_no'][$productId][] = $batchNo;
