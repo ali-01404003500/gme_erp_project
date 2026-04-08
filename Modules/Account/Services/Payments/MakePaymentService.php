@@ -1,16 +1,16 @@
 <?php
-
 namespace Modules\Account\Services\Payments;
 
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Account\Models\Account;
 use Modules\Account\Models\AccountSetup\BankAccount;
 use Modules\Account\Models\Payments\MakePayment;
+use Modules\CRM\Models\Customer\Broker;
+use Modules\CRM\Models\Customer\Customer;
 use Modules\Purchase\Models\Supplier;
 use Modules\Purchase\Models\Vendor;
-use Modules\CRM\Models\Customer\Broker;
-use Modules\Account\Models\Account;
 
 class MakePaymentService
 {
@@ -20,11 +20,10 @@ class MakePaymentService
         return MakePayment::paginate($limit);
     }
 
-
     public function getPaymentIdForPayment()
     {
         try {
-            $today = date('Y-m-d');
+            $today    = date('Y-m-d');
             $authUser = auth()->user()->id;
 
             // Count payments for this user today to determine the serial number
@@ -46,7 +45,6 @@ class MakePaymentService
         }
     }
 
-
     public function store(array $data, $payments = [])
     {
         DB::beginTransaction();
@@ -54,39 +52,37 @@ class MakePaymentService
         $data['payment_id'] = $this->getPaymentIdForPayment();
 
         $payment_to = match ($data['payment_to_type']) {
-            'supplier' => Supplier::find($data['payment_to_id']),
-            'vendor' => Vendor::find($data['payment_to_id']),
-            'broker' => Broker::find($data['payment_to_id']),
+            'supplier'           => Supplier::find($data['payment_to_id']),
+            'vendor'             => Vendor::find($data['payment_to_id']),
+            'broker'             => Broker::find($data['payment_to_id']),
             'petty_cash_expense' => Account::find($data['payment_to_id']),
         };
         // dd($data, $payments);
         $makePayment = MakePayment::create([
-            'payment_id' => $data['payment_id'],
-            'amount' => $data['payments_total_amount'],
-            'advance_amount' => $data['payments_advance_amount'],
-            'date' => $payments['payments_date'][0] ?? now()->format('Y-m-d'),
+            'payment_id'      => $data['payment_id'],
+            'amount'          => $data['payments_total_amount'],
+            'advance_amount'  => $data['payments_advance_amount'],
+            'date'            => $payments['payments_date'][0] ?? now()->format('Y-m-d'),
             'payment_to_type' => get_class($payment_to),
-            'payment_to_id' => $payment_to->id,
-            'status' => $data['status'],
+            'payment_to_id'   => $payment_to->id,
+            'status'          => $data['status'],
         ]);
         $result['payment'] = $makePayment;
-
-
 
         foreach ($payments['payments_pay_mode'] as $key => $payment) {
             // dd($payments);
             $paymentDetail = $makePayment->paymentDetails()->create([
-                'pay_mode' => $payments['payments_pay_mode'][$key] ?? null,
-                'amount' => $payments['payments_amount'][$key] ?? 0,
-                'date' => $payments['payments_date'][$key] ?? null,
-                'bank_id' => $payments['payments_bank_id'][$key] ?? null,
+                'pay_mode'         => $payments['payments_pay_mode'][$key] ?? null,
+                'amount'           => $payments['payments_amount'][$key] ?? 0,
+                'date'             => $payments['payments_date'][$key] ?? null,
+                'bank_id'          => $payments['payments_bank_id'][$key] ?? null,
                 // 'branch_id' => $payments['branch_id'][$key] ?? null,
-                'attachments' => $payments['payments_attachments'][$key] ?? null,
-                'verified' => $payments['payments_verified'][$key] ?? false,
-                'transaction_id' => $payments['payments_transaction_id'][$key] ?? null,
-                'remark' => $payments['payments_remark'][$key] ?? null,
+                'attachments'      => $payments['payments_attachments'][$key] ?? null,
+                'verified'         => $payments['payments_verified'][$key] ?? false,
+                'transaction_id'   => $payments['payments_transaction_id'][$key] ?? null,
+                'remark'           => $payments['payments_remark'][$key] ?? null,
                 'paymentable_type' => get_class($makePayment),
-                'paymentable_id' => $makePayment->id
+                'paymentable_id'   => $makePayment->id,
             ]);
             $result['make_payment_details'][] = $paymentDetail;
         }
@@ -110,23 +106,23 @@ class MakePaymentService
 
         $payment = MakePayment::updateOrCreate(
             [
-                'source_id' => $requisition->id,
+                'source_id'   => $requisition->id,
                 'source_type' => get_class($requisition),
             ],
             [
-                'payment_id' => $data['payment_id'],
-                'amount' => $data['payments_total_amount'],
-                'advance_amount' => $data['payments_advance_amount'],
-                'status' => "pending",
-                'date' => now()->format('Y-m-d'),
+                'payment_id'      => $data['payment_id'],
+                'amount'          => $data['payments_total_amount'],
+                'advance_amount'  => $data['payments_advance_amount'],
+                'status'          => "pending",
+                'date'            => now()->format('Y-m-d'),
                 'payment_to_type' => get_class($requisition->supplier),
-                'payment_to_id' => $requisition->supplier->id,
+                'payment_to_id'   => $requisition->supplier->id,
             ],
         );
 
         $from = match ($data['payment_type']) {
             'supplier' => Supplier::find($data['payment_from']),
-            default => null,
+            default    => null,
         };
         //   dd($from, $data['payment_type'], $data['payment_from']);
 
@@ -152,24 +148,22 @@ class MakePaymentService
         return $payment;
     }
 
-
-
     /**
      * Here is a dummy transaction example
      * | Date       | Account                           | Debit (৳) | Credit (৳) |
      * | ---------- | --------------------------------- | --------- | ---------- |
      * | 2025-08-06 | Accounts Payable - Supplier -1    | 10,000    |            |
      * |            | Cash                              |           | 10,000     |
-     * 
+     *
      * When supplier receive 10,000 with cash, then this will be the transaction
-     * 
+     *
      * | Date       | Account                           | Debit (৳) | Credit (৳) |
      * | ---------- | --------------------------------- | --------- | ---------- |
      * | 2025-08-06 | Accounts Payable - Supplier -1    |           | 10,000     |
      * |            | Cash                              | 10,000    |            |
-     * 
+     *
      * When supplier receive payment for advance, then this will be the transaction
-     * 
+     *
      * | Date       | Account                           | Debit (৳) | Credit (৳) |
      * | ---------- | --------------------------------- | --------- | ---------- |
      * | 2025-08-06 | Advance - Supplier -1             |           | 15,000     |
@@ -193,25 +187,25 @@ class MakePaymentService
         //debit
         if ($payableAccount) {
             $makePayment->transactions()->create([
-                'account_id' => $payableAccount->id,
-                'balance_type' => "debit",
-                'invoice_no' => $makePayment->payment_id,
-                'debit_amount' => $makePayment->amount - $makePayment->advance_amount,
-                'credit_amount' => 0,
-                'description' => "Payment Created. #" . $makePayment->payment_id,
-                'transaction_date' => $makePayment->date
+                'account_id'       => $payableAccount->id,
+                'balance_type'     => "debit",
+                'invoice_no'       => $makePayment->payment_id,
+                'debit_amount'     => $makePayment->amount - $makePayment->advance_amount,
+                'credit_amount'    => 0,
+                'description'      => "Payment Created. #" . $makePayment->payment_id,
+                'transaction_date' => $makePayment->date,
             ]);
         }
 
         if ($makePayment->advance_amount > 0 && $advanceAccount) {
             $makePayment->transactions()->create([
-                'account_id' => $advanceAccount->id,
-                'balance_type' => "debit",
-                'invoice_no' => $makePayment->payment_id,
-                'debit_amount' => $makePayment->advance_amount,
-                'credit_amount' => 0,
-                'description' => "Payment Created. #" . $makePayment->payment_id,
-                'transaction_date' => $makePayment->date
+                'account_id'       => $advanceAccount->id,
+                'balance_type'     => "debit",
+                'invoice_no'       => $makePayment->payment_id,
+                'debit_amount'     => $makePayment->advance_amount,
+                'credit_amount'    => 0,
+                'description'      => "Payment Created. #" . $makePayment->payment_id,
+                'transaction_date' => $makePayment->date,
 
             ]);
         }
@@ -222,26 +216,26 @@ class MakePaymentService
                 if ($payment->pay_mode == 'AIT') {
                     $aitPyableAccount = Account::where('account_number', '201201')->first();
                     $makePayment->transactions()->create([
-                        'account_id' => $aitPyableAccount->id,
-                        'balance_type' => "credit",
-                        'invoice_no' => $makePayment->payment_id,
-                        'debit_amount' => 0,
-                        'credit_amount' => $payment->amount,
-                        'description' => "Payment Created. #" . $makePayment->payment_id,
-                        'transaction_date' => $makePayment->date
+                        'account_id'       => $aitPyableAccount->id,
+                        'balance_type'     => "credit",
+                        'invoice_no'       => $makePayment->payment_id,
+                        'debit_amount'     => 0,
+                        'credit_amount'    => $payment->amount,
+                        'description'      => "Payment Created. #" . $makePayment->payment_id,
+                        'transaction_date' => $makePayment->date,
                     ]);
                 }
                 continue;
             }
             if ($payment->bank) {
                 $makePayment->transactions()->create([
-                    'account_id' => $payment->bank->getAccount()->id,
-                    'balance_type' => "credit",
-                    'invoice_no' => $makePayment->payment_id,
-                    'debit_amount' => 0,
-                    'credit_amount' => $payment->amount,
-                    'description' => "Payment Created. #" . $makePayment->payment_id,
-                    'transaction_date' => $makePayment->date
+                    'account_id'       => $payment->bank->getAccount()->id,
+                    'balance_type'     => "credit",
+                    'invoice_no'       => $makePayment->payment_id,
+                    'debit_amount'     => 0,
+                    'credit_amount'    => $payment->amount,
+                    'description'      => "Payment Created. #" . $makePayment->payment_id,
+                    'transaction_date' => $makePayment->date,
                 ]);
             }
             // dd($payment->bank->getAccount());
@@ -255,22 +249,31 @@ class MakePaymentService
     {
         DB::beginTransaction();
 
-        $payment_to = match ($data['payment_to_type']) {
-            'supplier' => Supplier::find($data['payment_to_id']),
-            'vendor' => Vendor::find($data['payment_to_id']),
-            'petty_cash_expense' => Account::find($data['payment_to_id']),
-            default => null
+        // $payment_to = match ($data['payment_to_type']) {
+        //     'supplier'           => Supplier::find($data['payment_to_id']),
+        //     'vendor'             => Vendor::find($data['payment_to_id']),
+        //     'petty_cash_expense' => Account::find($data['payment_to_id']),
+        //     default              => null
 
+        // };
+
+        $payment_to = match ($data['payment_to_type']) {
+            'customer'           => Customer::find($data['payment_to_id']),
+            'supplier'           => Supplier::find($data['payment_to_id']),
+            'vendor'             => Vendor::find($data['payment_to_id']),
+            'broker'             => Broker::find($data['payment_to_id']),
+            'petty_cash_expense' => Account::find($data['payment_to_id']),
+            default              => null
         };
         // dd($payment_to);
 
         $updateData = [
-            'amount' => $data['payments_total_amount'],
-            'advance_amount' => $data['payments_advance_amount'],
-            'date' => $payments['payments_date'][0] ?? null ?? now()->format('Y-m-d'),
+            'amount'          => $data['payments_total_amount'],
+            'advance_amount'  => $data['payments_advance_amount'],
+            'date'            => $payments['payments_date'][0] ?? null ?? now()->format('Y-m-d'),
             'payment_to_type' => get_class($payment_to),
-            'payment_to_id' => $payment_to->id,
-            'status' => $data['status'],
+            'payment_to_id'   => $payment_to->id,
+            'status'          => $data['status'],
         ];
 
         // Handle verification and approval tracking
@@ -290,16 +293,16 @@ class MakePaymentService
 
         foreach ($payments['payments_pay_mode'] as $key => $payment) {
             $makePayment->paymentDetails()->create([
-                'pay_mode' => $payments['payments_pay_mode'][$key] ?? null,
-                'amount' => $payments['payments_amount'][$key] ?? 0,
-                'date' => $payments['payments_date'][$key] ?? null,
-                'bank_id' => $payments['payments_bank_id'][$key] ?? null,
-                'attachments' => $payments['payments_attachments'][$key] ?? null,
-                'verified' => $payments['payments_verified'][$key] ?? false,
-                'transaction_id' => $payments['payments_transaction_id'][$key] ?? null,
-                'remark' => $payments['payments_remark'][$key] ?? null,
+                'pay_mode'         => $payments['payments_pay_mode'][$key] ?? null,
+                'amount'           => $payments['payments_amount'][$key] ?? 0,
+                'date'             => $payments['payments_date'][$key] ?? null,
+                'bank_id'          => $payments['payments_bank_id'][$key] ?? null,
+                'attachments'      => $payments['payments_attachments'][$key] ?? null,
+                'verified'         => $payments['payments_verified'][$key] ?? false,
+                'transaction_id'   => $payments['payments_transaction_id'][$key] ?? null,
+                'remark'           => $payments['payments_remark'][$key] ?? null,
                 'paymentable_type' => get_class($makePayment),
-                'paymentable_id' => $makePayment->id
+                'paymentable_id'   => $makePayment->id,
             ]);
         }
 
@@ -323,7 +326,6 @@ class MakePaymentService
         return MakePayment::findOrFail($id);
     }
 
-
     /**
      * Store a new payment from a json file
      *
@@ -334,7 +336,7 @@ class MakePaymentService
     public function storeFromJsonFile()
     {
         $jsonFile = storage_path('app/json_formats/' . Str::snake(request()->input('name')) . '.json');
-        if (!file_exists($jsonFile)) {
+        if (! file_exists($jsonFile)) {
             file_put_contents($jsonFile, json_encode([]));
         }
         $data = json_decode(file_get_contents($jsonFile), true);
@@ -350,13 +352,13 @@ class MakePaymentService
         if (empty($data)) {
             return response()->json([
                 'success' => false,
-                'message' => 'No data provided.'
+                'message' => 'No data provided.',
             ], 422);
         }
 
         DB::beginTransaction();
         $savedCount = 0;
-        $errors = [];
+        $errors     = [];
 
         // Support both single object and array of objects
         $items = isset($data[0]) ? $data : [$data];
@@ -365,7 +367,7 @@ class MakePaymentService
         foreach ($items as $index => $item) {
             try {
                 $mappedData = $this->mapJson($item);
-                $result[] = $this->store($mappedData['data'], $mappedData['payments']);
+                $result[]   = $this->store($mappedData['data'], $mappedData['payments']);
                 // dd($mappedData);
                 $savedCount++;
             } catch (\Exception $e) {
@@ -384,11 +386,11 @@ class MakePaymentService
         }
 
         return response()->json([
-            'success' => empty($errors) || $savedCount > 0,
-            'message' => $message,
+            'success'     => empty($errors) || $savedCount > 0,
+            'message'     => $message,
             'saved_count' => $savedCount,
             'error_count' => count($errors),
-            'errors' => $errors
+            'errors'      => $errors,
         ], empty($errors) ? 200 : 207); // 207 Multi-Status if partial success
     }
 
@@ -397,11 +399,11 @@ class MakePaymentService
      */
     public function mapJson(array $jsonData): array
     {
-        $paymentToType = $jsonData['payment_to_type'];
+        $paymentToType    = $jsonData['payment_to_type'];
         $paymentToNameKey = 'payment_to_' . $paymentToType;
-        $paymentToName = $jsonData[$paymentToNameKey] ?? null;
+        $paymentToName    = $jsonData[$paymentToNameKey] ?? null;
 
-        if (!$paymentToName) {
+        if (! $paymentToName) {
             throw new \Exception("The key '{$paymentToNameKey}' is missing from the JSON data.");
         }
 
@@ -418,50 +420,48 @@ class MakePaymentService
             $totalAmount += $payment['amount'] ?? 0;
         }
 
-        $data = [
-            'payment_to_type' => $paymentToType,
-            'payment_to_id' => $paymentTo->id,
-            'payments_total_amount' => $totalAmount,
+        $data  = [
+            'payment_to_type'         => $paymentToType,
+            'payment_to_id'           => $paymentTo->id,
+            'payments_total_amount'   => $totalAmount,
             'payments_advance_amount' => $jsonData['payments_advance_amount'] ?? 0,
-            'status' => $jsonData['status'] ?? 'pending',
+            'status'                  => $jsonData['status'] ?? 'pending',
         ];
 
         $payments = [
-            'payments_pay_mode' => [],
-            'payments_bank_id' => [],
-            'payments_branch_id' => [],
-            'payments_emi_id' => [],
+            'payments_pay_mode'       => [],
+            'payments_bank_id'        => [],
+            'payments_branch_id'      => [],
+            'payments_emi_id'         => [],
             'payments_transaction_id' => [],
-            'payments_date' => [],
-            'payments_amount' => [],
-            'payments_attachments' => [],
-            'payments_verified' => [],
-            'payments_remark' => [],
+            'payments_date'           => [],
+            'payments_amount'         => [],
+            'payments_attachments'    => [],
+            'payments_verified'       => [],
+            'payments_remark'         => [],
         ];
 
         foreach ($jsonData['payments'] ?? [] as $payment) {
             $bankId = null;
-            if (!empty($payment['bank_name'])) {
-                $bank = BankAccount::where('account_name', $payment['bank_name'])->first();
+            if (! empty($payment['bank_name'])) {
+                $bank   = BankAccount::where('account_name', $payment['bank_name'])->first();
                 $bankId = $bank ? $bank->id : null;
             }
 
-            $payments['payments_pay_mode'][] = $payment['payment_mode'];
-            $payments['payments_bank_id'][] = $bankId;
+            $payments['payments_pay_mode'][]       = $payment['payment_mode'];
+            $payments['payments_bank_id'][]        = $bankId;
             $payments['payments_transaction_id'][] = $payment['transaction_id'] ?? null;
-            $payments['payments_date'][] = $payment['date'] ?? now()->toDateString();
-            $payments['payments_amount'][] = $payment['amount'] ?? 0;
-            $payments['payments_attachments'][] = $payment['attachment'] ?? null;
-            $payments['payments_remark'][] = $payment['remark'] ?? null;
-            $payments['payments_verified'][] = false; // Default to not verified
+            $payments['payments_date'][]           = $payment['date'] ?? now()->toDateString();
+            $payments['payments_amount'][]         = $payment['amount'] ?? 0;
+            $payments['payments_attachments'][]    = $payment['attachment'] ?? null;
+            $payments['payments_remark'][]         = $payment['remark'] ?? null;
+            $payments['payments_verified'][]       = false; // Default to not verified
         }
 
         return [
-            'data' => $data,
+            'data'     => $data,
             'payments' => $payments,
         ];
     }
-
-
 
 }

@@ -1,90 +1,39 @@
 <?php
+
 namespace Modules\HRMS\Models;
 
 use App\Models\User;
+use App\Traits\AutoCreateUpdateAndHistory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\HRMS\Models\Employee;
-
 class SalarySignatory extends Model
 {
+    use HasFactory, AutoCreateUpdateAndHistory;
 
-    use App\Traits\AutoCreateUpdateAndHistory;
-    use Illuminate\Database\Eloquent\Factories\HasFactory;
-    use Illuminate\Database\Eloquent\Model;
-    use Illuminate\Database\Eloquent\Relations\BelongsTo;
-    use Illuminate\Database\Eloquent\Relations\HasMany;
-    use Illuminate\Database\Eloquent\SoftDeletes;
-    use Modules\HRMS\Models\Employee;
-    class SalarySignatory extends Model
+    protected $table = 'salary_signatories';
+
+    protected $fillable = [
+        'employee_id',  
+        'role_name',
+        'signatory_tag', 
+        'approver_level',
+        'status',
+        'description',
+    ];
+
+    protected $casts = [
+        'approver_level'  => 'string',
+        'status' => 'string',
+    ];
+
+
+    public function employee()
     {
-        use HasFactory, AutoCreateUpdateAndHistory;
-
-        protected $table = 'salary_signatories';
-
-        protected $fillable = [
-            'employee_id',
-
-            'signatory_tag',
-            'level',
-
-            'role_name',
-            'signatory_tag',
-            'approver_level',
-
-            'status',
-            'description',
-        ];
-
-        protected $casts = [
-
-            'level'          => 'integer',
-
-            'approver_level' => 'string',
-
-            'status'         => 'string',
-        ];
-
-        public function employee(): BelongsTo
-        {
-            return $this->belongsTo(User::class, 'employee_id');
-        }
-
-        public function approvalDetails(): HasMany
-        {
-            return $this->hasMany(SalaryApprovalDetail::class);
-        }
-
-        // Scopes
-        public function scopeActive($query)
-        {
-            return $query->where('status', 'active');
-        }
-
-        public function scopeOrderedByLevel($query)
-        {
-            return $query->orderBy('level', 'asc');
-        }
-
-        // Get all active signatories
-        public static function getActiveSignatories()
-        {
-            return self::active()->orderedByLevel()->get();
-        }
-
-        // Get next level signatory
-        public static function getNextLevelSignatory($currentLevel)
-        {
-            return self::active()
-                ->where('level', '>', $currentLevel)
-                ->orderBy('level', 'asc')
-                ->first();
-        }
-
-        public function employee()
-        {
-            return $this->belongsTo(Employee::class, 'employee_id');
-        }
-
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
+  
+}
