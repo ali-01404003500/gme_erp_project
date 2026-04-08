@@ -47,7 +47,7 @@ class SalesReturnService
 
         // Generate license number with the appropriate format
         $licenseNumber = sprintf(
-            'SCT-%02d-SC-%02d-%s-USR-%06d-PR-%06d',
+            'SCT-%02d-SC-%02d-%s-USR-%06d-SR-%06d',
             $authUserBranch,
             $authUserBranchType,
             date('Ymd'),

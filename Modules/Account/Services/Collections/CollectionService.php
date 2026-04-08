@@ -29,6 +29,10 @@ class CollectionService
             ->when(request()->filled('customer_id'), function ($query) {
                 $query->where('collection_from_type', Customer::class)->where('collection_from_id', request('customer_id'));
             })
+            ->when(request()->filled('status'), function ($query) {
+                $query->where('status', request('status'));
+            })
+            
             ->likeSearch('collection_id')
             ->paginate($limit);
     }
@@ -263,7 +267,7 @@ class CollectionService
                             'cheque_no' => $payment->transaction_id,
                             'cheque_date' => $payment->date,
                             'amount' => $payment->amount,
-                            "document" => $payment->attachments,
+                            'document' => is_array($payment->attachments) ? json_encode($payment->attachments)  : json_encode([$payment->attachments]),
                             "remarks" => $payment->remarks,
                         ]);
                         $payment->load('chequeVerification');
@@ -287,7 +291,7 @@ class CollectionService
                             'head_id' => $payment->bank_id,  
                             'deposit_date' => $payment->date,
                             'amount' => $payment->amount,
-                            "document" => $payment->attachments,
+                            'document' => is_array($payment->attachments) ? json_encode($payment->attachments)  : json_encode([$payment->attachments]),
                             "remarks" => $payment->remarks,
                         ]);
                         $payment->load('onlineDepositVerification');

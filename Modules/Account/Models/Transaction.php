@@ -216,7 +216,7 @@ class Transaction extends Model
         $id = $model->id;
 
         $route = match ($type) {
-            Collection::class, 'InvoiceWiseCollection' => 'account.collections.collections.show',
+            InvoiceWiseCollection::class, 'InvoiceWiseCollection' => 'account.collections.collections.show',
             SalesOrder::class, 'Sale' => 'sales.sales-orders.show',
             Requisition::class, 'Purchase' => 'purchase.requisitions.show',
             OfficePurchase::class => 'purchase.offices.show',
@@ -224,11 +224,12 @@ class Transaction extends Model
             PurchaseReturn::class => 'purchase.returns.print',
             MakePayment::class, 'Payment' => 'account.payments.make-payments.show',
             InvoiceWisePayment::class => 'account.payments.invoice-wise-payments.show',
-            InvoiceWiseCollection::class => 'account.collections.invoice-wise-collections.show',
+            Collection::class => 'account.collections.invoice-wise-collections.show',
+            MFSVerification::class => 'account.collections.invoice-wise-collections.show',
             Delivery::class =>  'sales.deliveries.show' ,
             GeneratedVendorBill::class => 'account.vendor-bills.generated-vendor-bills.show',
             SalesReturn::class => 'sales.sales-returns.show',
-
+ 
 
             default => null,
         };

@@ -281,7 +281,7 @@
 
                                             if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='debit')
                                                 $particulars = 'MFS Charge';
-                                            else if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='credit')
+                                            else if($transaction->transactionable_type=='Modules\Account\Models\Collections\Collection' && $transaction->balance_type=='credit') 
                                                 $particulars = 'Collection';
                                             else if($transaction->transactionable_type=='Modules\Sales\Models\ShipmentVerify' && $transaction->balance_type=='debit')
                                                 $particulars = 'Courier Charge'; 
