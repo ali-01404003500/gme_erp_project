@@ -6,12 +6,7 @@
     <div class="container-fluid mt-4">
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                <h5 class="mb-0 text-primary fw-bold">Attendance Policy</h5>
-                @if (hasPermission('hrm.attendance-policies.create'))
-                    <a href="{{ route('hrm.settings.attendance-policies.create') }}" class="btn btn-primary shadow-sm">
-                        <i class="fas fa-plus"></i> Add new
-                    </a>
-                @endif
+                <h5 class="mb-0 text-primary fw-bold">Attendance Policy</h5> 
             </div>
             <div class="card-body">
                 <div class="row mb-3">
