@@ -144,7 +144,7 @@ class CustomerBalanceReportController extends Controller
             $row = [
                 'customer_id'      => $customerId,
                 'account_id'       => $aggregated['account_ids'][$customerId]  ?? null,
-                 'customer_name'    => $customer->customer_id, 
+                'customer_name'    => $customer->company_name,
                 'address'          => $customer->address,
                 'phone'            => $customer->phone,
                 'has_machine_code' => $aggregated['machine_codes'][$customerId] ?? false,
@@ -190,7 +190,7 @@ class CustomerBalanceReportController extends Controller
     private function fetchCustomers(array $filters): \Illuminate\Support\Collection
     {
         $query = Customer::actived()
-            ->select('id', 'company_name', 'phone', 'address', 'company_place_id','customer_id')->with('area');
+            ->select('id', 'company_name', 'phone', 'address', 'company_place_id')->with('area');
             // company_place_id is the FK; eager-loading area prevents lazy hits
             // inside whereHas callbacks and any downstream blade rendering.
 
