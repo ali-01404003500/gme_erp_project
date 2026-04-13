@@ -50,6 +50,7 @@ class AttendancePolicyController extends Controller
             'name'           => 'required|string|max:255',
             'effective_from' => 'required|date',
         ]);
+ 
 
         try {
             
