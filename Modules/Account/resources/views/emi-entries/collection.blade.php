@@ -36,7 +36,7 @@
                                 <!-- Filters -->
                                 <div class="d-flex align-items-center mb-4">
                                     <div class="form-group">
-                                        <select id="customer_id" class="form-control tom-select" style="width: 300px;">
+                                        <select id="customer_id" class="form-control tom-select" style="width: 1000px;">
                                             <option value="">-- Select Customer --</option>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}">{{ $customer->company_name }} - {{ $customer->address}} ({{ $customer->phone }})</option>
@@ -1153,10 +1153,10 @@
     function saveEmiCollection() {
         const total = parseFloat($('input[name="payments_total_amount"]').val()) || 0;
         const payable = parseFloat($('input[name="payments_payable_amount"]').val()) || 0;
-        if (total !== payable) {
+        /*if (total !== payable) {
             toastr.error('Total payment amount must equal the payable amount to save.');
             return;
-        }
+        }*/
 
         const formData = new FormData();
         

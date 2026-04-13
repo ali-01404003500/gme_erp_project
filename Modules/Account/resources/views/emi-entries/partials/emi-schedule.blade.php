@@ -25,6 +25,8 @@
                         <span class="badge badge-round bg-primary">Due</span>
                     @elseif ($detail->status == 'processing')
                         <span class="badge badge-round bg-info">Processing</span>
+                    @elseif ($detail->status == 'partially_paid')
+                        <span class="badge badge-round bg-info">Partially Paid</span>
                     @elseif ($detail->status == 'settlement_processing')
                         <span class="badge badge-round bg-warning">Settlement Processing</span>
                     @elseif ($detail->status == 'rescheduled')
@@ -44,8 +46,8 @@
                 </td>
                 <td>{{ number_format($detail->emi_amount) }}</td>
                 <td>
-                    @if (in_array($detail->status, ['paid','early_settlement_paid']))
-                        {{ number_format($detail->emi_amount) }}
+                    @if (in_array($detail->status, ['paid','early_settlement_paid','partially_paid']))
+                        {{ number_format($detail->paid_amount) }}
                     @else
                         0.00
                     @endif
@@ -77,7 +79,7 @@
                                 data-emi-detail-id="{{ $detail->id }}">
                                 Rollback
                             </button>
-                        @elseif ($detail->status == 'paid')
+                        @elseif ($detail->status == 'paid' || $detail->status == 'partially_paid')
                             <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}" 
                                target="_blank" class="btn btn-info btn-sm">
                                 Money Receipt

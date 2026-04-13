@@ -166,6 +166,7 @@ class EMIEntryService
     {
         DB::beginTransaction();
         $receipt_no = $this->getReceiptNo();
+        $paymentAmount = 0;
 
         $emiEntry = EMIEntryDetail::findOrFail($validated['emi_detail_id']);
 
@@ -175,6 +176,7 @@ class EMIEntryService
         ]);
         $emiEntry->payments()->delete();
         foreach ($validated['payments'] as $payment) {
+            $paymentAmount += $payment['amount'];
             $emiEntry->payments()->create([
                 'pay_mode' => $payment['pay_mode'],
                 'bank_id' => $payment['bank_id'] ?? null,
@@ -186,6 +188,10 @@ class EMIEntryService
                 'remarks' => $payment['remark'],
             ]);
         }
+        $emiEntry->update([ 
+            'paid_amount' => $emiEntry->paid_amount + $paymentAmount,
+        ]);
+
 
         $collectionData = [
             'payments_total_amount' => $validated['payments_total_amount'],

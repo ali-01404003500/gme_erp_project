@@ -287,7 +287,7 @@
                                 <section class="requisition-info" style="display: flex; justify-content: space-between;">
                                     <div class="left" style="width: 70%;">
                                         <p>IN WORD :
-                                            {{ convert_number($emiEntryDetail->emi_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('emi_amount')) }}
+                                            {{ convert_number($emiEntryDetail->paid_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('paid_amount')) }}
                                             Taka Only</p>
                                     </div>
                                     <div class="right" style="width: 30%;">
@@ -296,7 +296,7 @@
                                                 <td style="border: none!important;">Grand Total</td>
                                                 <td style="border: none!important;">:</td>
                                                 <td style="border: none!important; text-align: end;">
-                                                    <strong>{{ number_format($emiEntryDetail->emi_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('emi_amount'), 2) }}</strong>
+                                                    <strong>{{ number_format($emiEntryDetail->paid_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('paid_amount'), 2) }}</strong>
                                                 </td>
                                             </tr>
                                         </table>

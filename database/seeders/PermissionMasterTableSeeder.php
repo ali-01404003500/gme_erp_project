@@ -99,6 +99,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'crm.daily-credit-calls',
                 'parent_key' => 'crm',
             ],
+            
             //customer-types
             [
                 'title' => 'Customer Types',

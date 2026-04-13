@@ -336,7 +336,7 @@ class PermissionTableSeed extends Seeder
 
             [
                 'name' => 'Daily Credit Call List',
-                'slug' => 'crm.daily-Credit-calls.index',
+                'slug' => 'crm.daily-credit-calls.index',
                 'description' => 'Daily Credit Call list permission',
                 'key' => 'crm.daily-credit-calls'
             ],

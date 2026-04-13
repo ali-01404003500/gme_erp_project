@@ -540,9 +540,17 @@ class CollectionService
             if ($collection->source_type == EMIEntryDetail::class) {
                 $emiEntryDetail = EMIEntryDetail::find($collection->source_id);
                 if ($emiEntryDetail) {
-                    $emiEntryDetail->update([
-                        'status' => 'paid',
-                    ]);
+                    if(  $emiEntryDetail->emi_amount == $emiEntryDetail->paid_amount){
+                        $emiEntryDetail->update([
+                            'status' => 'paid',
+                        ]);
+                    }
+                    else{
+                        $emiEntryDetail->update([
+                            'status' => 'partially_paid',
+                        ]);
+                    }
+                   
                 }
             }
             if ($collection->source_type == EMIEntry::class) {
