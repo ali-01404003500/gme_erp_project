@@ -252,6 +252,7 @@ class AttendanceService
     public function calculateAttendanceStatus(array $data)
     {
         $policy = AttendancePolicy::where('effective_from', '<=', $data['date'])
+            ->where('status', 1)
             ->orderBy('effective_from', 'desc')
             ->orderBy('id', 'desc')
             ->first();

@@ -91,6 +91,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::put('bills-approved/{id}', [BillsAndAllowanceController::class, 'approved'])->name('bills.approved');
     //======== attendance Routes ========
     Route::resource('attendances', AttendanceController::class);
+    Route::post('attendances/single-store', [AttendanceController::class, 'singleStore'])->name('attendances.singleStore'); 
+
     Route::resource('attendance-policies', AttendancePolicyController::class);
     //======== leave Routes ========
     Route::resource('leave-types', LeaveTypeController::class)->except(['show', 'edit', 'create']);

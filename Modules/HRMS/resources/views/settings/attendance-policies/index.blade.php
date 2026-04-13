@@ -47,6 +47,7 @@
                                 <th>Ignore OT & Deduction</th>
                                 <th>Exclude From Att. Reports</th>
                                 <th>Discard Att. On Weekend</th>
+                                <th>Status</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -61,10 +62,11 @@
                                     <td>{{ $policy->ignore_ot_deduction ? 'Yes' : 'No' }}</td>
                                     <td>{{ $policy->exclude_from_reports ? 'Yes' : 'No' }}</td>
                                     <td>{{ $policy->discard_weekend ? 'Yes' : 'No' }}</td>
+                                    <td>{{ $policy->status === 1 ? 'Active' : 'Inactive' }}</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center align-items-center">
 
-                                            @if (hasPermission('hrm.attendance-policies.edit'))
+                                            @if (hasPermission('hrm.attendance-policies.update'))
                                                 <a href="{{ route('hrm.attendance-policies.edit', $policy->id) }}"
                                                     class="text-muted me-3" title="Edit">
                                                     <i class="fas fa-pen"></i>
