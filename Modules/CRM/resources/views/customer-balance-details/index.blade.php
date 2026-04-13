@@ -217,7 +217,23 @@
                                             <tr>
                                                 <td class="text-center">{{ $index + 1 }}</td>
                                                 <td>
-                                                     {{ $customer['customer_name'] }}
+                                                    <a target="_blank" 
+                                                        href="{{ route('account.report.customer-ledger', [
+                                                        'account_id' => $customer['account_id'],
+                                                        'from' => '2021-10-05',
+                                                        'to' => date('Y-m-d'),
+                                                        ]) }}">
+                                                        {{ $customer['customer_name'] }}
+                                                    </a>
+                                                    <br>
+                                                    <small class="text-muted">{!! wordwrap($customer['address'], 60, '<br>', true) !!}</small>
+                                                     <br>
+                                                    <small class="text-muted">{{ $customer['phone'] ?? 'N/A' }}</small>
+                                                    @if ($customer['has_machine_code'])
+                                                        <span class="badge badge-round badge-success badge-sm ml-2">
+                                                            <i class="las la-key"></i> Machine Code
+                                                        </span>
+                                                    @endif
                                                   
                                                 </td>
                                                 <td class="text-right">
