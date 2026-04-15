@@ -134,7 +134,7 @@
                                         <td>
                                             @foreach($collection->payments as $payment)
                                                 @if($payment->attachments)
-                                                    <a href="{{ asset($payment->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                                                    <a href="{{ url($payment->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
                                                 @endif
                                             @endforeach
                                         </td>
