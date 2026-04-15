@@ -4,6 +4,12 @@
 @section('description', 'EMI Collection')
 
 @section('content')
+<style>
+.custom-modal {
+    max-width: 60%;
+}
+</style>
+
     <div class="container-fluid">
         <div class="social-dash-wrap">
             <!-- Breadcrumb -->
@@ -36,7 +42,7 @@
                                 <!-- Filters -->
                                 <div class="d-flex align-items-center mb-4">
                                     <div class="form-group">
-                                        <select id="customer_id" class="form-control tom-select" style="width: 300px;">
+                                        <select id="customer_id" class="form-control tom-select" style="width: 1000px;">
                                             <option value="">-- Select Customer --</option>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}">{{ $customer->company_name }} - {{ $customer->address}} ({{ $customer->phone }})</option>
@@ -81,8 +87,8 @@
     </div>
 
     <!-- EMI Collection Modal -->
-    <div class="modal fade" id="emiCollectionModal" tabindex="-1" aria-labelledby="emiCollectionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+    <div class="modal fade" id="emiCollectionModal" tabindex="-1" aria-labelledby="emiCollectionModalLabel" aria-hidden="true"  >
+        <div class="modal-dialog modal-xl custom-modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="emiCollectionModalLabel"><i class="fas fa-money-bill-wave me-2"></i>EMI Collection</h5>
@@ -1153,10 +1159,10 @@
     function saveEmiCollection() {
         const total = parseFloat($('input[name="payments_total_amount"]').val()) || 0;
         const payable = parseFloat($('input[name="payments_payable_amount"]').val()) || 0;
-        if (total !== payable) {
+        /*if (total !== payable) {
             toastr.error('Total payment amount must equal the payable amount to save.');
             return;
-        }
+        }*/
 
         const formData = new FormData();
         

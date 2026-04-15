@@ -6,10 +6,10 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-bold">Edit Attendance Policy: {{ $policy->name }}</h5>
-                <a href="{{ route('hrm.settings.attendance-policies.index') }}" class="btn-close"></a>
+                <a href="{{ route('hrm.attendance-policies.index') }}" class="btn-close"></a>
             </div>
             <div class="card-body">
-                <form action="{{ route('hrm.settings.attendance-policies.update', $policy->id) }}" method="POST">
+                <form action="{{ route('hrm.attendance-policies.update', $policy->id) }}" method="POST">
                     @csrf
                     @method('PUT')
 

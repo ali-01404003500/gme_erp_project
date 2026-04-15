@@ -22,9 +22,11 @@
                 <td>{{ \Carbon\Carbon::parse($detail->emi_date)->format('d-M-Y') }}</td>
                 <td>
                     @if ($detail->status == 'due')
-                        <span class="badge badge-round bg-primary">Due</span>
+                        <span class="badge badge-round bg-danger">Due</span>
                     @elseif ($detail->status == 'processing')
                         <span class="badge badge-round bg-info">Processing</span>
+                    @elseif ($detail->status == 'partially_paid')
+                        <span class="badge badge-round bg-info">Partially Paid</span>
                     @elseif ($detail->status == 'settlement_processing')
                         <span class="badge badge-round bg-warning">Settlement Processing</span>
                     @elseif ($detail->status == 'rescheduled')
@@ -36,7 +38,7 @@
                     @endif
                 </td>
                 <td>
-                    @if (in_array($detail->status, ['paid','early_settlement_paid']))
+                    @if (in_array($detail->status, ['paid','early_settlement_paid','partially_paid']))
                         {{ $detail->updated_at->format('d-M-Y') }}
                     @else
                         -
@@ -44,8 +46,8 @@
                 </td>
                 <td>{{ number_format($detail->emi_amount) }}</td>
                 <td>
-                    @if (in_array($detail->status, ['paid','early_settlement_paid']))
-                        {{ number_format($detail->emi_amount) }}
+                    @if (in_array($detail->status, ['paid','early_settlement_paid','partially_paid']))
+                        {{ number_format($detail->paid_amount) }}
                     @else
                         0.00
                     @endif
@@ -72,16 +74,33 @@
                                 data-emi-detail-id="{{ $detail->id }}">
                                 Make Collection
                             </button>
-                        @elseif ($detail->status == 'processing')
+                        {{-- @elseif ($detail->status == 'processing')
                             <button type="button" class="btn btn-danger btn-sm delete-emi-detail-btn"
                                 data-emi-detail-id="{{ $detail->id }}">
                                 Rollback
-                            </button>
+                            </button> --}}
                         @elseif ($detail->status == 'paid')
                             <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}" 
                                target="_blank" class="btn btn-info btn-sm">
                                 Money Receipt
                             </a>
+                        @elseif ($detail->status == 'partially_paid')
+                           
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-success btn-sm make-collection-btn" 
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#emiCollectionModal" 
+                                    data-emi-detail-id="{{ $detail->id }}">
+                                    Make Collection
+                                </button>
+
+                                <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}" 
+                                target="_blank" class="btn btn-info btn-sm">
+                                    Money Receipt
+                                </a>
+
+                            </div>
+
                         @else
                             <span class="text-muted">—</span>
                         @endif

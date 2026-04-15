@@ -19,7 +19,9 @@ class AttendancePolicyService
 
     public function storePolicy(array $data)
     {
-        AttendancePolicy::updated(['status' => 0]);  
+        /*previous policy inactive */
+        AttendancePolicy::where('status', 1)->update(['status' => 0]);
+    
         return AttendancePolicy::create($this->formatData($data));
     }
 
@@ -45,9 +47,9 @@ class AttendancePolicyService
             'early_out_time'       => $data['early_out_time'] ?? null,
             'break_time'           => $data['break_time'] ?? 0,
             // checkbox settings
-            'ignore_ot_deduction'  => filter_var($data['ignore_ot_deduction'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'exclude_from_reports' => filter_var($data['exclude_from_reports'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'discard_weekend'      => filter_var($data['discard_weekend'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'ignore_ot_deduction'  => filter_var($data['ignore_ot_deduction'] ?? 0, FILTER_VALIDATE_BOOLEAN),
+            'exclude_from_reports' => filter_var($data['exclude_from_reports'] ?? 0, FILTER_VALIDATE_BOOLEAN),
+            'discard_weekend'      => filter_var($data['discard_weekend'] ?? 0, FILTER_VALIDATE_BOOLEAN),
 
             'day_wise_settings'    => $data['days'] ?? [],
         ];

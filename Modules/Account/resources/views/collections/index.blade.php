@@ -65,6 +65,18 @@
                                                     value="{{ request('from_to') }}" autocomplete="off"
                                                     placeholder="Search by Date">
                                             </td>
+                                            <td class="text-center">
+                                                <select name="status" id="status" class="form-control tom-select"
+                                                    data-placeholder="Select Status">
+                                                    <option value=""></option>
+                                                    <option {{ request('status') == 'pending' ? 'selected' : '' }}
+                                                        value="pending">Pending</option>
+                                                    <option {{ request('status') == 'approved' ? 'selected' : '' }}
+                                                        value="approved">Approved</option>
+                                                    <option {{ request('status') == 'denied' ? 'selected' : '' }}
+                                                        value="denied">Denied</option>
+                                                </select>
+                                            </td>
                                             <td colspan="5" class="text-right">
                                                 <div class="btn-group btn-corner">
                                                     <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
@@ -122,7 +134,7 @@
                                         <td>
                                             @foreach($collection->payments as $payment)
                                                 @if($payment->attachments)
-                                                    <a href="{{ asset($payment->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                                                    <a href="{{ url($payment->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
                                                 @endif
                                             @endforeach
                                         </td>

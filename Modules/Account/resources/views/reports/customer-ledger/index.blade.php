@@ -281,13 +281,15 @@
 
                                             if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='debit')
                                                 $particulars = 'MFS Charge';
-                                            else if($transaction->transactionable_type=='Modules\Account\Models\MFSVerification' && $transaction->balance_type=='credit')
+                                            else if($transaction->transactionable_type=='Modules\Account\Models\Collections\Collection' && $transaction->balance_type=='credit') 
                                                 $particulars = 'Collection';
                                             else if($transaction->transactionable_type=='Modules\Sales\Models\ShipmentVerify' && $transaction->balance_type=='debit')
                                                 $particulars = 'Courier Charge'; 
-                                            else if($transaction->transactionable_type==' SalesOrder Modules\Sales\Models\SalesOrder' && $transaction->balance_type=='debit')
+                                            else if($transaction->transactionable_type=='Modules\Sales\Models\SalesOrder' && $transaction->balance_type=='debit')
                                                 $particulars = 'Sales';
- 
+                                            else if($transaction->transactionable_type=='Modules\Account\Models\Collections\Collection' && $transaction->balance_type=='credit' &&  $transaction->description=='Customer Waiver Payment')
+                                                $particulars = 'Waiver';
+
                                         @endphp
 
                                         <tr>

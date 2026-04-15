@@ -17,7 +17,9 @@ class MakePaymentService
 
     public function getAll(int $limit = 20)
     {
-        return MakePayment::paginate($limit);
+        return MakePayment::query()->filterByDateRange('created_at') 
+            ->paginate($limit);
+ 
     }
 
 

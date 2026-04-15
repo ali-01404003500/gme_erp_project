@@ -43,6 +43,7 @@ RUN { \
 RUN { \
     echo "server {"; \
     echo "    listen 8000;"; \
+    echo "    client_max_body_size 1G;";\
     echo "    root /app/public;"; \
     echo "    index index.php;"; \
     echo ""; \

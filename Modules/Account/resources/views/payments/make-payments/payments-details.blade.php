@@ -48,9 +48,10 @@
             <label for="input-amount" class="form-label">Amount</label>
             <input type="number" id="input-amount" class="form-control" placeholder="Amount" step="0.01" min="0">
         </div>
+        
         <div class="col-md-3">
-            <label for="input-file" class="form-label">File</label>
-            <input type="file" id="input-file" class="form-control">
+            <label for="input-file" class="form-label">Files</label>
+            <input type="file" id="input-file" class="form-control" name="images[]" multiple accept="image/*">
         </div>
         <div class="col-md-12 mb-2">
             <label for="input-remark" class="form-label">Remark</label>
@@ -128,7 +129,7 @@
                         <td>
                             <span class="file_name">
                                 @if($payment->attachments)
-                                    <button type="button" onclick="showFile('{{ $payment->attachments }}')"
+                                    <button type="button" onclick="showFiles('{{ $payment->attachments }}')"
                                         class="btn btn-outline-primary btn-sm download-file"><i class="fa fa-eye"></i>
                                         preview</button>
                                 @endif
@@ -196,18 +197,46 @@
 
 @push('script')
     <script>
-        function showFile(url) {
-            // Get the file extension to determine if it's an image
-            const fileExtension = url.split('.').pop().toLowerCase();
-            const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+        // function showFile(url) {
+        //     // Get the file extension to determine if it's an image
+        //     const fileExtension = url.split('.').pop().toLowerCase();
+        //     const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
 
+        //     if (imageExtensions.includes(fileExtension)) {
+        //         // It's an image, show in modal
+        //         $('#full-screen-image').attr('src', url);
+        //         $('#full-screen-modal').modal('show');
+        //     } else {
+        //         // It's not an image, open in new tab
+        //         window.open(url, '_blank');
+        //     }
+        // }
+
+
+        function showFiles(urls) {
+            if (!Array.isArray(urls)) {
+                urls = [urls];
+            }
+
+            let fileExtension = urls[0].split('.').pop().toLowerCase();
+            let imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'];
+
+            // Check if images
             if (imageExtensions.includes(fileExtension)) {
-                // It's an image, show in modal
-                $('#full-screen-image').attr('src', url);
+
+                let html = '';
+
+                urls.forEach(url => {
+                    html += `<img src="${url}" class="img-fluid mb-2" style="max-height:400px;"><br>`;
+                });
+
+                $('#full-screen-image').hide(); // old single image hide
+                $('#full-screen-modal .modal-body').html(html);
+
                 $('#full-screen-modal').modal('show');
+
             } else {
-                // It's not an image, open in new tab
-                window.open(url, '_blank');
+                window.open(urls[0], '_blank');
             }
         }
 
@@ -376,8 +405,10 @@
                 const date = $('#input-date').val();
                 const amount = $('#input-amount').val();
                 const fileInput = $('#input-file')[0];
-                const file = fileInput.files[0];
+                //const file = fileInput.files[0];
+                const files = fileInput.files;
                 const remark = $('#input-remark').val();
+ 
 
                 if (!payMode || !date || !amount || !remark || (!account_id && !['AIT', 'Waiver', 'Waiver Bad Debt'].includes(payMode))) {
                     toastr.error('Please fill up all the required fields');
@@ -402,19 +433,44 @@
 
                 $('#payment-body').append(row);
 
-                if (file) {
-                    uploadFile(file).then(res => {
-                        row.find('.spinner-border').hide();
-                        if (res.path) {
-                            row.find('.attachments').val(res.path);
-                            row.find('.file_name').html(`<button type="button" onclick="showFile('${res.path}')" class="btn btn-outline-primary btn-sm download-file"><i class="fa fa-eye"></i> preview</button>`)
-                        }
+                // if (file) {
+                //     uploadFile(file).then(res => {
+                //         row.find('.spinner-border').hide();
+                //         if (res.path) {
+                //             row.find('.attachments').val(res.path);
+                //             row.find('.file_name').html(`<button type="button" onclick="showFile('${res.path}')" class="btn btn-outline-primary btn-sm download-file"><i class="fa fa-eye"></i> preview</button>`)
+                //         }
+                //     });
+                // }
+                if (files.length > 0) {
+
+                    let uploadedPaths = [];
+
+                    let uploadPromises = Array.from(files).map(file => {
+                        return uploadFile(file).then(res => {
+                            if (res.path) {
+                                uploadedPaths.push(res.path);
+                            }
+                        });
                     });
-                } else {
+
+                    Promise.all(uploadPromises).then(() => {
+
+                        row.find('.spinner-border').hide();
+
+                        // save as JSON or comma separated
+                        row.find('.attachments').val(JSON.stringify(uploadedPaths));
+ 
+                        row.find('.file_name').html(`<button type="button" onclick='showFiles(${JSON.stringify(uploadedPaths)})' class="btn btn-outline-primary btn-sm download-file"><i class="fa fa-eye"></i> preview</button>`)
+
+                    });
+
+                }  
+                 else {
                     row.find('.spinner-border').hide();
                     row.find('.file_name').text('');
                     row.find('.attachments').val('');
-                }
+                } 
 
                 updateTotal();
                 resetInputs();

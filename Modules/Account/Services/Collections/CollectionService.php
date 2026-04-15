@@ -29,6 +29,10 @@ class CollectionService
             ->when(request()->filled('customer_id'), function ($query) {
                 $query->where('collection_from_type', Customer::class)->where('collection_from_id', request('customer_id'));
             })
+            ->when(request()->filled('status'), function ($query) {
+                $query->where('status', request('status'));
+            })
+            
             ->likeSearch('collection_id')
             ->paginate($limit);
     }
@@ -263,7 +267,7 @@ class CollectionService
                             'cheque_no' => $payment->transaction_id,
                             'cheque_date' => $payment->date,
                             'amount' => $payment->amount,
-                            "document" => $payment->attachments,
+                            'document' => is_array($payment->attachments) ? json_encode($payment->attachments)  : json_encode([$payment->attachments]),
                             "remarks" => $payment->remarks,
                         ]);
                         $payment->load('chequeVerification');
@@ -287,7 +291,7 @@ class CollectionService
                             'head_id' => $payment->bank_id,  
                             'deposit_date' => $payment->date,
                             'amount' => $payment->amount,
-                            "document" => $payment->attachments,
+                            'document' => is_array($payment->attachments) ? json_encode($payment->attachments)  : json_encode([$payment->attachments]),
                             "remarks" => $payment->remarks,
                         ]);
                         $payment->load('onlineDepositVerification');
@@ -377,7 +381,7 @@ class CollectionService
                         'amount' => $payment->amount,
                         'debit_amount' => $payment->amount,
                         'credit_amount' => 0,
-                        'description' => 'Collection Payment',
+                        'description' => 'Customer Waiver Payment',
                         'transaction_date' => $collection->collection_date,
                     ]);
 
@@ -391,7 +395,7 @@ class CollectionService
                         'amount' => $payment->amount,
                         'debit_amount' => $payment->amount,
                         'credit_amount' => 0,
-                        'description' => 'Collection Payment',
+                        'description' => 'Customer Waiver Payment',
                         'transaction_date' => $collection->collection_date,
                     ]);
 
@@ -536,9 +540,17 @@ class CollectionService
             if ($collection->source_type == EMIEntryDetail::class) {
                 $emiEntryDetail = EMIEntryDetail::find($collection->source_id);
                 if ($emiEntryDetail) {
-                    $emiEntryDetail->update([
-                        'status' => 'paid',
-                    ]);
+                    if(  $emiEntryDetail->emi_amount == $emiEntryDetail->paid_amount){
+                        $emiEntryDetail->update([
+                            'status' => 'paid',
+                        ]);
+                    }
+                    else{
+                        $emiEntryDetail->update([
+                            'status' => 'partially_paid',
+                        ]);
+                    }
+                   
                 }
             }
             if ($collection->source_type == EMIEntry::class) {

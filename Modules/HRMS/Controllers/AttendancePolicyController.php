@@ -50,15 +50,19 @@ class AttendancePolicyController extends Controller
             'name'           => 'required|string|max:255',
             'effective_from' => 'required|date',
         ]);
+ 
 
         try {
             
             $this->service->storePolicy($request->all());
-            return redirect()->route('hrm.settings.attendance-policies.index')
+            return redirect()->route('hrm.attendance-policies.index')
                 ->with('success', 'Attendance Policy created successfully.');
-        } catch (Exception $e) {
+        }catch (Exception $e) {
             Log::error("Attendance Policy Store Error: " . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Something went wrong while saving.');
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $e->getMessage()); // 👈 actual error show
         }
     }
 
@@ -71,7 +75,7 @@ class AttendancePolicyController extends Controller
             $policy = AttendancePolicy::findOrFail($id);
             return view('HRMS::settings.attendance-policies.edit', compact('policy'));
         } catch (Exception $e) {
-            return redirect()->route('hrm.settings.attendance-policies.index')->with('error', 'Policy not found.');
+            return redirect()->route('hrm.attendance-policies.index')->with('error', 'Policy not found.');
         }
     }
 
@@ -87,7 +91,7 @@ class AttendancePolicyController extends Controller
 
         try {
             $this->service->updatePolicy($id, $request->all());
-            return redirect()->route('hrm.settings.attendance-policies.index')
+            return redirect()->route('hrm.attendance-policies.index')
                 ->with('success', 'Attendance Policy updated successfully.');
         } catch (Exception $e) {
             Log::error("Attendance Policy Update Error: " . $e->getMessage());

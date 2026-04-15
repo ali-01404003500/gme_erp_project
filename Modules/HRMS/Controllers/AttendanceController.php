@@ -101,7 +101,7 @@ class AttendanceController extends Controller
     public function create()
     {
         $data['shifts']    = Shift::where('status', 1)->get();
-        $data['employees'] = Employee::all();
+        $data['employees'] = Employee::all(); 
         return view('HRMS::attendance.create', $data);
     }
 
@@ -126,7 +126,7 @@ class AttendanceController extends Controller
             'check_out_remarks'   => 'nullable',
             'check_out_latitude'  => 'nullable',
             'check_out_longitude' => 'nullable',
-            'attendance_type'     => 'nullable',
+            'attendance_type'     => 'nullable', 
 
         ]);
 
@@ -139,7 +139,7 @@ class AttendanceController extends Controller
         if (! empty($validate['check_out_time'])) {
             $validate['check_out_time'] = Carbon::createFromFormat('h:i A', $validate['check_out_time'])
                 ->format('H:i');
-        }
+        } 
 
         $validate['attendance_type'] = 'Present';
         $validate['flag']            = $this->service->calculateAttendanceStatus($validate);
@@ -172,6 +172,68 @@ class AttendanceController extends Controller
             ]);
         }
     }
+
+
+    public function singleStore(Request $request)
+    {
+        // dd($request->all());
+        $validate = $request->validate([
+            'employee_id'         => 'required|exists:employees,id',
+            'date'                => 'required',
+
+            'check_in_date'       => 'nullable',
+            'check_in_time'       => 'nullable',
+            'check_in_remarks'    => 'nullable',
+            'check_in_latitude'   => 'nullable',
+            'check_in_longitude'  => 'nullable',
+
+            'check_out_date'      => 'nullable',
+            'check_out_time'      => 'nullable',
+            'check_out_remarks'   => 'nullable',
+            'check_out_latitude'  => 'nullable',
+            'check_out_longitude' => 'nullable',
+            'attendance_type'     => 'nullable', 
+
+        ]);
+
+        // Convert 12-hour inputs to 24-hour TIME format
+        
+        if (! empty($validate['check_in_time'])) {
+            $validate['check_in_time'] = Carbon::createFromFormat('H:i', $validate['check_in_time'])
+                ->format('H:i');
+        }
+
+        if (! empty($validate['check_out_time'])) {
+            $validate['check_out_time'] = Carbon::createFromFormat('H:i', $validate['check_out_time'])
+                ->format('H:i');
+        }
+ 
+
+        $validate['attendance_type'] = 'Present';
+        $validate['flag']            = $this->service->calculateAttendanceStatus($validate);
+
+        try
+        {
+            $result = $this->service->store($validate);
+
+            if (isset($result['attendance']) && $result['attendance']->id) {
+                
+                 return redirect()->route('hrm.attendances.create')->with('success', 'Attendance created successfully.');
+
+
+            } else { 
+                return redirect()->route('hrm.attendances.create')->with('error', 'Failed to create attendance. Please try again.');
+
+            }
+
+        } catch (\Exception $e) {
+            // Catch any database or service errors 
+            return redirect()->route('hrm.attendances.create')->with('error', $e->getMessage());
+           
+        }
+    }
+  
+
 
     /**
      * Display the specified resource.
@@ -268,8 +330,25 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
-        $this->service->delete($attendance);
-        return redirect()->route('hrm.attendances.index')->with('success', 'Attendance deleted successfully.');
+        
+        try
+        {
+            $this->service->delete($attendance); 
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Attendance deleted successfully.'
+            ]);
+            
+
+        } catch (\Exception $e) {
+            // Catch any database or service errors
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Error: ' . $e->getMessage(),
+            ]);
+        }
+ 
+        
     }
 
 }

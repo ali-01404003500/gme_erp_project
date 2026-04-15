@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Modules\Account\Models\Transaction;
 use Modules\Inventory\Services\ExportService;
 use Modules\CRM\Models\Customer\Customer;
 
@@ -144,7 +145,7 @@ class CustomerBalanceReportController extends Controller
             $row = [
                 'customer_id'      => $customerId,
                 'account_id'       => $aggregated['account_ids'][$customerId]  ?? null,
-                'customer_name'    => $customer->company_name,
+                'customer_name'    => $customer->company_name, 
                 'address'          => $customer->address,
                 'phone'            => $customer->phone,
                 'has_machine_code' => $aggregated['machine_codes'][$customerId] ?? false,
@@ -152,10 +153,31 @@ class CustomerBalanceReportController extends Controller
                 'sales'            => $aggregated['period_sales'][$customerId]     ?? 0,
                 'sales_return'     => $aggregated['period_returns'][$customerId]   ?? 0,
                 'collection'       => $aggregated['period_collections'][$customerId] ?? 0,
+                'charge'           => $aggregated['period_charges'][$customerId] ?? 0,
+                'waiver'           => $aggregated['period_waivers'][$customerId] ?? 0,
             ];
 
+
+            // Get transactions
+            $transaction = Transaction::query()
+                ->searchByField('company_id')
+                ->where('account_id', $aggregated['account_ids'][$customerId])
+                ->when($start, function ($q) use ($start) {
+                    $q->whereDate('transaction_date', '>=', $start);
+                })
+                ->when($end, function ($q) use ($end) {
+                    $q->whereDate('transaction_date', '<=', $end);
+                })
+                ->selectRaw('
+                    SUM(debit_amount) as total_debit,
+                    SUM(credit_amount) as total_credit
+                ')
+                ->first();
+                 
+            $row['closing_balance'] = $transaction->total_debit - $transaction->total_credit;
+
             $row['due']             = $row['sales'] - $row['sales_return'] - $row['collection'];
-            $row['closing_balance'] = $row['opening_balance'] + $row['sales']-$row['collection'];
+            //$row['closing_balance'] = $row['opening_balance'] + $row['sales'] - $row['collection'] + $row['charge'];
 
             $recoveryPerc = 0;
             if ($row['opening_balance'] > 0) {
@@ -188,7 +210,7 @@ class CustomerBalanceReportController extends Controller
     private function fetchCustomers(array $filters): \Illuminate\Support\Collection
     {
         $query = Customer::actived()
-            ->select('id', 'company_name', 'phone', 'address', 'company_place_id')->with('area');
+            ->select('id', 'company_name', 'phone', 'address', 'company_place_id','customer_id')->with('area');
             // company_place_id is the FK; eager-loading area prevents lazy hits
             // inside whereHas callbacks and any downstream blade rendering.
 
@@ -233,7 +255,7 @@ class CustomerBalanceReportController extends Controller
         $machineCodes       = [];
         $salesData          = [];
         $returnsData        = [];
-        $openingBalances2021 = [];
+        $openingBalances2021 = []; 
         $accountMap         = []; // customer_id => account_id
 
         foreach ($chunks as $chunk) {
@@ -321,7 +343,8 @@ class CustomerBalanceReportController extends Controller
 
         $openingCollections = $this->fetchBulkCollections($accountIds, $accountIdToCustomer, null, $beforeStartDate);
         $periodCollections  = $this->fetchBulkCollections($accountIds, $accountIdToCustomer, $start, $end);
-
+        $periodCharges      = $this->fetchBulkCharges($accountIds, $accountIdToCustomer, $start, $end);
+        $periodWaivers      = $this->fetchBulkWaivers($accountIds, $accountIdToCustomer, $start, $end);
         // ---- Assemble final arrays -----------------------------------------
         $openingBalances = [];
         $periodSales     = [];
@@ -348,6 +371,8 @@ class CustomerBalanceReportController extends Controller
             'period_sales'        => $periodSales,
             'period_returns'      => $periodReturns,
             'period_collections'  => $periodCollections,
+            'period_charges'       => $periodCharges,
+            'period_waivers'       => $periodWaivers,
         ];
     }
 
@@ -401,6 +426,81 @@ class CustomerBalanceReportController extends Controller
         return $result;
     }
 
+    private function fetchBulkCharges(
+        array $accountIds,
+        array $accountIdToCustomer,
+        ?Carbon $startDate,
+        ?Carbon $endDate
+    ): array {
+        if (empty($accountIds)) {
+            return [];
+        } 
+
+        $query = DB::table('transactions')
+            ->whereIn('account_id', $accountIds)
+            ->where('balance_type', 'debit')
+            ->where('description', 'Collection Charge')
+            ->whereNull('deleted_at')
+            ->groupBy('account_id')
+            ->selectRaw('account_id, SUM(debit_amount) AS total');
+
+        if ($startDate) {
+            $query->whereDate('created_at', '>=', $startDate->startOfDay());
+        }
+        if ($endDate) {
+            $query->whereDate('created_at', '<=', $endDate->endOfDay());
+        }
+
+        $result = [];
+        foreach ($query->pluck('total', 'account_id') as $accountId => $amount) {
+            $customerId = $accountIdToCustomer[$accountId] ?? null;
+            if ($customerId !== null) {
+                $result[$customerId] = (float) $amount;
+            }
+        }
+
+        return $result;
+    }
+
+    private function fetchBulkWaivers(
+        array $accountIds,
+        array $accountIdToCustomer,
+        ?Carbon $startDate,
+        ?Carbon $endDate
+    ): array {
+        if (empty($accountIds)) {
+            return [];
+        } 
+
+        $query = DB::table('transactions')
+            ->whereIn('account_id', $accountIds)
+            ->where('balance_type', 'credit')
+            ->where('description', 'Customer Waiver Payment')
+            ->whereNull('deleted_at')
+            ->groupBy('account_id')
+            ->selectRaw('account_id, SUM(credit_amount) AS total');
+
+        if ($startDate) {
+            $query->whereDate('created_at', '>=', $startDate->startOfDay());
+        }
+        if ($endDate) {
+            $query->whereDate('created_at', '<=', $endDate->endOfDay());
+        }
+
+        $result = [];
+        foreach ($query->pluck('total', 'account_id') as $accountId => $amount) {
+            $customerId = $accountIdToCustomer[$accountId] ?? null;
+            if ($customerId !== null) {
+                $result[$customerId] = (float) $amount;
+            }
+        }
+
+        return $result;
+    }
+
+
+    
+
     // =========================================================================
     // TOTALS
     // =========================================================================
@@ -414,6 +514,8 @@ class CustomerBalanceReportController extends Controller
             'total_collection'      => $reportData->sum('collection'),
             'total_due'             => $reportData->sum('due'),
             'total_closing_balance' => $reportData->sum('closing_balance'),
+            'total_charge'         => $reportData->sum('charge'),
+            'total_waiver'         => $reportData->sum('waiver'),
         ];
     }
 

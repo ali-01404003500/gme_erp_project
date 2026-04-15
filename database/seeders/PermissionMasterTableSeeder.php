@@ -99,6 +99,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'crm.daily-credit-calls',
                 'parent_key' => 'crm',
             ],
+            
             //customer-types
             [
                 'title' => 'Customer Types',
@@ -1193,7 +1194,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Fund Transfer',
                 'description' => 'Permission of Add, Remove, Update, Delete, Verify, Approve Fund Transfer',
-                'key' => 'account.fund-tranfers',
+                'key' => 'account.fund-transfers',
                 'parent_key' => 'accounts',
             ],
 

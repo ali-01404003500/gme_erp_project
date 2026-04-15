@@ -36,7 +36,7 @@
                     <div class="row justify-content-center" id="justify-content-center">
                         <div class="col-sm-12">
                             <div class="mt-40 mb-50 p-30">
-                                <form action="{{ route('hrm.attendances.store', app()->getLocale()) }}" method="POST"
+                                <form action="{{ route('hrm.attendances.singleStore', app()->getLocale()) }}" method="POST"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
@@ -60,7 +60,7 @@
                                             <div class="form-group mb-25">
                                                 <label for="date"
                                                     class="color-dark fs-14 fw-500 align-center">Date</label>
-                                                <input type="text" class="form-control flatdate"  value="{{ old('date', date('Y-m-d')) }}"
+                                                <input type="text" class="form-control "  value="{{ old('date', date('Y-m-d')) }}"
                                                     name="date" id="date" placeholder="Date" readonly>
                                                 @if ($errors->has('date'))
                                                     <p class="text-danger">{{ $errors->first('date') }}</p>
@@ -68,123 +68,112 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-25">
-                                                <label for="date"
-                                                    class="color-dark fs-14 fw-500 align-center">Shift</label>
-                                                <select name="shift_id" id="shift_id" class="form-control tom-select">
-                                                    <option value="">Select Shift</option>
-                                                    @foreach ($shifts as $shift)
-                                                        <option value="{{ $shift->id }}">{{ $shift->shift_name }}({{ date('h:i A', strtotime($shift->in_time)) }}-{{ date('h:i A', strtotime($shift->out_time)) }})</option>
-                                                    @endforeach
-                                                </select>
-                                                @if ($errors->has('shift_id'))
-                                                    <p class="text-danger">{{ $errors->first('shift_id') }}</p>
-                                                @endif
+                                        <div class="row g-3">
+
+                                            <input type="hidden" class="form-control" name="check_in_date" id="check_in_date" value="{{ old('date', date('Y-m-d')) }}" > 
+                                            <input type="hidden" class="form-control" name="check_out_date" id="check_out_date" value="{{ old('date', date('Y-m-d')) }}" >  
+                                        
+
+                                            <!-- CHECK-IN -->
+                                            <div class="col-md-6">
+                                                <div class="border rounded p-4 bg-white h-100">
+
+                                                    <h5 class="mb-3">Check-in</h5>
+
+                                                    <!-- Date + Location -->
+                                                    <div class="row g-3 align-items-end">
+
+                                                         <!-- Time -->
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Time</label>
+                                                            <input type="text" class="form-control flattime"
+                                                                name="check_in_time" id="check_in_time">
+                                                        </div>
+
+                                                        <!-- Location -->
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Location</label>
+
+                                                            <div class="d-flex">
+
+                                                                <input type="text" class="form-control me-1"
+                                                                    id="check_in_latitude" name="check_in_latitude" placeholder="Lat">
+
+                                                                <input type="text" class="form-control me-1"
+                                                                    id="check_in_longitude" name="check_in_longitude" placeholder="Long">
+
+                                                                <button class="btn btn-outline-primary"
+                                                                    type="button" id="check_in_geolocate">
+                                                                    <i class="fa fa-map-marker-alt"></i>
+                                                                </button>
+
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </div>
+
+                                                    
+ 
+
+                                                    <!-- Remarks -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Remarks</label>
+                                                        <textarea name="check_in_remarks" class="form-control" rows="2"></textarea>
+                                                    </div>
+
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="col-md-6">
-                                            <h5>Check-in</h5>
-                                        </div>
+                                            <!-- CHECK-OUT -->
+                                            <div class="col-md-6">
+                                                <div class="border rounded p-4 bg-white h-100">
 
-                                        <div class="col-md-6">
-                                            <h5>Check-out</h5>
-                                        </div>
+                                                    <h5 class="mb-3">Check-out</h5>
 
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-25">
-                                                <label for="check_in_date"
-                                                    class="color-dark fs-14 fw-500 align-center">Date</label>
-                                                <input type="text" class="form-control flatdate"
-                                                value="{{ old('check_in_date', date('Y-m-d')) }}" name="check_in_date" id="check_in_date"
-                                                    placeholder=" Check-in Date">
-                                                @if ($errors->has('check_in_date'))
-                                                    <p class="text-danger">{{ $errors->first('check_in_date') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
+                                                    <!-- Date + Location -->
+                                                    <div class="row g-3 align-items-end">
 
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-25">
-                                                <label for="check_in_time"
-                                                    class="color-dark fs-14 fw-500 align-center">Time</label>
-                                                <input type="text" class="form-control flattime" name="check_in_time"
-                                                    id="check_in_time" placeholder="Check-in Time">
-                                                @if ($errors->has('check_in_time'))
-                                                    <p class="text-danger">{{ $errors->first('check_in_time') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
+                                                        <!-- Time -->
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Time</label>
+                                                            <input type="text" class="form-control flattime"
+                                                                name="check_out_time" id="check_out_time">
+                                                        </div>
 
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-25">
-                                                <label for="check_out_date"
-                                                    class="color-dark fs-14 fw-500 align-center">Date</label>
-                                                <input type="text" class="form-control datePicker"
-                                                value="{{ old('check_out_date') }}" name="check_out_date" id="check_out_date"
-                                                    placeholder="Check-out Date">
-                                                @if ($errors->has('check_out_date'))
-                                                    <p class="text-danger">{{ $errors->first('check_out_date') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
+                                                        <!-- Location -->
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Location</label>
 
-                                        <div class="col-md-3">
-                                            <div class="form-group mb-25">
-                                                <label for="check_out_time"
-                                                    class="color-dark fs-14 fw-500 align-center">Time</label>
-                                                <input type="text" class="form-control flattime" name="check_out_time"
-                                                    id="check_out_time" placeholder="Check-out Time">
-                                                @if ($errors->has('check_out_time'))
-                                                    <p class="text-danger">{{ $errors->first('check_out_time') }}</p>
-                                                @endif
-                                            </div>
-                                        </div>
+                                                            <div class="d-flex">
 
-                                        <div class="form-group col-md-6">
-                                            <label for="location">Location</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" value=""
-                                                    name="check_in_latitude" id="check_in_latitude"
-                                                    placeholder="Latitude">
-                                                <input type="text" class="form-control" value=""
-                                                    name="check_in_longitude" id="check_in_longitude"
-                                                    placeholder="Longitude">
-                                                    <span class="input-group-text">
+                                                                <input type="text" class="form-control me-1"
+                                                                    id="check_out_latitude"  name="check_out_latitude" placeholder="Lat">
 
-                                                <button class="btn" type="button" id="check_in_geolocate"
-                                                    title="Get current location">
-                                                    <i class="fa fa-map-marker-alt" aria-hidden="true"></i>                                                </button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="location">Location</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" value=""
-                                                    name="check_out_latitude" id="check_out_latitude"
-                                                    placeholder="Latitude">
-                                                <input type="text" class="form-control" value=""
-                                                    name="check_out_longitude" id="check_out_longitude"
-                                                    placeholder="Longitude">
-                                                    <span class="input-group-text">
-                                                        <button class="btn" type="button"
-                                                        id="check_out_geolocate" title="Get current location">
-                                                        <i class="fa fa-map-marker-alt" aria-hidden="true"></i>                                                </button>
-                                                    </button>
-                                                    </span>
-                                              
+                                                                <input type="text" class="form-control me-1"
+                                                                    id="check_out_longitude" name="check_out_longitude" placeholder="Long">
+
+                                                                <button class="btn btn-outline-primary"
+                                                                    type="button" id="check_out_geolocate">
+                                                                    <i class="fa fa-map-marker-alt"></i>
+                                                                </button>
+
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <!-- Remarks -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Remarks</label>
+                                                        <textarea name="check_out_remarks" class="form-control" rows="2"></textarea>
+                                                    </div>
+
+                                                </div>
                                             </div>
 
                                         </div>
-
-                                        <div class="form-group col-md-12">
-                                            <label for="remarks">Remarks</label>
-                                            <textarea name="remarks" id="remarks" class="form-control"
-                                                placeholder="Remarks..">{{ old('remarks') }}</textarea>
-                                        </div>
-
 
                                     </div>
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">

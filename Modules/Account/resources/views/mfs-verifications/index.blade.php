@@ -162,6 +162,7 @@
                                                                 title="Checking" data-id="{{ $entry->id }}"
                                                                 data-remarks="{{ $entry->remarks }}"
                                                                 data-charge="{{ $entry->charge }}"
+                                                                data-amount="{{ $entry->amount }}"
                                                                 data-status="verified">
                                                                 <i class="fas fa-check-circle"></i> Checking
                                                             </button>
@@ -170,6 +171,7 @@
                                                                 data-bs-toggle="modal" data-bs-target="#statusModal"
                                                                 title="Deny" data-id="{{ $entry->id }}"
                                                                 data-charge="{{ $entry->charge }}"
+                                                                data-amount="{{ $entry->amount }}"
                                                                 data-remarks="{{ $entry->remarks }}"
                                                                 data-status="denied">
                                                                 <i class="fas fa-times-circle"></i> Deny
@@ -182,6 +184,7 @@
                                                                 title="Approve Verification" data-id="{{ $entry->id }}"
                                                                 data-remarks="{{ $entry->remarks }}"
                                                                 data-charge="{{ $entry->charge }}"
+                                                                data-amount="{{ $entry->amount }}"
                                                                 data-status="approved">
                                                                 <i class="fas fa-check-circle"></i> Verify
                                                             </button>
@@ -191,6 +194,7 @@
                                                                 title="Deny Verification" data-id="{{ $entry->id }}"
                                                                 data-remarks="{{ $entry->remarks }}"
                                                                 data-charge="{{ $entry->charge }}"
+                                                                data-amount="{{ $entry->amount }}"
                                                                 data-status="denied">
                                                                 <i class="fas fa-times-circle"></i> Deny
                                                             </button>
@@ -277,7 +281,12 @@
         let id = $(this).data("id");
         let status = $(this).data("status");
         let remarks = $(this).data("remarks");
+        let amount = $(this).data("amount");
         let charge = $(this).data("charge") || 0;
+
+        if(status === "verified" && charge == 0) {
+           charge = amount * 0.015;
+        } 
 
         $("#status_id").val(id);
         $("#status_value").val(status);

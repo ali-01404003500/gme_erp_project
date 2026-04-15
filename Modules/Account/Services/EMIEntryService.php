@@ -166,15 +166,37 @@ class EMIEntryService
     {
         DB::beginTransaction();
         $receipt_no = $this->getReceiptNo();
+        $paymentAmount = 0;
 
         $emiEntry = EMIEntryDetail::findOrFail($validated['emi_detail_id']);
 
-        $emiEntry->update([
+        /*$emiEntry->update([
             'status' => 'processing',
             'receipt_no' => $receipt_no,
+        ]);*/
+ 
+        $existingReceipts = $emiEntry->receipt_no ?? [];
+
+        if (!is_array($existingReceipts)) {
+            $existingReceipts = json_decode($existingReceipts, true) ?? [];
+        }
+
+        // add new receipt
+        $existingReceipts[] = $receipt_no;
+
+        // optional: remove duplicates
+        $existingReceipts = array_values(array_unique($existingReceipts));
+
+        $emiEntry->update([
+            'status' => 'processing',
+            'receipt_no' => $existingReceipts,
         ]);
+
+
+
         $emiEntry->payments()->delete();
         foreach ($validated['payments'] as $payment) {
+            $paymentAmount += $payment['amount'];
             $emiEntry->payments()->create([
                 'pay_mode' => $payment['pay_mode'],
                 'bank_id' => $payment['bank_id'] ?? null,
@@ -186,6 +208,10 @@ class EMIEntryService
                 'remarks' => $payment['remark'],
             ]);
         }
+        $emiEntry->update([ 
+            'paid_amount' => $emiEntry->paid_amount + $paymentAmount,
+        ]);
+
 
         $collectionData = [
             'payments_total_amount' => $validated['payments_total_amount'],
@@ -326,7 +352,7 @@ class EMIEntryService
             }
 
             // Update EMI detail status to 'due'
-            $emiDetail->update(['status' => 'due']);
+            $emiDetail->update(['status' => 'due','paid_amount' =>0]);
 
             DB::commit();
 
