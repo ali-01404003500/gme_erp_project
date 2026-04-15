@@ -159,18 +159,24 @@
 
                                                 @foreach($payment->paymentDetails as $detail)
 
-                                                    @php
-                                                        $files = $detail->attachments ? json_decode($detail->attachments, true) : [];
-                                                    @endphp
+                                                    @if($detail->attachments)
 
-                                                    @if(!empty($files))
-                                                        <div class="d-flex flex-wrap gap-1">
+                                                        @php
+                                                            $files = json_decode($detail->attachments, true);
+                                                        @endphp
+
+                                                        @if(is_array($files))
                                                             @foreach($files as $file)
-                                                                <a href="{{ url($file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                                <a href="{{ url($file) }}" target="_blank" class="btn btn-sm btn-outline-info mb-1">
                                                                     <i class="fa fa-eye"></i>
                                                                 </a>
                                                             @endforeach
-                                                        </div>
+                                                        @else
+                                                            <a href="{{ url($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        @endif
+
                                                     @endif
 
                                                 @endforeach
