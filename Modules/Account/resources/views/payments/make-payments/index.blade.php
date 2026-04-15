@@ -152,7 +152,7 @@
                                             <td>
                                                 @foreach($payment->paymentDetails as $detail)
                                                     @if($detail->attachments)
-                                                        <a href="{{ asset($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                                                        <a href="{{ url($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
                                                     @endif
                                                 @endforeach
                                             </td>

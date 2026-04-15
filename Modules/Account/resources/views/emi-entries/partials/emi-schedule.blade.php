@@ -67,7 +67,7 @@
                     @endif
                 @else
                     <td>
-                        @if ($detail->status == 'due' || $detail->status == 'partially_paid')
+                        @if ($detail->status == 'due')
                             <button type="button" class="btn btn-success btn-sm make-collection-btn" 
                                 data-bs-toggle="modal"
                                 data-bs-target="#emiCollectionModal" 
