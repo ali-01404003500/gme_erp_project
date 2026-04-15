@@ -150,11 +150,31 @@
 
                                             {{-- Document/Images --}}
                                             <td>
-                                                @foreach($payment->paymentDetails as $detail)
+                                                {{-- @foreach($payment->paymentDetails as $detail)
                                                     @if($detail->attachments)
                                                         <a href="{{ url($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
                                                     @endif
+                                                @endforeach --}}
+
+
+                                                @foreach($payment->paymentDetails as $detail)
+
+                                                    @php
+                                                        $files = $detail->attachments ? json_decode($detail->attachments, true) : [];
+                                                    @endphp
+
+                                                    @if(!empty($files))
+                                                        <div class="d-flex flex-wrap gap-1">
+                                                            @foreach($files as $file)
+                                                                <a href="{{ url($file) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
+
                                                 @endforeach
+
                                             </td>
 
                                             {{-- Date --}}
