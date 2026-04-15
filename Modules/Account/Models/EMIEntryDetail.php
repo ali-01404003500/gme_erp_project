@@ -10,6 +10,11 @@ use App\Models\KeepSign;
 class EMIEntryDetail extends BaseModel
 {
     use HasFactory;
+    protected $casts = [
+        'receipt_no' => 'array',
+    ];
+
+    
     
     protected $guarded = [];
 
@@ -30,4 +35,5 @@ class EMIEntryDetail extends BaseModel
         return $this->hasOne(AdvanceChequeEntryDetail::class,'emi_entry_details_id');
     }
 }
+
 

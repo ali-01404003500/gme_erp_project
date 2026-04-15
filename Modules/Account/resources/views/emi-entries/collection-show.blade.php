@@ -171,7 +171,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="header">
-                                <img src="{{ $company_info->company_logo }}" alt="Company Logo">
+                                <img src="{{ url($company_info->company_logo) }}" alt="Company Logo">
                                 <div>
                                     <h1>{{ $company_info->company_name }}</h1>
                                     <p>{{ $company_info->company_bio }}</p>
@@ -187,7 +187,15 @@
                                         <tr>
                                             <th>Receipt No</th>
                                             <td>:</td>
-                                            <td>{{ $emiEntryDetail->receipt_no ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->last()->receipt_no }}
+                                            <td>
+                                              
+                                                {{
+                                                    !empty($emiEntryDetail->receipt_no)
+                                                        ? (is_array($emiEntryDetail->receipt_no)
+                                                            ? implode(', ', $emiEntryDetail->receipt_no)
+                                                            : $emiEntryDetail->receipt_no)
+                                                        : 'N/A'
+                                                }}
                                             </td>
                                         </tr>
                                         <tr>

@@ -4,6 +4,12 @@
 @section('description', 'EMI Collection')
 
 @section('content')
+<style>
+.custom-modal {
+    max-width: 60%;
+}
+</style>
+
     <div class="container-fluid">
         <div class="social-dash-wrap">
             <!-- Breadcrumb -->
@@ -81,8 +87,8 @@
     </div>
 
     <!-- EMI Collection Modal -->
-    <div class="modal fade" id="emiCollectionModal" tabindex="-1" aria-labelledby="emiCollectionModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
+    <div class="modal fade" id="emiCollectionModal" tabindex="-1" aria-labelledby="emiCollectionModalLabel" aria-hidden="true"  >
+        <div class="modal-dialog modal-xl custom-modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="emiCollectionModalLabel"><i class="fas fa-money-bill-wave me-2"></i>EMI Collection</h5>
