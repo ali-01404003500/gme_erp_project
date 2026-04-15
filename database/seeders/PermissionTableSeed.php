@@ -3889,51 +3889,51 @@ class PermissionTableSeed extends Seeder
                 'description' => 'MFS check Verifications  permission',
                 'key' => 'account.mfs-verifications'
             ],
+ 
+            //account.fund transfer
+            [
+                'name'=> 'Fund Transfer List',
+                'slug'=> 'account.fund-transfers.index',
+                'description'=> 'Fund Transfer list permission',
+                'key'=> 'account.fund-transfers' 
+            ],
+            [
+                'name'=> 'Fund Transfer Create',
+                'slug'=> 'account.fund-transfers.create',
+                'description'=> 'Fund Transfer Create permission',
+                'key'=> 'account.fund-transfers'
+            ],
+            [
+                'name'=> 'Fund Transfer Edit',
+                'slug'=> 'account.fund-transfers.edit',
+                'description'=> 'Fund Transfer Edit permission',
+                'key'=> 'account.fund-transfers'
+            ],
+            [
+                'name'=> 'Fund Transfer Delete',
+                'slug'=> 'account.fund-transfers.delete',
+                'description'=> 'Fund Transfer delete permission',
+                'key'=> 'account.fund-transfers'
+            ],
 
-                //account.fund transfer
-                [
-                    'name'=> 'Fund Transfer List',
-                    'slug'=> 'account.fund-tranfers.index',
-                    'description'=> 'Fund Transfer list permission',
-                    'key'=> 'account.fund-tranfers'
-                ],
-                [
-                    'name'=> 'Fund Transfer Create',
-                    'slug'=> 'account.fund-tranfers.create',
-                    'description'=> 'Fund Transfer Create permission',
-                    'key'=> 'account.fund-tranfers'
-                ],
-                [
-                    'name'=> 'Fund Transfer Edit',
-                    'slug'=> 'account.fund-tranfers.edit',
-                    'description'=> 'Fund Transfer Edit permission',
-                    'key'=> 'account.fund-tranfers'
-                ],
-                [
-                    'name'=> 'Fund Transfer Delete',
-                    'slug'=> 'account.fund-tranfers.delete',
-                    'description'=> 'Fund Transfer delete permission',
-                    'key'=> 'account.fund-tranfers'
-                ],
-    
-                [
-                    'name'=> 'Fund Transfer Verify',
-                    'slug'=> 'account.fund-tranfers.verify',
-                    'description'=> 'Fund Transfer verify permission',
-                    'key'=> 'account.fund-tranfers'
-                ],
-                [
-                    'name'=> 'Fund Transfer Approve',
-                    'slug'=> 'account.fund-tranfers.approve',
-                    'description'=> 'Fund Transfer approve permission',
-                    'key'=> 'account.fund-tranfers'
-                ],
-                [
-                    'name'=> 'Fund Transfer View',
-                    'slug'=> 'account.fund-tranfers.view',
-                    'description'=> 'Fund Transfer View permission',
-                    'key'=> 'account.fund-tranfers'
-                ],
+            [
+                'name'=> 'Fund Transfer Verify',
+                'slug'=> 'account.fund-transfers.verify',
+                'description'=> 'Fund Transfer verify permission',
+                'key'=> 'account.fund-transfers'
+            ],
+            [
+                'name'=> 'Fund Transfer Approve',
+                'slug'=> 'account.fund-transfers.approve',
+                'description'=> 'Fund Transfer approve permission',
+                'key'=> 'account.fund-transfers'
+            ],
+            [
+                'name'=> 'Fund Transfer View',
+                'slug'=> 'account.fund-transfers.view',
+                'description'=> 'Fund Transfer View permission',
+                'key'=> 'account.fund-transfers'
+            ],
 
 
 
