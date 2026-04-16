@@ -86,9 +86,10 @@
                                     <td class="text-center">{{ $stock->stock }}
                                         <input type="hidden" name="available_stock" value="{{ $stock->stock }}">
                                     </td>
-                                    {{-- <td class="text-center">{{ $stock->stock }}</td> --}}
+                                    {{-- <td class="text-center">{{ $stock->stock }}</td> --}}lots_quantity
                                     <td class="text-center">
-                                        <input type="number" class="form-control" name="quantity" value="{{ $stock->stock }}">
+                                        <input type="number" class="form-control" name="quantity" value="{{ $stock->stock }}" onkeyup="$('#lots_quantity{{ $stock->product_id }}').val(this.value)">
+                                        <input type="hidden" id="lots_quantity{{ $stock->product_id }}"  name="lots_quantity[{{ $stock->product_id }}][]" value="{{ $stock->stock }}">
                                     </td>
                                 </tr>
                             @endforeach
