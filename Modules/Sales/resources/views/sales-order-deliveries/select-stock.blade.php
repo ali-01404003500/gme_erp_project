@@ -29,7 +29,7 @@
                                     <input type="hidden" name="product_id[]" value="{{ $stock->product_id }}">
                                 </td>
                                 <td class="text-center">{{ $stock->serial_no }}
-                                    <input type="hidden" name="serial_no" class="serial_no" value="{{ $stock->serial_no }}">
+                                    <input type="text" name="serial_no[{{ $stock->product_id }}][]" class="serial_no" value="{{ $stock->serial_no }}">
                                 </td>
                                 <td>{{ optional($stock->source)->dongle_no }}</td>
                                 <td>{{ optional($stock->source)->manufacture_date }}</td>
