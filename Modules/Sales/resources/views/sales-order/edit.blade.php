@@ -261,7 +261,7 @@
                                                             </tr>
                                                             {{-- @dd() --}}
                                                             <tr>
-                                                                <td colspan="5" style="text-align: right;">VAT(5)%</td>
+                                                                <td colspan="5" style="text-align: right;">VAT(7.5)%</td>
                                                                 <td>
                                                                     <input type="hidden" id="vat_percentage" value="">
                                                                     <input type="text" class="form-control text-center"
@@ -577,7 +577,7 @@
 
         let discount = parseFloat($('#discount').val()) || 0;
         let vatPercentage = parseFloat($('#vat_percentage').val()) || 0; // Assuming VAT percentage is available
-        let vat = (totalAmount - discount) * (vatPercentage / 100); // Calculate VAT
+        let vat = (totalAmount - discount) * vatPercentage; // Calculate VAT
         let netAmount = totalAmount - discount + vat;
 
         $('#total_amount').val(totalAmount.toFixed());
@@ -956,7 +956,7 @@
                         }
 
                         if (data.customers.vat_status == 1) {
-                            $('#vat_percentage').val(.05);
+                            $('#vat_percentage').val(.075);
                         } else {
                             $('#vat_percentage').val(0);
                         }
