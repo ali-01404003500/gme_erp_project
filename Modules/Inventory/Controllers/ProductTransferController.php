@@ -104,7 +104,7 @@ class ProductTransferController extends Controller
         ]);
 
         // Validate Serial/Lot Quantities
-        foreach ($products_information['product_id'] as $key => $productId) {
+        /*foreach ($products_information['product_id'] as $key => $productId) {
             $quantity = $products_information['quantity'][$key];
 
             // Check Serials
@@ -122,7 +122,7 @@ class ProductTransferController extends Controller
                 }
             }
             // If neither (and assumed required), maybe add error? But avoiding if strictly not required by previous logic.
-        }
+        }*/
 
         $validate['invoice_no'] = $invoice_no;
         $result = $this->service->store($validate, $products_information, $productStockDetails);
