@@ -145,10 +145,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php $i = 0; @endphp
                                     @forelse($reportData as $item)
                                         @continue($item->current_stock <= 0)
                                         <tr>
-                                            <td class="text-center">{{ $loop->iteration }}</td>
+                                            <td class="text-center">{{ ++$i }}</td>
                                             <td>
                                                 <a href="javascript:void(0)" 
                                                    class="show-product-ledger text-primary font-weight-bold" 
