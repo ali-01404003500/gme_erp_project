@@ -38,7 +38,7 @@
                                 <td class="text-center">
                                     <div class="checkbox-theme-default custom-checkbox m-2">
                                         <input class="checkbox" name="stock_id" value="{{ $stock->product_id }}"
-                                            type="checkbox" id="check_id{{ $key }}">
+                                            type="checkbox" id="check_id{{ $key }}" checked>
                                         <label for="check_id{{ $key }}">
                                             <span class="checkbox-text">
                                                 Select
@@ -88,8 +88,8 @@
                                     </td>
                                     {{-- <td class="text-center">{{ $stock->stock }}</td> --}}lots_quantity
                                     <td class="text-center">
-                                        <input type="number" class="form-control" name="quantity"  onkeyup="$('#lots_quantity{{ $stock->product_id }}').val(this.value)">
-                                        <input type="hidden" id="lots_quantity{{ $stock->product_id }}"  name="lots_quantity[{{ $stock->product_id }}][]" >
+                                        <input type="number" class="form-control" name="quantity" value="{{ $stock->stock }}" onkeyup="$('#lots_quantity{{ $stock->product_id }}').val(this.value)">
+                                        <input type="hidden" id="lots_quantity{{ $stock->product_id }}"  name="lots_quantity[{{ $stock->product_id }}][]" value="{{ $stock->stock }}" >
                                     </td>
                                 </tr>
                             @endforeach
