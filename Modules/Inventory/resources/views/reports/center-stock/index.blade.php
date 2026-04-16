@@ -146,6 +146,7 @@
                                 </thead>
                                 <tbody>
                                     @forelse($reportData as $index => $item)
+                                        @continue($item->current_stock <= 0)
                                         <tr>
                                             <td class="text-center">{{ $index + 1 }}</td>
                                             <td>
