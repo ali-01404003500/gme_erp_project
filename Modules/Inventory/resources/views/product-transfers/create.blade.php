@@ -256,8 +256,10 @@
                     })
                 });
 
-            });
-            $("#select-product-stock-modal").data("limit", $(this).data('limit'));
+            }); 
+
+            let productId = currentRow.attr('id').replace('product_', ''); 
+            $("#select-product-stock-modal").data("limit", $(this).data('limit')).data("product-id", productId); 
             $("#select-product-stock-modal").modal('show');
         });
 
@@ -287,51 +289,107 @@
 
 
 
+        // $(document).on('click', '#select-product-stock-modal #save', function () {
+        //     var selectedProducts = $('input[name="stock_id"]:checked');
+        //     var inputsQuantity = $('#select-product-stock-modal input[name="quantity"]');
+        //     var serial_no = [];
+
+        //     var lot_no = [];
+        //     var quantities = [];
+        //     var product_ids = [];
+        //     if(selectedProducts.length != 0){
+        //         selectedProducts.each(function(){
+        //             serial_no.push($(this).closest('tr').find('input.serial_no').val());
+        //             product_ids.push($(this).val());
+        //         });
+        //     }
+        //     if(inputsQuantity.length != 0){
+        //         inputsQuantity.each(function(){
+        //             if($(this).val() != 0){
+        //                 product_ids.push($(this).closest('tr').find('input.product_id').val());
+        //                 lot_no.push($(this).closest('tr').find('input.lot_no').val());
+        //                 quantities.push(Number($(this).val()));
+        //             }
+        //         });
+        //     }
+        //     console.log(serial_no.length + ' products selected');
+        //     console.log({product_ids, serial_no, lot_no, quantities});
+        //     $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(0);
+        //     //remove previous serial_no
+        //     $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="serial_no"]').remove();
+        //     $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="lot_no"]').remove();
+        //     $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="lots_quantity"]').remove();
+        //     if(selectedProducts.length != 0){
+        //         product_ids.forEach((product_id, index) => {
+        //             $(`#productTable tr#product_${product_id} td:first`).append(`<input type="hidden" name="serial_no[${product_id}][]" value="${serial_no[index]}">`);
+        //         });
+        //         $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(selectedProducts.length);
+        //     }
+
+        //     if(inputsQuantity.length != 0){
+        //         product_ids.forEach((product_id, index) => {
+        //             $(`#productTable tr#product_${product_id} td:first`).append(`<input type="hidden" name="lot_no[${product_id}][]" value="${lot_no[index]}">`);
+        //             $(`#productTable tr#product_${product_id} td:first`).append(`<input type="hidden" name="lots_quantity[${product_id}][]" value="${quantities[index]}">`);
+        //         });
+        //         $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(quantities.reduce((a, b) => a + b, 0));
+        //     }
+        //     // dissmiss modal
+        //     $("#select-product-stock-modal").modal('hide');
+        // });
+
+
         $(document).on('click', '#select-product-stock-modal #save', function () {
-            var selectedProducts = $('input[name="stock_id"]:checked');
-            var inputsQuantity = $('#select-product-stock-modal input[name="quantity"]');
-            var serial_no = [];
 
-            var lot_no = [];
-            var quantities = [];
-            var product_ids = [];
-            if(selectedProducts.length != 0){
-                selectedProducts.each(function(){
-                    serial_no.push($(this).closest('tr').find('input.serial_no').val());
-                    product_ids.push($(this).val());
+            let product_id = $("#select-product-stock-modal").data("product-id");
+
+            let selectedProducts = $('#select-product-stock-modal input[name="stock_id"]:checked');
+            let inputsQuantity = $('#select-product-stock-modal input[name="quantity"]');
+
+            let row = $(`#productTable tr#product_${product_id}`);
+
+            // reset previous
+            row.find('input[name^="serial_no"]').remove();
+            row.find('input[name^="lot_no"]').remove();
+            row.find('input[name^="lots_quantity"]').remove();
+
+            // SERIAL
+            if (selectedProducts.length) {
+                selectedProducts.each(function () {
+                    let serial = $(this).closest('tr').find('.serial_no').val();
+
+                    row.find('td:first').append(
+                        `<input type="hidden" name="serial_no[${product_id}][]" value="${serial}">`
+                    );
                 });
-            }
-            if(inputsQuantity.length != 0){
-                inputsQuantity.each(function(){
-                    if($(this).val() != 0){
-                        product_ids.push($(this).closest('tr').find('input.product_id').val());
-                        lot_no.push($(this).closest('tr').find('input.lot_no').val());
-                        quantities.push(Number($(this).val()));
-                    }
-                });
-            }
-            console.log(serial_no.length + ' products selected');
-            console.log({product_ids, serial_no, lot_no, quantities});
-            $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(0);
-            //remove previous serial_no
-            $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="serial_no"]').remove();
-            $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="lot_no"]').remove();
-            $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="lots_quantity"]').remove();
-            if(selectedProducts.length != 0){
-                product_ids.forEach((product_id, index) => {
-                    $(`#productTable tr#product_${product_id} td:first`).append(`<input type="hidden" name="serial_no[${product_id}][]" value="${serial_no[index]}">`);
-                });
-                $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(selectedProducts.length);
+
+                row.find('input[name="quantity[]"]').val(selectedProducts.length);
             }
 
-            if(inputsQuantity.length != 0){
-                product_ids.forEach((product_id, index) => {
-                    $(`#productTable tr#product_${product_id} td:first`).append(`<input type="hidden" name="lot_no[${product_id}][]" value="${lot_no[index]}">`);
-                    $(`#productTable tr#product_${product_id} td:first`).append(`<input type="hidden" name="lots_quantity[${product_id}][]" value="${quantities[index]}">`);
-                });
-                $(`#productTable tr#product_${product_ids[0]} input[name="quantity[]"]`).val(quantities.reduce((a, b) => a + b, 0));
+            // LOT
+            let totalQty = 0;
+
+            inputsQuantity.each(function () {
+                let qty = Number($(this).val());
+
+                if (qty > 0) {
+                    let lot = $(this).closest('tr').find('.lot_no').val();
+
+                    row.find('td:first').append(
+                        `<input type="hidden" name="lot_no[${product_id}][]" value="${lot}">`
+                    );
+
+                    row.find('td:first').append(
+                        `<input type="hidden" name="lots_quantity[${product_id}][]" value="${qty}">`
+                    );
+
+                    totalQty += qty;
+                }
+            });
+
+            if (totalQty > 0) {
+                row.find('input[name="quantity[]"]').val(totalQty);
             }
-            // dissmiss modal
+
             $("#select-product-stock-modal").modal('hide');
         });
 
