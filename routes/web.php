@@ -7,6 +7,7 @@ use App\Http\Controllers\AccessControl\RoleController;
 use App\Http\Controllers\AccessControl\ServiceNameController;
 use App\Http\Controllers\AccessControl\SmsTemplateController;
 use App\Http\Controllers\AccessControl\TriggerNameController;
+use App\Http\Controllers\AllVerificationTabController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeoLocationController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\KeepSignController;
 use App\Http\Controllers\OtpVerifyController;
 use App\Http\Controllers\ReportController;
 use App\Http\Middleware\VerifyCsrfToken;
+use Modules\Account\Controllers\MFSVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -122,8 +124,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('create-otp', [OtpVerifyController::class, 'createOtp'])->name('create-otp');
         Route::post('update-otp', [OtpVerifyController::class, 'updateOtp'])->name('update-otp');
         Route::delete('delete-otp', [OtpVerifyController::class, 'deleteOtp'])->name('delete-otp');
+        
+        Route::get('all-verification-tab', [AllVerificationTabController::class, 'showAllVerificationTab'])->name('all-verification-tab');
+        
     });
 
+   
+    Route::group(['prefix' => 'sms', 'as' => 'sms.'], function () {
+        Route::resource('templates', SmsTemplateController::class);
+    });
+
+
+  
 
     Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
         Route::resource('user-log-histories', UserLogHistoryController::class);

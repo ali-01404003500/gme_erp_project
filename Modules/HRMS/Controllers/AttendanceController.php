@@ -7,6 +7,7 @@ use App\Models\AccessControl\CompanyInfo;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Modules\HRMS\Models\Attendance;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\Settings\Department;
@@ -97,11 +98,31 @@ class AttendanceController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     */
+     */ 
     public function create()
     {
-        $data['shifts']    = Shift::where('status', 1)->get();
-        $data['employees'] = Employee::all(); 
+        $employeeId = Auth::user()->employee->id;
+        $today = date('Y-m-d');
+
+        $attendance = Attendance::where('employee_id', $employeeId)
+            ->whereDate('created_at', $today)
+            ->first();
+
+        // jodi ajker attendance thake  → edit page
+        if ($attendance) {
+
+            $data['attendance'] = $attendance;
+            $data['shifts'] = Shift::where('status', 1)->get();
+            $data['employees'] = Employee::where('id', $employeeId)->get(); 
+            return redirect()->route('hrm.attendances.edit', $data['attendance']->id) ->with('success', 'Attendance Already Submitted.');
+  
+
+        }
+
+        // na thake → create page
+        $data['shifts'] = Shift::where('status', 1)->get();
+        $data['employees'] = Employee::where('id', $employeeId)->get();
+
         return view('HRMS::attendance.create', $data);
     }
 
@@ -197,16 +218,17 @@ class AttendanceController extends Controller
         ]);
 
         // Convert 12-hour inputs to 24-hour TIME format
-        
+    
         if (! empty($validate['check_in_time'])) {
-            $validate['check_in_time'] = Carbon::createFromFormat('H:i', $validate['check_in_time'])
+            $validate['check_in_time'] = Carbon::createFromFormat('h:i A', $validate['check_in_time'])
                 ->format('H:i');
         }
 
         if (! empty($validate['check_out_time'])) {
-            $validate['check_out_time'] = Carbon::createFromFormat('H:i', $validate['check_out_time'])
+            $validate['check_out_time'] = Carbon::createFromFormat('h:i A', $validate['check_out_time'])
                 ->format('H:i');
-        }
+        } 
+
  
 
         $validate['attendance_type'] = 'Present';
@@ -216,9 +238,8 @@ class AttendanceController extends Controller
         {
             $result = $this->service->store($validate);
 
-            if (isset($result['attendance']) && $result['attendance']->id) {
-                
-                 return redirect()->route('hrm.attendances.create')->with('success', 'Attendance created successfully.');
+            if (isset($result['attendance']) && $result['attendance']->id) { 
+                return redirect()->route('hrm.attendances.edit', $result['attendance']->id) ->with('success', 'Attendance created successfully.');
 
 
             } else { 
@@ -281,6 +302,7 @@ class AttendanceController extends Controller
 
         ]);
 
+        
         // Convert 12-hour inputs to 24-hour TIME format
         if (! empty($validate['check_in_time'])) {
             $validate['check_in_time'] = Carbon::createFromFormat('h:i A', $validate['check_in_time'])
@@ -324,6 +346,65 @@ class AttendanceController extends Controller
         }
 
     }
+
+      /**
+     * Update the specified resource in storage.
+     */
+    public function singleUpdate(Request $request, Attendance $attendance)
+    {
+        //dd($request->all());
+        $validate = $request->validate([
+            'employee_id'         => 'required|exists:employees,id',
+            'date'                => 'required',
+
+            'check_in_date'       => 'nullable',
+            'check_in_time'       => 'nullable',
+            'check_in_remarks'    => 'nullable',
+            'check_in_latitude'   => 'nullable',
+            'check_in_longitude'  => 'nullable',
+
+            'check_out_date'      => 'nullable',
+            'check_out_time'      => 'nullable',
+            'check_out_remarks'   => 'nullable',
+            'check_out_latitude'  => 'nullable',
+            'check_out_longitude' => 'nullable',
+            'attendance_type'     => 'nullable',
+
+        ]); 
+
+
+        // Convert 12-hour inputs to 24-hour TIME format
+        if (! empty($validate['check_in_time'])) {
+            $validate['check_in_time'] = Carbon::createFromFormat('h:i A', $validate['check_in_time'])
+                ->format('H:i');
+        }
+
+        if (! empty($validate['check_out_time'])) {
+            $validate['check_out_time'] = Carbon::createFromFormat('h:i A', $validate['check_out_time'])
+                ->format('H:i');
+        } 
+        $validate['attendance_type'] = 'Present';
+        $validate['flag']            = $this->service->calculateAttendanceStatus($validate);
+ 
+
+        try
+        {
+            $result = $this->service->update($attendance, $validate);
+
+           if ($result && $result->id) {
+                return redirect()->back()->with('success', 'Attendance Update successfully.');
+            } else {
+                return redirect()->back()->with('error', 'Failed to Update attendance. Please try again.');
+
+            }
+
+        } catch (\Exception $e) {
+            // Catch any database or service errors
+            return redirect()->back()->with('error', $e->getMessage());
+        } 
+
+    }
+
 
     /**
      * Remove the specified resource from storage.

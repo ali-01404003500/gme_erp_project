@@ -1331,9 +1331,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'access_control.global-settings',
                 'parent_key' => 'access_control',
             ],
-           
-             
-
+            
 
             
  
