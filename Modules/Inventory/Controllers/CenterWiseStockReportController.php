@@ -39,7 +39,8 @@ class CenterWiseStockReportController extends Controller
 
     private function buildReportQuery($request)
     {
-        $fromDate = $request->from ? Carbon::parse($request->from)->startOfDay() : null;
+        //$fromDate = $request->from ? Carbon::parse($request->from)->startOfDay() : null;
+        $fromDate = '2026-04-01';
         $toDate = $request->to ? Carbon::parse($request->to)->endOfDay() : Carbon::now()->endOfDay();
         
         $query = Stock::withoutGlobalScope('latest')
@@ -53,9 +54,15 @@ class CenterWiseStockReportController extends Controller
         ->groupBy('product_id', 'branch_id');
 
 
-        // Apply filters
-        if ($request->filled('branch_id') && $request->branch_id != 'all') {
-            $query->where('branch_id', $request->branch_id);
+        // Apply filters 
+        if ($request->filled('branch_id')) {
+
+            if ($request->branch_id == 'all') {
+                $query->where('branch_id', '!=', 4); // ❗ branch_id 4 or damage or scrap bade
+            } else {
+                $query->where('branch_id', $request->branch_id);
+            }
+
         }
 
         if ($request->filled('product_id')) {
