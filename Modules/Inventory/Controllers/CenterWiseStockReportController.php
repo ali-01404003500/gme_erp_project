@@ -39,7 +39,12 @@ class CenterWiseStockReportController extends Controller
 
     private function buildReportQuery($request)
     {
+        $defaultDate = Carbon::parse('2026-04-18')->startOfDay();
         $fromDate = $request->from ? Carbon::parse($request->from)->startOfDay() : null;
+        if (!$fromDate || $fromDate->lt($defaultDate)) {
+            $fromDate = $defaultDate;
+          
+        } 
         $toDate = $request->to ? Carbon::parse($request->to)->endOfDay() : Carbon::now()->endOfDay();
         
         $query = Stock::withoutGlobalScope('latest')
@@ -196,11 +201,11 @@ class CenterWiseStockReportController extends Controller
 
     public function centerStockDetail(Request $request, $productId)
     {
-        $defaultDate = Carbon::parse('2026-04-01')->startOfDay();
-        $fromDate =  $request->from ? Carbon::parse($request->from)->startOfDay() : null;
-        
+        $defaultDate = Carbon::parse('2026-04-18')->startOfDay();
+        $fromDate =  $request->from ? Carbon::parse($request->from)->startOfDay() : null; 
         if (!$fromDate || $fromDate->lt($defaultDate)) {
             $fromDate = $defaultDate;
+          
         }
         $toDate = $request->to ? Carbon::parse($request->to)->endOfDay() : Carbon::now()->endOfDay();
         $branchId = $request->branch_id;
