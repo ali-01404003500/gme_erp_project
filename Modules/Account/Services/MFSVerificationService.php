@@ -149,7 +149,7 @@ class MFSVerificationService
                 'invoice_no' => $mFSVerification->source?->collection_id, 
                 'debit_amount' => $mFSVerification->charge,
                 'credit_amount' => 0,
-                'description' => "Collection through bKash #{$mFSVerification->transaction_id}",
+                'description' => "Collection Charge #{$mFSVerification->transaction_id}",
                 'transaction_date' => $mFSVerification->transaction_date,
             ]);
  
@@ -161,7 +161,7 @@ class MFSVerificationService
                 'invoice_no' => $mFSVerification->source?->collection_id, 
                 'debit_amount' => 0,
                 'credit_amount' => $mFSVerification->charge,
-                'description' => "Collection through bKash #{$mFSVerification->transaction_id}",
+                'description' => "Collection Charge bKash #{$mFSVerification->transaction_id}",
                 'transaction_date' => $mFSVerification->transaction_date,
             ]); 
         }

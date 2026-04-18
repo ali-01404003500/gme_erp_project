@@ -38,6 +38,37 @@
                     <h4 class="text-capitalize breadcrumb-title">{{ trans('Payments List') }}</h4>
                 </div>
                 <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <form method="GET" action="{{ url()->current() }}">
+                                <div class="row">
+                                    
+                                    <div class="col-md-4">
+                                        <input type="date" name="from_date" 
+                                            value="{{ request('from_date') }}" 
+                                            class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <input type="date" name="to_date" 
+                                            value="{{ request('to_date') }}" 
+                                            class="form-control">
+                                    </div>
+
+                                    <div class="col-md-4 d-flex">
+                                        <button class="btn btn-primary me-2">
+                                            <i class="fa fa-search"></i> Search
+                                        </button>
+
+                                        <a href="{{ url()->current() }}" class="btn btn-warning">
+                                            <i class="fa fa-refresh"></i> Reset
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                    {{--  <div class="card">
                         <div class="card-body">
                             <form>

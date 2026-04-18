@@ -36,19 +36,26 @@
                     @endif
                 </td>
                 <td>
-                    @if (in_array($detail->status, ['paid','early_settlement_paid']))
+                    @if (in_array($detail->status, ['paid', 'early_settlement_paid']))
                         {{ $detail->updated_at->format('d-M-Y') }}
+                    @elseif ($detail->status == 'processing' && $detail->payments->isNotEmpty())
+                        {{ $detail->payments->first()->date ?? '-' }}
                     @else
                         -
                     @endif
                 </td>
                 <td>{{ number_format($detail->emi_amount) }}</td>
                 <td>
-                    @if (in_array($detail->status, ['paid','early_settlement_paid']))
-                        {{ number_format($detail->emi_amount) }}
-                    @else
-                        0.00
-                    @endif
+                    @php
+                        // Calculate total paid amount from payments relationship
+                        $totalPaid = $detail->payments->sum('amount');
+
+                        // If no payments, check if status is paid/early_settlement_paid then use emi_amount
+                        if ($totalPaid == 0 && in_array($detail->status, ['paid', 'early_settlement_paid'])) {
+                            $totalPaid = $detail->emi_amount;
+                        }
+                    @endphp
+                    {{ number_format($totalPaid) }}
                 </td>
 
                 {{-- Action column --}}
@@ -56,8 +63,8 @@
                     {{-- Show one merged Money Receipt cell for all early settlement rows --}}
                     @if (!$earlySettlementShown)
                         <td rowspan="{{ $earlySettlementCount }}">
-                            <a href="{{ route('account.emi-collections.showMoneyReceipt', $emiEntry->id) }}?emientry_id={{ $emiEntry->id }}" 
-                               target="_blank" class="btn btn-info btn-sm">
+                            <a href="{{ route('account.emi-collections.showMoneyReceipt', $emiEntry->id) }}?emientry_id={{ $emiEntry->id }}"
+                                target="_blank" class="btn btn-info btn-sm">
                                 Money Receipt
                             </a>
                         </td>
@@ -66,10 +73,8 @@
                 @else
                     <td>
                         @if ($detail->status == 'due')
-                            <button type="button" class="btn btn-success btn-sm make-collection-btn" 
-                                data-bs-toggle="modal"
-                                data-bs-target="#emiCollectionModal" 
-                                data-emi-detail-id="{{ $detail->id }}">
+                            <button type="button" class="btn btn-success btn-sm make-collection-btn" data-bs-toggle="modal"
+                                data-bs-target="#emiCollectionModal" data-emi-detail-id="{{ $detail->id }}">
                                 Make Collection
                             </button>
                         @elseif ($detail->status == 'processing')
@@ -77,9 +82,15 @@
                                 data-emi-detail-id="{{ $detail->id }}">
                                 Rollback
                             </button>
+                            @if ($detail->payments->isNotEmpty())
+                                <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}"
+                                    target="_blank" class="btn btn-info btn-sm mt-1">
+                                    Money Receipt
+                                </a>
+                            @endif
                         @elseif ($detail->status == 'paid')
-                            <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}" 
-                               target="_blank" class="btn btn-info btn-sm">
+                            <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}"
+                                target="_blank" class="btn btn-info btn-sm">
                                 Money Receipt
                             </a>
                         @else
