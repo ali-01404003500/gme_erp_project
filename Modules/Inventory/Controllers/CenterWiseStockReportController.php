@@ -54,10 +54,15 @@ class CenterWiseStockReportController extends Controller
 
 
         // Apply filters
-        if ($request->filled('branch_id') && $request->branch_id != 'all') {
-            $query->where('branch_id', $request->branch_id);
-        }
+        if ($request->filled('branch_id')) {
 
+            if ($request->branch_id == 'all') {
+                $query->where('branch_id', '!=', 4); //  branch_id 4 বাদ
+            } else {
+                $query->where('branch_id', $request->branch_id);
+            }
+
+        }
         if ($request->filled('product_id')) {
             $query->where('product_id', $request->product_id);
         }

@@ -147,7 +147,7 @@
                                 <tbody>
                                     @php $i = 0; @endphp
                                     @forelse($reportData as $item)
-                                        
+                                        @continue($item->current_stock == 0)
                                         <tr>
                                             <td class="text-center">{{ ++$i }}</td>
                                             <td>
