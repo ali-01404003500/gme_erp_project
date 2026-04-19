@@ -18,10 +18,48 @@ class ForgotPasswordController extends Controller
         $this->smsService = $smsService;
     }
     // Show forget password form
-    public function showForgetPasswordForm()
+    public function showForgetPasswordUserCheckForm()
     {
-        return view('auth.forget-password');
+        return view('auth.forget-password-user-check'); 
     }
+
+    
+    // Verify email
+    public function verifyEmail(Request $request)
+    {
+       
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|exists:email',
+        ]);   
+
+        try {
+
+            $user = User::where('email', $request->email)->first(); 
+            return redirect()->route('password.request', ['user_id' => $user->id])->with('success', 'Password reset successfully. Please login with your new credentials');
+
+        } catch (\Exception $e) {
+            return back()->with('error', 'Invalid Email. Please try again')->withInput();
+        }
+ 
+
+    }
+ 
+    public function showForgetPasswordForm($user_id)
+    {
+        $user = User::with('employee')->find($user_id);
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
+        }
+        $data = (object)  [
+            'user_id'      => $user->id,
+            'email'        => $user->email,
+            'office_phone' => $user->employee->office_phone ?? null,
+        ];
+
+        return view('auth.forget-password', compact('data'));
+        
+    }
+
 
     // Send OTP to phone number
     public function sendOtp(Request $request)
@@ -40,7 +78,7 @@ class ForgotPasswordController extends Controller
 
         // Find user by employee phone number
         $user = User::whereHas('employee', function($query) use ($request) {
-            $query->where('personal_mobile', $request->phone_number);
+            $query->where('office_phone', $request->phone_number);
         })->first();
 
         if (!$user) {
@@ -88,6 +126,8 @@ class ForgotPasswordController extends Controller
             ]);
         }
     }
+ 
+
     // Verify OTP
     public function verifyOtp(Request $request)
     {
