@@ -4966,6 +4966,13 @@ class PermissionTableSeed extends Seeder
             ],
 
 
+            [
+                'name' => 'All Verification List',
+                'slug' => 'verification.all-verification-tab',
+                'description' => 'All Verification List',
+                'key' => 'verification'
+            ],
+
 
            
 

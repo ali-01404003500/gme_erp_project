@@ -26,6 +26,18 @@
                     </ul>
                 </li>
             @endif
+           
+                <li>
+                    <a href="{{ route('hrm.attendances.create') }}"
+                        class="{{ request()->routeIs('hrm.attendances.create') ? 'active' : '' }}">
+                        <span class="nav-icon uil uil-calender"></span>
+                        <span class="menu-text">{{ t_('menu.Attendance') }}</span>
+                    </a>
+                    <ul>
+
+                    </ul>
+                </li>
+  
             @if (hasPermission('hrm.leaves.*'))
                 <li>
                     <a href="{{ route('hrm.leaves.index') }}" class="{{ request()->routeIs('hrm.leaves.*') ? 'active' : '' }}">

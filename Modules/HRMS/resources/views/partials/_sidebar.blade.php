@@ -78,6 +78,18 @@
                                 <a href="{{ route('hrm.attendances.index') }}"
                                     class="{{ request()->routeIs('hrm.attendances.*') ? 'active' : '' }}">
                                     <span class="nav-icon uil uil-calender"></span>
+                                    <span class="menu-text">All Employee Attendances</span>
+                                </a>
+                                <ul>
+
+                                </ul>
+                            </li>
+                        @endif
+                        @if (hasPermission('hrm.attendances.*'))
+                            <li>
+                                <a href="{{ route('hrm.attendances.create') }}"
+                                    class="{{ request()->routeIs('hrm.attendances.create') ? 'active' : '' }}">
+                                    <span class="nav-icon uil uil-calender"></span>
                                     <span class="menu-text">{{ t_('menu.Attendance') }}</span>
                                 </a>
                                 <ul>

@@ -192,6 +192,17 @@
                         </li>
                     @endif
 
+                    @if (hasPermission('verification.all-verification-tab'))
+                        <li>
+                            <a href="{{ route('verification.all-verification-tab') }}" class="{{ request()->routeIs('verification.all-verification-tab') ? 'active' : '' }}">
+                                <span class="nav-icon uil uil-file-alt"></span>
+                                <span class="menu-text">{{ t_('menu.all-verification-tab') }}</span>
+                            </a>
+                        </li>
+                    @endif
+ 
+
+
                     @if (hasPermission('history.*'))
                         <li>
                             <a href="{{ route('history.user-log-histories.index') }}" class="{{ request()->routeIs('history.user-log-histories.*') ? 'active' : '' }}">

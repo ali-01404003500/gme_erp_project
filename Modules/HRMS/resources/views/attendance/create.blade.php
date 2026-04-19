@@ -40,15 +40,14 @@
                                     enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group mb-25">
                                                 <label for="employee_id" class="color-dark fs-14 fw-500 align-center">Employee
                                                     Name</label>
                                                 <select name="employee_id" id="employee_id" class="form-control tom-select">
                                                     <option value="">Select Employee</option>
                                                     @foreach ($employees as $employee)
-                                                        <option value="{{ $employee->id }}">{{ $employee->full_name }}
-                                                        </option>
+                                                        <option value="{{ $employee->id }}" selected>{{ $employee->full_name }}  </option>
                                                     @endforeach
                                                 </select>
                                                 @if ($errors->has('employee_id'))
@@ -56,7 +55,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group mb-25">
                                                 <label for="date"
                                                     class="color-dark fs-14 fw-500 align-center">Date</label>
@@ -86,21 +85,24 @@
                                                          <!-- Time -->
                                                         <div class="col-md-6">
                                                             <label class="form-label">Time</label>
-                                                            <input type="text" class="form-control flattime"
-                                                                name="check_in_time" id="check_in_time">
+                                                            {{-- <input type="text" class="form-control flattime"
+                                                                name="check_in_time" id="check_in_time"> --}} 
+                                                            <div class="input-group">
+                                                                <input type="text"  class="form-control" name="check_in_time"     id="check_in_time"  readonly> 
+                                                                <button type="button" class="btn btn-danger" id="clear_in_time">  ✕ </button>
+                                                            </div>
                                                         </div>
 
                                                         <!-- Location -->
                                                         <div class="col-md-6">
                                                             <label class="form-label">Location</label>
 
-                                                            <div class="d-flex">
+                                                            <div class="d-flex"> 
+                                                                <input type="text" class="form-control me-1"
+                                                                    id="check_in_latitude" name="check_in_latitude" placeholder="Lat" readonly>
 
                                                                 <input type="text" class="form-control me-1"
-                                                                    id="check_in_latitude" name="check_in_latitude" placeholder="Lat">
-
-                                                                <input type="text" class="form-control me-1"
-                                                                    id="check_in_longitude" name="check_in_longitude" placeholder="Long">
+                                                                    id="check_in_longitude" name="check_in_longitude" placeholder="Long" readonly>
 
                                                                 <button class="btn btn-outline-primary"
                                                                     type="button" id="check_in_geolocate">
@@ -138,8 +140,15 @@
                                                         <!-- Time -->
                                                         <div class="col-md-6">
                                                             <label class="form-label">Time</label>
-                                                            <input type="text" class="form-control flattime"
-                                                                name="check_out_time" id="check_out_time">
+                                                            {{-- <input type="text" class="form-control flattime"
+                                                                name="check_out_time" id="check_out_time"> --}}
+
+                                                            <div class="input-group">
+                                                                <input type="text"  class="form-control" name="check_out_time"     id="check_out_time"  readonly> 
+                                                                <button type="button" class="btn btn-danger" id="clear_out_time">  ✕ </button>
+                                                            </div>
+
+                                                            
                                                         </div>
 
                                                         <!-- Location -->
@@ -149,10 +158,10 @@
                                                             <div class="d-flex">
 
                                                                 <input type="text" class="form-control me-1"
-                                                                    id="check_out_latitude"  name="check_out_latitude" placeholder="Lat">
+                                                                    id="check_out_latitude"  name="check_out_latitude" placeholder="Lat" readonly>
 
                                                                 <input type="text" class="form-control me-1"
-                                                                    id="check_out_longitude" name="check_out_longitude" placeholder="Long">
+                                                                    id="check_out_longitude" name="check_out_longitude" placeholder="Long" readonly>
 
                                                                 <button class="btn btn-outline-primary"
                                                                     type="button" id="check_out_geolocate">
@@ -178,7 +187,7 @@
                                     </div>
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit"
-                                            class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">Submit</button>
+                                            class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm" id="btnSubmit">Submit</button>
                                     </div>
                                 </form>
                             </div>
@@ -222,6 +231,104 @@
                 })
             }
         })
+
+        $(document).ready(function(){
+
+            // click korle current time set
+            $('#check_in_time').on('click', function(){
+               if ($(this).val() === '') {
+
+                let now = new Date();
+
+                let hours = now.getHours();
+                let minutes = now.getMinutes().toString().padStart(2, '0');
+
+                let ampm = hours >= 12 ? 'PM' : 'AM';
+
+                hours = hours % 12;
+                hours = hours ? hours : 12; // 0 হলে 12 করবে
+
+                hours = hours.toString().padStart(2, '0');
+
+                let time = hours + ':' + minutes + ' ' + ampm;
+
+                $(this).val(time);
+            }
+            });
+
+            $('#check_out_time').on('click', function(){
+               if ($(this).val() === '') {
+
+                let now = new Date();
+
+                let hours = now.getHours();
+                let minutes = now.getMinutes().toString().padStart(2, '0');
+
+                let ampm = hours >= 12 ? 'PM' : 'AM';
+
+                hours = hours % 12;
+                hours = hours ? hours : 12; // 0 হলে 12 করবে
+
+                hours = hours.toString().padStart(2, '0');
+
+                let time = hours + ':' + minutes + ' ' + ampm;
+
+                $(this).val(time);
+            }
+            });
+
+
+            // clear button
+            $('#clear_in_time').on('click', function(){
+                $('#check_in_time').val('');
+            });
+
+              // clear button
+            $('#clear_out_time').on('click', function(){
+                $('#check_out_time').val('');
+            });
+
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    $('#check_in_latitude').val(lat);
+                    $('#check_in_longitude').val(lon);
+                })
+            }
+        
+
+       
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    $('#check_out_latitude').val(lat);
+                    $('#check_out_longitude').val(lon);
+                })
+            }
+
+            $('#btnSubmit').on('click', function(){ 
+                let check_in_time = $('#check_in_time').val();
+                if(!check_in_time)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'In Time can not be null.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    
+                    return false;
+                }
+            });
+
+        });
+
     </script>
 
 @endSection
