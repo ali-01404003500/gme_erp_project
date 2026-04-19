@@ -72,7 +72,7 @@
                                                         <span class="checkbox-text">Keep me logged in</span>
                                                     </label>
                                                 </div> --}}
-                                                <a href="{{ route('password.request') }}">forget password?</a>
+                                                <a href="{{ route('password.user-request') }}">forget password?</a>
                                             </div>
                                             <div class="admin__button-group button-group d-flex pt-1 justify-content-md-start justify-content-center pb-5">
                                                 <button class="btn btn-primary btn-default w-100 btn-squared text-capitalize lh-normal px-50 signIn-createBtn" style="background-color: #0b2e33"">

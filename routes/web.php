@@ -168,7 +168,9 @@ Route::group(['middleware' => 'auth'], function () {
     ->name('download_file');
 });
 Route::group(['middleware' => 'guest', 'prefix' => 'password', 'as' => 'password.'], function () {
-    Route::get('reset', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('request');
+    Route::get('user-request', [ForgotPasswordController::class, 'showForgetPasswordUserCheckForm'])->name('user-request');
+    Route::post('verify-email', [ForgotPasswordController::class, 'verifyEmail'])->name('verify-email');
+    Route::get('request/{user_id}', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('request');
     Route::post('send-otp', [ForgotPasswordController::class, 'sendOtp'])->name('send-otp');
     Route::post('verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('verify-otp');
     Route::post('reset', [ForgotPasswordController::class, 'resetPassword'])->name('reset');

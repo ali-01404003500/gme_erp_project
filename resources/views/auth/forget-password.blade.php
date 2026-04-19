@@ -32,13 +32,15 @@
                                         <h6>Reset Password</h6>
                                     </div>
                                 </div>
+                                {{-- @dd($data); --}}
                                 <div class="card-body">
                                     <!-- Step 1: Phone Number Input -->
                                     <div id="phone-step" class="password-reset-step">
                                         <p class="mb-20">Enter your phone number to receive OTP</p>
                                         <div class="form-group mb-20">
-                                            <label for="phone_number">Phone Number</label>
+                                            <label for="phone_number">Phone Number {{ substr($data->office_phone, 0, 3). str_repeat('*', strlen($data->office_phone) - 5).substr($data->office_phone, -2) }} </label>
                                             <input type="text" class="form-control" id="phone_number" placeholder="Enter 11 digit phone number">
+                                            <input type="hidden" class="form-control" id="office_phone" value="{{ $data->office_phone }}">
                                             <span class="text-danger" id="phone-error"></span>
                                         </div>
                                         <button class="btn btn-primary w-100" id="send-otp-btn" style="background-color: #0b2e33">
@@ -133,14 +135,21 @@
             });
 
             // Send OTP
-            $('#send-otp-btn').click(function() {
+            $('#send-otp-btn').click(function() { 
                 const phoneNumber = $('#phone_number').val();
+                const officePhone = $('#office_phone').val();
                 $('#phone-error').text('');
-
+ 
                 if (!phoneNumber || phoneNumber.length !== 11) {
                     $('#phone-error').text('Please enter a valid 11-digit phone number');
                     return;
                 }
+
+                if (phoneNumber!==officePhone) {
+                    $('#phone-error').text('Phone not match. Please enter a valid phone number');
+                    return;
+                }
+                
 
                 $('#overlayer').show();
 
