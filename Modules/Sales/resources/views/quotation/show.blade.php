@@ -361,6 +361,10 @@
                             // 2. Initialize Paginator
                        $paginator = new Modules\Sales\Services\HtmlPaginatorService($contentHightRem); // 1000px height per page
 
+                             
+
+                        $description = $paginator->removeStyleAttributesRegex($description);
+
                         // 3. Split Content
                        $result =  $paginator->paginate($description);
 // dd($result);
