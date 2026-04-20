@@ -48,7 +48,7 @@ class FundTransferService
     {
         $fromAccount = $fundTransfer->transferFromBankAccount->getAccount();
         $toAccount = $fundTransfer->transferToBankAccount->getAccount();
-        $chargeAccount = Account::where('name', 'Bank Transaction Charge')->first()->id; // expense account 
+        $chargeAccount = Account::where('name', 'Bank Transaction Charge Expense')->first()->id; // expense account 
 
         $fundTransfer->transactions()->delete();
 
