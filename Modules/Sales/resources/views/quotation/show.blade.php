@@ -340,13 +340,14 @@
                     @endphp
                     @foreach ($quotation->quotationDetails as $key => $quotationDetail)
                         @php
+                            $paginator = new Modules\Sales\Services\HtmlPaginatorService($contentHightRem); // 1000px height per page
                             $description =
                                 '<div style="font-weight: bold;">' .
                                 $quotationDetail->product->name .
                                 '</div>
                                     <div>
-                                        <div>Features: ' .
-                                $quotationDetail->product->description .
+                                        <div style="max-width: 272px;overflow: hidden;">Features: ' .
+                                            $paginator->removeStyleAttributesRegex($quotationDetail->product->description) .
                                 '</div>
                                         <div>Model: ' .
                                 $quotationDetail->product->model .
@@ -359,11 +360,10 @@
                                 '</div>
                                     </div>';
                             // 2. Initialize Paginator
-                       $paginator = new Modules\Sales\Services\HtmlPaginatorService($contentHightRem); // 1000px height per page
+                       
 
                              
 
-                        $description = $paginator->removeStyleAttributesRegex($description);
 
                         // 3. Split Content
                        $result =  $paginator->paginate($description);
