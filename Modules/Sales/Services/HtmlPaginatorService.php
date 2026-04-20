@@ -179,4 +179,11 @@ class HtmlPaginatorService
     {
         return $node->nodeType === XML_TEXT_NODE && trim($node->textContent) === '';
     }
+
+    function removeStyleAttributesRegex(string $html): string {
+        // This pattern matches style="..." or style='...'
+        // It handles both single and double quotes
+        return preg_replace('/\s*style\s*=\s*(["\']).*?\1/si', '', $html);
+    }
+
 }
