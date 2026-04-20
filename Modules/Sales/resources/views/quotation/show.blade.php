@@ -347,7 +347,7 @@
                                 '</div>
                                     <div>
                                         <div style="max-width: 272px;overflow: hidden;">Features: ' .
-                                            $paginator->removeStyleAttributesRegex($quotationDetail->product->description) .
+                                            $paginator->removeStyleAttributesRegex($quotationDetail->product?->description??"") .
                                 '</div>
                                         <div>Model: ' .
                                 $quotationDetail->product->model .
