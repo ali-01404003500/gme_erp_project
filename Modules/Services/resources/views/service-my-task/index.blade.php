@@ -85,27 +85,27 @@
                             <div class="card-body">
                                 <form>
                                     <div class="col-sm-12">
-                                        <table id="zero-config" class="table dt-table-hover table-bordered align-top" style="width: 100%;">
+                                        <table id="zero-config" class="table dt-table-hover table-bordered align-top" style="width: 100%; table-layout: fixed;">
                                             <thead class="align-top">
                                                 <tr>
-                                                    <th class="text-center" style="width: 8%">SL</th>
-                                                    <th class="text-left" style="width: 8%">Token</th>
-                                                    <th class="text-left" style="width: 10%">Customer</th>
-                                                    <th class="text-left" style="width: 24%">Product</th>
-                                                    <th class="text-left" style="width: 10%">Problem Type</th>
-                                                    <th class="text-left" style="width: 6%">Service Date</th>
-                                                    <th class="text-left" style="width: 6%">Service Status</th>
-                                                    <th class="text-left" style="width: 8%">Assign By</th>
+                                                    <th class="text-center text-wrap" style="width: 8%">SL</th>
+                                                    <th class="text-left text-wrap" style="width: 8%">Token</th>
+                                                    <th class="text-left text-wrap" style="width: 10%">Customer</th>
+                                                    <th class="text-left text-wrap" style="width: 24%">Product</th>
+                                                    <th class="text-left text-wrap" style="width: 10%">Problem Type</th>
+                                                    <th class="text-left text-wrap" style="width: 6%">Service Date</th>
+                                                    <th class="text-left text-wrap" style="width: 6%">Service Status</th>
+                                                    <th class="text-left text-wrap" style="width: 8%">Assign By</th>
                                                     {{-- <th class="text-left" style="width: 6%">Priority</th> --}}
-                                                    <th class="text-left" style="width: 6%">Service Type</th>
+                                                    <th class="text-left text-wrap" style="width: 6%">Service Type</th>
                                                     <th class="text-center no-content" style="width: 8%">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="align-top">
                                                 @foreach ($myTasks as $key => $task)
                                                     <tr>
-                                                        <td class="text-center">{{ $key + 1 }}</td>
-                                                        <td class="text-left">{{ $task->service->service_unique_id }}</td>
+                                                        <td class="text-center text-wrap">{{ $key + 1 }}</td>
+                                                        <td class="text-left text-wrap">{{ $task->service->service_unique_id }}</td>
                                                          <td class="text-wrap" style="word-break: break-word; min-width: 180px; white-space: normal;">
                                                             {{ optional($task)->customer->company_name }} <br>
                                                             <span class="text-muted">Address: {{ optional($task)->customer->address }}</span> 
@@ -118,8 +118,8 @@
 
                                                         </td>
                                                        
-                                                        <td>{{ $task->problem_type }}</td>
-                                                        <td>{{ $task->token_date }}</td>
+                                                        <td class="text-wrap">{{ $task->problem_type }}</td>
+                                                        <td class="text-wrap">{{ $task->token_date }}</td>
                                                         <td class="text-wrap text-center" style="word-break: break-word; min-width: 80px; vertical-align: middle;">
                                                                 @php
                                                                     $status = strtolower($task->action); 
@@ -136,12 +136,11 @@
                                                                 </span>
                                                             </td>
                                                         {{-- @dd($task->engineerAssign) --}}
-                                                        <td>{{ @$task->engineerAssign->createdBy->name }}</td>
+                                                        <td class="text-wrap">{{ @$task->engineerAssign->createdBy->name }}</td>
                                                         {{-- <td>{{ @$task->engineerAssign->service_priority }}</td> --}}
-                                                        <td>{{ @$task->engineerAssign->serviceType->name??@$task->engineerAssign->service_type }}</td>
-                                                        <td>
-                                                         <div class="btn-group btn-group-sm" role="group"
-                                                              aria-label="Small button group">
+                                                        <td class="text-wrap">{{ @$task->engineerAssign->serviceType->name??@$task->engineerAssign->service_type }}</td>
+                                                        <td class="text-center align-middle" style="vertical-align: middle;">
+                                                         <div class="d-flex flex-wrap  justify-content-center" style="gap: 5px;">
                                                             @if ((hasPermission('services.service-my-task.create') || hasPermission('services.service-my-task.update') || hasPermission('services.service-bills.create') ) && $task->action != 'Done')
                                                                 <a href="{{ route('services.service-bills.create', ['token_id' => $task->id]) }}" class="btn btn-danger btn-xs" title="Details"><i class="fas fa-info-circle"></i>
                                                             @endif
