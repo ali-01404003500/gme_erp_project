@@ -36,9 +36,9 @@
                         <div class="card">
                             <div class="card-body">
                                     <div class="col-sm-12">
-                                        <table class="table table-bordered">
+                                        <table class="table table-bordered w-25">
                                             <tr>
-                                                <td>
+                                                <td >
                                                     <select name="status" id="status" class="form-control tom-select" data-placeholder="Search by status">
                                                         <option value="regular" selected>Regular</option>
                                                         <option value="junk" {{ request('status') == 'junk' ? 'selected' : '' }}>Junk</option>
@@ -54,16 +54,16 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="col-sm-12">
-                                    <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $serviceTokens])' style="width:100%">
+                                    <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $serviceTokens])' style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th class="text-center" style="width: 2%">Sl</th>
-                                                <th class="text-center" style="width: 20%">Product info</th>
-                                                <th class="text-center" style="width: 18%">Customer</th>
-                                                <th class="text-center" style="width: 15%">Service Type</th>
-                                                <th class="text-center" style="width: 15%">Problem Type</th>
-                                                <th class="text-center" style="width: 10%">Date</th>
-                                                <th class="text-center no-content" style="width: 10%">Emergency Note
+                                                <th class="text-right" style="width: 2%">Sl</th>
+                                                <th class="text-left" style="width: 18%">Customer</th>
+                                                <th class="text-left" style="width: 20%">Product info</th>
+                                                <th class="text-left" style="width: 15%">Service Type</th>
+                                                <th class="text-left" style="width: 10%">Problem Type</th>
+                                                <th class="text-left" style="width: 10%">Date</th>
+                                                <th class="text-left no-content" style="width: 15%">Emergency Note
                                                 </th>
                                                 <th class="text-center no-content" style="width: 10%">Action</th>
                                             </tr>
@@ -74,22 +74,27 @@
                                                     style="background-color: {{ $token->action == 'Junk' ? 'rgb(168, 168, 168)' : ($token->action == 'Failed' ? 'rgba(255, 199, 206, 0.5)' : '') }};">
                                                     <td class="text-center" style="vertical-align: top;">
                                                         {{ $key + 1 }}</td>
-                                                    <td style="vertical-align: top;">
-                                                        Invoice ID: {{ @$token->service->service_unique_id }} <br>
-                                                        Product Name: {{ @$token->product->name }} <br>
-                                                        Serial No: {{ @$token->serial_number }}
+                                                        <td style="vertical-align: top;" class="text-wrap">
+                                                        {{ optional($token->customer)->company_name }} <br>
+                                                        <span class="text-muted">{{ optional($token->customer)->address }}</span> 
+                                                    
                                                     </td>
-                                                    <td style="vertical-align: top;">
-                                                        {{ optional($token->customer)->company_name }}</td>
+                                                    <td style="vertical-align: top;" class="text-wrap">
+                                                        Invoice ID: {{ @$token->service->service_unique_id }} <br>
+                                                        Product Name: {{ @$token->product->getRawOriginal('name') }} <br>
+                                                          <span class="text-muted">Brand: {{ ((optional($token)->product)->brand)->getRawOriginal('name') ?? 'N/A' }}</span> <br>
+                                                       <span class="text-muted">Serial No: {{ @$token->serial_number }}</span> 
+                                                    </td>
+                                                    
                                                     <td style="vertical-align: top;">{{ $token->service_type }}</td>
-                                                    <td style="vertical-align: top;">{{ $token->problem_type }}</td>
-                                                    <td style="vertical-align: top;">
-                                                        Invoice Date: {{ $token->invoice_date }} <br>
+                                                    <td class="text-wrap" style="vertical-align: top; white-space: normal;">{{ $token->problem_type }}</td>
+                                                    <td style="vertical-align: top;" class="text-wrap">
+                                                        Invoice Date: {{ $token->invoice_date }} <br>  <br> 
                                                         Expire Date: {{ $token->expire_date }}
                                                     </td>
-                                                    <td style="vertical-align: top;">
+                                                    <td style="vertical-align: top;" class="text-wrap">
                                                         @foreach ($token->emergencyNotes as $emergencyNote)
-                                                            <li>
+                                                            <li style="word-break: break-word; overflow-wrap: break-word;">
                                                                 Call By: {{ $emergencyNote->createdBy->name }} <br>
                                                                 Call Date:
                                                                 <b>{{ \Carbon\Carbon::parse($emergencyNote->created_at)->format('d-M-Y h:i A') }}</b>

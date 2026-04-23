@@ -48,7 +48,7 @@
                                                     value="{{ request('area') }}" autocomplete="off"
                                                     placeholder="Search by Area Name">
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center" style="width: 28%">
                                                 <select name="thana_id" id="thana_id" class="form-control tom-select"
                                                     data-placeholder="Search by Thana Name">
                                                     <option value=""></option>
@@ -74,10 +74,10 @@
                 </div>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $areas])' style="width:100%">
+                        <table id="zero-config"class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $areas])' style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>Sl</th>
+                                    <th class="text-center" style="width: 8%">Sl</th>
                                     <th>Area Name</th>
                                     <th>Division</th>
                                     <th>District</th>

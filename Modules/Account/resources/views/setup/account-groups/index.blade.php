@@ -35,12 +35,12 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $accountGroups])'
-                                style="width:100%">
+                            <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $accountGroups])'
+                                style="width:100%; table-layout: fixed;">
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Name</th>
+                                        <th class="text-center" >Name</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center no-content">Action</th>
                                     </tr>
@@ -49,8 +49,10 @@
                                     @csrf
                                     @foreach ($accountGroups as $key => $accountGroup)
                                         <tr>
-<td class="text-center">{{ ($accountGroups->currentPage() - 1) * $accountGroups->perPage() + $loop->iteration  }}</td>
-                                            <td class="text-center">{{ $accountGroup->name }}</td>
+                                        <td class="text-center">{{ ($accountGroups->currentPage() - 1) * $accountGroups->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">
+                                                {{ $accountGroup->name }}
+                                            </td>
                                             <td class="text-center">
 
                                                 @if ($accountGroup->status == 1)

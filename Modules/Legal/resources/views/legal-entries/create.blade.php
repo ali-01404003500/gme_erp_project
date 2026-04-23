@@ -131,7 +131,7 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="form-group">
-                                                    <label for="legal_description">Legal Description:</label>
+                                                    <label for="legal_description">Legal Description<span class="text-danger">*</span>:</label>
                                                     <textarea name="legal_description" id="legal_description" class="form-control px-15" rows="3">{{ old('legal_description') }}</textarea>
                                                 </div>
                                             </div>

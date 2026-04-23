@@ -3,6 +3,7 @@
 @extends('layout.app')
 @section('content')
 @section('content')
+
     <!-- CONTENT AREA -->
     <div class="container-fluid">
         <div class="social-dash-wrap">
@@ -23,7 +24,7 @@
                                     <button class="btn btn-xs btn-primary btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#createModal">
                                         Add New
-                                </button>
+                                    </button>
                                 @endif
                                 <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
                                     class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
@@ -54,25 +55,28 @@
                                     <div class="col-sm-12">
                                         <table class="table table-bordered">
                                             <tr>
-                                                <td class="text-center">
+                                                <td class="text-left">
                                                     <input type="text" class="form-control" name="name"
                                                         value="{{ request('name') }}" autocomplete="off"
                                                         placeholder="Search by District Name">
                                                 </td>
-                                                {{-- <td class="text-center">
+                                                {{-- <td class="text-left">
                                                     <select name="division_id" class="form-control">
                                                         <option value="">Search by Division Name</option>
-                                                        @foreach($divisions as $division)
+                                                        @foreach ($divisions as $division)
                                                             <option {{ request('division_id') == $division->id ? 'selected' : '' }} value="{{ $division->id }}">{{ $division->name }}</option>
                                                         @endforeach
                                                     </select>
                                                 </td> --}}
-                                                <td class="text-center">
-                                                    <select name="division_id" id="division_id" class="form-control tom-select"
+                                                <td class="text-left" style="width: 28%;">
+                                                    <select name="division_id" id="division_id"
+                                                        class="form-control tom-select"
                                                         data-placeholder="Search by Division Name">
                                                         <option value=""></option>
-                                                        @foreach($divisions as $division)
-                                                            <option {{ request('division_id') == $division->id ? 'selected' : '' }} value="{{ $division->id }}">{{ $division->name }}</option>
+                                                        @foreach ($divisions as $division)
+                                                            <option
+                                                                {{ request('division_id') == $division->id ? 'selected' : '' }}
+                                                                value="{{ $division->id }}">{{ $division->name }}</option>
                                                         @endforeach
                                                     </select>
                                                 </td>
@@ -91,58 +95,70 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover"  data-page='@include('utils.table_paginate', ['data' => $districts])' style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center">Division</th>
-                                        <th class="text-left">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @csrf
-                                    @foreach ($districts as $value)
-                                        <tr>
-                                        <td class="text-center">{{ ($districts->currentPage() - 1) * $districts->perPage() + $loop->iteration  }}</td>
-                                          <td class="text-center">{{ $value->name }}</td>
-                                            <td class="text-center">{{ optional($value->parent)->name }}</td>
-                                            <td class="text-left">
-                                                <div class="btn-group btn-group-sm" role="group"
-                                                    aria-label="Small button group">
+                    <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8 col-sm-12 col-lg-12">
+                                        <table id="zero-config" class="table dt-table-hover table-bordered"
+                                            data-page='@include('utils.table_paginate', ['data' => $districts])' sstyle="width:98% !important;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 20%">Sl</th>
+                                                    <th class="text-left">Name</th>
+                                                    <th class="text-left">Division</th>
+                                                    <th class="text-left">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @csrf
+                                                @foreach ($districts as $value)
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            {{ ($districts->currentPage() - 1) * $districts->perPage() + $loop->iteration }}
+                                                        </td>
+                                                        <td class="text-left">{{ $value->name }}</td>
+                                                        <td class="text-left">{{ optional($value->parent)->name }}</td>
+                                                        <td class="text-left">
+                                                            <div class="btn-group btn-group-sm" role="group"
+                                                                aria-label="Small button group">
 
-                                                    @if (hasPermission('location_manager.districts.update'))
-                                                        <a href={{ $value->id }} class="btn btn-edit  btn-outline-warning"
-                                                            data-name="{{ $value->name }}"  data-parent_id="{{ $value->parent_id }}"
-                                                            data-action="{{ route('location_manager.districts.update', $value->id) }}"
-                                                            data-toggle="tooltip" data-placement="top" title="Edit"
-                                                            data-bs-toggle="modal" data-bs-target="#editModal">
-                                                            <i class="far fa-edit"></i>
-                                                        </a>
-                                                    @endif
+                                                                @if (hasPermission('location_manager.districts.update'))
+                                                                    <a href={{ $value->id }}
+                                                                        class="btn btn-edit  btn-outline-warning"
+                                                                        data-name="{{ $value->name }}"
+                                                                        data-parent_id="{{ $value->parent_id }}"
+                                                                        data-action="{{ route('location_manager.districts.update', $value->id) }}"
+                                                                        data-toggle="tooltip" data-placement="top"
+                                                                        title="Edit" data-bs-toggle="modal"
+                                                                        data-bs-target="#editModal">
+                                                                        <i class="far fa-edit"></i>
+                                                                    </a>
+                                                                @endif
 
-                                                    @if (hasPermission('location_manager.districts.destroy'))
-                                                        <button type="button"
-                                                            data-action="{{ route('location_manager.districts.destroy', $value->id) }}"
-                                                            class="btn btn-outline-danger delete-confirm"><i
-                                                                class="far fa-trash-alt"></i></button>
-                                                    @endif
+                                                                @if (hasPermission('location_manager.districts.destroy'))
+                                                                    <button type="button"
+                                                                        data-action="{{ route('location_manager.districts.destroy', $value->id) }}"
+                                                                        class="btn btn-outline-danger delete-confirm"><i
+                                                                            class="far fa-trash-alt"></i></button>
+                                                                @endif
 
-                                                </div>
+                                                            </div>
 
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
 
-                                </tbody>
-                            </table>
-                            <div class="d-none">
-                                <form class="delete-form" action="" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
+                                            </tbody>
+                                        </table>
+                                        <div class="d-none">
+                                            <form class="delete-form" action="" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -165,8 +181,9 @@
                                 <div class="modal-body">
 
                                     <div class="row mb-4">
-                                        <label class="col-sm-12 col-form-label">Division Name</label>
-                                        <div class="col-sm-12"> 
+                                        <label class="col-sm-12 col-form-label">Division Name<span
+                                                style="color: red">*</span></label>
+                                        <div class="col-sm-12">
                                             <select name="parent_id" class="form-control required" required>
                                                 <option value="">Select Division</option>
                                                 @foreach ($divisions as $value)
@@ -175,16 +192,18 @@
                                             </select>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row mb-4">
-                                        <label class="col-sm-12 col-form-label">District Name</label>
+                                        <label class="col-sm-12 col-form-label">District Name<span
+                                                style="color: red">*</span></label>
                                         <div class="col-sm-12">
-                                            <input type="text" name="name" class="form-control" placeholder=" Name *"
-                                                required>
-                                                <input type="text" name="type" class="form-control" value="District" hidden>
+                                            <input type="text" name="name" class="form-control"
+                                                placeholder=" Name *" required>
+                                            <input type="text" name="type" class="form-control" value="District"
+                                                hidden>
                                         </div>
                                     </div>
-                                   
+
                                 </div>
 
 
@@ -217,7 +236,8 @@
                     <div class="modal-body">
 
                         <div class="row mb-4">
-                            <label for="division" class="col-sm-12 col-form-label">Division Name</label>
+                            <label for="division" class="col-sm-12 col-form-label">Division Name<span
+                                    style="color: red">*</span></label>
                             <div class="col-sm-12">
                                 <select name="parent_id" class="form-control tom-select" id="parent_id" required>
                                     <option value="">Select Division</option>
@@ -229,7 +249,8 @@
                         </div>
 
                         <div class="row mb-4">
-                            <label for="name" class="col-sm-12 col-form-label">District Name</label>
+                            <label for="name" class="col-sm-12 col-form-label">District Name<span
+                                    style="color: red">*</span></label>
                             <div class="col-sm-12">
                                 <input name="name" id="name" class="form-control" type="text">
                             </div>
@@ -254,7 +275,8 @@
         $(document).ready(function(e) {
             $(document).on('click', '.btn-edit', function() {
                 $('#name').val($(this).data('name'));
-                $('#parent_id option[value="' + $(this).data('parent_id') + '"]').attr('selected', 'selected');
+                $('#parent_id option[value="' + $(this).data('parent_id') + '"]').attr('selected',
+                    'selected');
                 $('#parent_id')[0].tomselect.sync();
                 $("#editFrom").attr("action", $(this).data('action'));
 

@@ -74,9 +74,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card mb-4">
+                    {{-- <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover"  data-page='@include('utils.table_paginate', ['data' => $divisions])' style="width:100%">
+                            <table  class="table dt-table-hover"  data-page='@include('utils.table_paginate', ['data' => $divisions])' style="width: 100%; margin-left: auto; margin-right: auto;">
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>
@@ -126,7 +126,59 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
+
+                    <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8 col-sm-12 col-lg-12"> 
+                                        
+                                        <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $divisions])' style="width:98% !important;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="width: 15%">Sl</th>
+                                                    <th class="text-left">Name</th>
+                                                    <th class="text-left" >Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @csrf
+                                                @foreach ($divisions as $value)
+                                                    <tr>
+                                                        <td class="text-center">{{ ($divisions->currentPage() - 1) * $divisions->perPage() + $loop->iteration }}</td>
+                                                        <td class="text-left">{{ $value->name }}</td>
+                                                        <td class="text-left">
+                                                            <div class="btn-group btn-group-sm" role="group">
+                                                                @if (hasPermission('location_manager.divisions.update'))
+                                                                <a href="#" class="btn btn-edit btn-outline-warning" data-name="{{ $value->name }}" data-action="{{ route('location_manager.divisions.update', $value->id) }}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                                                    <i class="far fa-edit"></i>
+                                                                </a>
+                                                                @endif
+                                                                @if (hasPermission('location_manager.divisions.destroy'))
+                                                                <button type="button" data-action="{{ route('location_manager.divisions.destroy', $value->id) }}" class="btn btn-outline-danger delete-confirm">
+                                                                    <i class="far fa-trash-alt"></i>
+                                                                </button>
+                                                                @endif
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+                                <div class="d-none">
+                                    <form class="delete-form" action="" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                   </div>
 
                 </div>
 
@@ -146,9 +198,9 @@
                                 <div class="modal-body">
                                  
                                     <div class="row mb-4">
-                                        <label class="col-sm-12 col-form-label">Division Name</label>
+                                        <label class="col-sm-12 col-form-label">Division Name<span style="color: red">*</span></label>
                                         <div class="col-sm-12">
-                                            <input type="text" name="name" class="form-control" placeholder=" Name *"
+                                            <input type="text" name="name" class="form-control" placeholder=" Name"
                                                 required>
                                                 <input type="text" name="type" class="form-control" value="Division" hidden>
                                         </div>
@@ -186,7 +238,7 @@
                     <div class="modal-body">
 
                         <div class="row mb-4">
-                            <label for="name" class="col-sm-12 col-form-label">Division Name</label>
+                            <label for="name" class="col-sm-12 col-form-label">Division Name<span style="color: red">*</span></label>
                             <div class="col-sm-12">
                                 <input name="name" id="name" class="form-control" type="text">
                             </div>

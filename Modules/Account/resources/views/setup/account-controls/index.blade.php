@@ -60,7 +60,7 @@
                                 </select>
                             </div>
                         </x-table-filter-component>
-                        <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $accountControls])'
+                        <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $accountControls])'
                             style="width:100%">
                             <thead>
                                 <tr>
@@ -130,7 +130,7 @@
                     <form action="{{ route('account.account-setup.account-controls.store') }}" method="post" id="createForm">
                         @csrf
                         <div class="form-group">
-                            <label for="account_group_id">Account Group</label>
+                            <label for="account_group_id">Account Group <span class="text-danger">*</span> </label>
                             <select class="form-control tom-select" id="account_group_id" name="account_group_id" required>
                                 <option value="">Select Account Group</option>
                                 @foreach ($accountGroups as $key => $accountGroup)
@@ -140,7 +140,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="name">Name</label>
+                            <label for="name">Name <span class="text-danger">*</span> </label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Create</button>
@@ -166,7 +166,7 @@
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label for="account_group_id">Account Group</label>
+                            <label for="account_group_id">Account Group <span class="text-danger">*</span> </label>
                             <select class="form-control tom-select" id="account_group_id" name="account_group_id" required>
                                 <option value="">Select Account Group</option>
                                 @foreach ($accountGroups as $key => $accountGroup)
@@ -176,7 +176,7 @@
                         </div>
 
                         <div class="row mb-4">
-                            <label class="col-sm-12 col-form-label">Name</label>
+                            <label class="col-sm-12 col-form-label">Name <span class="text-danger">*</span> </label>
                             <div class="col-sm-12">
                                 <input type="text" name="name" id="name" class="form-control"
                                     placeholder=" Name *" required>

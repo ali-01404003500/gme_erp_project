@@ -207,7 +207,7 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between gap-3">
                                 <h6 class="mb-0"><i class="las la-table"></i> Service Activity Details</h6>
                                 <span class="badge badge-round badge-primary badge-lg">Total Records: {{ $reportData->total() }}</span>
                             </div>
@@ -218,22 +218,24 @@
                                     style="font-size: 11px;">
                                     <thead class="bg-primary text-white">
                                         <tr>
-                                            <th class="text-center" style="width: 3%;">SL</th>
-                                            <th style="width: 8%;">Token ID</th>
-                                            <th style="width: 12%;">Customer</th>
-                                            <th style="width: 10%;">Service Product</th>
-                                            <th style="width: 8%;">Serial No</th>
-                                            <th style="width: 10%;">Problem Type</th>
-                                            <th style="width: 15%;">Solution Description</th>
-                                            <th style="width: 7%;">Service Status</th>
-                                            <th style="width: 7%;">Service Date</th>
-                                            <th style="width: 7%;">Service Type</th>
-                                            <th style="width: 8%;">Assign By</th>
-                                            <th style="width: 7%;">Complete Date</th>
-                                            <th style="width: 8%;">Engineer</th>
-                                            <th class="text-right" style="width: 7%;">Service Bill</th>
-                                            <th class="text-right" style="width: 7%;">Product Bill</th>
+                                           <th class="text-center" style="width: 3%;">SL</th>
+                                            <th style="width: 6%;">Token ID</th>
+                                            <th style="width: 15%; min-width: 180px;">Customer</th> 
+                                            <th style="width: 12%; min-width: 150px;">Service Product</th> 
+                                            {{-- <th style="width: 6%;">Serial No</th> --}}
+                                            <th style="width: 7%;">Problem Type</th>
+                                            <th style="width: 15%;">Solution Description</th> 
+                                            <th style="width: 6%;">Service Status</th>
+                                            <th style="width: 5%;">Service Date</th>
+                                            <th style="width: 5%;">Service Type</th>
+                                            <th style="width: 5%;">Assign By</th>
+                                            <th style="width: 5%;">Complete Date</th>
+                                            <th style="width: 5%;">Engineer</th>
+                                            <th class="text-right" style="width: 5%;">Service Bill</th>
+                                            <th class="text-right" style="width: 5%;">Product Bill</th>
                                         </tr>
+
+                                        
                                     </thead>
                                     <tbody>
                                         @php
@@ -282,21 +284,42 @@
                                                 <td>
                                                     <strong class="text-primary">{{ $token->service->service_unique_id ?? 'N/A' }}</strong>
                                                 </td>
-                                                <td>
-                                                    <strong>{{ $token->customer->company_name ?? 'N/A' }}</strong>
+
+                                               <td class="text-wrap" style="width: 15%; min-width: 180px; vertical-align: top;">
+                                                <div style="line-height: 1.2;">
+                                                    <strong>{{ $token->customer->company_name ?? 'N/A' }}</strong> <br>
+                                                    <span class="text-muted">Address: {{ $token->customer->address ?? 'N/A' }}</span>
                                                     <br>
                                                     <small class="text-muted">{{ $token->customer->phone ?? '' }}</small>
-                                                </td>
-                                                <td>
-                                                    <strong>{{ $token->product->name ?? 'N/A' }}</strong>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-wrap" 
+                                              style="width: 12%; 
+                                              min-width: 400px;
+                                              vertical-align: top;">                                      
+                                                <div style="line-height: 1.8;">
+                                                    <strong>{{ $token->product->getRawOriginal('name') ?? 'N/A' }}</strong> <br>
+                                                    <span class="text-muted"> Brand: {{ ( (optional($token)->product)->brand)->name ?? 'N/A' }}</span> <br>
+                                                    <span class="badge badge-round badge-success p-1" style="font-size: 11px;">
+                                                    Serial No: {{ $token->serial_number ?? 'N/A' }}
+                                                    </span>
                                                     @if ($token->product && $token->product->model_no)
                                                         <br><small class="text-muted">{{ $token->product->model_no }}</small>
                                                     @endif
+                                                </div>
+                                            </td>
+
+                                               {{-- <td class="w-auto" style="width: 1%;">
+                                                    <span class="badge badge-round badge-success p-1" style="font-size: 11px;">
+                                                        {{ $token->serial_number ?? 'N/A' }}
+                                                    </span>
+                                                </td> --}}
+                                                
+                                                <td class="text-wrap">
+                                                    {{ $token->problem_type ?? 'N/A' }}
                                                 </td>
-                                                <td>
-                                                    <span class="badge badge-round badge-light">{{ $token->serial_number ?? 'N/A' }}</span>
-                                                </td>
-                                                <td>{{ $token->problem_type ?? 'N/A' }}</td>
+
                                                 <td>
                                                     @if ($token->serviceMyTask && $token->serviceMyTask->pendingServiceTokens->count() > 0)
                                                             @foreach ($token->serviceMyTask->pendingServiceTokens as $idx => $pendingToken)
@@ -327,7 +350,7 @@
                                                 <td>
                                                     <span class="badge badge-round badge-info">{{ $token->service_type ?? 'N/A' }}</span>
                                                 </td>
-                                                <td>
+                                                <td class="text-wrap">
                                                     {{ $token->service->createdBy->name ?? 'N/A' }}
                                                     <br>
                                                     {{-- <small class="text-muted">{{ @$token->service->created_at->format('d-M-Y') ?? '' }}</small> --}}
@@ -341,7 +364,10 @@
                                                         <span class="text-muted">Pending</span>
                                                     @endif
                                                 </td>
-                                                <td>{{ $engineerName }}</td>
+                                                <td class="text-wrap" 
+                                                 style="width: 5%; 
+                                                 min-width: 150px;
+                                                 vertical-align: top;">{{ $engineerName }}</td>
                                                 <td class="text-right">
                                                     <strong class="text-success">৳{{ number_format($serviceBill) }}</strong>
                                                 </td>

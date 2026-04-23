@@ -82,25 +82,25 @@
                                 </select>
                             </div>
                         </x-table-filter-component>
-                        <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $accounts])' style="width:100%">
+                        <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $accounts])' style="width:100%; table-layout: fixed;">
                             <thead>
                                 <tr>
-                                    <th class="text-center" style="width: 8%">Sl</th>
-                                    <th class="text-center">Account Group</th>
-                                    <th class="text-center">Account Control</th>
-                                    <th class="text-center">Account Subsidiary</th>
-                                    <th class="text-center">Name</th>
-                                    <th class="text-center no-content">Action</th>
+                                    <th class="text-center text-wrap" style="width: 8%">Sl</th>
+                                    <th class="text-left text-wrap">Account Group</th>
+                                    <th class="text-left text-wrap">Account Control</th>
+                                    <th class="text-left text-wrap">Account Subsidiary</th>
+                                    <th class="text-left text-wrap">Name</th>
+                                    <th class="text-center no-content text-wrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($accounts as $key => $accountSubsidiary)
                                     <tr>
-<td class="text-center">{{ ($accounts->currentPage() - 1) * $accounts->perPage() + $loop->iteration  }}</td>
-                                        <td class="text-center">{{ $accountSubsidiary->accountGroup->name ?? '' }}</td>
-                                        <td class="text-center">{{ $accountSubsidiary->accountControl->name ?? '' }}</td>
-                                        <td class="text-center">{{ $accountSubsidiary->accountSubsidiary->name ?? '' }}</td>
-                                        <td class="text-center">{{ $accountSubsidiary->name }}</td>
+                                    <td class="text-center">{{ ($accounts->currentPage() - 1) * $accounts->perPage() + $loop->iteration  }}</td>
+                                        <td class="text-left text-wrap">{{ $accountSubsidiary->accountGroup->name ?? '' }}</td>
+                                        <td class="text-left text-wrap">{{ $accountSubsidiary->accountControl->name ?? '' }}</td>
+                                        <td class="text-left text-wrap">{{ $accountSubsidiary->accountSubsidiary->name ?? '' }}</td>
+                                        <td class="text-left text-wrap">{{ $accountSubsidiary->name }}</td>
                                     
                                         <td class="text-center">
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
@@ -207,7 +207,7 @@
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label for="account_group_id">Account Group</label>
+                            <label for="account_group_id">Account Group<span class="text-danger">*</span></label>
                             <select class="form-control tom-select" id="account_group_id" name="account_group_id" required>
                                 <option value="">Select Account Group</option>
                                 @foreach ($accountGroups as $key => $accountGroup)
@@ -217,7 +217,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="account_control_id">Account Control</label>
+                            <label for="account_control_id">Account Control <span class="text-danger">*</span></label>
                             <select class="form-control tom-select" id="account_control_id" name="account_control_id" required>
                                 <option value="">Select Account Control</option>
                                 @foreach ($accountControls as $key => $accountControl)
@@ -227,7 +227,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="account_subsidiary_id">Account Subsidiaries</label>
+                            <label for="account_subsidiary_id">Account Subsidiaries<span class="text-danger">*</span></label>
                             <select class="form-control tom-select" id="account_subsidiary_id" name="account_subsidiary_id" required>
                                 <option value="">Select Account Subsidiaries</option>
                                 @foreach ($accountSubsidiaries as $key => $accountSubsidiary)
@@ -237,7 +237,7 @@
                         </div>
 
                         <div class="row mb-4">
-                            <label class="col-sm-12 col-form-label">Name</label>
+                            <label class="col-sm-12 col-form-label">Name<span class="text-danger">*</span></label>
                             <div class="col-sm-12">
                                 <input type="text" name="name" id="name" class="form-control"
                                     placeholder=" Name *" required autocomplete="off">

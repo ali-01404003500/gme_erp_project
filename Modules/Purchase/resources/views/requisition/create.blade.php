@@ -237,12 +237,12 @@
 <script>
        const initialRow = $("#product_info_table tbody tr:first-child").clone();
     initialRow.find('input').val('');
-    initialRow.find('tom-select option:selected').removeAttr('selected');
+    initialRow.find('tom-select option:selected').removeAttr('selected');                   //table er first er row k dhora 
     initialRow.find('#remove_row').removeClass('disabled').removeAttr('disabled');
 
     $("#add_row").click(function() {
         const newRow = initialRow.clone();
-        newRow.find('.tom-select').each(function() {
+        newRow.find('.tom-select').each(function() {     //TOm select apply korar jonno
             new TomSelect(this, {});
         });
         $("#product_info_table tbody").append(newRow);
@@ -261,6 +261,7 @@
         $(this).closest('tr').remove();
         calculateTotalAmount();
         calculateNetAmount();
+        
     });
 
     // Remove row function

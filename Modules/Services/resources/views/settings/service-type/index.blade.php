@@ -44,12 +44,12 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                            <table id="zero-config" class="table dt-table-hover table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Code</th>
-                                        <th class="text-center">Name</th>
+                                        <th class="text-left">Code</th>
+                                        <th class="text-left">Name</th>
                                         <th class="text-center no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -58,8 +58,8 @@
                                     @foreach ($serviceTypes as $key => $item)
                                         <tr>
 <td class="text-center">{{ ($serviceTypes->currentPage() - 1) * $serviceTypes->perPage() + $loop->iteration  }}</td>
-                                            <td class="text-center">{{ $item->code }}</td>
-                                            <td class="text-center">{{ $item->name }}</td>
+                                            <td class="text-left">{{ $item->code }}</td>
+                                            <td class="text-left">{{ $item->name }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">

@@ -239,17 +239,21 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <table class="table table-bordered" id="service_table">
+                                    <div class="form-group ">
+                                        <table class="table table-bordered table-responsive" id="service_table" style=" table-layout: fixed;">
                                             <thead>
                                                 <tr>
-                                                    <th>Sl</th>
-                                                    <th>Attachment</th>
-                                                    <th>Customer</th>
-                                                    <th>Product</th>
-                                                    <th>Quantity</th>
-                                                    <th>Serial Number</th>
-                                                    <th>Problem Details</th>
+                                                                                              
+                                                    <th style="width: 4%;" class="text-wrap">Sl</th>
+                                                    <th style="width: 10%;">Attachment</th>
+                                                    <th style="width: 18%;">Customer</th>
+                                                    <th style="width: 18%;">Product</th>
+                                                    <th style="width: 8%;" class="text-wrap">Quantity</th>
+                                                    <th style="width: 18%;" class="text-wrap">Serial Number</th>
+                                                    <th style="width: 18%;">Problem Details</th>
+                                                    <th style="width: 6%;">Action</th>
+                                                </tr>
+                                                    
 
                                                     {{-- <th>Contact Person</th>
                                                         <th>Token Date</th>
@@ -259,7 +263,7 @@
                                                         <th>Service Type</th>
                                                         <th>Problem Type</th>
                                                         <th>Work Type</th> --}}
-                                                    <th>Action</th>
+                                                    
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -676,7 +680,7 @@
             var row = `
                 <tr>
                     <th scope="row">
-                        ${$('#service_table tbody tr').length + 1}
+                        ${$('#service_table tbody tr ').length + 1}
                         <input type="hidden" name="customer_id[]" value="${customer_id}">
                         <input type="hidden" name="contact_person_phone[]" value="${contact_person_phone}">
                         <input type="hidden" name="token_date[]" value="${token_date}">
@@ -702,13 +706,13 @@
                         </div>
                         <input type="hidden" name="documents[]" value="" class="attachments_input">
                     </td>
-                    <td>${customer_name}</td>
-                    <td>${product_name}</td>
-                    <td><input type="number" name="quantity[]" value="1" class="form-control text-center" min="1"></td>
-                    <td>${serial_number}</td>
-                    <td>${problem_details}</td>
+                    <td class="text-wrap">${customer_name}</td>
+                    <td class="text-wrap">${product_name}</td>
+                    <td><input type="number" name="quantity[]" value="1" class="form-control text-left" min="1" style="width: 60px; margin: 0 auto; min-width: 50px;"></td>
+                    <td class="text-wrap ">${serial_number}</td>
+                    <td class="text-wrap text-break" >${problem_details}</td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">
+                        <button type="button" class="btn btn-sm btn-danger text-wrap" onclick="removeRow(this)">
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>

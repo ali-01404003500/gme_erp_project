@@ -93,7 +93,7 @@
                             <td class="no-content">Action</td>
                         </tr> --}}
                         {{-- @dd($employees) --}}
-                        @foreach ($thanas as $value)
+                        @foreach ($areas as $value)
                             {{-- @dd($value) --}}
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>

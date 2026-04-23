@@ -54,12 +54,12 @@
                                     <div class="col-sm-12">
                                         <table class="table table-bordered">
                                             <tr>
-                                                <td class="text-center">
+                                                <td class="text-left">
                                                     <input type="text" class="form-control" name="name"
                                                         value="{{ request('name') }}" autocomplete="off"
                                                         placeholder="Search by Thana Name">
                                                 </td>
-                                                {{-- <td class="text-center">
+                                                {{-- <td class="text-left">
                                                     <select name="division_id" id="division_id" class="form-control tom-select"
                                                         data-placeholder="Search by Division Name">
                                                         <option value=""></option>
@@ -68,7 +68,7 @@
                                                         @endforeach
                                                     </select>
                                                 </td> --}}
-                                                <td class="text-center">
+                                                <td class="text-left" style="width: 28%">
                                                     <select name="district_id" id="district_id" class="form-control tom-select"
                                                         data-placeholder="Search by District Name">
                                                         <option value=""></option>
@@ -94,14 +94,14 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $thanas])'
+                            <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $thanas])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Division</th>
-                                        <th class="text-center">District</th>
-                                        <th class="text-center">Thana Name</th>
+                                        <th class="text-left">Division</th>
+                                        <th class="text-left">District</th>
+                                        <th class="text-left">Thana Name</th>
                                         <th class="text-left">Action</th>
                                     </tr>
                                 </thead>
@@ -110,9 +110,9 @@
                                     @foreach ($thanas as $value)
                                         <tr>
                                         <td class="text-center">{{ ($thanas->currentPage() - 1) * $thanas->perPage() + $loop->iteration  }}</td>
-                                            <td class="text-center">{{ optional(optional($value->parent)->parent)->name }}</td>
-                                            <td class="text-center">{{ optional($value->parent)->name }}</td>
-                                            <td class="text-center">{{ $value->name }}</td>
+                                            <td class="text-left">{{ optional(optional($value->parent)->parent)->name }}</td>
+                                            <td class="text-left">{{ optional($value->parent)->name }}</td>
+                                            <td class="text-left">{{ $value->name }}</td>
                                             <td class="text-left">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
@@ -209,7 +209,7 @@
                                     </div>
 
                                     <div class="row mb-4">
-                                        <label class="col-sm-12 col-form-label">Thana Name</label>
+                                        <label class="col-sm-12 col-form-label">Thana Name<span style="color: red">*</span></label>
                                         <div class="col-sm-12">
                                             <input type="text" name="name" class="form-control"
                                                 placeholder=" Name *" required>
@@ -295,7 +295,7 @@
 
 
                         <div class="row mb-4">
-                            <label for="name" class="col-sm-12 col-form-label">Thana Name</label>
+                            <label for="name" class="col-sm-12 col-form-label">Thana Name<span style="color: red">*</span></label>
                             <div class="col-sm-12">
                                 <input name="name" id="name" class="form-control" type="text">
                             </div>

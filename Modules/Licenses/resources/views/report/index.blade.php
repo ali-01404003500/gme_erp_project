@@ -75,46 +75,47 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $reports])'
+                            <table id="zero-config" class="table dt-table-hover table-bordered " data-page='@include('utils.table_paginate', ['data' => $reports])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>Sl</th>
-                                        <th>Customer Name</th>
-                                        <th>Address</th>
-                                        <th>SMS</th>
-                                        <th>Status</th>
-                                        <th>Phone</th>
-                                        <th>Dongle Id</th>
-                                        <th>License Key</th>
-                                        <th>Activation Date</th>
-                                        <th>License Info</th>
-                                        <th>Expiry Date</th>
+
+                                        <th style="width: 3%;">Sl</th>
+                                        <th style="width: 12%;">Customer Name</th> 
+                                        <th style="width: 12%;">Address</th>      
+                                         <th style="width: 18%;">SMS</th>          
+                                        <th style="width: 7%;">Status</th>
+                                        <th style="width: 8%;">Phone</th>
+                                        <th style="width: 8%;">Dongle Id</th>
+                                        <th style="width: 10%;">License Key</th>
+                                        <th style="width: 8%;">Activation Date</th>
+                                        <th style="width: 7%;">License Info</th>
+                                        <th style="width: 7%;">Expiry Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                     @foreach ($reports as $value)
                                         <tr>
-                                        <td class="text-center">{{ ($reports->currentPage() - 1) * $reports->perPage() + $loop->iteration  }}</td>
-                                            <td>
+                                        <td class="text-center" style="vertical-align: top;">{{ ($reports->currentPage() - 1) * $reports->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-wrap" style="vertical-align: top; width: 12%; min-width: 150px; word-break: break-word; white-space: normal;">
                                                 {{ $value->customer->company_name }}
                                             </td>
-                                            <td>{{ $value->address }}</td>
-                                            <td>
-                                                <div style="width: 200px;" class="text-wrap" >
+                                            <td class="text-wrap" style="vertical-align: top;">{{ $value->address }}</td>
+                                            <td style="width: 250px; vertical-align: top;" class="text-wrap">
+                                                <div >
                                                 {{ $value->sms }}
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td class="vertical-align: top;">
                                                 @if($value->status == 'Send') <span class="badge badge-round badge-success">SMS Send</span> @endif
                                             </td>                                            
-                                            <td>{{ $value->phone }}</td>
-                                            <td>{{ $value->dongles->dongle_id }}</td>
-                                            <td>{{ $value->license_key }}</td>
-                                            <td>{{ $value->start_date}}</td>
-                                            <td>{{ $value->valid_period }} {{ $value->valid_period_type }}</td>
-                                            <td>{{ $value->expired_date }}</td>
+                                            <td style="vertical-align: top;">{{ $value->phone }}</td>
+                                            <td style="vertical-align: top;">{{ $value->dongles->dongle_id }}</td>
+                                            <td style="width: 15%; min-width: 150px; word-break: break-word; white-space: normal; vertical-align: top;">{{ $value->license_key }}</td>
+                                            <td style="vertical-align: top;">{{ $value->start_date}}</td>
+                                            <td style="vertical-align: top;">{{ $value->valid_period }} {{ $value->valid_period_type }}</td>
+                                            <td style="vertical-align: top;">{{ $value->expired_date }}</td>
                                     
                                         </tr>
                                     @endforeach
