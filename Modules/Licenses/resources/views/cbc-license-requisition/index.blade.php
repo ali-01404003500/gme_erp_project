@@ -42,14 +42,33 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td>
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select"
+                                                <select name="status" id="status" class="form-control" data-placeholder="Select Type">
+                                                   
+                                                    @if (hasPermission('licenses.cbc-license-requisitions.show'))
+                                                        <option value="" {{ request('status') == '' ? 'selected' : '' }}>All</option> 
+                                                    @endif
+                                                    @if (hasPermission('licenses.cbc-license-requisitions.update'))
+                                                        <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                                    @endif
+
+                                                    @if (hasPermission('licenses.cbc-license-requisitions.approve'))
+                                                        <option value="Approved" {{ request('status') == 'Approved' ? 'selected' : '' }}>Verified</option>
+                                                    @endif 
+                                                
+                                                    @if (hasPermission('licenses.cbc-sms.update'))
+                                                        <option value="SMS Send" {{ request('status') == 'SMS Send' ? 'selected' : '' }}>Complete</option>
+                                                    @endif
+                                            
+                                                
+                                                  
+                                                    
+                                                </select>
+                                            </td>   
+
+                                            <td>
+                                                <select name="customer_id" id="customer_id" class="form-control"
                                                     data-placeholder="Select Customer">
                                                     <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ optional($value)->company_name }}</option>
-                                                    @endforeach
                                                 </select>
                                             </td>
                                           
@@ -89,11 +108,12 @@
                                 style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>Sl</th>
-                                        <th>License Id</th>
+                                        <th>Sl</th> 
                                         <th>Customer Name</th>
-                                        <th>License Key</th>
-                                        <th>Generated Date</th>
+                                        <th>Product Name</th>
+                                        <th>Dongle Id</th> 
+                                        <th>Balance</th>
+                                        <th>Valid Period</th>
                                         <th>Prepared By</th>
                                         <th>Status</th>
                                         <th class="no-content">Action</th>
@@ -103,13 +123,26 @@
 
                                     @foreach ($cBCLicenseRequisitions as $value)
                                         <tr>
-                                        <td class="text-center">{{ ($cBCLicenseRequisitions->currentPage() - 1) * $cBCLicenseRequisitions->perPage() + $loop->iteration  }}</td>
-                                            <td>{{ $value->license_id }}</td>
+                                        <td class="text-center">{{ ($cBCLicenseRequisitions->currentPage() - 1) * $cBCLicenseRequisitions->perPage() + $loop->iteration  }}</td> 
                                             <td>
-                                                {{ $value->customer->company_name }}
+                                                {{ $value->customer->company_name }}<br>
+                                                <span class="text-muted">{{ $value->customer->address }}</span>
                                             </td>
-                                            <td>{{ $value->dongles->dongle_id }}</td>
-                                            <td>{{ date('Y-m-d', strtotime($value->created_at)) }}</td>
+
+                                            <td>
+                                                {{ $value->product->withoutModelSuffix()->name }}<br>
+                                                <span class="text-muted">{{ $value->product->model }}</span>
+                                            </td>  
+                                            <td>
+                                                {{ $value->dongles->dongle_id }}<br>
+                                                <span class="text-muted">{{ $value->software_version }}</span>
+
+                                            </td>
+                                            <td>{{ number_format(0,2) }}</td>
+                                            <td> 
+                                                {{ $value->valid_period.' '.ucfirst($value->valid_period_type) }}<br>
+                                                ({{ $value->start_date }} to {{ $value->expired_date }})
+                                            </td>
                                             <td>{{ $value->createdBy->name }}</td>
                                             <td>@if($value->status == 'Approved') <span class="badge badge-round badge-success">Approved</span>  @endif
                                                 @if($value->status == 'Pending') <span class="badge badge-round badge-warning">Pending</span> @endif
@@ -249,6 +282,43 @@
         format: 'dd-mm-yyyy',
         autoclose: true
     });
+
+    $(document).ready(function () {
+        const companySelect = new TomSelect("#customer_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('licenses.license-report-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        companySelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        $('#customer_id option:selected').text();
+ 
+        @if(isset($customer) && $customer)
+            companySelect.addOption({
+                id: "{{ $customer->id }}",
+                text: "{{ $customer->name }}"
+            });
+            companySelect.setValue("{{ $customer->id }}");
+        @endif
+
+    });
+
 </script>
 
 @endSection

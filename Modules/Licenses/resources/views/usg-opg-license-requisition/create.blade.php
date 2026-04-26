@@ -45,16 +45,8 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
-                                            <select name="customer_id" id="customer_id" class="form-control tom-select">
-                                                <option value="">Choose Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}"
-                                                        {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}@if ($customer->area != null)
-                                                            ({{ $customer->area->area }})
-                                                        @endif
-                                                    </option>
-                                                @endforeach
+                                            <select name="customer_id" id="customer_id" class="form-control">
+                                                <option value="">Choose Customer</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -86,22 +78,13 @@
                                             <label for="product_model">Product Model</label>
                                             <input type="text" name="product_model" class="form-control"
                                                 id="product_model" placeholder="Product Model" readonly>
+                                            <input type="hidden" name="product_id" class="form-control"  id="product_id" placeholder="Product Id" value="">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="software_version">Software Version</label> 
-                                            <select name="software_version" id="software_version" class="form-control">
-                                                <option value="">--Select Software Version--</option>
-                                                <option value="Old Software Version">Old Software Version</option>
-                                                <option value="New Software Version">New Software Version</option>
-                                                <option value="G-55 Power & Smart">G-55 Power & Smart</option>
-                                                <option value="MAC Id">MAC Id</option>
-                                                <option value="Loading">Loading</option>
-                                                <option value="Device Id-12 Digit">Device Id-12 Digit</option>
-                                                <option value="Device Id-16 Digit">Device Id-16 Digit</option>
-                                                <option value="Others">Others</option>
-                                            </select>
+                                            <input type="text" name="software_version" class="form-control" id="software_version" placeholder="--Select Software Version--" readonly> 
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -175,7 +158,7 @@
                                                 </div>
                                             </div>
                                             <div class="row mt-4">
-                                                <div class="col-md-12 p-4">
+                                                <div class="col-md-6 offset-3 p-4">
                                                     <table class="table table-bordered" id="product_info_table">
                                                         <thead>
                                                             <tr>
@@ -235,7 +218,7 @@
                             clearFields();
                             $('#dongle_id').append('<option value="">Choose Dongle Id</option>');
                             $.each(data['dongles'], function(index, dongle) {
-                                $('#dongle_id').append('<option value="' + dongle.id + '" data-product-model="' + dongle.product.model+ '" data-software-version="' + dongle.software_version + '">' + dongle.dongle_id + '</option>');
+                                $('#dongle_id').append('<option value="' + dongle.id + '" data-product-model="' + dongle.product.model+ '" data-product-id="' + dongle.product.id + '" data-software-version="' + dongle.software_version + '">' + dongle.dongle_id + '</option>');
                             });
                             $('#dongle_id').prop('tomselect').clearOptions();
                             $('#dongle_id').prop('tomselect')?.sync();
@@ -275,6 +258,7 @@
                 $('#dongle_id').prop('tomselect').clearOptions();
                 $('#dongle_id').prop('tomselect')?.sync();                
                 $('#product_model').val('');
+                $('#product_id').val(''); 
                 $('#software_version').val('');
                 $('.note').text('');
 
@@ -283,7 +267,9 @@
         $('#dongle_id').on('change', function() {
             var selectedOption = $(this).find('option:selected');
             var productModel = selectedOption.data('product-model');
+            var productId = selectedOption.data('product-id');
             $('#product_model').val(productModel);
+            $('#product_id').val(productId);
 
             var softwareVersion = selectedOption.data('software-version');
             $('#software_version').val(softwareVersion);
@@ -292,7 +278,7 @@
     });
 </script>
 <script>
-     $(document).ready(function() {
+    $(document).ready(function() {
 
     $('#dongle_id').on('change', function() {
             var customerId = $('#customer_id').val();	
@@ -430,6 +416,38 @@
     <script>
         $(document).ready(function() {
             $('#customer_id').change(getCustomerSettings);
+ 
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('licenses.dongle-or-serial-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+ 
+            @if(isset($customer) && $customer)
+                companySelect.addOption({
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->name }}"
+                });
+                companySelect.setValue("{{ $customer->id }}");
+            @endif 
+
         });
 
         function getCustomerSettings() {

@@ -75,22 +75,15 @@
                                             <label for="product_model">Product Model</label>
                                             <input type="text" name="product_model" class="form-control" value="{{ $license->product_model }}"
                                                 id="product_model" placeholder="Product Model" readonly>
+
+                                            <input type="hidden" name="product_id" class="form-control"  id="product_id" placeholder="Product Id" value="{{ $license->product_id }}">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="software_version">Software Version</label>
-                                            <select name="software_version" id="software_version" class="form-control">
-                                                <option value="">-- Select Software Version --</option>
-                                                <option value="Old Software Version" {{ (old('software_version', $entry->software_version ?? '') == 'Old Software Version') ? 'selected' : '' }}>Old Software Version</option>
-                                                <option value="New Software Version" {{ (old('software_version', $entry->software_version ?? '') == 'New Software Version') ? 'selected' : '' }}>New Software Version</option>
-                                                <option value="G-55 Power & Smart" {{ (old('software_version', $entry->software_version ?? '') == 'G-55 Power & Smart') ? 'selected' : '' }}>G-55 Power & Smart</option>
-                                                <option value="MAC Id" {{ (old('software_version', $entry->software_version ?? '') == 'MAC Id') ? 'selected' : '' }}>MAC Id</option>
-                                                <option value="Loading" {{ (old('software_version', $entry->software_version ?? '') == 'Loading') ? 'selected' : '' }}>Loading</option>
-                                                <option value="Device Id-12 Digit" {{ (old('software_version', $entry->software_version ?? '') == 'Device Id-12 Digit') ? 'selected' : '' }}>Device Id-12 Digit</option>
-                                                <option value="Device Id-16 Digit" {{ (old('software_version', $entry->software_version ?? '') == 'Device Id-16 Digit') ? 'selected' : '' }}>Device Id-16 Digit</option>
-                                                <option value="Others" {{ (old('software_version', $entry->software_version ?? '') == 'Others') ? 'selected' : '' }}>Others</option>
-                                            </select>
+                                            <input type="text" name="software_version" class="form-control" id="software_version" value="{{ $license->software_version}}" placeholder="--Select Software Version--" readonly>
+                                             
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -159,7 +152,7 @@
                                                 </div>
                                             </div>
                                             <div class="row mt-4">
-                                                <div class="col-md-12 p-4">
+                                                <div class="col-md-6 offset-3 p-4">
                                                     <table class="table table-bordered" id="product_info_table">
                                                         <thead>
                                                             <tr>
@@ -223,9 +216,10 @@
                     success: function(data) {
                         $('#dongle_id').empty();
                         $('#product_model').val('');
+                        $('#product_id').val(''); 
                         $('#dongle_id').append('<option value="">Choose Dongle Id</option>');
                         $.each(data, function(index, dongle) {
-                            $('#dongle_id').append('<option value="' + dongle.id + '" data-product-model="' + dongle.product.model + '">' + dongle.dongle_id + '</option>');
+                            $('#dongle_id').append('<option value="' + dongle.id + '" data-product-model="' + dongle.product.model + '" data-product-id="' + dongle.product.id + '">' + dongle.dongle_id + '</option>');
                         });
                         $('#dongle_id').prop('tomselect').clearOptions();
                         $('#dongle_id').prop('tomselect')?.sync();
@@ -258,7 +252,9 @@
         $('#dongle_id').on('change', function() {
             var selectedOption = $(this).find('option:selected');
             var productModel = selectedOption.data('product-model');
+            var productId = selectedOption.data('product-id');
             $('#product_model').val(productModel);
+            $('#product_id').val(productId);
         });
         
         

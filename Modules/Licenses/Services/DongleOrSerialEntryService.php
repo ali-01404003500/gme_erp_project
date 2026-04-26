@@ -13,9 +13,9 @@ class DongleOrSerialEntryService
     use S3FileHandler;
 
     public function getAll(int $limit = 20)
-    {
+    { 
         return DongleOrSerialEntry::query()
-            ->searchByFields(['customer_id', 'dongle_id'])
+            ->searchByFields(['customer_id', 'dongle_id', 'product_type', 'product_id'])
             ->paginate($limit);
     }
 

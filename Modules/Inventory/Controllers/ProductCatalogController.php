@@ -4,6 +4,7 @@ namespace Modules\Inventory\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use Modules\Inventory\Models\Product\Settings\Brand;
 use Modules\Inventory\Models\Product\Settings\ProductType;
 use Modules\Inventory\Models\ProductCatalog;
@@ -28,6 +29,7 @@ class ProductCatalogController extends Controller
     {
         $this->service = $service;
         $this->middleware('permited');
+        $this->middleware('permited')->except(['productNameAutocomplete']);
 
     }
     
@@ -36,8 +38,7 @@ class ProductCatalogController extends Controller
      */
     public function index( Request $request)
     {
-        $data['productCatalogs'] = $this->service->getAll();
-        $data['products'] = ProductCatalog::select(["id", "name"])->get();
+        $data['productCatalogs'] = $this->service->getAll(); 
         $data['employees'] = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
         $data['productBrands'] = Brand::all();
@@ -466,38 +467,65 @@ class ProductCatalogController extends Controller
      * Download or view single catalogue file
      */
    public function viewCatalogueFile($productId, $fileIndex)
-{
-    $product = ProductCatalog::findOrFail($productId);
+    {
+        $product = ProductCatalog::findOrFail($productId);
 
-    if (!$product->image_uploads) {
-        abort(404, 'No catalogue files found');
+        if (!$product->image_uploads) {
+            abort(404, 'No catalogue files found');
+        }
+
+        // image_uploads ALWAYS returns array because of $casts
+        $files = $product->image_uploads;
+
+        if (!is_array($files) || !isset($files[$fileIndex])) {
+            abort(404, 'File not found');
+        }
+
+        $filePath = $files[$fileIndex];
+        $fullPath = storage_path('app/public/' . $filePath);
+
+        if (!file_exists($fullPath)) {
+            abort(404, 'File not found on server');
+        }
+
+        $mimeType = mime_content_type($fullPath);
+        $fileName = basename($filePath);
+
+        $imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+
+        if (in_array($mimeType, $imageTypes) || $mimeType === 'application/pdf') {
+            return response()->file($fullPath);
+        } else {
+            return response()->download($fullPath, $fileName);
+        }
     }
 
-    // image_uploads ALWAYS returns array because of $casts
-    $files = $product->image_uploads;
-
-    if (!is_array($files) || !isset($files[$fileIndex])) {
-        abort(404, 'File not found');
+    public function productNameAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            ProductCatalog::class,
+            ['name','name'],
+            $request->search,
+            ['name', 'name'],
+            30
+        ); 
+        return response()->json($data);
     }
 
-    $filePath = $files[$fileIndex];
-    $fullPath = storage_path('app/public/' . $filePath);
 
-    if (!file_exists($fullPath)) {
-        abort(404, 'File not found on server');
+     public function productModelAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            ProductCatalog::class,
+            ['model','model'],
+            $request->search,
+            ['model', 'model'],
+            30
+        ); 
+        return response()->json($data);
     }
-
-    $mimeType = mime_content_type($fullPath);
-    $fileName = basename($filePath);
-
-    $imageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-
-    if (in_array($mimeType, $imageTypes) || $mimeType === 'application/pdf') {
-        return response()->file($fullPath);
-    } else {
-        return response()->download($fullPath, $fileName);
-    }
-}
-
+    
 
 }

@@ -31,10 +31,32 @@ class USGOrOPGLicenseRequisitionController extends Controller
      */
     public function index()
     {
+        $data['customer'] = "";
+
+        if (request('customer_id')) {
+            $data['customer'] = Customer::find(request('customer_id'));
+        }
+
+        
         $data['uSGOrOPGLicenseRequisitions'] = $this->service->getAll();
         $data['customers'] = Customer::activeCustomers()->get();
 
         return view("Licenses::usg-opg-license-requisition.index", $data);
+    }
+
+    public function verifylist()
+    {
+        $data['customer'] = "";
+
+        if (request('customer_id')) {
+            $data['customer'] = Customer::find(request('customer_id'));
+        }
+
+        
+        $data['uSGOrOPGLicenseRequisitions'] = $this->service->getAll();
+        $data['customers'] = Customer::activeCustomers()->get();
+
+        return view("Licenses::usg-opg-license-requisition.verify", $data);
     }
 
     /**
@@ -72,6 +94,7 @@ class USGOrOPGLicenseRequisitionController extends Controller
             'phone' => 'nullable|string|max:20',
             'dongle_id' => 'required|integer|exists:dongle_or_serial_entries,id',
             'product_model' => 'required',
+            'product_id' => 'required',
             'start_date' => 'required|date',
             'valid_period' => 'required|integer|min:1',
             'valid_period_type' => 'required|in:days,months,years',
@@ -127,6 +150,7 @@ class USGOrOPGLicenseRequisitionController extends Controller
             'phone' => 'nullable|string|max:20',
             'dongle_id' => 'required|integer|exists:dongle_or_serial_entries,id',
             'product_model' => 'required',
+            'product_id' => 'required',
             'start_date' => 'required|date',
             'valid_period' => 'required|integer|min:1',
             'valid_period_type' => 'required|in:days,months,years',
@@ -161,6 +185,7 @@ class USGOrOPGLicenseRequisitionController extends Controller
             'phone' => 'nullable|string|max:20',
             'dongle_id' => 'required|integer|exists:dongle_or_serial_entries,id',
             'product_model' => 'required',
+            'product_id' => 'required',
             'start_date' => 'required|date',
             'valid_period' => 'required|integer|min:1',
             'valid_period_type' => 'required|in:days,months,years',

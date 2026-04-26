@@ -38,8 +38,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $data['products'] = $this->service->getAll();
-
+        $data['products'] = $this->service->getAll(); 
         return view("Inventory::products.index", $data);
     }
 
@@ -47,13 +46,14 @@ class ProductController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
-    {
-        $data = $this->service->create($request);
-        $data['productCatalog'] = ProductCatalog::with("productType")->find($request->product_catalog_id);
+    { 
+        $data['productCatalog'] = ProductCatalog::find($request->product_catalog_id);
+        $data['tags'] = Tag::all();
+
         $product = Product::where('product_catalog_id', $request->product_catalog_id)->first();
         if($product) {
             $data['product'] = $product;
-            return view('Inventory::products.edit', $data);
+            return redirect()->route('inv.products.edit', ['product' => $product->id]); 
         }
         return view('Inventory::products.create', $data);
     }
@@ -191,12 +191,8 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $data['product'] = $product;
-        $data['product_types'] = ProductType::query()->where('status', 1)->get();
-        $data['product_catalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        $data['brands'] = Brand::all();
-        $data['units'] = Unit::all();
-        $data['tags'] = Tag::all();
-         //
+        $data['productCatalog'] = ProductCatalog::find($product->product_catalog_id);
+        $data['tags'] = Tag::all();  
         return view("Inventory::products.edit", $data);
     }
 

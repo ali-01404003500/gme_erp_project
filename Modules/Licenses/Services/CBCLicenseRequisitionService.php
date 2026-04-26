@@ -21,7 +21,7 @@ class CBCLicenseRequisitionService
     public function getAll(int $limit = 20)
     {
         return CBCLicenseRequisition::query()
-            ->searchByFields(['customer_id'])
+            ->searchByFields(['customer_id','status'])
             ->when(request()->filled('from'), function ($qr) {
                 $from = Carbon::parse(request('from'))->format('Y-m-d');
                 $qr->whereRaw('DATE(created_at) >= ?', [$from]);

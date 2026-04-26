@@ -20,6 +20,7 @@ use Modules\Inventory\Controllers\Settings\TagController;
 use Modules\Inventory\Controllers\Settings\UnitController;
 use Modules\Inventory\Controllers\StockBalanceReportController;
 use Modules\Inventory\Controllers\StockController;
+use Modules\Sales\Controllers\SalesOrderController;
 
 Route::group(['middleware'=>'auth', 'prefix' => 'inv', 'as' => 'inv.'],function () {
         /* Product Catalog */
@@ -30,6 +31,9 @@ Route::group(['middleware'=>'auth', 'prefix' => 'inv', 'as' => 'inv.'],function 
        //updateCatalogMrp
          Route::post('update-catalog-mrp/{id}', [ProductCatalogController::class, 'updateCatalogMrp'])->name('products.update-catalog-mrp');
 
+
+        Route::get('product-catalogs-autocomplete-product-name', [ProductCatalogController::class, 'productNameAutocomplete']) ->name('product-catalogs-autocomplete.product-name');
+        Route::get('product-catalogs-autocomplete-product-model', [ProductCatalogController::class, 'productModelAutocomplete']) ->name('product-catalogs-autocomplete.product-model');
 
 
        /* Issue Product */
@@ -96,6 +100,10 @@ Route::group(['middleware'=>'auth', 'prefix' => 'inv', 'as' => 'inv.'],function 
         Route::get('center-stock/expired-info/{product}', [CenterWiseStockReportController::class, 'expiredInfo'])->name('center-stock.expired-info');
         
         Route::get('center-stock/serial-info/{lotNo}', [CenterWiseStockReportController::class, 'serialInfo'])->name('center-stock.serial-info');
+
+
+       
+
     });
 
 });

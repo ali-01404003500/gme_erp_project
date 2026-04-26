@@ -249,7 +249,7 @@
                                                                                                 class="userDatatable-content">
                                                                                                 <label
                                                                                                     class="color-dark fs-14 fw-500 align-center">Is
-                                                                                                    Serial:</label>
+                                                                                                    Serial</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
@@ -280,7 +280,7 @@
                                                                                                 class="userDatatable-content">
                                                                                                 <label
                                                                                                     class="color-dark fs-14 fw-500 align-center">Is
-                                                                                                    Expire Date:</label>
+                                                                                                    Expire Date</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
@@ -317,7 +317,7 @@
                                                                                                 class="userDatatable-content">
                                                                                                 <label
                                                                                                     class="color-dark fs-14 fw-500 align-center">Is
-                                                                                                    Warranty:</label>
+                                                                                                    Warranty</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
@@ -348,7 +348,7 @@
                                                                                                 class="userDatatable-content">
                                                                                                 <label
                                                                                                     class="color-dark fs-14 fw-500 align-center">Warranty
-                                                                                                    Period:</label>
+                                                                                                    Period</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
@@ -401,7 +401,7 @@
                                                                                                 class="userDatatable-content">
                                                                                                 <label
                                                                                                     class="color-dark fs-14 fw-500 align-center">Force
-                                                                                                    Barcode Scan:</label>
+                                                                                                    Barcode Scan</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
@@ -434,7 +434,7 @@
                                                                                                 class="userDatatable-content">
                                                                                                 <label
                                                                                                     class="color-dark fs-14 fw-500 align-center">E-Commerce
-                                                                                                    Product:</label>
+                                                                                                    Product</label>
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
@@ -491,7 +491,7 @@
                                                                 <div class="col-md-6 mb-2">
                                                                     <div class="form-group">
                                                                         <label for="profile_image_upload"
-                                                                            class="color-dark fs-14 fw-500 align-center">Profile Image Upload:</label>
+                                                                            class="color-dark fs-14 fw-500 align-center">Product Image Upload</label>
                                                                             <x-file-uploader name="profile_image_upload"/>
                                                                     </div>
                                                                 </div>
@@ -500,7 +500,7 @@
                                                                     <div class="form-group">
                                                                         <label for="image_uploads"
                                                                             class="color-dark fs-14 fw-500 align-center">Catalog
-                                                                            File:</label>
+                                                                            File</label>
                                                                         <x-file-uploader multiple name="image_uploads"/>
                                                                     </div>
                                                                 </div>
@@ -512,7 +512,7 @@
                                                                         
                                                                         <label for="price_list_file"
                                                                             class="color-dark fs-14 fw-500 align-center">Price
-                                                                            List File:</label>
+                                                                            List File</label>
                                                                         <x-file-uploader name="price_list_file"/>
                                                                     </div>
                                                                 </div>
@@ -649,30 +649,30 @@
         }
 
         $(document).ready(function() {
-    // When is_expire_date is changed
-        $('input[name="is_expire_date"]').on('change', function() {
-            if ($(this).val() === 'yes') {
-                // If expire date is yes, set is_serial to no
-                $('input[name="is_serial"][value="no"]').prop('checked', true);
-            }
-            if($(this).val() === 'no') {
-                
-                $('input[name="is_serial"][value="yes"]').prop('checked', true);
-            }
+            // When is_expire_date is changed
+            $('input[name="is_expire_date"]').on('change', function() {
+                if ($(this).val() === 'yes') {
+                    // If expire date is yes, set is_serial to no
+                    $('input[name="is_serial"][value="no"]').prop('checked', true);
+                }
+                if($(this).val() === 'no') {
+                    
+                    $('input[name="is_serial"][value="yes"]').prop('checked', true);
+                }
 
-        });
+            });
 
-        // When is_serial is changed
-        $('input[name="is_serial"]').on('change', function() {
-            if ($(this).val() === 'yes') {
-                // If serial is yes, set is_expire_date to no
-                $('input[name="is_expire_date"][value="no"]').prop('checked', true);
-            }
-            if($(this).val() === 'no') {
-                
-                $('input[name="is_expire_date"][value="yes"]').prop('checked', true);
-            }
+            // When is_serial is changed
+            $('input[name="is_serial"]').on('change', function() {
+                if ($(this).val() === 'yes') {
+                    // If serial is yes, set is_expire_date to no
+                    $('input[name="is_expire_date"][value="no"]').prop('checked', true);
+                }
+                if($(this).val() === 'no') {
+                    
+                    $('input[name="is_expire_date"][value="yes"]').prop('checked', true);
+                }
+            });
         });
-    });
     </script>
 @endsection
