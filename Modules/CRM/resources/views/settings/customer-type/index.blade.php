@@ -47,20 +47,20 @@
                             <table id="zero-config" class="table dt-table-hover" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Code</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center no-content">Action</th>
+                                        <th class="text-left" style="width: 8%">Sl</th>
+                                        <th class="text-left">Code</th>
+                                        <th class="text-left">Name</th>
+                                        <th class="text-left no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @csrf
                                     @foreach ($customerTypes as $key => $item)
                                         <tr>
-                                            <td class="text-center">{{ ($customerTypes->currentPage() - 1) * $customerTypes->perPage() + $loop->iteration  }}</td>
-                                            <td class="text-center">{{ $item->code }}</td>
-                                            <td class="text-center">{{ $item->name }}</td>
-                                            <td class="text-center">
+                                            <td class="text-left">{{ ($customerTypes->currentPage() - 1) * $customerTypes->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-left">{{ $item->code }}</td>
+                                            <td class="text-left">{{ $item->name }}</td>
+                                            <td class="text-left">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 

@@ -75,7 +75,7 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        <!-- Item Detail -->
                                         <div class="row mt-2">
                                             <div class="col-sm-12">
                                                 <table id="myTable" class="table table-bordered order-list">

@@ -13,7 +13,8 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        {{ trans('menu.inventory-settings-unit-menu-title') }}</li>
+                                        {{ trans('menu.inventory-settings-unit-menu-title') }}
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
@@ -36,7 +37,8 @@
                 <div class="col-md-12" style="padding-bottom: 20px">
                     <div class="row" style="width: 100%">
                         <div class="col-md-6">
-                            <h4 class="text-capitalize breadcrumb-title">{{ trans('menu.inventory-settings-unit-menu-title') }}
+                            <h4 class="text-capitalize breadcrumb-title">
+                                {{ trans('menu.inventory-settings-unit-menu-title') }}
                             </h4>
                         </div>
                         <x-error-alart />
@@ -45,8 +47,40 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $units])'
-                                style="width:100%">
+                            <style>
+                                .unit-table-custom,
+                                .unit-table-custom th,
+                                .unit-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+
+                                .unit-table-custom th,
+                                .unit-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+
+                                .unit-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+
+                                .table thead th {
+                                    background-color: #35526e !important;
+                                    color: #ffffff !important;
+                                    font-weight: 600 !important;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem !important;
+                                    letter-spacing: 0.08em;
+                                    border-bottom: 2px solid #2a4054 !important;
+                                    padding: 14px 16px !important;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+                            </style>
+                            <table id="zero-config" class="table unit-table-custom dt-table-hover"
+                                data-page='@include('utils.table_paginate', ['data' => $units])' style="width:100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>
@@ -59,7 +93,8 @@
                                     @csrf
                                     @foreach ($units as $key => $unit)
                                         <tr>
-                                        <td class="text-center">{{ ($units->currentPage() - 1) * $units->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">
+                                                {{ ($units->currentPage() - 1) * $units->perPage() + $loop->iteration  }}</td>
                                             <td class="text-center">{{ $unit->name }}</td>
                                             <td class="text-center">{{ $unit->description }}</td>
                                             <td class="text-center">
@@ -67,8 +102,11 @@
                                                     aria-label="Small button group">
 
                                                     @if (hasPermission('inv.settings.units.update'))
-                                                        <button type="button" data-action="{{ route('inv.settings.units.update', $unit->id) }}" data-data="{{$unit}}" class="btn btn-outline-primary btn-edit" data-toggle="tooltip" data-placement="top" title="Edit"
-                                                        data-bs-toggle="modal" data-bs-target="#editModal">
+                                                        <button type="button"
+                                                            data-action="{{ route('inv.settings.units.update', $unit->id) }}"
+                                                            data-data="{{$unit}}" class="btn btn-outline-primary btn-edit"
+                                                            data-toggle="tooltip" data-placement="top" title="Edit"
+                                                            data-bs-toggle="modal" data-bs-target="#editModal">
                                                             <i class="far fa-edit"></i>
                                                         </button>
                                                     @endif
@@ -109,13 +147,12 @@
 
                             <div class="modal-header" id="createModalLabel">
                                 <h5 class="modal-title">{{ trans('menu.inventory-settings-unit-menu-title') }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-hidden="true"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                             </div>
                             <form action="{{ route('inv.settings.units.store') }}" method="post">
                                 @csrf
                                 <div class="modal-body">
-                                    
+
                                     <div class="row mb-4">
                                         <label class="col-sm-12 col-form-label">Name</label>
                                         <div class="col-sm-12">
@@ -123,7 +160,7 @@
                                                 required>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row mb-4">
                                         <label class="col-sm-12 col-form-label">Description</label>
                                         <div class="col-sm-12">
@@ -148,8 +185,8 @@
     </div>
 
     <!-- Edit Modal -->
-    <div class="modal fade inputForm-modal" id="editModal" tabindex="-1" role="dialog"
-        aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal fade inputForm-modal" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
 
@@ -161,7 +198,7 @@
                     @csrf
                     @method('put')
                     <div class="modal-body">
-                        
+
 
                         <div class="row mb-4">
                             <label class="col-sm-12 col-form-label">Name</label>
@@ -170,7 +207,7 @@
                                     required>
                             </div>
                         </div>
-                        
+
                         {{-- description --}}
                         <div class="row mb-4">
                             <label class="col-sm-12 col-form-label">Description</label>
@@ -196,11 +233,11 @@
 @section('page_scripts')
 
     <script>
-        $(document).ready(function(e) {
-            $(document).on('click', '.btn-edit', function() {
+        $(document).ready(function (e) {
+            $(document).on('click', '.btn-edit', function () {
                 const data = $(this).data('data');
                 //loop through data object
-                $.each(data, function(key, value) {
+                $.each(data, function (key, value) {
                     $('#editModal input[name="' + key + '"]').val(value);
                     // console.log();
                 })

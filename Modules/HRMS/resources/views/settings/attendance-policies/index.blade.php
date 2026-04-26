@@ -15,8 +15,7 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-12">
-                        <form action="{{ route('hrm.attendance-policies.index') }}" method="GET"
-                            class="d-flex gap-2">
+                        <form action="{{ route('hrm.attendance-policies.index') }}" method="GET" class="d-flex gap-2">
                             <div class="input-group">
                                 <span class="input-group-text attendance-policy border-end-0">
                                     <i class="fas fa-search text-muted"></i>
@@ -35,7 +34,27 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <style>
+                        .attendance-table-custom,
+                        .attendance-table-custom th,
+                        .attendance-table-custom td {
+                            border: 1px solid #dee2e6 !important;
+                            border-collapse: collapse !important;
+                        }
+
+                        .attendance-table-custom th,
+                        .attendance-table-custom td {
+                            padding: 12px;
+                            vertical-align: middle;
+                        }
+
+                        .attendance-table-custom thead th {
+                            background-color: #f8f9fa;
+                            border-bottom-width: 2px !important;
+                        }
+                    </style>
+
+                    <table class="table attendance-table-custom table-hover align-middle">
                         <thead class="attendance-policy">
                             <tr class="text-muted small uppercase">
                                 <th>Policy Name</th>
@@ -43,9 +62,10 @@
                                 <th>In time</th>
                                 <th>Delay Buffer</th>
                                 <th>Ex. Delay Buffer</th>
-                                <th>Ignore OT & Deduction</th>
-                                <th>Exclude From Att. Reports</th>
-                                <th>Discard Att. On Weekend</th>
+                                {{-- <th>Ignore OT & Deduction</th> --}}
+                                {{-- <th>Exclude From Att. Reports</th> --}}
+                                {{-- <th>Discard Att. On Weekend</th> --}}
+                                <th>Status</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                         </thead>
@@ -57,20 +77,21 @@
                                     <td>{{ $policy->in_time }}</td>
                                     <td>{{ $policy->delay_buffer }}</td>
                                     <td>{{ $policy->ex_delay_buffer }}</td>
-                                    <td>{{ $policy->ignore_ot_deduction ? 'Yes' : 'No' }}</td>
-                                    <td>{{ $policy->exclude_from_reports ? 'Yes' : 'No' }}</td>
-                                    <td>{{ $policy->discard_weekend ? 'Yes' : 'No' }}</td>
+                                    {{-- <td>{{ $policy->ignore_ot_deduction ? 'Yes' : 'No' }}</td> --}}
+                                    {{-- <td>{{ $policy->exclude_from_reports ? 'Yes' : 'No' }}</td> --}}
+                                    {{-- <td>{{ $policy->discard_weekend ? 'Yes' : 'No' }}</td> --}}
+                                    <td>{{ $policy->status === 1 ? 'Active' : 'Inactive' }}</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center align-items-center">
 
-                                            @if (hasPermission('hrm.attendance-policies.edit'))
+                                            @if (hasPermission('hrm.attendance-policies.update'))
                                                 <a href="{{ route('hrm.attendance-policies.edit', $policy->id) }}"
                                                     class="text-muted me-3" title="Edit">
                                                     <i class="fas fa-pen"></i>
                                                 </a>
                                             @endif
 
-                                            @if (hasPermission('hrm.attendance-policies.destroy')) 
+                                            @if (hasPermission('hrm.attendance-policies.destroy'))
                                                 <form action="{{ route('hrm.attendance-policies.destroy', $policy->id) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Are you sure you want to delete this policy?')">

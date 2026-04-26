@@ -171,7 +171,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="header">
-                                <img src="{{ $company_info->company_logo }}" alt="Company Logo">
+                                <img src="{{ url($company_info->company_logo) }}" alt="Company Logo">
                                 <div>
                                     <h1>{{ $company_info->company_name }}</h1>
                                     <p>{{ $company_info->company_bio }}</p>
@@ -187,7 +187,15 @@
                                         <tr>
                                             <th>Receipt No</th>
                                             <td>:</td>
-                                            <td>{{ $emiEntryDetail->receipt_no ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->last()->receipt_no }}
+                                            <td>
+                                              
+                                                {{
+                                                    !empty($emiEntryDetail->receipt_no)
+                                                        ? (is_array($emiEntryDetail->receipt_no)
+                                                            ? implode(', ', $emiEntryDetail->receipt_no)
+                                                            : $emiEntryDetail->receipt_no)
+                                                        : 'N/A'
+                                                }}
                                             </td>
                                         </tr>
                                         <tr>
@@ -287,7 +295,7 @@
                                 <section class="requisition-info" style="display: flex; justify-content: space-between;">
                                     <div class="left" style="width: 70%;">
                                         <p>IN WORD :
-                                            {{ convert_number($emiEntryDetail->emi_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('emi_amount')) }}
+                                            {{ convert_number($emiEntryDetail->paid_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('paid_amount')) }}
                                             Taka Only</p>
                                     </div>
                                     <div class="right" style="width: 30%;">
@@ -296,7 +304,7 @@
                                                 <td style="border: none!important;">Grand Total</td>
                                                 <td style="border: none!important;">:</td>
                                                 <td style="border: none!important; text-align: end;">
-                                                    <strong>{{ number_format($emiEntryDetail->emi_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('emi_amount'), 2) }}</strong>
+                                                    <strong>{{ number_format($emiEntryDetail->paid_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('paid_amount'), 2) }}</strong>
                                                 </td>
                                             </tr>
                                         </table>

@@ -12,7 +12,8 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        {{ trans('menu.requisition-list-menu-title') }}</li>
+                                        {{ trans('menu.requisition-list-menu-title') }}
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
@@ -34,16 +35,10 @@
                                 </a>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
 
-            <style>
-                .nav-icon la la-cart-arrow-down{
-                    font-size: 26px;
-                }
-            </style>
 
             <div class="row">
                 <div class="col-md-12">
@@ -54,84 +49,81 @@
                         <div class="card-body">
                             <form>
                                 <div class="col-sm-12">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <td class="text-center">
-                                                <input type="text" name="requisition_no" id="requisition_no"
-                                                    class="form-control" value="{{ request('requisition_no') }}"
-                                                    placeholder="Requisition Id">
-                                            </td>
-                                            <td class="text-center">
-                                                <select name="supplier_id" id="supplier_id" class="tom-select  input-sm"
-                                                    data-placeholder="Select Supplier">
-                                                    <option value=""></option>
-                                                    @foreach ($suppliers as $key => $value)
-                                                        <option {{ request('supplier_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">{{ $value->company_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="text-center">
-                                                <select name="customer_id" id="customer_id" class="tom-select  input-sm"
-                                                    data-placeholder="Select Customer">
-                                                    <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ optional($value)->company_name }}({{ optional($value->area)->area }})</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="text-center">
-                                                <select name="branch_id" id="branch_id" class="tom-select input-sm"
-                                                    data-placeholder="Select Invoice To">
-                                                    <option value=""></option>
-                                                    @foreach ($warehouses as $warehouse)
-                                                        <option value="{{ $warehouse->id }}"
-                                                            {{ request('branch_id') == $warehouse->id ? 'selected' : '' }}>
-                                                            {{ $warehouse->name }}</option>
-                                                    @endforeach
-                                                </select>
-
-                                                </select>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <select name="status" id="status" class="tom-select  input-sm"
-                                                    data-placeholder="Select Status">
-                                                    <option value=""></option>
-                                                    <option value="0"
-                                                        {{ request('status') == '0' ? 'selected' : '' }}>Pending</option>
-                                                    <option value="1"
-                                                        {{ request('status') == '1' ? 'selected' : '' }}>Approved</option>
-                                                    <option value="2"
-                                                        {{ request('status') == '2' ? 'selected' : '' }}>Rejected</option>
-                                                </select>
-                                            </td>
-                                            <td colspan="2">
-                                                <div class="input-daterange input-group">
-                                                    <input type="text" class="form-control flatdate" name="from"
-                                                        value="{{ request('from') }}" autocomplete="off"
-                                                        placeholder="From" />
-                                                    <span class="input-group-text">
-                                                        <i class="fa fa-exchange-alt"></i>
-                                                    </span>
-
-                                                    <input type="text" class="form-control flatdate" name="to"
-                                                        value="{{ request('to') }}" autocomplete="off" placeholder="To" />
-                                                </div>
-                                            </td>
-                                            <td colspan="5" class="text-right">
-                                                <div class="btn-group btn-corner">
-                                                    <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
-                                                        Search</button>
-                                                    <a href="{{ request()->url() }}" class="btn btn-xs btn-warning"><i
-                                                            class="fa fa-refresh"></i> Refresh</a>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    {{-- Filter table with grid lines --}}
+                                    <table class="table table-bordered grid-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-center" style="width: 25%">
+                                                    <input type="text" name="requisition_no" id="requisition_no"
+                                                        class="form-control" value="{{ request('requisition_no') }}"
+                                                        placeholder="Requisition Id">
+                                                </td>
+                                                <td class="text-center" style="width: 25%">
+                                                    <select name="supplier_id" id="supplier_id" class="tom-select input-sm"
+                                                        data-placeholder="Select Supplier">
+                                                        <option value=""></option>
+                                                        @foreach ($suppliers as $key => $value)
+                                                            <option {{ request('supplier_id') == $value->id ? 'selected' : '' }}
+                                                                value="{{ $value->id }}">{{ $value->company_name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="text-center" style="width: 25%">
+                                                    <select name="customer_id" id="customer_id" class="tom-select input-sm"
+                                                        data-placeholder="Select Customer">
+                                                        <option value=""></option>
+                                                        @foreach ($customers as $key => $value)
+                                                            <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
+                                                                value="{{ $value->id }}">
+                                                                {{ optional($value)->company_name }}({{ optional($value->area)->area }})</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td class="text-center" style="width: 25%">
+                                                    <select name="branch_id" id="branch_id" class="tom-select input-sm"
+                                                        data-placeholder="Select Invoice To">
+                                                        <option value=""></option>
+                                                        @foreach ($warehouses as $warehouse)
+                                                            <option value="{{ $warehouse->id }}"
+                                                                {{ request('branch_id') == $warehouse->id ? 'selected' : '' }}>
+                                                                {{ $warehouse->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center">
+                                                    <select name="status" id="status" class="tom-select input-sm"
+                                                        data-placeholder="Select Status">
+                                                        <option value=""></option>
+                                                        <option value="0"
+                                                            {{ request('status') == '0' ? 'selected' : '' }}>Pending</option>
+                                                        <option value="1"
+                                                            {{ request('status') == '1' ? 'selected' : '' }}>Approved</option>
+                                                        <option value="2"
+                                                            {{ request('status') == '2' ? 'selected' : '' }}>Rejected</option>
+                                                    </select>
+                                                </td>
+                                                <td colspan="2">
+                                                    <div class="input-daterange input-group">
+                                                        <input type="text" class="form-control flatdate" name="from"
+                                                            value="{{ request('from') }}" autocomplete="off"
+                                                            placeholder="From" />
+                                                        <span class="input-group-text">
+                                                            <i class="fa fa-exchange-alt"></i>
+                                                        </span>
+                                                        <input type="text" class="form-control flatdate" name="to"
+                                                            value="{{ request('to') }}" autocomplete="off" placeholder="To" />
+                                                    </div>
+                                                </td>
+                                                <td class="text-right">
+                                                    <div class="btn-group btn-corner">
+                                                        <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i> Search</button>
+                                                        <a href="{{ request()->url() }}" class="btn btn-xs btn-warning"><i class="fa fa-refresh"></i> Refresh</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                 </div>
                             </form>
@@ -142,7 +134,40 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $requisitions])'
+                                <style>
+                                    .jobs-table-custom,
+                                    .jobs-table-custom th,
+                                    .jobs-table-custom td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+
+                                    .jobs-table-custom th,
+                                    .jobs-table-custom td {
+                                        padding: 12px;
+                                        vertical-align: middle;
+                                    }
+
+                                    .jobs-table-custom thead th {
+                                        background-color: #f8f9fa;
+                                        border-bottom-width: 2px !important;
+                                    }
+
+                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;  
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                                </style>
+                            {{-- Main data table with grid lines --}}
+                            <table id="zero-config" class="table jobs-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $requisitions])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -151,24 +176,23 @@
                                         <th>Requisition Date</th>
                                         <th>Suplier</th>
                                         <th>Customer</th>
-                                        <th>Invoice To</th>
+                                        {{-- <th>Invoice To</th> --}}
                                         <th>Status</th>
-                                        <th>Created By</th>
+                                        {{-- <th>Created By</th> --}}
                                         <th class="no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach ($requisitions as $value)
                                         <tr>
-                                            <td>{{ ($requisitions->currentPage() - 1) * $requisitions->perPage() + $loop->iteration  }}</td>
-                                            <td>
+                                            <td>{{ ($requisitions->currentPage() - 1) * $requisitions->perPage() + $loop->iteration }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                 <a href="{{ route('purchase.requisitions.show', $value->id) }}">{{ $value->requisition_no }}</a>
                                             </td>
                                             <td>{{ $value->invoice_date }}</td>
-                                            <td>{{ optional( $value->supplier)->company_name }}</td>
-                                            <td>{{ optional($value->customer)->company_name }}</td>
-                                            <td>{{ optional($value->warehouse)->name }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->supplier)->company_name }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->customer)->company_name }}</td>
+                                            {{-- <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->warehouse)->name }}</td> --}}
                                             <td>
                                                 @if ($value->status == 0)
                                                     <span class="badge badge-round badge-warning">Pending</span>
@@ -180,15 +204,15 @@
                                                     <span class="badge badge-round badge-danger">Rejected</span>
                                                 @endif
                                             </td>
-                                            <td>{{ optional($value->createdBy)->name }}</td>
+                                            {{-- <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->createdBy)->name }}</td> --}}
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
-                                                    @if (hasPermission('purchase.requisitions.approve') && ( $value->created_by != Auth::user()->id || Auth::user()->id == 1))
+                                                    @if (hasPermission('purchase.requisitions.approve') && ($value->created_by != Auth::user()->id || Auth::user()->id == 1))
                                                         @if ($value->status == 0)
                                                             <a class="btn btn-outline-success"
-                                                            href="{{ route('purchase.requisitions.approve', $value->id) }}"><i
-                                                                class="fas fa-check" type="button" title="Approve"></i></a>
+                                                                href="{{ route('purchase.requisitions.approve', $value->id) }}"><i
+                                                                    class="fas fa-check" type="button" title="Approve"></i></a>
                                                         @endif
                                                     @endif
 
@@ -197,38 +221,34 @@
                                                             href="{{ route('purchase.requisitions.show', $value->id) }}" title="View"><i
                                                                 class="fas fa-eye"></i></a>
                                                     @endif
+
                                                     @if (hasPermission('purchase.requisitions.receive') && ($value->created_by != Auth::user()->id || Auth::user()->id == 1))
                                                         @if ($value->status == 4)
-
                                                             <a class="btn btn-outline-secondary"
                                                                 href="{{ route('purchase.requisitions.received', $value->id) }}" title="Received"><i
                                                                     class="fas fa-cart-plus"></i></a>
                                                         @endif
                                                         @if ($value->status == 1)
-
                                                             <a class="btn btn-outline-secondary"
                                                                 href="{{ route('purchase.requisitions.receive', $value->id) }}" title="Receive"><i
                                                                     class="fas fa-truck"></i></a>
                                                         @endif
-
                                                     @endif
 
                                                     @if ($value->status == 0)
+                                                        @if (hasPermission('purchase.requisitions.update') && ($value->created_by == Auth::user()->id || hasPermission('supper_admin')))
+                                                            <a class="btn btn-outline-warning"
+                                                                href="{{ route('purchase.requisitions.edit', $value->id) }}" title="Edit"><i
+                                                                    class="far fa-edit"></i></a>
+                                                        @endif
 
-                                                    @if (hasPermission('purchase.requisitions.update') && ($value->created_by == Auth::user()->id || hasPermission('supper_admin')))
-                                                        <a class="btn btn-outline-warning"
-                                                            href="{{ route('purchase.requisitions.edit', $value->id) }}" title="Edit"><i
-                                                                class="far fa-edit"></i></a>
+                                                        @if (hasPermission('purchase.requisitions.destroy'))
+                                                            <button type="button"
+                                                                data-action="{{ route('purchase.requisitions.destroy', $value->id) }}"
+                                                                class="btn btn-outline-danger delete-confirm" title="Delete"><i
+                                                                    class="far fa-trash-alt"></i></button>
+                                                        @endif
                                                     @endif
-
-                                                    @if (hasPermission('purchase.requisitions.destroy'))
-                                                    <button type="button"
-                                                        data-action="{{ route('purchase.requisitions.destroy', $value->id) }}"
-                                                        class="btn btn-outline-danger delete-confirm" title="Delete"><i
-                                                            class="far fa-trash-alt"></i></button>
-                                                    @endif
-                                                    @endif
-                                                   
                                                 </div>
                                             </td>
                                         </tr>
@@ -255,4 +275,4 @@
             autoclose: true
         });
     </script>
-@endSection
+@endsection

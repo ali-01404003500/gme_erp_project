@@ -89,17 +89,63 @@
                         </div>
                     </div>
                 </div>
-                <div class="card mb-4">
+                <div class="d-none d-md-block">
                     <div class="card-body">
-                        
-                        <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $brokers])' style="width:100%">
+                        <style>
+                                .condition-table-custom {
+                                    width: 100% !important;
+                                    margin-bottom: 0 !important;
+                                }
+
+                                .condition-table-custom th,
+                                .condition-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    padding: 10px 15px !important;
+                                    vertical-align: middle !important;
+                                    font-size: 0.875rem;
+                                    /* Better for laptop density */
+                                }
+
+                                .condition-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    white-space: nowrap;
+                                    font-weight: 700;
+                                }
+                                .text-wrap-column {
+                                    min-width: 150px;
+                                    max-width: 250px;
+                                    white-space: normal !important;
+                                    word-break: break-word;
+                                }
+                                .table-responsive::-webkit-scrollbar {
+                                    height: 8px;
+                                }
+
+                                .table-responsive::-webkit-scrollbar-thumb {
+                                    background: #ccc;
+                                    border-radius: 4px;
+                                }
+                                .table thead th {
+                                background-color: #35526e !important;
+                                color: #ffffff !important;
+                                font-weight: 600 !important;
+                                text-transform: uppercase;
+                                font-size: 0.85rem !important;
+                                letter-spacing: 0.08em;
+                                border-bottom: 2px solid #2a4054 !important;
+                                padding: 14px 16px !important;
+                                vertical-align: middle;
+                                text-align: center;
+                            }
+                            </style>
+                        <table class="table condition-table-custom dt-table-hover" id="zero-config"class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $brokers])' style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
                                     <th>Broker Name</th>
                                     <th>Address</th>
                                     <th>Phone No</th>
-                                    <th>Email</th>
+                                    {{-- <th>Email</th> --}}
                                     <th>Customer Name</th>
                                     <th>
                                             Status
@@ -114,15 +160,15 @@
                                         <td>
                                             <a href="{{ route('crm.brokers.show', $broker->id) }}">{{ $broker->broker_name }}</i></a>
                                         </td>
-                                        <td>{{ $broker->present_address }}</td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $broker->present_address }}</td>
                                         <td>{{ $broker->mobile }}</td>
-                                        <td>{{ $broker->email }}</td>
+                                        {{-- <td>{{ $broker->email }}</td> --}}
                                         <td>
                                             @foreach ($broker->customerAttached ?? [] as $customerAttached)
                                             {{ optional($customerAttached->customer)->company_name }} <br>
                                             @endforeach
                                         </td>
-                                         <td>
+                                        <td>
                                                 @if ($broker->status == 1)
                                                     <span class="badge badge-round badge-warning">Pending</span>
                                                 @elseif ($broker->status == 2)

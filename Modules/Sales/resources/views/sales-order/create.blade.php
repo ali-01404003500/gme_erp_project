@@ -323,7 +323,7 @@
                                                                 </td>
                                                             </tr>
                                                             <tr>
-                                                                <td colspan="5" style="text-align: right;">VAT(5)%</td>
+                                                                <td colspan="5" style="text-align: right;">VAT(7.5)%</td>
                                                                 <td>
                                                                     <input type="hidden" id="vat_percentage"
                                                                         value="">
@@ -624,11 +624,11 @@
 
         let discount = parseFloat($('#discount').val()) || 0;
         let vatPercentage = parseFloat($('#vat_percentage').val()) || 0; // Assuming VAT percentage is available
-        let vat = (totalAmount - discount) * (vatPercentage / 100); // Calculate VAT
-        let netAmount = totalAmount - discount + vat;
-
+        let vatAmt = (totalAmount - discount) * vatPercentage; // Calculate VAT
+        let netAmount = totalAmount - discount + vatAmt;
+     
         $('#total_amount').val(totalAmount.toFixed());
-        $('#vat').val(vat.toFixed());
+        $('#vat').val(vatAmt.toFixed());
         $('#total').val((totalAmount - discount).toFixed()); // Total after discount, before VAT
         $('#net_amount').val(netAmount.toFixed());
     }
@@ -1138,7 +1138,7 @@
                         }
 
                         if (data.customers.vat_status == 1) {
-                            $('#vat_percentage').val(.05);
+                            $('#vat_percentage').val(0.075);
                         } else {
                             $('#vat_percentage').val(0);
                         }
@@ -1209,7 +1209,7 @@
             let totalAmount = 0;
             let totalDiscount = 0;
             let totalVat = 0;
-            let vat = $('#vat_percentage').val();
+            let vatPer = $('#vat_percentage').val();
 
             $("#product_info_table tbody tr").each(function () {
                 const { amount, totalDiscount: rowDiscount } = calculateRow($(this));
@@ -1220,9 +1220,10 @@
             $("#total_amount").val(totalAmount);
             $("#discount").val(totalDiscount);
             $("#total").val(totalAmount - totalDiscount);
-            $("#vat").val((totalAmount - totalDiscount) * vat);
-            $("#net_amount").val(totalAmount - totalDiscount + (totalAmount - totalDiscount) * vat);
-            updatePayable(totalAmount - totalDiscount + (totalAmount - totalDiscount) * vat);
+            $("#vat").val((totalAmount - totalDiscount) * vatPer);
+ 
+            $("#net_amount").val(totalAmount - totalDiscount + (totalAmount - totalDiscount) * vatPer);
+            updatePayable(totalAmount - totalDiscount + (totalAmount - totalDiscount) * vatPer);
             // console.log("Due amount: ", $("[name='due_amount']").val());
             
             updatePaidStatus();

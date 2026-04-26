@@ -26,7 +26,7 @@
                     <select id="input-bank" class="form-select tom-select">
                         <option value="">Select bank</option>
                         @php
-                            if (!isset($banks) || !$banks->count()) {
+                            if(!isset($banks) || !$banks->count()) {
                                 $banks = \Modules\Account\Models\Bank::all();
                             }
                         @endphp
@@ -57,8 +57,7 @@
                     <label for="input-amount" class="form-label">Amount <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text">৳</span>
-                        <input type="number" id="input-amount" class="form-control" placeholder="Amount" step="0.01"
-                            min="0">
+                        <input type="number" id="input-amount" class="form-control" placeholder="Amount" step="0.01" min="0">
                     </div>
                 </div>
 
@@ -75,8 +74,7 @@
 
                 <div class="col-md-12">
                     <label for="input-remark" class="form-label">Remark <span class="text-danger">*</span></label>
-                    <textarea id="input-remark" class="form-control" rows="2"
-                        placeholder="Enter remark here"></textarea>
+                    <textarea id="input-remark" class="form-control" rows="2" placeholder="Enter remark here"></textarea>
                 </div>
 
                 <div class="col-md-3 ms-auto">
@@ -105,7 +103,7 @@
         </thead>
         <tbody id="payment-body">
             {{-- Existing rows populated here --}}
-            @include('partials.payment-rows')
+            @include('partials.payment-rows') 
         </tbody>
         <tfoot>
             <tr>
@@ -158,129 +156,129 @@
 @include('Account::emi-entries.emi_create_modal')
 
 @push('style')
-    <style>
-        #payment-table tfoot {
-            position: sticky;
-            bottom: 0;
-            background: #fff;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-        }
-    </style>
+<style>
+    #payment-table tfoot {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+    }
+</style>
 @endpush
 
 @push('script')
-    <script>
-        function showImage(url) {
-            $('#full-screen-image').attr('src', url);
-            $('#full-screen-modal').modal('show');
-        }
+<script>
+    function showImage(url) {
+        $('#full-screen-image').attr('src', url);
+        $('#full-screen-modal').modal('show');
+    }
 
-        function updateTotals() {
-            let total = 0;
-            $('.amount-value').each(function () {
-                let val = parseFloat($(this).text());
-                if (!isNaN(val)) total += val;
-            });
-            $('#total-display span').text(total.toFixed());
-            $('input[name="payments_total_amount"]').val(total.toFixed());
-
-            const payable = parseFloat($('input[name="payments_payable_amount"]').val()) || 0;
-            const diff = total - payable;
-
-            if (diff > 0) {
-                $('#total-due span').text("0.00");
-                $('#total-advance span').text(diff.toFixed());
-                $('input[name="payments_due_amount"]').val("0.00");
-                $('input[name="payments_advance_amount"]').val(diff.toFixed());
-            } else {
-                $('#total-due span').text(Math.abs(diff).toFixed());
-                $('#total-advance span').text("0.00");
-                $('input[name="payments_due_amount"]').val(Math.abs(diff).toFixed());
-                $('input[name="payments_advance_amount"]').val("0.00");
-            }
-        }
-
-        const paymentConfig = {
-            Cash: ['account-field'],
-            Cheque: ['bank-field', 'branch-field', 'txn-field'],
-            "Online Deposit": ['account-field'],
-            bKash: ['account-field', 'txn-field'],
-            Nagad: ['account-field', 'txn-field'],
-            Rocket: ['account-field', 'txn-field'],
-            "Card Payment": ['account-field', 'txn-field'],
-        };
-
-        function toggleFormFields(type) {
-            $('.pay-field').addClass('d-none');
-            (paymentConfig[type] || ['account-field', 'txn-field']).forEach(cls => {
-                $(`.${cls}`).removeClass('d-none');
-            });
-        }
-
-        function resetInputs() {
-            $('#input-pay-mode').val('');
-            $('#input-bank, #input-branch, #input-txn, #input-amount, #input-file, #input-remark').val('');
-            $('#input-date').val(new Date().toISOString().split('T')[0]);
-            $('#file-name-display').text('No file selected');
-            toggleFormFields('');
-        }
-
-        $(document).ready(function () {
-            $('#input-date').val(new Date().toISOString().split('T')[0]);
-
-            $('#input-pay-mode').on('change', function () {
-                toggleFormFields($(this).val());
-                // fetch accounts (Ajax) can be placed here...
-            });
-
-            $('#input-file').on('change', function () {
-                $('#file-name-display').text(this.files[0]?.name || 'No file selected');
-            });
-
-            $('#add-payment').on('click', function (e) {
-                e.preventDefault();
-                const payMode = $('#input-pay-mode').val();
-                const bankName = $('#input-bank option:selected').text();
-                const bankId = $('#input-bank').val();
-                const branchName = $('#input-branch option:selected').text();
-                const branchId = $('#input-branch').val();
-                const txn = $('#input-txn').val();
-                const date = $('#input-date').val();
-                const amount = $('#input-amount').val();
-                const remark = $('#input-remark').val();
-
-                if (!payMode || !date || !amount || !remark) {
-                    toastr.error('Please fill up all required fields');
-                    return;
-                }
-
-                let row = $(`
-                    <tr>
-                        <td>${payMode}<input type="hidden" name="payments_pay_mode[]" value="${payMode}"></td>
-                        <td>${bankName}<input type="hidden" name="payments_bank_id[]" value="${bankId}"></td>
-                        <td>${branchName}<input type="hidden" name="payments_branch_id[]" value="${branchId}"></td>
-                        <td>${txn}<input type="hidden" name="payments_transaction_id[]" value="${txn}"></td>
-                        <td>${date}<input type="hidden" name="payments_date[]" value="${date}"></td>
-                        <td class="amount-value">${parseFloat(amount).toFixed()}<input type="hidden" name="payments_amount[]" value="${amount}"></td>
-                        <td><span class="file_name"></span><input type="hidden" name="payments_attachments[]" class="attachments"></td>
-                        <td>${remark}<input type="hidden" name="payments_remark[]" value="${remark}"></td>
-                        <td><button class="btn btn-danger btn-xs remove-row"><i class="fa fa-trash"></i></button></td>
-                    </tr>
-                `);
-
-                $('#payment-body').append(row);
-                updateTotals();
-                resetInputs();
-            });
-
-            $(document).on('click', '.remove-row', function () {
-                $(this).closest('tr').remove();
-                updateTotals();
-            });
-
-            @if($payments)
-                updateTotals();
-            @endif
+    function updateTotals() {
+        let total = 0;
+        $('.amount-value').each(function () {
+            let val = parseFloat($(this).text());
+            if (!isNaN(val)) total += val;
         });
-    </script>
+        $('#total-display span').text(total.toFixed());
+        $('input[name="payments_total_amount"]').val(total.toFixed());
+
+        const payable = parseFloat($('input[name="payments_payable_amount"]').val()) || 0;
+        const diff = total - payable;
+
+        if (diff > 0) {
+            $('#total-due span').text("0.00");
+            $('#total-advance span').text(diff.toFixed());
+            $('input[name="payments_due_amount"]').val("0.00");
+            $('input[name="payments_advance_amount"]').val(diff.toFixed());
+        } else {
+            $('#total-due span').text(Math.abs(diff).toFixed());
+            $('#total-advance span').text("0.00");
+            $('input[name="payments_due_amount"]').val(Math.abs(diff).toFixed());
+            $('input[name="payments_advance_amount"]').val("0.00");
+        }
+    }
+
+    const paymentConfig = {
+        Cash: ['account-field'],
+        Cheque: ['bank-field', 'branch-field', 'txn-field'],
+        "Online Deposit": ['account-field'],
+        bKash: ['account-field', 'txn-field'],
+        Nagad: ['account-field', 'txn-field'],
+        Rocket: ['account-field', 'txn-field'],
+        "Card Payment": ['account-field', 'txn-field'],
+    };
+
+    function toggleFormFields(type) {
+        $('.pay-field').addClass('d-none');
+        (paymentConfig[type] || ['account-field', 'txn-field']).forEach(cls => {
+            $(`.${cls}`).removeClass('d-none');
+        });
+    }
+
+    function resetInputs() {
+        $('#input-pay-mode').val('');
+        $('#input-bank, #input-branch, #input-txn, #input-amount, #input-file, #input-remark').val('');
+        $('#input-date').val(new Date().toISOString().split('T')[0]);
+        $('#file-name-display').text('No file selected');
+        toggleFormFields('');
+    }
+
+    $(document).ready(function () {
+        $('#input-date').val(new Date().toISOString().split('T')[0]);
+
+        $('#input-pay-mode').on('change', function () {
+            toggleFormFields($(this).val());
+            // fetch accounts (Ajax) can be placed here...
+        });
+
+        $('#input-file').on('change', function () {
+            $('#file-name-display').text(this.files[0]?.name || 'No file selected');
+        });
+
+        $('#add-payment').on('click', function (e) {
+            e.preventDefault();
+            const payMode = $('#input-pay-mode').val();
+            const bankName = $('#input-bank option:selected').text();
+            const bankId = $('#input-bank').val();
+            const branchName = $('#input-branch option:selected').text();
+            const branchId = $('#input-branch').val();
+            const txn = $('#input-txn').val();
+            const date = $('#input-date').val();
+            const amount = $('#input-amount').val();
+            const remark = $('#input-remark').val();
+
+            if (!payMode || !date || !amount || !remark) {
+                toastr.error('Please fill up all required fields');
+                return;
+            }
+
+            let row = $(`
+                <tr>
+                    <td>${payMode}<input type="hidden" name="payments_pay_mode[]" value="${payMode}"></td>
+                    <td>${bankName}<input type="hidden" name="payments_bank_id[]" value="${bankId}"></td>
+                    <td>${branchName}<input type="hidden" name="payments_branch_id[]" value="${branchId}"></td>
+                    <td>${txn}<input type="hidden" name="payments_transaction_id[]" value="${txn}"></td>
+                    <td>${date}<input type="hidden" name="payments_date[]" value="${date}"></td>
+                    <td class="amount-value">${parseFloat(amount).toFixed()}<input type="hidden" name="payments_amount[]" value="${amount}"></td>
+                    <td><span class="file_name"></span><input type="hidden" name="payments_attachments[]" class="attachments"></td>
+                    <td>${remark}<input type="hidden" name="payments_remark[]" value="${remark}"></td>
+                    <td><button class="btn btn-danger btn-xs remove-row"><i class="fa fa-trash"></i></button></td>
+                </tr>
+            `);
+
+            $('#payment-body').append(row);
+            updateTotals();
+            resetInputs();
+        });
+
+        $(document).on('click', '.remove-row', function () {
+            $(this).closest('tr').remove();
+            updateTotals();
+        });
+
+        @if($payments)
+            updateTotals();
+        @endif
+    });
+</script>
 @endpush

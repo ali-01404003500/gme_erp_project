@@ -108,14 +108,14 @@ class ProductTransferController extends Controller
             $quantity = $products_information['quantity'][$key];
 
             // Check Serials
-            if (isset($productStockDetails['serial_no'][$productId])) {
+            if (!empty($productStockDetails['serial_no'][$productId] ?? [])) {
                 $serialCount = count($productStockDetails['serial_no'][$productId]);
                 if ($serialCount != $quantity) {
                     return redirect()->back()->withErrors(['quantity' => "Product ID {$productId}: Selected serials count ({$serialCount}) does not match transfer quantity ({$quantity})."])->withInput();
                 }
             }
             // Check Lots
-            elseif (isset($productStockDetails['lot_no'][$productId])) {
+            if  (!empty($productStockDetails['lot_no'][$productId] ?? [])) { 
                 $lotQtySum = array_sum($productStockDetails['lots_quantity'][$productId] ?? []);
                 if ($lotQtySum != $quantity) {
                     return redirect()->back()->withErrors(['quantity' => "Product ID {$productId}: Sum of lot quantities ({$lotQtySum}) does not match transfer quantity ({$quantity})."])->withInput();

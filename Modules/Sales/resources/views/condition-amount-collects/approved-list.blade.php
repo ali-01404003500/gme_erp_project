@@ -26,7 +26,39 @@
                             id="approvalForm">
                             @csrf
                             <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                                <style>
+                                    .condition-amount-collects-custom,
+                                    .condition-amount-collects-custom th,
+                                    .condition-amount-collects-custom td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+
+                                    .condition-amount-collects-custom th,
+                                    .condition-amount-collects-custom td {
+                                        padding: 12px;
+                                        vertical-align: middle;
+                                    }
+
+                                    .condition-amount-collects-custom thead th {
+                                        background-color: #f8f9fa;
+                                        border-bottom-width: 2px !important;
+                                    }
+
+                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                                </style>
+                                <table id="zero-config" class="table condition-amount-collects-custom dt-table-hover" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th class="no-content" style="width: 3%; text-align: center;">
@@ -83,27 +115,27 @@
                                                         {{ $item->courier->courier_name }}
                                                     </a>
                                                 </td>
-                                                <td>{{ number_format($item->invoice_amount) }}</td>
+                                                <td class="fw-bold text-success">{{ number_format($item->invoice_amount) }}</td>
                                                 <td>{{ $item->shipmentVerify->receipt_no ?? '' }}</td>
                                                 <td>{{ $item->shipmentVerify->receive_date ?? '' }}</td>
-                                                <td>
+                                                <td class="fw-bold text-success">
                                                     <span data-bs-toggle="tooltip"
                                                         title="Remarks: {{ $item->salesOrder->shipment->condition_remarks ?? 'N/A' }}">
                                                         {{ number_format($additionalAmount) }}
                                                     </span>
                                                 </td>
-                                                <td>{{ number_format($item->condition_amount) }}</td>
+                                                <td class="fw-bold text-success">{{ number_format($item->condition_amount) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr class="fw-bold" style="background-color: #f8f9fa;">
                                             <td colspan="5" class="text-end">Grand Total:</td>
-                                            <td>{{ number_format($grandTotalInvAmt ?? 0) }}</td>
+                                            <td class="fw-bold text-success">{{ number_format($grandTotalInvAmt ?? 0) }}</td>
                                             <td></td>
                                             <td></td>
-                                            <td>{{ number_format($grandTotalAdditionalAmt ?? 0) }}</td>
-                                            <td>{{ number_format($grandTotalCondAmt ?? 0) }}</td>
+                                            <td class="fw-bold text-success">{{ number_format($grandTotalAdditionalAmt ?? 0) }}</td>
+                                            <td class="fw-bold text-success">{{ number_format($grandTotalCondAmt ?? 0) }}</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -163,20 +195,24 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <span class="input-group-text">Service Charge</span>
-                                            <input type="number" class="form-control" id="service_charge" value="0" readonly>
+                                            <input type="number" class="form-control" id="service_charge" value="0"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="service_type" id="selfService" value="self" readonly>
+                                            <input class="form-check-input" type="radio" name="service_type"
+                                                id="selfService" value="self" readonly>
                                             <label class="form-check-label" for="selfService">Self</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="service_type" id="loanService" value="loan" readonly>
+                                            <input class="form-check-input" type="radio" name="service_type"
+                                                id="loanService" value="loan" readonly>
                                             <label class="form-check-label" for="loanService">Loan To Customer</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="service_type" id="customerService" value="customer" readonly>
+                                            <input class="form-check-input" type="radio" name="service_type"
+                                                id="customerService" value="customer" readonly>
                                             <label class="form-check-label" for="customerService">Customer</label>
                                         </div>
                                     </div>
@@ -187,20 +223,24 @@
                                     <div class="col-sm-4">
                                         <div class="input-group">
                                             <span class="input-group-text">Delivery Charge</span>
-                                            <input type="number" class="form-control" id="delivery_charge" value="0" readonly>
+                                            <input type="number" class="form-control" id="delivery_charge" value="0"
+                                                readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="delivery_type" id="selfDelivery" value="self" readonly>
+                                            <input class="form-check-input" type="radio" name="delivery_type"
+                                                id="selfDelivery" value="self" readonly>
                                             <label class="form-check-label" for="selfDelivery">Self</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="delivery_type" id="loanDelivery" value="loan" readonly>
+                                            <input class="form-check-input" type="radio" name="delivery_type"
+                                                id="loanDelivery" value="loan" readonly>
                                             <label class="form-check-label" for="loanDelivery">Loan To Cus</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="delivery_type" id="customerDelivery" value="customer" readonly>
+                                            <input class="form-check-input" type="radio" name="delivery_type"
+                                                id="customerDelivery" value="customer" readonly>
                                             <label class="form-check-label" for="customerDelivery">Customer</label>
                                         </div>
                                     </div>
@@ -216,19 +256,23 @@
                                     </div>
                                     <div class="col-sm-8">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="other_type" id="selfOther" value="self" readonly>
+                                            <input class="form-check-input" type="radio" name="other_type" id="selfOther"
+                                                value="self" readonly>
                                             <label class="form-check-label" for="selfOther">Self</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="other_type" id="loanOther" value="loan" readonly>
+                                            <input class="form-check-input" type="radio" name="other_type" id="loanOther"
+                                                value="loan" readonly>
                                             <label class="form-check-label" for="loanOther">Loan To Cus</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="other_type" id="benefitOther" value="benefit" readonly>
+                                            <input class="form-check-input" type="radio" name="other_type" id="benefitOther"
+                                                value="benefit" readonly>
                                             <label class="form-check-label" for="benefitOther">Benefit</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="other_type" id="customerOther" value="customer" readonly>
+                                            <input class="form-check-input" type="radio" name="other_type"
+                                                id="customerOther" value="customer" readonly>
                                             <label class="form-check-label" for="customerOther">Customer</label>
                                         </div>
                                     </div>
@@ -236,15 +280,17 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-6">
-                                
-                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="courier_id" placeholder="Courier Name" readonly>
+
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="courier_id" placeholder="Courier Name"
+                                            readonly>
                                         <span class="input-group-text">Courier Name</span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="receipt_no" placeholder="Receipt No" readonly>
+                                        <input type="text" class="form-control" id="receipt_no" placeholder="Receipt No"
+                                            readonly>
                                         <span class="input-group-text">Receipt No</span>
                                     </div>
                                 </div>
@@ -252,23 +298,27 @@
                             <div class="row mb-3">
                                 <div class="col-sm-4">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" id="cartoon_no" placeholder="Cartoon No" readonly>
+                                        <input type="text" class="form-control" id="cartoon_no" placeholder="Cartoon No"
+                                            readonly>
                                         <span class="input-group-text">Carton No</span>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" class="form-control" id="courier_date" placeholder="Courier Date" readonly>
+                                    <input type="text" class="form-control" id="courier_date" placeholder="Courier Date"
+                                        readonly>
                                 </div>
                                 <div class="col-sm-4">
-                                    <input type="text" class="form-control" id="receive_date" placeholder="Receipt Date" readonly>
+                                    <input type="text" class="form-control" id="receive_date" placeholder="Receipt Date"
+                                        readonly>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
+                        data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

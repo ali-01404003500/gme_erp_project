@@ -17,13 +17,12 @@
                         </div>
                         <div class="breadcrumb-main__wrapper">
                             <div class="action-btn mt-sm-0 mt-15 d-flex align-items-center">
-                                @if (hasPermission('account.payments.make-payments.index'))
-                                    <a href="{{ route('account.payments.make-payments.index') }}"
-                                        class="btn px-20 btn-primary btn-sm">
-                                        <i class="las la-list fs-16"></i>List
-                                    </a>
+                               @if (hasPermission('account.payments.make-payments.index'))
+                                <a href="{{ route('account.payments.make-payments.index') }}" class="btn px-20 btn-primary btn-sm">
+                                    <i class="las la-list fs-16"></i>List
+                                </a>
                                 @endif
-                                {{-- <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
+                                 {{-- <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
                                     class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
                                     <i class="las la-file-pdf fs-16"></i> PDF
                                 </a> --}}
@@ -44,7 +43,7 @@
                 <div class="col-md-12 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{ route('account.payments.make-payments.store') }}" method="post">
+                            <form action="{{ route('account.payments.make-payments.store') }}" method="post" >
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-4">
@@ -53,12 +52,11 @@
                                             <select name="payment_to_type" id="payment_type" class="form-control tom-select"
                                                 required>
                                                 <option value="">--{{ trans('Select Payment Type') }}--</option>
-                                                <option value="customer" {{ old('payment_to_type') == 'customer' ? 'selected' : '' }}>{{ trans('Customer Payment') }}</option>
+                                                <option value="customer" {{ old('payment_to_type')=='customer' ? 'selected' : '' }}>{{ trans('Customer Payment') }}</option>
                                                 <option value="supplier" {{ old('payment_to_type') == 'supplier' ? 'selected' : '' }}>{{ trans('Supplier Payment') }}</option>
                                                 <option value="vendor" {{ old('payment_to_type') == 'vendor' ? 'selected' : '' }}>{{ trans('Vendor Payment') }}</option>
                                                 <option value="broker" {{ old('payment_to_type') == 'broker' ? 'selected' : '' }}>{{ trans('Broker Payment') }}</option>
-                                                <option value="petty_cash_expense" {{ old('payment_to_type') == 'petty_cash_expense' ? 'selected' : '' }}>
-                                                    {{ trans('Petty Cash Expense') }}</option>
+                                                <option value="petty_cash_expense" {{ old('payment_to_type') == 'petty_cash_expense' ? 'selected' : '' }}>{{ trans('Petty Cash Expense') }}</option>  
                                             </select>
                                         </div>
                                     </div>
@@ -93,7 +91,7 @@
                                         <div class="form-group gap-2 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-primary" id="save"
                                                 data-bs-dismiss="modal">{{ trans('Save') }}</button>
-
+                                           
                                         </div>
                                     </div>
 
@@ -191,24 +189,24 @@
                         data: { type: $('#payment_type').val(), account_id: payment_to },
                         success: function (response) {
 
-                            let currentDate = new Date().toISOString().slice(0, 10);
+                            let currentDate = new Date().toISOString().slice(0, 10); 
 
-                            if (paymentType == "customer") {
+                            if(paymentType=="customer"){ 
                                 const balanceLink = `{{ route('account.report.customer-ledger') }}?account_id=${response.account?.id}&from=2021-10-05&to=${currentDate}`;
-                                $('#balance').html('<a href="' + balanceLink + '" target="_blank">' + response.account?.balance + '</a>')
+                                $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+response.account?.balance+'</a>')
                             }
-                            else if (paymentType == "vendor") {
+                            else if(paymentType=="vendor"){ 
                                 const balanceLink = `{{ route('account.report.vendor-ledger') }}?account_id=${response.account?.id}&from=2021-10-05&to=${currentDate}`;
-                                $('#balance').html('<a href="' + balanceLink + '" target="_blank">' + response.account?.balance + '</a>')
+                                $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+response.account?.balance+'</a>')
                             }
-                            else if (paymentType == "supplier") {
+                            else if(paymentType=="supplier"){ 
                                 const balanceLink = `{{ route('account.report.supplier-ledger') }}?account_id=${response.account?.id}&from=2021-10-05&to=${currentDate}`;
-                                $('#balance').html('<a href="' + balanceLink + '" target="_blank">' + response.account?.balance + '</a>')
-                            }
-                            else {
+                                $('#balance').html('<a href="'+balanceLink+'" target="_blank">'+response.account?.balance+'</a>')
+                            }  
+                            else{       
                                 $('#balance').text(response.account?.balance || 0);
                             }
-
+                             
                             updatePayable(response.account?.balance);
                         }
                     });

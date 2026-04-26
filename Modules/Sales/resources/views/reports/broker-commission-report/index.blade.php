@@ -99,7 +99,28 @@
                                         placeholder="Search..." style="font-size: 12px;">
                                 </div>
 
-                                <table class="table table-hover table-bordered table-sm" id="brokerCommissionReportTable"
+                                <style>
+                                    .broker-commission-table,
+                                    .broker-commission-table th,
+                                    .broker-commission-table td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+                                    .table thead th {
+                                    background-color: #35526e !important;
+                                    color: #ffffff !important;
+                                    font-weight: 600 !important;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem !important;
+                                    letter-spacing: 0.08em;
+                                    border-bottom: 2px solid #2a4054 !important;
+                                    padding: 14px 16px !important;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+                                </style>
+
+                                <table class="table broker-commission-table table-hover table-sm" id="brokerCommissionReportTable"
                                     style="font-size: 11px;">
                                     <thead class="bg-primary text-white">
                                         <tr>
@@ -121,19 +142,19 @@
                                                 $totalCommission += $commission->amount;
                                             @endphp
                                             <tr>
-                                                <td class="text-center">{{ $rowNumber }}</td>
+                                                <td class="text-center">{{ $rowNumber }}</div>
                                                 <td>
                                                     <strong>{{ optional($commission->broker)->broker_name ?? 'N/A' }}</strong><br>
                                                     <small class="text-muted">{{ optional($commission->broker)->broker_phone ?? '' }}</small>
-                                                </td>
-                                                <td>
+                                                 </div>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                     @if($commission->salesOrder && $commission->salesOrder->customer)
                                                         <strong>{{ $commission->salesOrder->customer->company_name ?? 'N/A' }}</strong><br>
                                                         <small class="text-muted">{{ $commission->salesOrder->customer->address ?? '' }}</small>
                                                     @else
                                                         <span class="text-muted">N/A</span>
                                                     @endif
-                                                </td>
+                                                 </div>
                                                 <td>
                                                     @if($commission->broker && $commission->broker->brokerBank && $commission->broker->brokerBank->count() > 0)
                                                         @foreach($commission->broker->brokerBank as $bankDetail)
@@ -146,24 +167,24 @@
                                                     @else
                                                         <span class="text-muted">No bank info</span>
                                                     @endif
-                                                </td>
+                                                 </div>
                                                 <td class="text-right">
                                                     <strong>{{ numberFormat($commission->amount) }}</strong>
-                                                </td>
+                                                 </div>
                                             </tr>
                                         @empty
                                             <tr>
                                                 <td colspan="5" class="text-center py-4">
                                                     <i class="las la-inbox" style="font-size: 48px; color: #ddd;"></i>
                                                     <p class="mb-0">No records found</p>
-                                                </td>
+                                                 </div>
                                             </tr>
                                         @endforelse
                                         
                                         @if($reportData->count() > 0)
                                             <tr class="font-weight-bold">
                                                 <td colspan="4" class="text-right">Total Commission Amount:</td>
-                                                <td class="text-right">{{ numberFormat($totalCommission) }}</td>
+                                                <td class="text-right">{{ numberFormat($totalCommission) }}</div>
                                             </tr>
                                         @endif
                                     </tbody>

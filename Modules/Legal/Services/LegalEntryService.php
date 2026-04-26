@@ -24,151 +24,74 @@ class LegalEntryService
         ->paginate($limit);
     }
 
-    // public function store(array $mainData, array $convictData, array $complainantData, array $witnessData, array $hajira)
-    // {
-    //     DB::beginTransaction();
+    public function store(array $mainData, array $convictData, array $complainantData, array $witnessData, array $hajira)
+    {
+        DB::beginTransaction();
 
-    //     try {
-    //         $mainData['legal_id'] = $this->getLegalId();
+        try {
+            $mainData['legal_id'] = $this->getLegalId();
 
-    //         // Create the main LegalEntry
-    //         $legalEntry = LegalEntry::create($mainData);
+            // Create the main LegalEntry
+            $legalEntry = LegalEntry::create($mainData);
 
-    //         // Create complainant (One-to-One)
-    //         $legalEntry->complainant()->create([
-    //             'company_name' => $complainantData['company_name'] ?? null,
-    //             'complainant_name' => $complainantData['complainant_name'],
-    //             'complainant_designation' => $complainantData['complainant_designation'] ?? null,
-    //             'complainant_phone' => $complainantData['complainant_phone'] ?? null,
-    //             'complainant_father' => $complainantData['complainant_father'] ?? null,
-    //             'complainant_nid' => $complainantData['complainant_nid'] ?? null,
-    //             'complainant_address' => $complainantData['complainant_address'] ?? null,
-    //         ]);
-
-    //         // Create convicts (One-to-Many)
-    //         foreach ($convictData['customer_id'] as $index => $customerId) {
-    //             $legalEntry->convicts()->create([
-    //                 'customer_id' => $customerId,
-    //                 'convict_name' => $convictData['convict_name'][$index] ?? null,
-    //                 'convict_designation' => $convictData['convict_designation'][$index] ?? null,
-    //                 'convict_phone' => $convictData['convict_phone'][$index] ?? null,
-    //                 'father_or_husband' => $convictData['father_or_husband'][$index] ?? null,
-    //                 'convict_father_name' => $convictData['convict_father_name'][$index] ?? null,
-    //                 'convict_mother_name' => $convictData['convict_mother_name'][$index] ?? null,
-    //                 'convict_nid' => $convictData['convict_nid'][$index] ?? null,
-    //                 'convict_address' => $convictData['convict_address'][$index] ?? null,
-    //             ]);
-    //         }
-
-    //         // Conditional Hajira and Witness creation
-    //         if (strtolower($mainData['legal_type']) === 'case') {
-    //             // Create Hajira entry
-    //             $legalEntry->hajiras()->create([
-    //                 'hajira_date' => $hajira['first_hajira_date'],
-    //                 'hajira_description' => $mainData['legal_description'] ?? null,
-    //             ]);
-
-    //             // Create witnesses (One-to-Many)
-    //             if (!empty($witnessData['witness_name'])) {
-    //                 foreach ($witnessData['witness_name'] as $index => $name) {
-    //                     if ($name) {
-    //                         $legalEntry->witnesses()->create([
-    //                             'witness_name' => $name,
-    //                             'witness_father_name' => $witnessData['witness_father_name'][$index] ?? null,
-    //                             'witness_mother_name' => $witnessData['witness_mother_name'][$index] ?? null,
-    //                             'witness_address' => $witnessData['witness_address'][$index] ?? null,
-    //                             'witness_phone' => $witnessData['witness_phone'][$index] ?? null,
-    //                         ]);
-    //                     }
-    //                 }
-    //             }
-    //         }
-
-    //         DB::commit();
-    //         return $legalEntry;
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         throw $e;
-    //     }
-    // }
-
-
-public function store(array $mainData, array $convictData, array $complainantData, array $witnessData, array $hajiraData)
-{
-    DB::beginTransaction();
-
-    try {
-        $mainData['legal_id'] = $this->getLegalId();
-
-        // Create the main LegalEntry
-        $legalEntry = LegalEntry::create($mainData);
-
-        // Create complainant (One-to-One)
-        $legalEntry->complainant()->create([
-            'company_name' => $complainantData['company_name'] ?? null,
-            'complainant_name' => $complainantData['complainant_name'],
-            'complainant_designation' => $complainantData['complainant_designation'] ?? null,
-            'complainant_phone' => $complainantData['complainant_phone'] ?? null,
-            'complainant_father' => $complainantData['complainant_father'] ?? null,
-            'complainant_nid' => $complainantData['complainant_nid'] ?? null,
-            'complainant_address' => $complainantData['complainant_address'] ?? null,
-        ]);
-
-        // Create convicts (One-to-Many)
-        foreach ($convictData['customer_id'] as $index => $customerId) {
-            $legalEntry->convicts()->create([
-                'customer_id' => $customerId,
-                'convict_name' => $convictData['convict_name'][$index] ?? null,
-                'convict_designation' => $convictData['convict_designation'][$index] ?? null,
-                'convict_phone' => $convictData['convict_phone'][$index] ?? null,
-                'father_or_husband' => $convictData['father_or_husband'][$index] ?? null,
-                'convict_father_name' => $convictData['convict_father_name'][$index] ?? null,
-                'convict_mother_name' => $convictData['convict_mother_name'][$index] ?? null,
-                'convict_nid' => $convictData['convict_nid'][$index] ?? null,
-                'convict_address' => $convictData['convict_address'][$index] ?? null,
+            // Create complainant (One-to-One)
+            $legalEntry->complainant()->create([
+                'company_name' => $complainantData['company_name'] ?? null,
+                'complainant_name' => $complainantData['complainant_name'],
+                'complainant_designation' => $complainantData['complainant_designation'] ?? null,
+                'complainant_phone' => $complainantData['complainant_phone'] ?? null,
+                'complainant_father' => $complainantData['complainant_father'] ?? null,
+                'complainant_nid' => $complainantData['complainant_nid'] ?? null,
+                'complainant_address' => $complainantData['complainant_address'] ?? null,
             ]);
-        }
 
-        // Conditional Hajira and Witness creation
-        if (strtolower($mainData['legal_type']) === 'case') {
-            
-            // MULTIPLE HAJIRA CREATION (One-to-Many)
-            if (isset($hajiraData['hajira_date']) && is_array($hajiraData['hajira_date'])) {
-                foreach ($hajiraData['hajira_date'] as $index => $hajiraDate) {
-                    if ($hajiraDate) {
-                        $legalEntry->hajiras()->create([
-                            'hajira_date' => $hajiraDate,
-                            'hajira_description' => $hajiraData['hajira_description'][$index] ?? null,
-                        ]);
+            // Create convicts (One-to-Many)
+            foreach ($convictData['customer_id'] as $index => $customerId) {
+                $legalEntry->convicts()->create([
+                    'customer_id' => $customerId,
+                    'convict_name' => $convictData['convict_name'][$index] ?? null,
+                    'convict_designation' => $convictData['convict_designation'][$index] ?? null,
+                    'convict_phone' => $convictData['convict_phone'][$index] ?? null,
+                    'father_or_husband' => $convictData['father_or_husband'][$index] ?? null,
+                    'convict_father_name' => $convictData['convict_father_name'][$index] ?? null,
+                    'convict_mother_name' => $convictData['convict_mother_name'][$index] ?? null,
+                    'convict_nid' => $convictData['convict_nid'][$index] ?? null,
+                    'convict_address' => $convictData['convict_address'][$index] ?? null,
+                ]);
+            }
+
+            // Conditional Hajira and Witness creation
+            if (strtolower($mainData['legal_type']) === 'case') {
+                // Create Hajira entry
+                $legalEntry->hajiras()->create([
+                    'hajira_date' => $hajira['first_hajira_date'],
+                    'hajira_description' => $mainData['legal_description'] ?? null,
+                ]);
+
+                // Create witnesses (One-to-Many)
+                if (!empty($witnessData['witness_name'])) {
+                    foreach ($witnessData['witness_name'] as $index => $name) {
+                        if ($name) {
+                            $legalEntry->witnesses()->create([
+                                'witness_name' => $name,
+                                'witness_father_name' => $witnessData['witness_father_name'][$index] ?? null,
+                                'witness_mother_name' => $witnessData['witness_mother_name'][$index] ?? null,
+                                'witness_address' => $witnessData['witness_address'][$index] ?? null,
+                                'witness_phone' => $witnessData['witness_phone'][$index] ?? null,
+                            ]);
+                        }
                     }
                 }
             }
 
-            // Create witnesses (One-to-Many)
-            if (!empty($witnessData['witness_name'])) {
-                foreach ($witnessData['witness_name'] as $index => $name) {
-                    if ($name) {
-                        $legalEntry->witnesses()->create([
-                            'witness_name' => $name,
-                            'witness_father_name' => $witnessData['witness_father_name'][$index] ?? null,
-                            'witness_mother_name' => $witnessData['witness_mother_name'][$index] ?? null,
-                            'witness_address' => $witnessData['witness_address'][$index] ?? null,
-                            'witness_phone' => $witnessData['witness_phone'][$index] ?? null,
-                        ]);
-                    }
-                }
-            }
+            DB::commit();
+            return $legalEntry;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
-
-        DB::commit();
-        return $legalEntry;
-    } catch (\Exception $e) {
-        DB::rollBack();
-        throw $e;
     }
-}
 
-    
     public function getLegalId()
     {
         $count_purchase_number = LegalEntry::count();

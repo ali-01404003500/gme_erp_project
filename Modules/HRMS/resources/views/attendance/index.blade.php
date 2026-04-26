@@ -190,7 +190,8 @@
                                                     <td id="flag">{{ $attendance->flag  ?? 'A'}}</td>
 
                                                     <td> 
-                                                        <input type="time" class="form-control intimepicker" name="check_in_time"   data-touched="{{ optional($attendance)->check_in_time ? 'true' : 'false' }}" value="{{ $attendance->check_in_time ?? '' }}">
+                                                        <input type="text" class="form-control intimepicker" name="check_in_time"   data-touched="{{ optional($attendance)->check_in_time ? 'true' : 'false' }}" 
+                                                        value="{{ optional($attendance)->check_in_time  ? \Carbon\Carbon::parse($attendance->check_in_time)->format('h:i A') : '' }}" >
 
                                                         <input type="hidden" class="form-control" name="check_in_date" id="check_in_date" value="{{ $attendance->check_in_date ?? $date->format('Y-m-d') }}"> 
                                                         <input type="hidden" class="form-control" name="check_in_latitude" id="check_in_latitude" value="{{ $attendance->check_in_latitude ?? 0 }}">
@@ -200,7 +201,7 @@
                                                         <input type="hidden" class="form-control" name="check_out_longitude" id="check_out_longitude" value="{{ $attendance->check_out_longitude ?? 0 }}">
                                                         <input type="hidden" class="form-control" name="employee_id" id="employee_id" value="{{ $employee->id }}">
                                                         <input type="hidden" class="form-control" name="date" id="date" value="{{ $attendance->date ?? $date->format('Y-m-d') }}"> 
-                                                        <input type="hidden" class="form-control" name="attendance_id" id="attendance_id" value="{{ $attendance->id ?? '' }}">
+                                                        <input type="hidden" class="form-control" name="attendance_id" id="attendance_id" value="{{ $attendance->id ?? '' }}"> 
                                                          
                                                     </td>
 
@@ -209,7 +210,8 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="time" class="form-control outtimepicker" name="check_out_time" id="check_out_time"   data-touched="{{ optional($attendance)->check_out_time ? 'true' : 'false' }}" value="{{ $attendance->check_out_time ?? '' }}">
+                                                        <input type="text" class="form-control outtimepicker" name="check_out_time" id="check_out_time"   data-touched="{{ optional($attendance)->check_out_time ? 'true' : 'false' }}" 
+                                                        value="{{ optional($attendance)->check_out_time ? \Carbon\Carbon::parse($attendance->check_out_time)->format('h:i A') : '' }}"  >
                                                     </td>
 
                                                     <td>
@@ -298,24 +300,27 @@
             });
 
 
-            flatpickr(".intimepicker", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "h:i K",  // 12-hour format with AM/PM
-                time_24hr: false,     // false → 12-hour clock
-                minuteIncrement: 1,   // 1-minute steps
-                defaultDate: "09:00 AM"
+            $('.intimepicker').each(function () {
+                flatpickr(this, {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "h:i K",
+                    time_24hr: false,
+                    minuteIncrement: 1,
+                    defaultDate: $(this).val() ? $(this).val() : "09:00 AM"
+                });
             });
 
-            flatpickr(".outtimepicker", {
-                enableTime: true,
-                noCalendar: true,
-                dateFormat: "h:i K",  // 12-hour format with AM/PM
-                time_24hr: false,     // false → 12-hour clock
-                minuteIncrement: 1,   // 1-minute steps
-                defaultDate: "05:00 PM"
+            $('.outtimepicker').each(function () {
+                flatpickr(this, {
+                    enableTime: true,
+                    noCalendar: true,
+                    dateFormat: "h:i K",
+                    time_24hr: false,
+                    minuteIncrement: 1,
+                    defaultDate: $(this).val() ? $(this).val() : "05:00 PM"
+                });
             });
-
             //save attendance data
             $('.create-attendance').click(function() {
                 var $btn = $(this);
@@ -530,60 +535,65 @@
 
             $('.delete-attendance').click(function() {
                 var $btn = $(this);
-                var $row = $btn.closest('tr'); 
-               
-                // Collect input values for this row
-                var attendance_id = $row.find('input[name="attendance_id"]').val(); 
-               
-                // Show spinner
+                var $row = $btn.closest('tr');
+
+                var attendance_id = $row.find('input[name="attendance_id"]').val();
+
+                if (!attendance_id) {
+                    alert("No attendance found!");
+                    return;
+                }
+
                 $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Deleting...');
-  
-                var updateRouteTemplate = "{{ route('hrm.attendances.destroy', ':id') }}"; 
-                var url = updateRouteTemplate.replace(':id', attendance_id);
-                
+
+                var url = "{{ route('hrm.attendances.destroy', ':id') }}"
+                            .replace(':id', attendance_id);
+
                 $.ajax({
                     url: url,
                     method: 'POST',
                     data: {
-                        _token: "{{ csrf_token() }}", 
-                        _method: "PUT",  
-                        id: attendance_id
-                       
+                        _token: "{{ csrf_token() }}",
+                        _method: "DELETE"
                     },
                     success: function(response) {
-                        if(response.status === 'success'){
-                            // SweetAlert success
+                        if(response.status === 'success') {
+
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Delete!',
-                                text: 'Attendance for ' + date + ' has been deleted.',
-                                timer: 2500,
+                                title: 'Deleted!',
+                                text: response.message ?? 'Attendance deleted',
+                                timer: 2000,
                                 showConfirmButton: false
                             });
- 
+
+                            // UI clear
                             $row.find('input[name="attendance_id"]').val('');
-                            
-                            
+                            $row.find('#flag').text('A');
+
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Oops...',
+                                title: 'Error',
                                 text: 'Something went wrong!'
                             });
                         }
-                        $btn.html('<i class="far fa-edit"></i>');
+
+                        $btn.html('<i class="far fa-trash-alt"></i>');
                     },
                     error: function(xhr) {
                         console.log(xhr.responseText);
+
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: 'An error occurred while deleting!'
+                            text: 'Delete failed!'
                         });
-                       $btn.html('<i class="far fa-edit"></i>');
+
+                        $btn.html('<i class="far fa-trash-alt"></i>');
                     }
-                }); 
-            }); 
+                });
+            });
 
         }); 
  

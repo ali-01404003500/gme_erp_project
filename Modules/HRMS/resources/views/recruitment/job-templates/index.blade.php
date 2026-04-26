@@ -14,7 +14,8 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        {{ trans('Job Template List') }}</li>
+                                        {{ trans('Job Template List') }}
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
@@ -53,27 +54,26 @@
                                                     placeholder="Title" value="{{ request('title') }}">
                                             </td>
                                             <td>
-                                                <select name="branch_id" id="branch_id"
-                                                    class="form-control tom-select" data-placeholder="Select Branch">
+                                                <select name="branch_id" id="branch_id" class="form-control tom-select"
+                                                    data-placeholder="Select Branch">
                                                     <option value=""> </option>
                                                     @foreach ($branches as $key => $value)
-                                                        <option
-                                                            {{ request('branch_id') == $value->id ? 'selected' : '' }}
+                                                        <option {{ request('branch_id') == $value->id ? 'selected' : '' }}
                                                             value="{{ $value->id }}">
-                                                            {{ $value->name }}</option>
+                                                            {{ $value->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </td>
-                                           
                                             <td>
                                                 <select name="department_id" id="department_id"
                                                     class="form-control tom-select" data-placeholder="Select Department">
                                                     <option value=""> </option>
                                                     @foreach ($departments as $key => $value)
-                                                        <option
-                                                            {{ request('department_id') == $value->id ? 'selected' : '' }}
+                                                        <option {{ request('department_id') == $value->id ? 'selected' : '' }}
                                                             value="{{ $value->id }}">
-                                                            {{ $value->name }}</option>
+                                                            {{ $value->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </td>
@@ -82,10 +82,10 @@
                                                     class="form-control tom-select" data-placeholder="Select Designation">
                                                     <option value=""> </option>
                                                     @foreach ($designations as $key => $value)
-                                                        <option
-                                                            {{ request('designation_id') == $value->id ? 'selected' : '' }}
+                                                        <option {{ request('designation_id') == $value->id ? 'selected' : '' }}
                                                             value="{{ $value->id }}">
-                                                            {{ $value->name }}</option>
+                                                            {{ $value->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </td>
@@ -108,7 +108,41 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $jobTemplates])' style="width:100%">
+                                <style>
+                                    .jobs-table-custom,
+                                    .jobs-table-custom th,
+                                    .jobs-table-custom td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+
+                                    .jobs-table-custom th,
+                                    .jobs-table-custom td {
+                                        padding: 12px;
+                                        vertical-align: middle;
+                                    }
+
+                                    .jobs-table-custom thead th {
+                                        background-color: #f8f9fa;
+                                        border-bottom-width: 2px !important;
+                                    }
+
+                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                                </style>
+                                <table id="zero-config" class="table jobs-table-custom dt-table-hover"
+                                    data-page='@include('utils.table_paginate', ['data' => $jobTemplates])'
+                                    style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>Sl</th>
@@ -124,14 +158,16 @@
                                     <tbody>
                                         @foreach ($jobTemplates as $job)
                                             <tr>
-                                        <td class="text-center">{{ ($jobTemplates->currentPage() - 1) * $jobTemplates->perPage() + $loop->iteration  }}</td>
+                                                <td class="text-center">
+                                                    {{ ($jobTemplates->currentPage() - 1) * $jobTemplates->perPage() + $loop->iteration  }}
+                                                </td>
                                                 <td>
                                                     <p>{{ $job->title }}</p>
                                                 </td>
                                                 <td>{{ @$job->branch->name }}</td>
                                                 <td>{{  @$job->department->name }}</td>
                                                 <td>{{ @$job->designation->name }}</td>
-                                              
+
                                                 <td>{{ $job->salary ? $job->salary : 'Negotiable' }}</td>
                                                 <td>
                                                     @if ($job->status == '1')
@@ -141,19 +177,24 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                                                    <div class="btn-group btn-group-sm" role="group"
+                                                        aria-label="Small button group">
                                                         @if (hasPermission('hrm.job-templates.update'))
-                                                            <a class="btn btn-outline-warning" href="{{ route('hrm.job-templates.edit', $job->id) }}"><i
+                                                            <a class="btn btn-outline-warning"
+                                                                href="{{ route('hrm.job-templates.edit', $job->id) }}"><i
                                                                     class="far fa-edit"></i></a>
                                                         @endif
                                                         @if (hasPermission('hrm.job-templates.destroy'))
-                                                            <button type="button" data-action="{{ route('hrm.job-templates.destroy', $job->id) }}"
+                                                            <button type="button"
+                                                                data-action="{{ route('hrm.job-templates.destroy', $job->id) }}"
                                                                 class="btn btn-outline-danger delete-confirm"><i
                                                                     class="far fa-trash-alt"></i></button>
                                                         @endif
-                    
+
                                                         {{-- @if (hasPermission('hrm.job-templates.show'))
-                                                            <a class="btn btn-outline-primary" href="{{ route('hrm.job-templates.show', $job->id) }}"><i class="fas fa-eye"></i></a>
+                                                        <a class="btn btn-outline-primary"
+                                                            href="{{ route('hrm.job-templates.show', $job->id) }}"><i
+                                                                class="fas fa-eye"></i></a>
                                                         @endif --}}
                                                     </div>
                                                 </td>
@@ -169,7 +210,7 @@
                                 </form>
                             </div>
                         </div>
-                       
+
                     </div>
 
                 </div>
@@ -182,6 +223,6 @@
 @endsection
 <!-- CONTENT AREA -->
 @section('page_scripts')
-    
+
 
 @endsection

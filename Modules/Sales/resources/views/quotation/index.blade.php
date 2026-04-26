@@ -73,9 +73,9 @@
                                                 </td>
 
                                                 <td class="text-start">
-                                                    <select name="customer_name" id="customer_name"
-                                                        class=" input-sm" data-placeholder="Select Customer">
-                                                        <option value="">Select Customer</option> 
+                                                    <select name="customer_name" id="customer_name" class=" input-sm"
+                                                        data-placeholder="Select Customer">
+                                                        <option value="">Select Customer</option>
                                                     </select>
                                                 </td>
 
@@ -104,27 +104,61 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $quotations])'
-                                style="width:100%">
+                            <style>
+                                .quotation-table-custom,
+                                .quotation-table-custom th,
+                                .quotation-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+
+                                .quotation-table-custom th,
+                                .quotation-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+
+                                .quotation-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+
+                                .table thead th {
+                                    background-color: #35526e !important;
+                                    color: #ffffff !important;
+                                    font-weight: 600 !important;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem !important;
+                                    letter-spacing: 0.08em;
+                                    border-bottom: 2px solid #2a4054 !important;
+                                    padding: 14px 16px !important;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+                            </style>
+                            <table id="zero-config" class="table quotation-table-custom dt-table-hover"
+                                data-page='@include('utils.table_paginate', ['data' => $quotations])' style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>SL</th>
                                         <th>Quotation Date</th>
                                         <th>Quotation ID</th>
                                         <th>Customer Name</th>
-                                        <th>Address</th>
-                                        <th>Prepared By</th>
-                                        <th>Approved By</th>
+                                        {{-- <th>Address</th> --}}
+                                        {{-- <th>Prepared By</th> --}}
+                                        {{-- <th>Approved By</th> --}}
                                         <th>Status</th>
                                         <th>Amount</th>
-                                        <th>Expiry Date</th>
+                                        {{-- <th>Expiry Date</th> --}}
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($quotations as $quotation)
                                         <tr>
-                                            <td class="text-center">{{ ($quotations->currentPage() - 1) * $quotations->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">
+                                                {{ ($quotations->currentPage() - 1) * $quotations->perPage() + $loop->iteration  }}
+                                            </td>
                                             <td>{{ $quotation->created_at->format('Y-m-d h:i A') }}</td>
 
                                             <td>
@@ -135,10 +169,13 @@
                                             </td>
 
 
-                                            <td>{{ $quotation->customer_name }}</i></td>
-                                            <td>{{ $quotation->address }}</td>
-                                            <td>{{ $quotation->user->name }}</td>
-                                            <td>{{ optional($quotation->approvedBy)->name }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                                {{ $quotation->customer_name }}</i></td>
+                                            {{-- <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{
+                                                $quotation->address }}</td> --}}
+                                            {{-- <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{
+                                                $quotation->user->name }}</td> --}}
+                                            {{-- <td>{{ optional($quotation->approvedBy)->name }}</td> --}}
                                             <td>
                                                 @if ($quotation->status == 0)
                                                     <span class="badge badge-round badge-warning">Pending</span>
@@ -150,7 +187,8 @@
                                             </td>
                                             <td>{{ numberFormat($quotation->total) }}</td>
                                             </td>
-                                            <td>{{ \Carbon\Carbon::parse($quotation->date)->format('Y-m-d h:i A') }}</td>
+                                            {{-- <td>{{ \Carbon\Carbon::parse($quotation->date)->format('Y-m-d h:i A') }}</td>
+                                            --}}
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
@@ -165,8 +203,7 @@
                                                             <button type="button"
                                                                 data-action="{{ route('sales.quotations.destroy', $quotation->id) }}"
                                                                 class="btn btn-outline-danger delete-confirm"
-                                                                title="Delete Quotation"><i
-                                                                    class="far fa-trash-alt"></i></button>
+                                                                title="Delete Quotation"><i class="far fa-trash-alt"></i></button>
                                                         @endif
 
 
@@ -174,8 +211,7 @@
                                                             @if ($quotation->date >= date('Y-m-d'))
                                                                 <a class="btn btn-outline-success"
                                                                     href="{{ route('sales.quotations.approve', $quotation->id) }}"
-                                                                    title="Approve Quotation"><i
-                                                                        class="fas fa-check"></i></a>
+                                                                    title="Approve Quotation"><i class="fas fa-check"></i></a>
                                                             @endif
                                                         @endif
                                                     @endif
@@ -185,15 +221,14 @@
                                                             @if ($quotation->status == 1)
                                                                 <a class="btn btn-outline-secondary create-order-btn"
                                                                     href="{{ route('sales.quotations.sales.order', $quotation->id) }}"
-                                                                    title="Create Sales Order"><i
-                                                                        class="fas fa-cart-plus"></i></a>
+                                                                    title="Create Sales Order"><i class="fas fa-cart-plus"></i></a>
                                                             @endif
                                                         @endif
                                                     @endif
                                                     {{-- @if (hasPermission('sales.quotations.show'))
-                                                        <a class="btn btn-outline-primary"
-                                                            href="{{ route('sales.quotations.show', $quotation->id) }}"
-                                                            title="View Quotation"><i class="fas fa-eye"></i></a>
+                                                    <a class="btn btn-outline-primary"
+                                                        href="{{ route('sales.quotations.show', $quotation->id) }}"
+                                                        title="View Quotation"><i class="fas fa-eye"></i></a>
                                                     @endif --}}
                                                     @if (hasPermission('sales.quotations.print'))
                                                         <a class="btn btn-outline-primary"
@@ -222,82 +257,82 @@
     </div>
 @endsection
 @section('page_scripts')
-    <script>
-        $(".datePicker").datepicker({
-            format: 'dd-mm-yyyy',
-            autoclose: true
-        });
+<script>
+    $(".datePicker").datepicker({
+        format: 'dd-mm-yyyy',
+        autoclose: true
+    });
 
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            $('.create-order-btn').on('click', function(e){
+        $('.create-order-btn').on('click', function (e) {
 
-                e.preventDefault();
+            e.preventDefault();
 
-                let url = $(this).attr('href');
+            let url = $(this).attr('href');
 
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You are going to create a Sales Order.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, Create it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are going to create a Sales Order.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Create it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
 
-                    if (result.isConfirmed) {
+                if (result.isConfirmed) {
 
-                        Swal.fire({
-                            title: 'Created!',
-                            text: 'Sales Order is being generated.',
-                            icon: 'success',
-                            timer: 1200,
-                            showConfirmButton: false
-                        });
+                    Swal.fire({
+                        title: 'Created!',
+                        text: 'Sales Order is being generated.',
+                        icon: 'success',
+                        timer: 1200,
+                        showConfirmButton: false
+                    });
 
-                        setTimeout(function(){
-                            window.location.href = url;
-                        }, 1200);
-                    }
-
-                });
+                    setTimeout(function () {
+                        window.location.href = url;
+                    }, 1200);
+                }
 
             });
 
-            
-            const companySelect = new TomSelect("#customer_name", {
-                valueField: "id",
-                labelField: "text",
-                searchField: [], 
-                load: function(query, callback) {
+        });
 
-                    if (!query.length || query.length < 2) return callback();
 
-                    $.ajax({
-                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
-                        type: "GET",
-                        data: { search: query },
-                        success: function(res) {
-                            companySelect.clearOptions();
-                            callback(res.map(item => ({ id: item.id, text: item.label })));
-                        },
-                        error: function() {
-                            callback();
-                        }
-                    });
-                }
-            }); 
+        const companySelect = new TomSelect("#customer_name", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [],
+            load: function (query, callback) {
 
-            @if(request('customer_name'))
-                companySelect.addOption({
-                    id: "{{ request('customer_name') }}",
-                    text: "{{ request('customer_name') }}"
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function (res) {
+                        companySelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function () {
+                        callback();
+                    }
                 });
-                companySelect.setValue("{{ request('customer_name') }}");
-            @endif
+            }
+        });
+
+        @if(request('customer_name'))
+            companySelect.addOption({
+                id: "{{ request('customer_name') }}",
+                text: "{{ request('customer_name') }}"
+            });
+            companySelect.setValue("{{ request('customer_name') }}");
+        @endif
         }); 
-    </script>
+</script>
 @endSection

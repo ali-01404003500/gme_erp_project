@@ -237,8 +237,8 @@ class ChequeVerificationService
                 'account_id' => $customerAccount->id,
                 'balance_type' => 'debit',
                 'invoice_no' => 'CHQ-' . $chequeVerification->id,
-                'amount' => -$amount,
-                'debit_amount' => $amount,
+                'amount' => -$chequeVerification->charge,
+                'debit_amount' => $chequeVerification->charge,
                 'credit_amount' => 0,
                 'description' => "Bank collection for Cheque #{$chequeVerification->cheque_no}",
                 'transaction_date' => $chequeVerification->cheque_date?? date('Y-m-d')

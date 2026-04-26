@@ -14,7 +14,6 @@ use Modules\HRMS\Models\ApproverStep;
 use Modules\HRMS\Models\Kpi\Assessment;
 use Modules\HRMS\Models\Settings\Department;
 use Modules\HRMS\Models\Settings\Designation;
-
 // use Modules\Inventory\Models\Settings\Approver;
 
 class Employee extends BaseModel
@@ -162,6 +161,8 @@ class Employee extends BaseModel
         return $bankAccount;
     }
 
+
+
     // ============================================
     // SALARY ACCOUNTS (5041, 2002)
     // ============================================
@@ -303,14 +304,15 @@ class Employee extends BaseModel
         }
         $this->accounts()->create([
 
-            "name"                  => "Staff Loan - " . $this->full_name,
-            "account_number"        => '2008' . $this->id,
-            "account_group_id"      => 1,
-            "account_control_id"    => 2000,
+            "name" => "Staff Loan - " . $this->full_name,
+            "account_number" => '2008' . $this->id,
+            "account_group_id" => 1,
+            "account_control_id" => 2000,
             "account_subsidiary_id" => 2008,
-            "opening_balance"       => "0.00",
-            "remarks"               => "A Staff Loan account is created for " . $this->full_name,
-            "is_deletable"          => 0,
+            "opening_balance" => "0.00",
+            "remarks" => "A Staff Loan account is created for " . $this->full_name,
+            "is_deletable" => 0,
+
 
         ]);
     }
@@ -410,7 +412,7 @@ class Employee extends BaseModel
     {
         return $this->belongsTo(Designation::class, 'designation_id');
     }
-
+  
     public function department()
     {
         return $this->belongsTo(Department::class);
@@ -425,5 +427,6 @@ class Employee extends BaseModel
     {
         return $this->hasOne(SalarySignatory::class, 'employee_id');
     }
+
 
 }

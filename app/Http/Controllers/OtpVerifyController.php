@@ -32,6 +32,7 @@ class OtpVerifyController extends Controller
         $data['verificationRequests']= $requests;
         return view('verification.verification-requests', $data);
     }
+ 
 
 
     public function verifyOtp(Request $request){

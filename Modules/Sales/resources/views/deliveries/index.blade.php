@@ -15,13 +15,6 @@
                                 </ol>
                             </nav>
                         </div>
-                        {{-- <div class="action-btn mt-sm-0 mt-15">
-                            @if (hasPermission('sales.sales-order-deliveries.create'))
-                                <a href="{{ route('sales.sales-order-deliveries.create', app()->getLocale()) }}" class="btn px-20 btn-primary ">
-                                    <i class="las la-plus fs-16"></i>Add New
-                                </a>
-                            @endif
-                        </div> --}}
                         <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
                             class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
                             <i class="las la-file-pdf fs-16"></i> PDF
@@ -73,7 +66,37 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
+                            <style>
+                                .deliveries-table-custom,
+                                .deliveries-table-custom th,
+                                .deliveries-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .deliveries-table-custom th,
+                                .deliveries-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+                                .deliveries-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                                                .table thead th {
+                    background-color: #35526e !important;
+                    color: #ffffff !important;
+                    font-weight: 600 !important;
+                    text-transform: uppercase;
+                    font-size: 0.85rem !important;
+                    letter-spacing: 0.08em;
+                    border-bottom: 2px solid #2a4054 !important;
+                    padding: 14px 16px !important;
+                    vertical-align: middle;
+                    text-align: center;
+                }
+                            </style>
+                            
+                            <table id="zero-config" class="table deliveries-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -81,11 +104,10 @@
                                         <th>Invoice Id</th>
                                         <th>Invoice Date</th>
                                         <th>Customer</th>
-                                        <th>Invoice Type</th>
+                                        {{-- <th>Invoice Type</th> --}}
                                         <th>Address</th>
                                         <th>Total Quantity</th>
-                                        {{-- <th>Order Qty</th> --}}
-                                        <th>Prepared By</th>
+                                        {{-- <th>Prepared By</th> --}}
                                         <th>Delivered Qty</th>
                                         <th class="no-content">Actions</th>
                                     </tr>
@@ -95,7 +117,7 @@
                                         <tr>
                                             <td class="text-center">{{ ($deliveries->currentPage() - 1) * $deliveries->perPage() + $loop->iteration  }}</td>
 
-                                            <td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                 @if ($deliverie->source->sales_order_id??null)
                                                     <a href="{{ route('sales.sales-orders.show',$deliverie->source->id) }}">
                                                         {{ $deliverie->source->sales_order_id }}
@@ -109,30 +131,30 @@
                                                 {{ $deliverie->delivery_date}}  
                                             </td>
 
-                                            <td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                 @if (@$deliverie->source->customer??null)
-                                                     <a href="{{ route('crm.customers.show', $deliverie->source->customer->id) }}">{{ @$deliverie->source->customer->company_name }} </a>
+                                                    <a href="{{ route('crm.customers.show', $deliverie->source->customer->id) }}">{{ @$deliverie->source->customer->company_name }} </a>
                                                 @endif
                                             </td>
 
-                                            <td>
-                                                @if (class_basename($deliverie->source_type) == SalesOrder::class)
+                                            {{-- <td>
+                                                @if (class_basename($deliverie->source_type) == 'SalesOrder')
                                                     Sales Order
-                                                @elseif (class_basename($deliverie->source_type) == Quotation::class)
+                                                @elseif (class_basename($deliverie->source_type) == 'Quotation')
                                                     Quotation
                                                 @else
                                                     {{ class_basename($deliverie->source_type) }}
                                                 @endif
-                                            </td>
-                                            <td>
+                                            </td> --}}
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                 {{ @$deliverie->source->customer->address }}
                                             </td>
                                             <td>
                                                 {{ $deliverie->source->details->sum('quantity') }}
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 {{ @$deliverie->source->createdBy->name }}
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 {{ $deliverie->deliveryDetails->sum('quantity')  }}
                                             </td>
@@ -148,35 +170,12 @@
                                                         </a>
                                                     @endif
 
-                                                    {{-- @if(hasPermission('sales.sales-order-deliveries.update') && $deliverie->status == "pending" )
-                                                        <a class="btn btn-outline-warning"
-                                                            href="{{ route('sales.sales-order-deliveries.edit', $deliverie->id) }}"><i
-                                                                class="far fa-edit"></i>
-                                                        </a>
-                                                    @endif
-
-                                                    @if(hasPermission('sales.sales-order-deliveries.destroy') && $deliverie->status == "pending")
-                                                        <button type="button"
-                                                            data-action="{{ route('sales.sales-order-deliveries.destroy', $deliverie->id) }}"
-                                                            class="btn btn-outline-danger delete-confirm"><i
-                                                                class="far fa-trash-alt"></i>
-                                                        </button>
-                                                    @endif --}}
-
                                                     @if(hasPermission('sales.deliveries.show'))
                                                         <a class="btn btn-outline-primary"
                                                             href="{{ route('sales.deliveries.show', $deliverie->id) }}"><i class="fas fa-eye"></i>
                                                         </a>
                                                     @endif
-
-                                                    {{-- @if(hasPermission('sales.sales-order-deliveries.create'))
-                                                        <a class="btn btn-outline-info"
-                                                            href="{{ route('sales.sales-order-deliveries.create', ['sales_order_id' => $deliverie->id]) }}"><i
-                                                                class="fas fa-truck"></i>
-                                                        </a>
-                                                    @endif --}}
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @endforeach
@@ -202,4 +201,4 @@
             autoclose: true
         });
     </script>
-@endSection
+@endsection

@@ -38,6 +38,33 @@
                 .nav-icon la la-cart-arrow-down {
                     font-size: 26px;
                 }
+                .purchasereturn-table-custom,
+                .purchasereturn-table-custom th,
+                .purchasereturn-table-custom td {
+                    border: 1px solid #dee2e6 !important;
+                    border-collapse: collapse !important;
+                }
+                .purchasereturn-table-custom th,
+                .purchasereturn-table-custom td {
+                    padding: 12px;
+                    vertical-align: middle;
+                }
+                .purchasereturn-table-custom thead th {
+                    background-color: #f8f9fa;
+                    border-bottom-width: 2px !important;
+                }
+                .table thead th {
+                    background-color: #35526e !important;
+                    color: #ffffff !important;
+                    font-weight: 600 !important;
+                    text-transform: uppercase;
+                    font-size: 0.85rem !important;
+                    letter-spacing: 0.08em;
+                    border-bottom: 2px solid #2a4054 !important;
+                    padding: 14px 16px !important;
+                    vertical-align: middle;
+                    text-align: center;
+                }
             </style>
 
             <div class="row">
@@ -51,9 +78,8 @@
                                 <div class="col-sm-12">
                                     <table class="table table-bordered">
                                         <tr>
-
                                             <td>
-                                                <select name="supplier_id" id="supplier_id" class="tom-select  input-sm"
+                                                <select name="supplier_id" id="supplier_id" class="tom-select input-sm"
                                                     data-placeholder="Select Supplier">
                                                     <option value=""></option>
                                                     @foreach ($suppliers as $key => $value)
@@ -62,10 +88,8 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-
-
                                             <td>
-                                                <select name="status" id="status" class="tom-select  input-sm"
+                                                <select name="status" id="status" class="tom-select input-sm"
                                                     data-placeholder="Select Status">
                                                     <option value=""></option>
                                                     <option value="Pending"
@@ -105,7 +129,7 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $purchaseReturns])'
+                            <table id="zero-config" class="table purchasereturn-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $purchaseReturns])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -113,24 +137,22 @@
                                         <th>Invoice Id</th>
                                         <th>Invoice Date</th>
                                         <th>Reference Invoice</th>
-                                        <th>Suplier</th>
+                                        <th>Supplier</th>
                                         <th>Status</th>
-                                        <th>Prepare By</th>
+                                        {{-- <th>Prepare By</th> --}}
                                         <th class="no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach ($purchaseReturns as $value)
                                         <tr>
-                                            <td>{{ ($purchaseReturns->currentPage() - 1) * $purchaseReturns->perPage() + $loop->iteration  }}</td>
-                                            <td>
-                                                <a
-                                                    href="{{ route('purchase.returns.show', $value->id) }}">{{ $value->invoice_no }}</a>
+                                            <td class="text-center">{{ ($purchaseReturns->currentPage() - 1) * $purchaseReturns->perPage() + $loop->iteration  }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                                <a href="{{ route('purchase.returns.show', $value->id) }}">{{ $value->invoice_no }}</a>
                                             </td>
                                             <td>{{ $value->return_date->format('d-m-Y') }}</td>
-                                            <td><a
-                                                    href="{{ route('purchase.requisitions.show', $value->requisition_id) }}">{{ $value->reference_invoice }}</a>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                                <a href="{{ route('purchase.requisitions.show', $value->requisition_id) }}">{{ $value->reference_invoice }}</a>
                                             </td>
                                             <td>{{ optional($value->supplier)->company_name }}</td>
                                             <td>
@@ -144,7 +166,7 @@
                                                     <span class="badge badge-round badge-danger">Returned</span>
                                                 @endif
                                             </td>
-                                            <td>{{ optional($value->createdBy)->name }}</td>
+                                            {{-- <td>{{ optional($value->createdBy)->name }}</td> --}}
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
@@ -187,7 +209,6 @@
                                                             href="{{ route('purchase.returns.print', $value->id) }}"><i
                                                                 class="fas fa-print"></i></a>
                                                     @endif
-
                                                 </div>
                                             </td>
                                         </tr>
@@ -214,4 +235,4 @@
             autoclose: true
         });
     </script>
-@endSection
+@endsection

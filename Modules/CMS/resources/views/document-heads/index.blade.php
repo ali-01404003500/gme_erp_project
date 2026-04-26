@@ -158,7 +158,7 @@
                             <table id="zero-config" class="table table-bordered mb-0"
                                 data-page='@include('utils.table_paginate', ['data' => $documentHeads])'>
                                 <thead>
-                                    <tr class="text-center">
+                                    <tr class="text-left">
                                         <th width="60">Sl</th>
                                         <th>Document Type</th>
                                         <th>Document Head</th>
@@ -169,15 +169,15 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($documentHeads as $item)
-                                        <tr class="text-center">
-                                            <td class="text-center fw-bold text-muted small">
+                                        <tr class="text-left">
+                                            <td class="text-left fw-bold text-muted small">
                                                 {{ ($documentHeads->currentPage() - 1) * $documentHeads->perPage() + $loop->iteration }}
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-left">
                                                 <span
                                                     class="text-dark border px-2 py-1 small fw-bold">{{ @$item->documentType->name }}</span>
                                             </td>
-                                            <td class="fw-bold text-dark text-center">{{ $item->name }}</td>
+                                            <td class="fw-bold text-dark text-left">{{ $item->name }}</td>
                                             <td class="text-muted small">{{ Str::limit($item->description, 50) ?? '---' }}</td>
                                             <td class="text-center">
                                                 @if($item->status == 1)

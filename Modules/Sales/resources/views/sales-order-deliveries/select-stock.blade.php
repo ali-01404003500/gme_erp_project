@@ -29,7 +29,7 @@
                                     <input type="hidden" name="product_id[]" value="{{ $stock->product_id }}">
                                 </td>
                                 <td class="text-center">{{ $stock->serial_no }}
-                                    <input type="hidden" class="serial_no" value="{{ $stock->serial_no }}">
+                                    <input type="hidden" name="serial_no[{{ $stock->product_id }}][]" class="serial_no" value="{{ $stock->serial_no }}">
                                 </td>
                                 <td>{{ optional($stock->source)->dongle_no }}</td>
                                 <td>{{ optional($stock->source)->manufacture_date }}</td>
@@ -44,7 +44,7 @@
                                                 Select
                                             </span>
                                         </label>
-                                    </div>
+                                    </div> 
                                 </td>
                             </tr>
                         @endforeach
@@ -78,7 +78,7 @@
                                         <input type="hidden" class="product_id" name="product_id[]" value="{{ $stock->product_id }}">
                                     </td>
                                     <td>{{ $stock->lot_no }}
-                                        <input type="hidden" class="lot_no" value="{{ $stock->lot_no }}">
+                                        <input type="hidden" name="lot_no[{{ $stock->product_id }}][]" class="lot_no" value="{{ $stock->lot_no }}">
                                     </td>
                                     <td class="text-center">{{ optional($stock->source)->batch_no }}</td>
                                     <td class="text-center">{{ optional($stock->source)->manufacture_no }}</td>
@@ -86,9 +86,10 @@
                                     <td class="text-center">{{ $stock->stock }}
                                         <input type="hidden" name="available_stock" value="{{ $stock->stock }}">
                                     </td>
-                                    {{-- <td class="text-center">{{ $stock->stock }}</td> --}}
+                                    {{-- <td class="text-center">{{ $stock->stock }}</td> --}}lots_quantity
                                     <td class="text-center">
-                                        <input type="number" class="form-control" name="quantity">
+                                        <input type="number" class="form-control" name="quantity"  onkeyup="$('#lots_quantity{{ $stock->product_id }}').val(this.value)">
+                                        <input type="hidden" id="lots_quantity{{ $stock->product_id }}"  name="lots_quantity[{{ $stock->product_id }}][]"  >
                                     </td>
                                 </tr>
                             @endforeach

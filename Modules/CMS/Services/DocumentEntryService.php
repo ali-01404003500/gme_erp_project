@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\CMS\Services;
 
 use App\Traits\S3FileHandler;
@@ -12,12 +11,14 @@ class DocumentEntryService
 {
     use S3FileHandler;
 
-    public function getAll(int $limit = 20) {
+    public function getAll(int $limit = 20)
+    {
         return DocumentEntry::query()
-        ->searchByFields(['document_type_id'])
-        ->paginate($limit);
+            ->with(['documentType', 'documentHead'])
+            ->searchByFields(['document_type_id'])
+            ->paginate($limit);
     }
-    
+
     public function store(array $data)
     {
         // if (isset($data['attachment'])) {
@@ -52,7 +53,7 @@ class DocumentEntryService
     {
         // Map document type name to ID
         $documentType = DocumentType::where('name', $jsonData['document_type_name'])->first();
-        if (!$documentType) {
+        if (! $documentType) {
             throw new \Exception("Document Type not found: {$jsonData['document_type_name']}");
         }
 
@@ -60,16 +61,16 @@ class DocumentEntryService
         $documentHead = DocumentHead::where('name', $jsonData['document_head_name'])
             ->where('document_type_id', $documentType->id)
             ->first();
-        if (!$documentHead) {
+        if (! $documentHead) {
             throw new \Exception("Document Head not found: {$jsonData['document_head_name']} for Document Type: {$jsonData['document_type_name']}");
         }
 
         return [
             'document_type_id' => $documentType->id,
             'document_head_id' => $documentHead->id,
-            'date' => $jsonData['date'] ?? now()->toDateString(),
-            'remarks' => $jsonData['remarks'] ?? null,
-            'attachment' => $jsonData['attachment'] ?? null,
+            'date'             => $jsonData['date'] ?? now()->toDateString(),
+            'remarks'          => $jsonData['remarks'] ?? null,
+            'attachment'       => $jsonData['attachment'] ?? null,
         ];
     }
 
@@ -79,15 +80,15 @@ class DocumentEntryService
     public function storeFromJsonFile()
     {
         $jsonFileDir = storage_path('app/json_formats');
-        $jsonFile = $jsonFileDir . '/' . Str::snake(request()->input('name')) . '.json';
+        $jsonFile    = $jsonFileDir . '/' . Str::snake(request()->input('name')) . '.json';
 
         // Ensure directory exists
-        if (!is_dir($jsonFileDir)) {
+        if (! is_dir($jsonFileDir)) {
             mkdir($jsonFileDir, 0755, true);
         }
 
         // Create file if it doesn't exist
-        if (!file_exists($jsonFile)) {
+        if (! file_exists($jsonFile)) {
             file_put_contents($jsonFile, json_encode([]));
         }
 
@@ -98,7 +99,7 @@ class DocumentEntryService
         }
 
         $savedCount = 0;
-        $errors = [];
+        $errors     = [];
 
         foreach ($jsonData as $index => $item) {
             try {
@@ -111,7 +112,7 @@ class DocumentEntryService
         }
 
         $message = "Document Entries import completed. Successfully saved: {$savedCount}";
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             $message .= '. Errors: ' . implode('; ', $errors);
         }
 

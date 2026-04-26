@@ -167,7 +167,39 @@
                                     <p>
                                         This price list validity for 10 Days after submitted this price.
                                     </p>
-                                    <table class="table table-bordered"  style="width:100%;" data-pag="" >
+                                                                <style>
+                                .product-price-list-custom,
+                                .product-price-list-custom th,
+                                .product-price-list-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+
+                                .product-price-list-custom th,
+                                .product-price-list-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+
+                                .product-price-list-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+
+                                .table thead th {
+                                    background-color: #35526e !important;
+                                    color: #ffffff !important;
+                                    font-weight: 600 !important;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem !important;
+                                    letter-spacing: 0.08em;
+                                    border-bottom: 2px solid #2a4054 !important;
+                                    padding: 14px 16px !important;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+                            </style>
+                                    <table class="table product-price-list-custom dt-table-hover"  style="width:100%;" data-pag="" >
                                         <thead>
                                             <tr>
                                                 <th class="text-center" style="width: 5%">
@@ -193,7 +225,7 @@
                                                         <input type="checkbox" class="product-checkbox" checked value="1">
                                                     </td>
                                                     <td class="text-center">{{ $key + 1 }}</td>
-                                                    <td>{{ $product->name }}</td>
+                                                    <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $product->name }}</td>
                                                     <td>{{ optional($product->brand)->name }}</td>
                                                     <td>{{ optional($product)->model }}</td>
                                                     <td>{{ $product->product_origin }}</td>

@@ -38,63 +38,20 @@
                     <h4 class="text-capitalize breadcrumb-title">{{ trans('Payments List') }}</h4>
                 </div>
                 <div class="col-md-12">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <form method="GET" action="{{ url()->current() }}">
-                                <div class="row">
-                                    
-                                    <div class="col-md-4">
-                                        <input type="date" name="from_date" 
-                                            value="{{ request('from_date') }}" 
-                                            class="form-control">
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <input type="date" name="to_date" 
-                                            value="{{ request('to_date') }}" 
-                                            class="form-control">
-                                    </div>
-
-                                    <div class="col-md-4 d-flex">
-                                        <button class="btn btn-primary me-2">
-                                            <i class="fa fa-search"></i> Search
-                                        </button>
-
-                                        <a href="{{ url()->current() }}" class="btn btn-warning">
-                                            <i class="fa fa-refresh"></i> Reset
-                                        </a>
-                                    </div>
-
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                   {{--  <div class="card">
+                    <div class="card">
                         <div class="card-body">
                             <form>
                             <div class="col-sm-12">
                                 <table class="table table-bordered">
-                                    <tr>
-                                        <td width="30%">
-                                            <select name="voucher_no" id="voucher_no" class="form-control tom-select"
-                                                data-placeholder="Select Voucher No">
-                                                <option value=""></option>
-                                                @foreach ($paymentSearch as $key => $value)
-                                                    <option {{ request('voucher_no') == $value->voucher_no ? 'selected' : '' }}
-                                                        value="{{ $value->voucher_no }}">
-                                                        {{ $value->voucher_no }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
+                                    <tr> 
                                         <td class="text-center" width="20%">
-                                            <input type="text" class="form-control" name="date" value="{{ request('date') }}"
+                                            <input type="text" class="form-control flatdaterange" name="from_to" value="{{ request('from_to') }}"
                                                 autocomplete="off" placeholder="Search by Date">
                                         </td>
-                                        <td class="text-center" width="20%">
+                                        {{-- <td class="text-center" width="20%">
                                             <input type="text" class="form-control" name="amount" value="{{ request('amount') }}"
                                                 autocomplete="off" placeholder="Search by Amount">
-                                        </td>
+                                        </td> --}}
                                         <td colspan="5" class="text-right" width="30%">
                                             <div class="btn-group btn-corner">
                                                 <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i> Search</button>
@@ -107,7 +64,7 @@
                             </div>
                         </form> 
                         </div>
-                    </div>--}}
+                    </div>
                     <div class="card mb-4">
                         <div class="card-body">
                             {{-- @dd($makePayments); --}}
@@ -181,11 +138,37 @@
 
                                             {{-- Document/Images --}}
                                             <td>
-                                                @foreach($payment->paymentDetails as $detail)
+                                                {{-- @foreach($payment->paymentDetails as $detail)
                                                     @if($detail->attachments)
-                                                        <a href="{{ asset($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                                                        <a href="{{ url($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
                                                     @endif
+                                                @endforeach --}}
+
+
+                                                @foreach($payment->paymentDetails as $detail)
+
+                                                    @if($detail->attachments)
+
+                                                        @php
+                                                            $files = json_decode($detail->attachments, true);
+                                                        @endphp
+
+                                                        @if(is_array($files))
+                                                            @foreach($files as $file)
+                                                                <a href="{{ url($file) }}" target="_blank" class="btn btn-sm btn-outline-info mb-1">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            @endforeach
+                                                        @else
+                                                            <a href="{{ url($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                        @endif
+
+                                                    @endif
+
                                                 @endforeach
+
                                             </td>
 
                                             {{-- Date --}}

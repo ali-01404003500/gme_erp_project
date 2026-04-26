@@ -13,7 +13,7 @@ class SalarySignatoryController extends Controller
     {
         $data['signatories'] = SalarySignatory::with('employee')
             ->orderBy('approver_level', 'asc')
-            ->get();
+            ->get(); 
 
         $data['employees'] = Employee::where('status', 1)->get();
 
@@ -22,20 +22,21 @@ class SalarySignatoryController extends Controller
 
     public function create()
     {
-
+         
     }
 
     public function store(Request $request)
     {
-
+        
     }
 
     public function edit($id)
-    {
+    { 
         $data['salarySignatory'] = SalarySignatory::findOrFail($id);
 
         $data['employees'] = Employee::where('status', 1)->get();
 
+  
         return view('HRMS::salary-signatories.edit', $data);
     }
 
@@ -48,11 +49,14 @@ class SalarySignatoryController extends Controller
             'description'   => 'nullable|string|max:500',
         ]);
 
+        
+
         $salarySignatory->update($request->all());
 
         return redirect()->route('hrm.salary-signatories.index')
             ->with('success', 'Salary signatory updated successfully');
     }
+
 
     public function destroy(SalarySignatory $salarySignatory)
     {

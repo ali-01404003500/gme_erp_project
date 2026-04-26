@@ -112,7 +112,54 @@
                 </div>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $employees])' style="width:100%">
+                        <style>
+                                .condition-table-custom {
+                                    width: 100% !important;
+                                    margin-bottom: 0 !important;
+                                }
+
+                                .condition-table-custom th,
+                                .condition-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    padding: 10px 15px !important;
+                                    vertical-align: middle !important;
+                                    font-size: 0.875rem;
+                                    /* Better for laptop density */
+                                }
+
+                                .condition-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    white-space: nowrap;
+                                    font-weight: 700;
+                                }
+                                .text-wrap-column {
+                                    min-width: 150px;
+                                    max-width: 250px;
+                                    white-space: normal !important;
+                                    word-break: break-word;
+                                }
+                                .table-responsive::-webkit-scrollbar {
+                                    height: 8px;
+                                }
+
+                                .table-responsive::-webkit-scrollbar-thumb {
+                                    background: #ccc;
+                                    border-radius: 4px;
+                                }
+                                .table thead th {
+                                background-color: #35526e !important;
+                                color: #ffffff !important;
+                                font-weight: 600 !important;
+                                text-transform: uppercase;
+                                font-size: 0.85rem !important;
+                                letter-spacing: 0.08em;
+                                border-bottom: 2px solid #2a4054 !important;
+                                padding: 14px 16px !important;
+                                vertical-align: middle;
+                                text-align: center;
+                            }
+                            </style>
+                        <table class="table condition-table-custom dt-table-hover" id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $employees])' style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
@@ -120,8 +167,8 @@
                                     <th>Name</th>
                                     <th>Department</th>
                                     <th>Designation</th>
-                                    <th>Date of Birth</th>
-                                    <th>Joining Date</th>
+                                    {{-- <th>Date of Birth</th> --}}
+                                    {{-- <th>Joining Date</th> --}}
                                     <th>Email</th>
                                     <th>Mobile</th>
                                     <th>Status</th>
@@ -138,7 +185,7 @@
                                     <tr>
                                         <td>{{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration  }}</td>
                                         <td>{{ $employee->employementDetail?->card_no }}</td>
-                                        <td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                             <a class="text-dark fw-500" href="{{ route('hrm.employees.show', $employee->id) }}">
                                                 {{ $employee->full_name }}
                                             </a>
@@ -146,8 +193,8 @@
                                         {{-- <td>{{ $employee->full_name }}</td> --}}
                                         <td>{{ $employee->employementDetail->department->name ?? 'N/A' }}</td>
                                         <td>{{ $employee->employementDetail->designation->name ?? 'N/A' }}</td>
-                                        <td>{{ $employee->date_of_birth }}</td>
-                                        <td>{{ $employee->employementDetail?->date_of_joining }}</td>
+                                        {{-- <td>{{ $employee->date_of_birth }}</td> --}}
+                                        {{-- <td>{{ $employee->employementDetail?->date_of_joining }}</td> --}}
                                         <td>{{ $employee->email_address }}</td>
                                         <td>{{ $employee->personal_mobile }}</td>
                                         <td>{{ $employee->status == 1 ? 'Active' : 'Inactive' }}</td>

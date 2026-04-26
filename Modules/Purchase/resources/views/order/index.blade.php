@@ -45,9 +45,8 @@
                                     <div class="col-sm-12">
                                         <table class="table table-bordered">
                                             <tr>
-
                                                 <td class="text-center">
-                                                    <select name="po_number" id="po_number" class="tom-select  form-control"
+                                                    <select name="po_number" id="po_number" class="tom-select form-control"
                                                         data-placeholder="Select PO Number">
                                                         <option value=""></option>
                                                         @foreach ($purchaseOrders as $value)
@@ -82,7 +81,37 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $purchaseOrders])'
+                            <style>
+                                .table-bordered-custom,
+                                .table-bordered-custom th,
+                                .table-bordered-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .table-bordered-custom th,
+                                .table-bordered-custom td {
+                                    padding: 8px;
+                                    vertical-align: middle;
+                                }
+                                .table-bordered-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px;
+                                }
+                                                                .table thead th {
+                    background-color: #35526e !important;
+                    color: #ffffff !important;
+                    font-weight: 600 !important;
+                    text-transform: uppercase;
+                    font-size: 0.85rem !important;
+                    letter-spacing: 0.08em;
+                    border-bottom: 2px solid #2a4054 !important;
+                    padding: 14px 16px !important;
+                    vertical-align: middle;
+                    text-align: center;
+                }
+                            </style>
+                            
+                            <table id="zero-config" class="table table-bordered-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $purchaseOrders])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -101,10 +130,9 @@
 
                                     @foreach ($purchaseOrders as $value)
                                         <tr>
-                                        <td>{{ ($purchaseOrders->currentPage() - 1) * $purchaseOrders->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">{{ ($purchaseOrders->currentPage() - 1) * $purchaseOrders->perPage() + $loop->iteration  }}</td>
                                             <td>
-                                                <a
-                                                    href="{{ route('purchase.orders.show', $value->id) }}">{{ $value->po_number }}</a>
+                                                <a href="{{ route('purchase.orders.show', $value->id) }}">{{ $value->po_number }}</a>
                                             </td>
                                             <td>{{ $value->po_date }}</td>
                                             <td>
@@ -159,4 +187,4 @@
             autoclose: true
         });
     </script>
-@endSection
+@endsection

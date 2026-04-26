@@ -96,7 +96,8 @@ class ProductTransferService
                 'quantity' => $product_details['quantity'][$key],
             ]);
             $result['product_transfer_details']['productTransferStockDetails'] = [];
-            if ($productStockDetails['lot_no'] ?? null) {
+   
+            if (!empty($productStockDetails['lot_no'][$product_id] ?? [])) {
                 foreach ($productStockDetails['lot_no'][$product_id] as $key2 => $value) {
                     # code...
                     $productTransferStockDetail = ProductTransferStockDetails::create([
@@ -111,7 +112,7 @@ class ProductTransferService
                     $result['product_transfer_details']['productTransferStockDetails'][] = $productTransferStockDetail;
                 }
             }
-            if ($productStockDetails['serial_no'] ?? null) {
+            if (!empty($productStockDetails['serial_no'][$product_id] ?? [])) {
                 foreach ($productStockDetails['serial_no'][$product_id] as $key => $value) {
                     # code...
                     $productTransferStockDetail = ProductTransferStockDetails::create([

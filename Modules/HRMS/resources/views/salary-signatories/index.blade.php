@@ -11,11 +11,11 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Salary Signatory Management</h3>
-
+                         
                     </div>
 
                     <div class="card-body">
-
+                        
                         <div class="table-responsive">
                             <table class="table table-bordered table-striped">
                                 <thead>
@@ -31,7 +31,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                 
                                     @forelse($signatories as $signatory)
                                         <tr>
                                             <td>{{ $signatory->id }}</td>

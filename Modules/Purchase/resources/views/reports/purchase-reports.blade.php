@@ -169,7 +169,39 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover table-bordered table-sm" id="purchaseReportTable"
+                                <style>
+                                    .jobs-table-custom,
+                                    .jobs-table-custom th,
+                                    .jobs-table-custom td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+
+                                    .jobs-table-custom th,
+                                    .jobs-table-custom td {
+                                        padding: 12px;
+                                        vertical-align: middle;
+                                    }
+
+                                    .jobs-table-custom thead th {
+                                        background-color: #f8f9fa;
+                                        border-bottom-width: 2px !important;
+                                    }
+
+                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                                </style>
+                                <table class="table jobs-table-custom dt-table-hover" id="purchaseReportTable"
                                     style="font-size: 11px;">
                                     <thead class="bg-primary text-white">
                                         <tr>

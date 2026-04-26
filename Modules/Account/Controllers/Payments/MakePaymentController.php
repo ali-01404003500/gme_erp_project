@@ -1,17 +1,18 @@
 <?php
+
 namespace Modules\Account\Controllers\Payments;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
-use Illuminate\Http\Request;
-use Modules\Account\Models\Account;
 use Modules\Account\Models\Payments\MakePayment;
 use Modules\Account\Services\Payments\MakePaymentService;
-use Modules\CRM\Models\Customer\Broker;
-use Modules\CRM\Models\Customer\Customer;
+use Illuminate\Http\Request;
 use Modules\Inventory\Services\ExportService;
 use Modules\Purchase\Models\Supplier;
 use Modules\Purchase\Models\Vendor;
+use Modules\CRM\Models\Customer\Broker;
+use Modules\CRM\Models\Customer\Customer;
+use Modules\Account\Models\Account;
 
 class MakePaymentController extends Controller
 {
@@ -22,7 +23,7 @@ class MakePaymentController extends Controller
      * @var MakePaymentService
      */
     private $service;
-    public function __construct(MakePaymentService $service)
+    function __construct(MakePaymentService $service)
     {
         $this->service = $service;
     }
@@ -30,20 +31,9 @@ class MakePaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = MakePayment::query();
-
-        // Date filter
-        if ($request->filled('from_date')) {
-            $query->whereDate('date', '>=', $request->from_date);
-        }
-
-        if ($request->filled('to_date')) {
-            $query->whereDate('date', '<=', $request->to_date);
-        }
-
-        $data['makePayments'] = $query->latest()->paginate(20);
+        $data['makePayments'] = $this->service->getAll();
 
         return view("Account::payments.make-payments.index", $data);
     }
@@ -63,32 +53,34 @@ class MakePaymentController extends Controller
     {
         // dd($request->all());
         $validate = $request->validate([
-            'payment_to_type'         => 'required|in:supplier,vendor,broker,petty_cash_expense',
-            'payment_to_id'           => 'required|integer',
-            'payments_total_amount'   => 'required|numeric|min:0',
-            'payments_due_amount'     => 'required|numeric|min:0',
+            'payment_to_type' => 'required|in:supplier,vendor,broker,petty_cash_expense',
+            'payment_to_id' => 'required|integer',
+            'payments_total_amount' => 'required|numeric|min:0',
+            'payments_due_amount' => 'required|numeric|min:0',
             'payments_advance_amount' => 'required|numeric|min:0',
-            'status'                  => 'required|in:pending,verified,approved',
+            'status' => 'required|in:pending,verified,approved',
         ]);
 
         $payments = $request->validate([
-            'payments_pay_mode'         => 'nullable|array',
-            'payments_pay_mode.*'       => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
-            'payments_bank_id'          => 'nullable|array',
-            'payments_bank_id.*'        => 'nullable|integer|exists:bank_accounts,id',
-            'payments_transaction_id'   => 'nullable|array',
+            'payments_pay_mode' => 'nullable|array',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
+            'payments_bank_id' => 'nullable|array',
+            'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
+            'payments_transaction_id' => 'nullable|array',
             'payments_transaction_id.*' => 'nullable|string',
-            'payments_date'             => 'nullable|array',
-            'payments_date.*'           => 'required|date',
-            'payments_amount'           => 'nullable|array',
-            'payments_amount.*'         => 'nullable|numeric|min:0',
-            'payments_attachments'      => 'nullable|array',
-            'payments_attachments.*'    => 'nullable|string',
-            'payments_verified'         => 'nullable|array',
-            'payments_verified.*'       => 'nullable|in:0,1',
-            'payments_remark'           => 'nullable|array',
-            'payments_remark.*'         => 'nullable|string',
+            'payments_date' => 'nullable|array',
+            'payments_date.*' => 'required|date',
+            'payments_amount' => 'nullable|array',
+            'payments_amount.*' => 'nullable|numeric|min:0',
+            'payments_attachments' => 'nullable|array',
+            'payments_attachments.*' => 'nullable|string',
+            'payments_verified' => 'nullable|array',
+            'payments_verified.*' => 'nullable|in:0,1',
+            'payments_remark' => 'nullable|array',
+            'payments_remark.*' => 'nullable|string',
         ]);
+
+
 
         $this->service->store($validate, $payments);
         return redirect()->route('account.payments.make-payments.index')->with('success', 'MakePayment created successfully.');
@@ -99,7 +91,7 @@ class MakePaymentController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $data['makePayment']  = $this->service->show($id);
+        $data['makePayment'] = $this->service->show($id);
         $data['company_info'] = CompanyInfo::first();
 
         // Check if export is requested
@@ -133,31 +125,31 @@ class MakePaymentController extends Controller
     {
         $validate = $request->validate([
             //validate rules
-            'payment_to_type'         => 'required|in:supplier,vendor,broker,petty_cash_expense',
-            'payment_to_id'           => 'required|integer',
-            'payments_total_amount'   => 'required|numeric|min:0',
-            'payments_due_amount'     => 'required|numeric|min:0',
+            'payment_to_type' => 'required|in:supplier,vendor,broker,petty_cash_expense',
+            'payment_to_id' => 'required|integer',
+            'payments_total_amount' => 'required|numeric|min:0',
+            'payments_due_amount' => 'required|numeric|min:0',
             'payments_advance_amount' => 'required|numeric|min:0',
-            'status'                  => 'required|in:pending,verified,approved,denied',
+            'status' => 'required|in:pending,verified,approved,denied',
         ]);
 
         $payments = $request->validate([
-            'payments_pay_mode'         => 'nullable|array',
-            'payments_pay_mode.*'       => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
-            'payments_bank_id'          => 'nullable|array',
-            'payments_bank_id.*'        => 'nullable|integer|exists:bank_accounts,id',
-            'payments_transaction_id'   => 'nullable|array',
+            'payments_pay_mode' => 'nullable|array',
+            'payments_pay_mode.*' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment,AIT,Waiver,Waiver Bad Debt',
+            'payments_bank_id' => 'nullable|array',
+            'payments_bank_id.*' => 'nullable|integer|exists:bank_accounts,id',
+            'payments_transaction_id' => 'nullable|array',
             'payments_transaction_id.*' => 'nullable|string',
-            'payments_date'             => 'nullable|array',
-            'payments_date.*'           => 'required|date',
-            'payments_amount'           => 'nullable|array',
-            'payments_amount.*'         => 'nullable|numeric|min:0',
-            'payments_attachments'      => 'nullable|array',
-            'payments_attachments.*'    => 'nullable|string',
-            'payments_verified'         => 'nullable|array',
-            'payments_verified.*'       => 'nullable|in:0,1',
-            'payments_remark'           => 'nullable|array',
-            'payments_remark.*'         => 'nullable|string',
+            'payments_date' => 'nullable|array',
+            'payments_date.*' => 'required|date',
+            'payments_amount' => 'nullable|array',
+            'payments_amount.*' => 'nullable|numeric|min:0',
+            'payments_attachments' => 'nullable|array',
+            'payments_attachments.*' => 'nullable|string',
+            'payments_verified' => 'nullable|array',
+            'payments_verified.*' => 'nullable|in:0,1',
+            'payments_remark' => 'nullable|array',
+            'payments_remark.*' => 'nullable|string',
         ]);
 
         $this->service->update($makePayment, $validate, $payments);
@@ -186,6 +178,7 @@ class MakePaymentController extends Controller
         return redirect()->route('account.payments.make-payments.index')->with('success', 'MakePayment deleted successfully.');
     }
 
+
     public function loadAccount(Request $request)
     {
 
@@ -199,16 +192,16 @@ class MakePaymentController extends Controller
             case 'supplier':
                 $data['accounts'] = Supplier::where('status', '1')->select('id', 'company_name as name')->get();
                 break;
-
+  
             case 'customer':
                 $data['accounts'] = Customer::activeCustomers()->select('id', 'company_name', 'company_place_id')->with('area')->get()
                     ->map(function ($item) {
                         return [
-                            'id'   => $item->id,
-                            'name' => $item->company_name . ' - ' . $item->area?->area, // alias here
+                            'id' => $item->id,
+                            'name' => $item->company_name.' - '.$item->area?->area, // alias here
                         ];
                     });
-                break;
+                break; 
 
             case 'vendor':
                 $data['accounts'] = Vendor::where('status', '1')->select('id', 'company_name as name')->get();
@@ -226,11 +219,14 @@ class MakePaymentController extends Controller
         return response()->json($data);
     }
 
+
+
+
     public function getBalance(Request $request)
     {
         $validate = $request->validate([
-            'type'       => 'required',
-            'account_id' => 'required',
+            'type' => 'required',
+            'account_id' => 'required'
         ]);
 
         $data = [];
@@ -254,6 +250,7 @@ class MakePaymentController extends Controller
             default:
                 break;
         }
+
 
         // $data = $this->service->getBalance($validate['type'], $validate['id']);
 

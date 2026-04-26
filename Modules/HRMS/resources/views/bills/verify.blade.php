@@ -82,7 +82,37 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered" style="width:100%">
+                            <style>
+                                .tadalist-table-custom,
+                                .tadalist-table-custom th,
+                                .tadalist-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .tadalist-table-custom th,
+                                .tadalist-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: top;
+                                }
+                                .tadalist-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                            </style>
+                            
+                            <table class="table tadalist-table-custom" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 50px;">SL</th>
@@ -93,7 +123,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @dd($billsAndAllowances); --}}
                                     @php  
                                         $i = 0; 
                                     @endphp
@@ -111,10 +140,8 @@
                                                 {{ $empidwisegroup->pluck('transportExpenses')->flatten()->sum('amount') 
                                                 + 
                                                 $empidwisegroup->pluck('generalExpenses')->flatten()->sum('amount')}}
-
                                             </td>
                                             <td>
-                                             
                                                 @if ($bill->status == 'pending')
                                                     <span class="badge badge-round badge-warning">Pending</span>
                                                 @elseif($bill->status == 'team_leader_check')
@@ -128,12 +155,9 @@
                                                 @elseif($bill->status == 'rejected')
                                                     <span class="badge badge-round badge-danger">Rejected</span>
                                                 @endif
-                                                
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    
-
                                                     @if (hasPermission('hrm.bills.team_leader_verify') && $bill->status == 'pending')
                                                         <button type="button" 
                                                             class="btn btn-outline-info btn-verify"  
@@ -166,15 +190,12 @@
                                                             <i class="fas fa-check-double"></i> 
                                                         </button>
                                                     @endif 
-
                                                 </div>
                                             </td>
                                         </tr> 
                                         @endforeach
                                     @endforeach
-                                   
                                 </tbody>
-                                 
                             </table>
                         </div>
                         <div class="d-none">
@@ -218,9 +239,6 @@
 </div>
 
 <style>
-    .table td {
-        vertical-align: top;
-    }
     .table td ul {
         font-size: 13px;
         line-height: 1.8;
@@ -229,7 +247,7 @@
         margin-bottom: 3px;
     }
     .modal-custom {
-        max-width: 70%;  /* width percentage, 70% of screen */
+        max-width: 70%;
         width: 90%;
     }
 </style>
@@ -247,7 +265,6 @@
         $(document).on('click', '.btn-verify', function() {
             let billIds = $(this).data('id');
             billIds = JSON.stringify(billIds);
-            //console.log(billIds);  
             const status = $(this).data('status');
             
             let actionUrl = '';
@@ -268,7 +285,6 @@
                 buttonText = 'Approve';
             }
             
-           
             $('#verifyForm').attr('action', actionUrl+'?id='+billIds);
             $('#verifyModalTitle').text(titleText);
             $('#verifySubmitBtn').text(buttonText);
@@ -330,7 +346,6 @@
                             if (element.transport_expenses && element.transport_expenses.length > 0) {
                                 element.transport_expenses.forEach((expense, index) => {
                                     transportExpenseCount++;
-
                                     transportTotal += parseFloat(expense.amount);
                                     html += `<tr>
                                         <td>${transportExpenseCount}</td>
@@ -345,18 +360,12 @@
                                     if (status === 'accounts' || status === 'final') {
                                         html += `<td>${expense.team_leader_approved_amount ? parseFloat(expense.team_leader_approved_amount).toFixed() : '-'}</td>`;
                                         amt = expense.team_leader_approved_amount;
-                                    
                                     }
                                     if (status === 'final') {
                                         html += `<td>${expense.accounts_approved_amount ? parseFloat(expense.accounts_approved_amount).toFixed() : '-'}</td>`;
                                         amt = expense.accounts_approved_amount; 
                                     }
                                     
-                                
-
-                                    
-
-
                                     html += `<td>
                                         <input type="number" step="0.01" class="form-control form-control-sm" 
                                             name="transport_approved[${expense.id}]" 
@@ -368,20 +377,14 @@
                                     </td>
                                     </tr>`;
                                 });
-                                
-
-                            } 
-                            else {
-                                
                             }
-                            
                         });
-                        if( transportExpenseCount == 0)
+                        if(transportExpenseCount == 0)
                             html += `<tr><td colspan="10" class="text-center">No transport expenses</td></tr>`;
                         else
                             html += `<tr><td colspan="7" class="text-end">Total</td><td colspan="">${transportTotal}</td></tr>`;
                             
-                        html += `</tbody></table></div>
+                        html += `</tbody><tr></div>
                             
                             <h5 class="mt-4">General Expenses</h5>
                             <div class="table-responsive">
@@ -441,17 +444,16 @@
                                                 </td>
                                                 </tr>`;
                                             });
-                                            
-                                        } 
+                                        }
                                     });
-                                    if( generalExpenseCount == 0)
+                                    if(generalExpenseCount == 0)
                                         html += `<tr><td colspan="8" class="text-center">No general expenses</td></tr>`;
                                     else
                                         html += `<tr><td colspan="6" class="text-end">Total</td><td colspan="">${generalTotal}</td></tr>`;
                                         
                                     let grandTotal = transportTotal + generalTotal;
                                     
-                                    html += `</tbody></table></div>
+                                    html += `</tbody></tr></div>
 
                                         <div class="mt-4 p-3">
                                             <div class="row">
@@ -472,4 +474,4 @@
         }
     });
 </script>
-@endSection
+@endsection 

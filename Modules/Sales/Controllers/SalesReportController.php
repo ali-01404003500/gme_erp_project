@@ -1,35 +1,34 @@
 <?php
-
 namespace Modules\Sales\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\Branch;
 use App\Models\AccessControl\CompanyInfo;
 use App\Models\User;
-use Modules\Inventory\Services\ExportService;
-use Modules\Inventory\Models\ProductCatalog;
-use Modules\Sales\Models\SalesOrder;
-use Modules\Sales\Models\SalesReturn;
-use Modules\Sales\Models\BackupChallan;
-use Modules\CRM\Models\Customer\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Account\Models\Account;
+use Modules\CRM\Models\Customer\Customer;
+use Modules\Inventory\Models\ProductCatalog;
+use Modules\Inventory\Services\ExportService;
+use Modules\Sales\Models\BackupChallan;
+use Modules\Sales\Models\SalesOrder;
+use Modules\Sales\Models\SalesReturn;
 
 class SalesReportController extends Controller
 {
-    // -------------------------------------------------------------------------
-    // CACHE TTL CONSTANTS
-    // -------------------------------------------------------------------------
-    // Optimized for 1-second load time with near-real-time data
-    private const REPORT_TTL        = 60;    // 1 min - report data
-    private const DROPDOWN_TTL      = 3_600; // 1 hr - dropdown data
-    private const CUSTOMER_TTL      = 3_600; // 1 hr - customer list
-    private const PRODUCT_TTL       = 3_600; // 1 hr - product list
-    private const USER_TTL          = 3_600; // 1 hr - user list
-    private const BRANCH_TTL        = 86_400;// 24 hrs - branch list (static)
+                                         // -------------------------------------------------------------------------
+                                         // CACHE TTL CONSTANTS
+                                         // -------------------------------------------------------------------------
+                                         // Optimized for 1-second load time with near-real-time data
+    private const REPORT_TTL   = 60;     // 1 min - report data
+    private const DROPDOWN_TTL = 3_600;  // 1 hr - dropdown data
+    private const CUSTOMER_TTL = 3_600;  // 1 hr - customer list
+    private const PRODUCT_TTL  = 3_600;  // 1 hr - product list
+    private const USER_TTL     = 3_600;  // 1 hr - user list
+    private const BRANCH_TTL   = 86_400; // 24 hrs - branch list (static)
 
     // -------------------------------------------------------------------------
     // PAGINATION
@@ -45,17 +44,17 @@ class SalesReportController extends Controller
             $reportData = Cache::remember('sales_report_export_all', self::REPORT_TTL, function () use ($request, $includeTypes) {
                 return $this->buildReportData($request, $includeTypes);
             });
-            $salesReturns = $reportData->filter(fn($item) => $item['invoice_type'] === 'Sales Return');
+            $salesReturns   = $reportData->filter(fn($item) => $item['invoice_type'] === 'Sales Return');
             $backupChallans = $reportData->filter(fn($item) => $item['invoice_type'] === 'Backup/Challan');
             return $this->exportReport($request, $reportData, $salesReturns, $backupChallans);
         }
 
         // For normal view, load data and paginate
         $reportData = $this->buildReportData($request, $includeTypes);
-        
+
         // Paginate the combined collection
-        $currentPage = $request->input('page', 1);
-        $perPage = $request->input('per_page', self::PER_PAGE);
+        $currentPage   = $request->input('page', 1);
+        $perPage       = $request->input('per_page', self::PER_PAGE);
         $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
             $reportData->forPage($currentPage, $perPage),
             $reportData->count(),
@@ -74,20 +73,20 @@ class SalesReportController extends Controller
     {
         $filters = [
             'includeTypes' => $includeTypes,
-            'customer_id' => $request->customer_id,
-            'invoice_id' => $request->invoice_id,
+            'customer_id'  => $request->customer_id,
+            'invoice_id'   => $request->invoice_id,
             'invoice_type' => $request->invoice_type,
-            'sales_type' => $request->sales_type,
-            'branch_id' => $request->branch_id,
-            'user_id' => $request->user_id,
-            'product_id' => $request->product_id,
-            'from' => $request->from,
-            'to' => $request->to,
-            'status' => $request->status,
-            'min_price' => $request->min_price,
-            'max_price' => $request->max_price,
+            'sales_type'   => $request->sales_type,
+            'branch_id'    => $request->branch_id,
+            'user_id'      => $request->user_id,
+            'product_id'   => $request->product_id,
+            'from'         => $request->from,
+            'to'           => $request->to,
+            'status'       => $request->status,
+            'min_price'    => $request->min_price,
+            'max_price'    => $request->max_price,
         ];
-        
+
         return 'sales_report_' . md5(serialize($filters));
     }
 
@@ -104,12 +103,12 @@ class SalesReportController extends Controller
 
             foreach ($salesOrders as $order) {
                 $reportData->push([
-                    'invoice_type' => $this->getInvoiceType($order),
-                    'invoice_status' => $this->getInvoiceStatus($order),
-                    'data' => $order,
-                    'date' => $order->invoice_date,
+                    'invoice_type'     => $this->getInvoiceType($order),
+                    'invoice_status'   => $this->getInvoiceStatus($order),
+                    'data'             => $order,
+                    'date'             => $order->invoice_date,
                     'customer_balance' => $order->customer_account_balance ?? 0,
-                    'commitment_date' => $order->credit_limit_payment_date ?? null
+                    'commitment_date'  => $order->credit_limit_payment_date ?? null,
                 ]);
             }
         }
@@ -120,12 +119,12 @@ class SalesReportController extends Controller
 
             foreach ($salesReturns as $return) {
                 $reportData->push([
-                    'invoice_type' => 'Sales Return',
-                    'invoice_status' => 'Return',
-                    'data' => $return,
-                    'date' => $return->return_date,
+                    'invoice_type'     => 'Sales Return',
+                    'invoice_status'   => 'Return',
+                    'data'             => $return,
+                    'date'             => $return->return_date,
                     'customer_balance' => $return->customer_account_balance ?? 0,
-                    'commitment_date' => null
+                    'commitment_date'  => null,
                 ]);
             }
         }
@@ -136,12 +135,12 @@ class SalesReportController extends Controller
 
             foreach ($backupChallans as $challan) {
                 $reportData->push([
-                    'invoice_type' => 'Backup/Challan',
-                    'invoice_status' => $challan->status ?? 'Approved',
-                    'data' => $challan,
-                    'date' => $challan->invoice_date,
+                    'invoice_type'     => 'Backup/Challan',
+                    'invoice_status'   => $challan->status ?? 'Approved',
+                    'data'             => $challan,
+                    'date'             => $challan->invoice_date,
                     'customer_balance' => $challan->customer_account_balance ?? 0,
-                    'commitment_date' => null
+                    'commitment_date'  => null,
                 ]);
             }
         }
@@ -167,23 +166,23 @@ class SalesReportController extends Controller
         // Eager load only credit limit OTP verifications - optimized without filesort
         $query->with(['otpVerifications' => function ($q) {
             $q->where('title', 'Credit Limit Exceeded')
-              ->orderBy('id', 'desc')  // Use indexed id column instead of created_at
-              ->limit(5);               // Limit to reduce memory usage
+                ->orderBy('id', 'desc') // Use indexed id column instead of created_at
+                ->limit(5);             // Limit to reduce memory usage
         }]);
 
         // Use simplePaginate for better performance (no OFFSET/COUNT query)
         $perPage = $request->get('per_page', 50);
-        $orders = $query->orderBy('created_at', 'desc')->simplePaginate($perPage);
+        $orders  = $query->orderBy('created_at', 'desc')->simplePaginate($perPage);
 
         // Batch load customer account balances to avoid N+1
-        $customerIds = $orders->pluck('customer_id')->unique()->filter()->toArray();
+        $customerIds      = $orders->pluck('customer_id')->unique()->filter()->toArray();
         $customerBalances = $this->getCustomerBalancesInBulk($customerIds);
 
         // Enrich with account balance and commitment date
         $orders->getCollection()->transform(function ($order) use ($customerBalances) {
             $order->customer_account_balance = $customerBalances[$order->customer_id] ?? 0;
 
-            $otp = $order->otpVerifications->first();
+            $otp                              = $order->otpVerifications->first();
             $order->credit_limit_payment_date = $otp?->additional_data['payment_date'] ?? null;
 
             return $order;
@@ -201,17 +200,17 @@ class SalesReportController extends Controller
             'customer',
             'salesOrder',
             'salesReturnDetails.product',
-            'createdBy.branch'
+            'createdBy.branch',
         ]);
 
         $query = $this->applyReturnFilters($query, $request);
-        
+
         // Limit results for faster loading
         $perPage = $request->get('per_page', 50);
         $returns = $query->orderBy('created_at', 'desc')->simplePaginate($perPage);
 
         // Batch load customer account balances
-        $customerIds = $returns->pluck('customer_id')->unique()->filter()->toArray();
+        $customerIds      = $returns->pluck('customer_id')->unique()->filter()->toArray();
         $customerBalances = $this->getCustomerBalancesInBulk($customerIds);
 
         $returns->getCollection()->transform(function ($return) use ($customerBalances) {
@@ -230,17 +229,17 @@ class SalesReportController extends Controller
         $query = BackupChallan::with([
             'customer',
             'backupChallanDetails.product',
-            'createdBy.branch'
+            'createdBy.branch',
         ]);
 
         $query = $this->applyChallanFilters($query, $request);
-        
+
         // Limit results for faster loading
-        $perPage = $request->get('per_page', 50);
+        $perPage  = $request->get('per_page', 50);
         $challans = $query->orderBy('created_at', 'desc')->simplePaginate($perPage);
 
         // Batch load customer account balances
-        $customerIds = $challans->pluck('customer_id')->unique()->filter()->toArray();
+        $customerIds      = $challans->pluck('customer_id')->unique()->filter()->toArray();
         $customerBalances = $this->getCustomerBalancesInBulk($customerIds);
 
         $challans->getCollection()->transform(function ($challan) use ($customerBalances) {
@@ -254,19 +253,42 @@ class SalesReportController extends Controller
     /**
      * Get customer account balances in bulk to avoid N+1 queries
      */
+    // private function getCustomerBalancesInBulk(array $customerIds): array
+    // {
+    //     if (empty($customerIds)) {
+    //         return [];
+    //     }
+
+    //     // Fetch all account balances in a single query using join with transactions
+    //     $balances = Account::query()
+    //         ->whereIn('accounts.accountable_id', $customerIds)
+    //         ->where('accounts.accountable_type', 'Modules\CRM\Models\Customer\Customer')
+    //         ->leftJoin('transactions', 'transactions.account_id', '=', 'accounts.id')
+    //         ->select('accounts.accountable_id', DB::raw('COALESCE(SUM(transactions.amount), 0) as balance'))
+    //         ->groupBy('accounts.accountable_id')
+    //         ->get()
+    //         ->pluck('balance', 'accountable_id');
+
+    //     return $balances->toArray();
+    // }
+
     private function getCustomerBalancesInBulk(array $customerIds): array
     {
         if (empty($customerIds)) {
             return [];
         }
 
-        // Fetch all account balances in a single query using join with transactions
-        $balances = Account::query()
+        // OPTIMIZED: Use subquery for better performance
+        $balances = DB::table('accounts')
             ->whereIn('accounts.accountable_id', $customerIds)
             ->where('accounts.accountable_type', 'Modules\CRM\Models\Customer\Customer')
-            ->leftJoin('transactions', 'transactions.account_id', '=', 'accounts.id')
-            ->select('accounts.accountable_id', DB::raw('COALESCE(SUM(transactions.amount), 0) as balance'))
-            ->groupBy('accounts.accountable_id')
+            ->select(
+                'accounts.accountable_id',
+                DB::raw('(SELECT COALESCE(SUM(transactions.amount), 0)
+                     FROM transactions
+                     WHERE transactions.account_id = accounts.id
+                     AND transactions.deleted_at IS NULL) as balance')
+            )
             ->get()
             ->pluck('balance', 'accountable_id');
 
@@ -279,13 +301,13 @@ class SalesReportController extends Controller
     private function exportReport(Request $request, $reportData, $salesReturns, $backupChallans)
     {
         $data = [
-            'reportData' => $reportData,
-            'salesOrders' => $this->getDropdownSalesOrders(),
+            'reportData'   => $reportData,
+            'salesOrders'  => $this->getDropdownSalesOrders(),
             'salesReturns' => $salesReturns,
-            'customers' => $this->getCustomersForDropdown(),
-            'branches' => $this->getBranchesForDropdown(),
-            'products' => $this->getProductsForDropdown(),
-            'users' => $this->getUsersForDropdown(),
+            'customers'    => $this->getCustomersForDropdown(),
+            'branches'     => $this->getBranchesForDropdown(),
+            'products'     => $this->getProductsForDropdown(),
+            'users'        => $this->getUsersForDropdown(),
             'company_info' => $this->getCompanyInfo(),
         ];
 
@@ -305,15 +327,15 @@ class SalesReportController extends Controller
     private function getViewData($paginatedData, $salesReturns, $backupChallans)
     {
         return [
-            'reportData' => $paginatedData,
-            'salesOrders' => $this->getDropdownSalesOrders(),
-            'salesReturns' => $salesReturns,
+            'reportData'     => $paginatedData,
+            'salesOrders'    => $this->getDropdownSalesOrders(),
+            'salesReturns'   => $salesReturns,
             'backupChallans' => $backupChallans,
-            'customers' => $this->getCustomersForDropdown(),
-            'branches' => $this->getBranchesForDropdown(),
-            'products' => $this->getProductsForDropdown(),
-            'users' => $this->getUsersForDropdown(),
-            'company_info' => $this->getCompanyInfo(),
+            'customers'      => $this->getCustomersForDropdown(),
+            'branches'       => $this->getBranchesForDropdown(),
+            'products'       => $this->getProductsForDropdown(),
+            'users'          => $this->getUsersForDropdown(),
+            'company_info'   => $this->getCompanyInfo(),
         ];
     }
 
@@ -390,7 +412,7 @@ class SalesReportController extends Controller
      */
     private function calculateCustomerBalance($customer)
     {
-        if (!$customer) {
+        if (! $customer) {
             return 0;
         }
 
@@ -459,7 +481,7 @@ class SalesReportController extends Controller
             $typeMap = [
                 'general_sales' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
                 'partial_sales' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
-                'free_sales' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
+                'free_sales'    => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
             ];
 
             return $typeMap[$salesType] ?? ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false];
@@ -467,17 +489,17 @@ class SalesReportController extends Controller
 
         $invoiceType = $request->input('invoice_type');
 
-        if (!$invoiceType) {
+        if (! $invoiceType) {
             return ['sales_orders' => true, 'sales_return' => true, 'backup_challan' => true];
         }
 
         $typeMap = [
-            'delivered' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
-            'undelivered' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
-            'pending' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
-            'partial_sales' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
-            'free_sales' => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
-            'sales_return' => ['sales_orders' => false, 'sales_return' => true, 'backup_challan' => false],
+            'delivered'      => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
+            'undelivered'    => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
+            'pending'        => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
+            'partial_sales'  => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
+            'free_sales'     => ['sales_orders' => true, 'sales_return' => false, 'backup_challan' => false],
+            'sales_return'   => ['sales_orders' => false, 'sales_return' => true, 'backup_challan' => false],
             'backup_challan' => ['sales_orders' => false, 'sales_return' => false, 'backup_challan' => true],
         ];
 

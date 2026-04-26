@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Sales\Services;
 
 use App\Models\AccessControl\ServiceName;
@@ -6,25 +7,27 @@ use App\Models\AccessControl\SmsTemplate;
 use App\Models\AccessControl\TriggerName;
 use App\Models\OtpVerification;
 use App\Models\SmsInfo;
+use App\Services\SmsService;
+use Modules\Sales\Models\Delivery;
+use Modules\Sales\Models\SalesOrder;
+use Modules\Sales\Models\SalesOrderDetails;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Account\Controllers\Collections\CollectionController;
 use Modules\Account\Models\Account;
 use Modules\Account\Services\AccountTransactionService;
 use Modules\Account\Services\Collections\CollectionService;
-use Modules\CRM\Models\Customer\Customer;
-use Modules\Inventory\Models\Offer;
-use Modules\Sales\Models\BackupChallan;
-use Modules\Sales\Models\Delivery;
-use Modules\Sales\Models\FreeSalesInvoice;
-use Modules\Sales\Models\SalesOrder;
-use Modules\Sales\Models\SalesOrderDetails;
 use Modules\Sales\Models\SalesPayment;
+use Modules\Sales\Models\BackupChallan;
 use Modules\Sales\Models\SalesPaymentBkash;
 use Modules\Sales\Models\SalesPaymentCardPayment;
 use Modules\Sales\Models\SalesPaymentCash;
 use Modules\Sales\Models\SalesPaymentCheque;
 use Modules\Sales\Models\SalesPaymentOnlineDeposit;
 use Modules\Sales\Models\SalesRequisition;
+use Modules\Sales\Models\FreeSalesInvoice;
+use Modules\Inventory\Models\Offer;
+use Modules\CRM\Models\Customer\Customer;
 
 class SalesOrderService
 {
@@ -35,8 +38,11 @@ class SalesOrderService
     public function __construct(AccountTransactionService $transactionService, CollectionService $collectionService)
     {
         $this->transactionService = $transactionService;
-        $this->collectionService  = $collectionService;
+        $this->collectionService = $collectionService; 
     }
+
+ 
+
 
     public function getSalesOrderId($supplier_id)
     {
@@ -44,8 +50,8 @@ class SalesOrderService
 
         $customer_count = SalesOrder::whereDate(DB::raw('DATE(created_at)'), $today)->count();
 
-        $authUser           = auth()->user()->id;
-        $authUserBranch     = auth()->user()->branch_id;
+        $authUser = auth()->user()->id;
+        $authUserBranch = auth()->user()->branch_id;
         $authUserBranchType = auth()->user()->branch->branch_type_id;
 
         $SalesOrderToday = SalesOrder::whereDate(DB::raw('DATE(created_at)'), $today)
@@ -66,11 +72,11 @@ class SalesOrderService
 
     public function getAll(int $limit = 20)
     {
-        if (! request()->filled('from') && ! request()->filled('to')) {
+        if (!request()->filled('from') && !request()->filled('to')) {
             request()->merge(['from' => Carbon::now()->format('Y-m-d'), 'to' => Carbon::now()->format('Y-m-d')]);
         }
         return SalesOrder::query()
-            ->searchByFields(['customer_id', 'sales_type', 'status'])
+            ->searchByFields(['customer_id',  'sales_type', 'status'])
             ->when(request()->filled('from'), function ($qr) {
                 $qr->where('invoice_date', '>=', Carbon::parse(request('from'))->format('Y-m-d'));
             })
@@ -96,29 +102,30 @@ class SalesOrderService
         // $this->applyOffers($data, $salesOrderDetails, $payments);
         $this->applyOfferProduct($data, $salesOrderDetails, $payments);
 
+
         // dd($payments);
         DB::beginTransaction();
         // Create sales order
         // Only generate a new sales_order_id if one is not already provided in the data
-        if (! isset($data['sales_order_id']) || empty($data['sales_order_id'])) {
+        if (!isset($data['sales_order_id']) || empty($data['sales_order_id'])) {
             $data['sales_order_id'] = $this->getSalesOrderId($data['customer_id']);
         }
-        $data['sales_type']          = $data['sales_type'] ?? 'general_sales';
-        $data['user_ref_id']         = Customer::find($data['customer_id'])->user_ref_id;
-        $result['salesOrder']        = SalesOrder::create($data);
+        $data['sales_type'] = $data['sales_type'] ?? 'general_sales';
+        $data['user_ref_id'] = Customer::find($data['customer_id'])->user_ref_id;
+        $result['salesOrder'] = SalesOrder::create($data);
         $result['salesOrderDetails'] = [];
-        $cashCollectionAmount        = 0;
-        $paymentDate                 = '';
+        $cashCollectionAmount = 0;
+        $paymentDate = '';
 
         // Store sales order details
         foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
             $detailData = [
-                'product_id'     => $productId,
-                'quantity'       => $salesOrderDetails['quantity'][$key],
-                'price'          => $salesOrderDetails['price'][$key],
-                'unit_discount'  => $salesOrderDetails['unit_discount'][$key],
+                'product_id' => $productId,
+                'quantity' => $salesOrderDetails['quantity'][$key],
+                'price' => $salesOrderDetails['price'][$key],
+                'unit_discount' => $salesOrderDetails['unit_discount'][$key],
                 'total_discount' => $salesOrderDetails['total_discount'][$key],
-                'amount'         => $salesOrderDetails['amount'][$key],
+                'amount' => $salesOrderDetails['amount'][$key],
             ];
 
             // Add discount_type if it exists in the salesOrderDetails array
@@ -140,14 +147,14 @@ class SalesOrderService
         // Handle shipment if available
         if (isset($data['is_shipment']) && $data['is_shipment'] == 1) {
             $result['salesOrderShipments'] = $result['salesOrder']->shipment()->create([
-                'courier_id'            => $salesOrderShipments['courier_id'],
-                'area_id'               => $salesOrderShipments['area_id'] == 'address' ? null : $salesOrderShipments['area_id'],
-                'address'               => $salesOrderShipments['address'],
-                'contact_person_name'   => $salesOrderShipments['contact_person_name'],
+                'courier_id' => $salesOrderShipments['courier_id'],
+                'area_id' => $salesOrderShipments['area_id']  == 'address' ? null : $salesOrderShipments['area_id'],
+                'address' => $salesOrderShipments['address'],
+                'contact_person_name' => $salesOrderShipments['contact_person_name'],
                 'contact_person_number' => $salesOrderShipments['contact_person_number'],
-                'condition'             => ($salesOrderShipments['condition'] ?? false) ? true : false,
-                'additional_amount'     => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['additional_amount'] : null,
-                'condition_remarks'     => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['condition_remarks'] : null,
+                'condition' => ($salesOrderShipments['condition'] ?? false) ? true : false,
+                'additional_amount' => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['additional_amount'] : null,
+                'condition_remarks' => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['condition_remarks'] : null,
             ]);
         }
 
@@ -155,12 +162,13 @@ class SalesOrderService
         if ($data['status'] == 'approved') {
             // Create Delivery
             $result['delivery'] = Delivery::updateOrCreate([
-                'source_id'   => $result['salesOrder']->id,
+                'source_id' => $result['salesOrder']->id,
                 'source_type' => SalesOrder::class,
             ], [
                 'delivery_date' => $data['delivery_date'] ?? $data['invoice_date'],
             ]);
-
+ 
+            
         } elseif ($data['status'] == 'pending') {
             $result['salesOrder']->update(['status' => 'pending']);
             // Remove delivery if it exists
@@ -170,8 +178,8 @@ class SalesOrderService
         // Create sales payment record
         $salesPayment = SalesPayment::create([
             'sales_order_id' => $result['salesOrder']->id,
-            'paid_amount'    => $data['paid_amount'] ?? 0,
-            'due_amount'     => $data['due_amount'] ?? 0,
+            'paid_amount' => $data['paid_amount'] ?? 0,
+            'due_amount' => $data['due_amount'] ?? 0,
             'advance_amount' => $data['advance_amount'] ?? 0,
         ]);
 
@@ -181,7 +189,7 @@ class SalesOrderService
             foreach (request()->otp_verifications as $otpJson) {
                 $otpData = json_decode($otpJson, true);
 
-                $otpData['sourceable_id']   = $result['salesOrder']->id;
+                $otpData['sourceable_id'] = $result['salesOrder']->id;
                 $otpData['sourceable_type'] = SalesOrder::class;
 
                 OtpVerification::updateOrCreate(
@@ -191,36 +199,37 @@ class SalesOrderService
             }
         }
 
+
         // Save payments
         foreach ($payments['payments_pay_mode'] ?? [] as $key => $payMode) {
             if ($payMode) {
                 $result['payments'][] = $result['salesOrder']->payments()->create([
-                    'pay_mode'         => $payMode,
-                    'bank_id'          => $payments['payments_bank_id'][$key] ?? null,
-                    'branch_id'        => $payments['payments_branch_id'][$key] ?? null,
-                    'transaction_id'   => $payments['payments_transaction_id'][$key] ?? null,
+                    'pay_mode' => $payMode,
+                    'bank_id' => $payments['payments_bank_id'][$key] ?? null,
+                    'branch_id' => $payments['payments_branch_id'][$key] ?? null,
+                    'transaction_id' => $payments['payments_transaction_id'][$key] ?? null,
                     'e_m_i_entries_id' => $payments['payments_emi_id'][$key] ?? null,
-                    'amount'           => $payments['payments_amount'][$key] ?? 0,
-                    'date'             => $payments['payments_date'][$key] ?? null,
-                    'attachments'      => $payments['payments_attachments'][$key] ?? null,
-                    'verified'         => $payments['payments_verified'][$key] ?? false,
-                    'remarks'          => $payments['payments_remark'][$key] ?? null,
+                    'amount' => $payments['payments_amount'][$key] ?? 0,
+                    'date' => $payments['payments_date'][$key] ?? null,
+                    'attachments' => $payments['payments_attachments'][$key] ?? null,
+                    'verified' => $payments['payments_verified'][$key] ?? false,
+                    'remarks' => $payments['payments_remark'][$key] ?? null,
                 ]);
-
-                /*count cash collection amount*/
+                
+                /*count cash collection amount*/ 
                 if ($payMode == 'Cash') {
-                    $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;
-                    $paymentDate          = $payments['payments_date'][$key] ?? null;
-                }
+                    $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;  
+                    $paymentDate = $payments['payments_date'][$key] ?? null;
+                } 
             }
         }
         // Process payments
         /**  uncomment later
         foreach ($payments['payment_mode'] as $index => $mode){
-        $salesPaymentDetail = $salesPayment->salesPaymentDetails()->create([
-        'payment_mode' => $mode,
-        ]);
-        $this->storePaymentDetails($salesPayment, $salesPaymentDetail, $payments, $index, $mode);
+            $salesPaymentDetail = $salesPayment->salesPaymentDetails()->create([
+                'payment_mode' => $mode,
+            ]);
+            $this->storePaymentDetails($salesPayment, $salesPaymentDetail, $payments, $index, $mode);
         }*/
         // dd($result);
         // $this->makeTransaction($result['salesOrder']);
@@ -231,150 +240,109 @@ class SalesOrderService
 
             // Check if there are payments and create collection
             $collectionData = [
-                'payments_total_amount'   => $result['salesOrder']->net_amount ?? 0,
+                'payments_total_amount' => $result['salesOrder']->net_amount ?? 0,
                 'payments_advance_amount' => $result['salesOrder']->payments()->sum('amount') - $result['salesOrder']->net_amount,
-                'collection_type'         => "customer",
-                'collection_from'         => $data['customer_id'] ?? $result['salesOrder']->customer_id,
-                'collection_date'         => $data['invoice_date'],
+                'collection_type' => "customer",
+                'collection_from' => $data['customer_id'] ?? $result['salesOrder']->customer_id,
+                'collection_date' => $data['invoice_date']
             ];
 
             if (count($result['salesOrder']->payments) > 0) {
                 $this->collectionService->storeForSales($collectionData, $result['salesOrder']->payments, $result['salesOrder']);
             }
 
-            /**Create:: sms send for sales invoice create */
 
-            // $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
-            // $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
-            // $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first();
-            // $smsTemplate = $sms->template_body;
+            /**Create:: sms send for sales invoice create */  
 
-            // $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first();
-
-            // $phone =   $customerInfo->contact_for_sms;
-            // $customerName = $customerInfo->company_name;
-            // $invoiceAmount = $result['salesOrder']->net_amount;
-            // $smsdata = [
-            //     'customer_name' =>  $customerName,
-            //     'invoice_amount' => $invoiceAmount
-            // ];
-
-            // foreach ($smsdata as $key => $value) {
-            //     $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-            // }
-
-            // $time = Carbon::parse(now());
-            // $newTime = $time->addMinutes($triggerName->after_send_time);
-
-            // SmsInfo::updateOrCreate(
-            //     [
-            //         'sms_reference' => $result['salesOrder']->id,
-            //         'sms_mem_id' => $result['salesOrder']->customer_id,
-            //         'sms_status' => 'pending', // condition
-            //         'trigger_name' => 'T08',
-            //     ],
-            //     [
-            //         'sms_send_time' => $newTime,
-            //         'sms_to' => $phone,
-            //         'sms_text' => $smsTemplate,
-            //     ]
-            // );
-
-            // SMS send for sales invoice create
             $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
             $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
+            $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+            $smsTemplate = $sms->template_body;
 
-            if ($serviceName && $triggerName) {
-                $sms = SmsTemplate::where('service_name_id', $serviceName->id)
-                    ->where('trigger_name_id', $triggerName->id)
-                    ->first();
+            $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first(); 
 
-                if ($sms && $sms->template_body) {
-                    $smsTemplate = $sms->template_body;
+            $phone =   $customerInfo->contact_for_sms;
+            $customerName = $customerInfo->company_name;
+            $invoiceAmount = $result['salesOrder']->net_amount; 
+            $smsdata = [
+                'customer_name' =>  $customerName,
+                'invoice_amount' => $invoiceAmount
+            ];  
 
-                    $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first();
+            foreach ($smsdata as $key => $value) {
+                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            } 
 
-                    if ($customerInfo && $customerInfo->contact_for_sms) {
-                        $phone         = $customerInfo->contact_for_sms;
-                        $customerName  = $customerInfo->company_name;
-                        $invoiceAmount = $result['salesOrder']->net_amount;
+            $time = Carbon::parse(now()); 
+            $newTime = $time->addMinutes($triggerName->after_send_time);
 
-                        $smsdata = [
-                            'customer_name'  => $customerName,
-                            'invoice_amount' => $invoiceAmount,
-                        ];
+            SmsInfo::updateOrCreate(
+                [
+                    'sms_reference' => $result['salesOrder']->id,
+                    'sms_mem_id' => $result['salesOrder']->customer_id,
+                    'sms_status' => 'pending', // condition
+                    'trigger_name' => 'T08', 
+                ],
+                [
+                    'sms_send_time' => $newTime,
+                    'sms_to' => $phone,
+                    'sms_text' => $smsTemplate, 
+                ]
+            );
+            
+            
+    
 
-                        foreach ($smsdata as $key => $value) {
-                            $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-                        }
-
-                        $time    = Carbon::parse(now());
-                        $newTime = $time->addMinutes($triggerName->after_send_time ?? 0);
-
-                        SmsInfo::updateOrCreate(
-                            [
-                                'sms_reference' => $result['salesOrder']->id,
-                                'sms_mem_id'    => $result['salesOrder']->customer_id,
-                                'sms_status'    => 'pending',
-                                'trigger_name'  => 'T08',
-                            ],
-                            [
-                                'sms_send_time' => $newTime,
-                                'sms_to'        => $phone,
-                                'sms_text'      => $smsTemplate,
-                            ]
-                        );
-                    }
-                }
-            }
-
+            
+            /*Create:: sms send for cash collection*/ 
             if ($cashCollectionAmount > 0) {
 
                 $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
                 $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
-                $sms         = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first();
+                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
                 $smsTemplate = $sms->template_body;
 
-                $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first();
+                $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first(); 
 
-                $phone              = $customerInfo->contact_for_sms;
-                $customerName       = $customerInfo->company_name;
+                $phone =   $customerInfo->contact_for_sms; 
+                $customerName = $customerInfo->company_name; 
                 $customerPreBalance = Customer::find($result['salesOrder']->customer_id)->getAccount()->balance;
-                $collectionAmount   = $cashCollectionAmount;
-                $receivedDate       = $paymentDate;
-                $customerBalance    = $customerPreBalance + $result['salesOrder']->net_amount - $collectionAmount;
-
+                $collectionAmount = $cashCollectionAmount; 
+                $receivedDate = $paymentDate; 
+                $customerBalance =  $customerPreBalance +  $result['salesOrder']->net_amount - $collectionAmount;
+                
                 $data = [
-                    'customer_name'             => $customerName,
-                    'customer_pre_balance '     => $customerPreBalance,
-                    'collection_amount'         => $collectionAmount,
-                    'received_date'             => $receivedDate,
-                    'customer_current_balance ' => $customerBalance,
-                ];
+                    'customer_name' => $customerName,
+                    'customer_pre_balance ' => $customerPreBalance,
+                    'collection_amount' => $collectionAmount,
+                    'received_date' => $receivedDate,
+                    'customer_current_balance ' => $customerBalance
+                ];   
 
                 foreach ($data as $key => $value) {
                     $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-                }
+                } 
 
-                $time    = Carbon::parse(now());
+                $time = Carbon::parse(now()); 
                 $newTime = $time->addMinutes($triggerName->after_send_time);
 
                 SmsInfo::updateOrCreate(
                     [
                         'sms_reference' => $result['salesOrder']->id,
-                        'sms_mem_id'    => $result['salesOrder']->customer_id,
-                        'sms_status'    => 'pending', // condition
-                        'trigger_name'  => 'T03',
-
+                        'sms_mem_id' => $result['salesOrder']->customer_id,
+                        'sms_status' => 'pending', // condition
+                        'trigger_name' => 'T03', 
+                          
                     ],
                     [
                         'sms_send_time' => $newTime,
-                        'sms_to'        => $phone,
-                        'sms_text'      => $smsTemplate,
+                        'sms_to' => $phone,
+                        'sms_text' => $smsTemplate, 
                     ]
                 );
 
-                // dd($smsTemplate);
+                
+                // dd($smsTemplate);  
             }
         }
 
@@ -403,34 +371,34 @@ class SalesOrderService
             ->where('stop_date', '>=', Carbon::parse($data['invoice_date']))
             ->get();
 
-        $buyingMap          = [];
-        $tentativeTotal     = 0;
-        $tentativeDiscount  = $data['discount'] ?? 0;
+        $buyingMap = [];
+        $tentativeTotal = 0;
+        $tentativeDiscount = $data['discount'] ?? 0;
         $additionalDiscount = 0; // Initialize additional discount counter
 
         // Build buying map and calculate initial totals
         foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
             // dd( $salesOrderDetails);
-            $qty       = $salesOrderDetails['quantity'][$key];
-            $price     = $salesOrderDetails['price'][$key];
-            $unitDisc  = $salesOrderDetails['unit_discount'][$key];
+            $qty = $salesOrderDetails['quantity'][$key];
+            $price = $salesOrderDetails['price'][$key];
+            $unitDisc = $salesOrderDetails['unit_discount'][$key];
             $totalDisc = $salesOrderDetails['total_discount'][$key];
-            $amount    = $salesOrderDetails['amount'][$key];
+            $amount = $salesOrderDetails['amount'][$key];
 
             $buyingMap[$productId] = [
-                'quantity'       => $qty,
-                'price'          => $price,
-                'unit_discount'  => $unitDisc,
+                'quantity' => $qty,
+                'price' => $price,
+                'unit_discount' => $unitDisc,
                 'total_discount' => $totalDisc,
-                'amount'         => $amount,
-                'key'            => $key,
+                'amount' => $amount,
+                'key' => $key
             ];
 
             $tentativeTotal += $amount;
         }
 
-        $tentativeNet  = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
-        $nextKey       = count($salesOrderDetails['product_ids']); // Track next key for appending free products
+        $tentativeNet = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
+        $nextKey = count($salesOrderDetails['product_ids']); // Track next key for appending free products
 
         // dd($buyingMap, $offers->whereIn('offer_type', ['gift', 'discount']));
         // dd($offers->whereIn('offer_type', ['gift', 'discount'])->pluck('offerDetails')->flatten()->pluck('discountSalesProducts'));
@@ -440,23 +408,23 @@ class SalesOrderService
             foreach ($offer->offerDetails as $detail) {
                 $buyingProducts = $offer->offer_type == 'gift' ? $detail->giftSalesProducts : $detail->discountSalesProducts;
 
-                $match      = true;
+                $match = true;
                 $multiplier = PHP_INT_MAX;
 
                 foreach ($buyingProducts as $buy) {
                     // dd($buy);
-                    $prod   = $buy->sales_product ?? $buy->product_id;
+                    $prod = $buy->sales_product ?? $buy->product_id;
                     $reqQty = $buy->sales_quentity ?? $buy->quantity;
 
                     // dd($prod, $reqQty, $buyingMap);
 
                     $matchTest[] = [
                         'offer_details' => $buyingProducts->toArray(),
-                        'buy_qty'       => $buyingMap,
-                        'is_match'      => isset($buyingMap[$prod]) && $buyingMap[$prod]['quantity'] == $reqQty,
+                        'buy_qty' => $buyingMap,
+                        'is_match' => isset($buyingMap[$prod])  && $buyingMap[$prod]['quantity'] == $reqQty
                     ];
                     // For exact matching, the customer must have exactly the required quantity (no multiples allowed)
-                    if (! isset($buyingMap[$prod]) || $buyingMap[$prod]['quantity'] != $reqQty) {
+                    if (!isset($buyingMap[$prod]) || $buyingMap[$prod]['quantity'] != $reqQty) {
                         $match = false;
                         break;
                     }
@@ -469,50 +437,50 @@ class SalesOrderService
                     // dd($match, $multiplier, $buyingProducts);
 
                     if ($offer->offer_type == 'discount') {
-                        $disc       = $detail->offerDiscounts->first();
-                        $discType   = $disc->discount_type;
+                        $disc = $detail->offerDiscounts->first();
+                        $discType = $disc->discount_type;
                         $discAmount = $disc->discount_quentity;
 
                         $bundleCost = 0;
                         foreach ($buyingProducts as $buy) {
-                            $prod        = $buy->sales_product;
-                            $reqQty      = $buy->sales_quentity;
-                            $unitPrice   = $buyingMap[$prod]['price'];
+                            $prod = $buy->sales_product;
+                            $reqQty = $buy->sales_quentity;
+                            $unitPrice = $buyingMap[$prod]['price'];
                             $bundleCost += $unitPrice * $reqQty;
                         }
 
                         $discountPerBundle = $discType == 'percentage_discount' ? ($bundleCost * $discAmount / 100) : $discAmount;
-                        $totalDiscount     = $multiplier * $discountPerBundle;
+                        $totalDiscount = $multiplier * $discountPerBundle;
 
                         // Add to additional discount
                         $additionalDiscount += $totalDiscount;
 
                         foreach ($buyingProducts as $buy) {
-                            $prod            = $buy->sales_product;
-                            $reqQty          = $buy->sales_quentity;
-                            $unitPrice       = $buyingMap[$prod]['price'];
+                            $prod = $buy->sales_product;
+                            $reqQty = $buy->sales_quentity;
+                            $unitPrice = $buyingMap[$prod]['price'];
                             $prodBundleShare = $unitPrice * $reqQty / $bundleCost;
 
                             $prodDiscount = $totalDiscount * $prodBundleShare;
 
-                            $map                    = &$buyingMap[$prod];
+                            $map = &$buyingMap[$prod];
                             $map['total_discount'] += $prodDiscount;
-                            $map['unit_discount']   = $map['total_discount'] / $map['quantity'];
-                            $map['amount']          = ($map['price'] * $map['quantity']) - $map['total_discount'];
+                            $map['unit_discount'] = $map['total_discount'] / $map['quantity'];
+                            $map['amount'] = ($map['price'] * $map['quantity']) - $map['total_discount'];
 
-                            $k                                       = $map['key'];
-                            $salesOrderDetails['unit_discount'][$k]  = $map['unit_discount'];
+                            $k = $map['key'];
+                            $salesOrderDetails['unit_discount'][$k] = $map['unit_discount'];
                             $salesOrderDetails['total_discount'][$k] = $map['total_discount'];
-                            $salesOrderDetails['amount'][$k]         = $map['amount'];
+                            $salesOrderDetails['amount'][$k] = $map['amount'];
                         }
 
                         $tentativeDiscount += $totalDiscount;
-                        $tentativeTotal    -= $totalDiscount;
-                        $tentativeNet       = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
+                        $tentativeTotal -= $totalDiscount;
+                        $tentativeNet = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
                     } elseif ($offer->offer_type == 'gift') {
                         foreach ($detail->giftOfferProducts as $gift) {
-                            $giftProd  = $gift->product_id;
-                            $giftQty   = $gift->quantity * $multiplier;
+                            $giftProd = $gift->product_id;
+                            $giftQty = $gift->quantity * $multiplier;
                             $giftPrice = $gift->product->mrp ?? 0; // Assume product has MRP
 
                             // Calculate the value of free products as additional discount
@@ -520,12 +488,12 @@ class SalesOrderService
                             // $additionalDiscount += $giftProductDiscount;
 
                             // Append free product to salesOrderDetails with full discount
-                            $salesOrderDetails['product_ids'][$nextKey]       = $giftProd;
-                            $salesOrderDetails['quantity'][$nextKey]          = $giftQty;
-                            $salesOrderDetails['price'][$nextKey]             = $giftPrice;
-                            $salesOrderDetails['unit_discount'][$nextKey]     = $giftPrice; // Full discount
-                            $salesOrderDetails['total_discount'][$nextKey]    = $giftProductDiscount;
-                            $salesOrderDetails['amount'][$nextKey]            = 0;
+                            $salesOrderDetails['product_ids'][$nextKey] = $giftProd;
+                            $salesOrderDetails['quantity'][$nextKey] = $giftQty;
+                            $salesOrderDetails['price'][$nextKey] = $giftPrice;
+                            $salesOrderDetails['unit_discount'][$nextKey] = $giftPrice; // Full discount
+                            $salesOrderDetails['total_discount'][$nextKey] = $giftProductDiscount;
+                            $salesOrderDetails['amount'][$nextKey] = 0;
                             $salesOrderDetails['is_offers_product'][$nextKey] = true; // Mark as offer product
 
                             $nextKey++;
@@ -536,6 +504,7 @@ class SalesOrderService
         }
         // dd($matchTest);
 
+
         // Process clearance offers (amount-based)
         foreach ($offers->where('offer_type', 'clearance') as $offer) {
             foreach ($offer->offerDetails as $detail) {
@@ -543,12 +512,12 @@ class SalesOrderService
 
                 foreach ($ranges as $range) {
                     $from = $range->from;
-                    $to   = $range->to ?? PHP_INT_MAX;
+                    $to = $range->to ?? PHP_INT_MAX;
 
                     if ($tentativeNet >= $from && $tentativeNet <= $to) {
                         if ($detail->offerDiscounts->count() > 0) {
-                            $disc       = $detail->offerDiscounts->first();
-                            $discType   = $disc->discount_type;
+                            $disc = $detail->offerDiscounts->first();
+                            $discType = $disc->discount_type;
                             $discAmount = $disc->discount_quentity;
 
                             $clearanceDiscount = $discType == 'percentage_discount' ? ($tentativeNet * $discAmount / 100) : $discAmount;
@@ -557,12 +526,12 @@ class SalesOrderService
                             $additionalDiscount += $clearanceDiscount;
 
                             $tentativeDiscount += $clearanceDiscount;
-                            $tentativeTotal    -= $clearanceDiscount;
-                            $tentativeNet      -= $clearanceDiscount;
+                            $tentativeTotal -= $clearanceDiscount;
+                            $tentativeNet -= $clearanceDiscount;
                         } elseif ($detail->giftOfferProducts->count() > 0) {
                             foreach ($detail->giftOfferProducts as $gift) {
-                                $giftProd  = $gift->product_id;
-                                $giftQty   = $gift->quantity;
+                                $giftProd = $gift->product_id;
+                                $giftQty = $gift->quantity;
                                 $giftPrice = $gift->product->mrp ?? 0; // Assume product has MRP
 
                                 // Calculate the value of free products as additional discount
@@ -570,12 +539,12 @@ class SalesOrderService
                                 // $additionalDiscount += $giftProductDiscount;
 
                                 // Append free product to salesOrderDetails with full discount
-                                $salesOrderDetails['product_ids'][$nextKey]       = $giftProd;
-                                $salesOrderDetails['quantity'][$nextKey]          = $giftQty;
-                                $salesOrderDetails['price'][$nextKey]             = $giftPrice;
-                                $salesOrderDetails['unit_discount'][$nextKey]     = $giftPrice; // Full discount
-                                $salesOrderDetails['total_discount'][$nextKey]    = $giftProductDiscount;
-                                $salesOrderDetails['amount'][$nextKey]            = 0;
+                                $salesOrderDetails['product_ids'][$nextKey] = $giftProd;
+                                $salesOrderDetails['quantity'][$nextKey] = $giftQty;
+                                $salesOrderDetails['price'][$nextKey] = $giftPrice;
+                                $salesOrderDetails['unit_discount'][$nextKey] = $giftPrice; // Full discount
+                                $salesOrderDetails['total_discount'][$nextKey] = $giftProductDiscount;
+                                $salesOrderDetails['amount'][$nextKey] = 0;
                                 $salesOrderDetails['is_offers_product'][$nextKey] = true; // Mark as offer product
 
                                 $nextKey++;
@@ -589,9 +558,9 @@ class SalesOrderService
 
         // Store the additional discount in data
         $data['additional_discount'] = $additionalDiscount;
-        $data['discount']            = $tentativeDiscount;
-        $data['total']               = $tentativeTotal;
-        $data['net_amount']          = $tentativeNet;
+        $data['discount'] = $tentativeDiscount;
+        $data['total'] = $tentativeTotal;
+        $data['net_amount'] = $tentativeNet;
 
         // $data['due_amount'] = $tentativeNet - ($data['paid_amount'] ?? 0);
         // if ($data['due_amount'] < 0) {
@@ -600,6 +569,7 @@ class SalesOrderService
         // }
     }
 
+
     /**
      * Apply discount-based offers
      */
@@ -607,7 +577,7 @@ class SalesOrderService
     {
         $offers = Offer::with([
             'offerDetails.discountSalesProducts',
-            'offerDetails.offerDiscounts',
+            'offerDetails.offerDiscounts'
         ])
             ->where('rule_status', 'running')
             ->where('applied_date', '<=', Carbon::parse($data['invoice_date']))
@@ -616,58 +586,58 @@ class SalesOrderService
             ->get();
 
         // Build buying map and calculate initial totals
-        $buyingMap          = [];
-        $tentativeTotal     = 0;
-        $tentativeDiscount  = $data['discount'] ?? 0;
+        $buyingMap = [];
+        $tentativeTotal = 0;
+        $tentativeDiscount = $data['discount'] ?? 0;
         $additionalDiscount = 0;
 
         foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
-            $qty       = $salesOrderDetails['quantity'][$key];
-            $price     = $salesOrderDetails['price'][$key];
-            $unitDisc  = $salesOrderDetails['unit_discount'][$key];
+            $qty = $salesOrderDetails['quantity'][$key];
+            $price = $salesOrderDetails['price'][$key];
+            $unitDisc = $salesOrderDetails['unit_discount'][$key];
             $totalDisc = $salesOrderDetails['total_discount'][$key];
-            $amount    = $salesOrderDetails['amount'][$key];
+            $amount = $salesOrderDetails['amount'][$key];
 
             $buyingMap[$productId] = [
-                'quantity'       => $qty,
-                'price'          => $price,
-                'unit_discount'  => $unitDisc,
+                'quantity' => $qty,
+                'price' => $price,
+                'unit_discount' => $unitDisc,
                 'total_discount' => $totalDisc,
-                'amount'         => $amount,
-                'key'            => $key,
+                'amount' => $amount,
+                'key' => $key,
             ];
 
             $tentativeTotal += $amount;
         }
 
-        $tentativeNet  = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
+        $tentativeNet = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
 
         // Process discount offers
         foreach ($offers as $offer) {
             foreach ($offer->offerDetails as $detail) {
                 $buyingProducts = $detail->discountSalesProducts;
-                $match          = true;
+                $match = true;
 
                 foreach ($buyingProducts as $buy) {
-                    $prod   = $buy->sales_product ?? $buy->product_id;
+                    $prod = $buy->sales_product ?? $buy->product_id;
                     $reqQty = $buy->sales_quentity ?? $buy->quantity;
 
-                    if (! isset($buyingMap[$prod]) || $buyingMap[$prod]['quantity'] != $reqQty) {
+                    if (!isset($buyingMap[$prod]) || $buyingMap[$prod]['quantity'] != $reqQty) {
                         $match = false;
                         break;
                     }
                 }
 
                 if ($match && $detail->offerDiscounts->count() > 0) {
-                    $disc       = $detail->offerDiscounts->first();
-                    $discType   = $disc->discount_type;
+                    $disc = $detail->offerDiscounts->first();
+                    $discType = $disc->discount_type;
                     $discAmount = $disc->discount_quentity;
 
                     // Calculate total bundle cost
                     $bundleCost = 0;
                     foreach ($buyingProducts as $buy) {
-                        $prod        = $buy->sales_product;
-                        $reqQty      = $buy->sales_quentity;
+                        $prod = $buy->sales_product;
+                        $reqQty = $buy->sales_quentity;
                         $bundleCost += $buyingMap[$prod]['price'] * $reqQty;
                     }
 
@@ -676,41 +646,42 @@ class SalesOrderService
                         ? ($bundleCost * $discAmount / 100)
                         : $discAmount;
 
-                    $totalDiscount       = $discountPerBundle;
+                    $totalDiscount = $discountPerBundle;
                     $additionalDiscount += $totalDiscount;
 
                     // Apply discount to products
                     foreach ($buyingProducts as $buy) {
-                        $prod            = $buy->sales_product;
-                        $reqQty          = $buy->sales_quentity;
-                        $unitPrice       = $buyingMap[$prod]['price'];
+                        $prod = $buy->sales_product;
+                        $reqQty = $buy->sales_quentity;
+                        $unitPrice = $buyingMap[$prod]['price'];
                         $prodBundleShare = $unitPrice * $reqQty / $bundleCost;
-                        $prodDiscount    = $totalDiscount * $prodBundleShare;
+                        $prodDiscount = $totalDiscount * $prodBundleShare;
 
-                        $map                    = &$buyingMap[$prod];
+                        $map = &$buyingMap[$prod];
                         $map['total_discount'] += $prodDiscount;
-                        $map['unit_discount']   = $map['total_discount'] / $map['quantity'];
-                        $map['amount']          = ($map['price'] * $map['quantity']) - $map['total_discount'];
+                        $map['unit_discount'] = $map['total_discount'] / $map['quantity'];
+                        $map['amount'] = ($map['price'] * $map['quantity']) - $map['total_discount'];
 
-                        $k                                       = $map['key'];
-                        $salesOrderDetails['unit_discount'][$k]  = $map['unit_discount'];
+                        $k = $map['key'];
+                        $salesOrderDetails['unit_discount'][$k] = $map['unit_discount'];
                         $salesOrderDetails['total_discount'][$k] = $map['total_discount'];
-                        $salesOrderDetails['amount'][$k]         = $map['amount'];
+                        $salesOrderDetails['amount'][$k] = $map['amount'];
                     }
 
                     $tentativeDiscount += $totalDiscount;
-                    $tentativeTotal    -= $totalDiscount;
-                    $tentativeNet      = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
+                    $tentativeTotal -= $totalDiscount;
+                    $tentativeNet = $tentativeTotal - $tentativeDiscount + ($data['vat'] ?? 0);
                 }
             }
         }
 
         // Update totals
         $data['additional_discount'] = $additionalDiscount;
-        $data['discount']            = $tentativeDiscount;
-        $data['total']               = $tentativeTotal;
-        $data['net_amount']          = $tentativeNet;
+        $data['discount'] = $tentativeDiscount;
+        $data['total'] = $tentativeTotal;
+        $data['net_amount'] = $tentativeNet;
     }
+
 
     /**
      * Apply gift-based (offer product) offers
@@ -719,7 +690,7 @@ class SalesOrderService
     {
         $offers = Offer::with([
             'offerDetails.giftSalesProducts',
-            'offerDetails.giftOfferProducts',
+            'offerDetails.giftOfferProducts'
         ])
             ->where('rule_status', 'running')
             ->where('applied_date', '<=', Carbon::parse($data['invoice_date']))
@@ -732,7 +703,7 @@ class SalesOrderService
         foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
             $buyingMap[$productId] = [
                 'quantity' => $salesOrderDetails['quantity'][$key],
-                'price'    => $salesOrderDetails['price'][$key],
+                'price' => $salesOrderDetails['price'][$key],
             ];
         }
 
@@ -742,13 +713,13 @@ class SalesOrderService
         foreach ($offers as $offer) {
             foreach ($offer->offerDetails as $detail) {
                 $buyingProducts = $detail->giftSalesProducts;
-                $match          = true;
+                $match = true;
 
                 foreach ($buyingProducts as $buy) {
-                    $prod   = $buy->sales_product ?? $buy->product_id;
+                    $prod = $buy->sales_product ?? $buy->product_id;
                     $reqQty = $buy->sales_quentity ?? $buy->quantity;
 
-                    if (! isset($buyingMap[$prod]) || $buyingMap[$prod]['quantity'] != $reqQty) {
+                    if (!isset($buyingMap[$prod]) || $buyingMap[$prod]['quantity'] != $reqQty) {
                         $match = false;
                         break;
                     }
@@ -756,17 +727,17 @@ class SalesOrderService
 
                 if ($match) {
                     foreach ($detail->giftOfferProducts as $gift) {
-                        $giftProd            = $gift->product_id;
-                        $giftQty             = $gift->quantity;
-                        $giftPrice           = $gift->product->mrp ?? 0;
+                        $giftProd = $gift->product_id;
+                        $giftQty = $gift->quantity;
+                        $giftPrice = $gift->product->mrp ?? 0;
                         $giftProductDiscount = $giftPrice * $giftQty;
 
-                        $salesOrderDetails['product_ids'][$nextKey]       = $giftProd;
-                        $salesOrderDetails['quantity'][$nextKey]          = $giftQty;
-                        $salesOrderDetails['price'][$nextKey]             = $giftPrice;
-                        $salesOrderDetails['unit_discount'][$nextKey]     = $giftPrice;
-                        $salesOrderDetails['total_discount'][$nextKey]    = $giftProductDiscount;
-                        $salesOrderDetails['amount'][$nextKey]            = 0;
+                        $salesOrderDetails['product_ids'][$nextKey] = $giftProd;
+                        $salesOrderDetails['quantity'][$nextKey] = $giftQty;
+                        $salesOrderDetails['price'][$nextKey] = $giftPrice;
+                        $salesOrderDetails['unit_discount'][$nextKey] = $giftPrice;
+                        $salesOrderDetails['total_discount'][$nextKey] = $giftProductDiscount;
+                        $salesOrderDetails['amount'][$nextKey] = 0;
                         $salesOrderDetails['is_offers_product'][$nextKey] = true;
 
                         $nextKey++;
@@ -777,6 +748,7 @@ class SalesOrderService
 
         // dd($salesOrderDetails);
     }
+
 
     /**
      * Get total discount amount for given products and quantities
@@ -791,7 +763,7 @@ class SalesOrderService
 
         $offers = Offer::with([
             'offerDetails.discountSalesProducts',
-            'offerDetails.offerDiscounts',
+            'offerDetails.offerDiscounts'
         ])
             ->where('rule_status', 'running')
             ->where('applied_date', '<=', $invoiceDate)
@@ -804,33 +776,33 @@ class SalesOrderService
         foreach ($offers as $offer) {
             foreach ($offer->offerDetails as $detail) {
                 $buyingProducts = $detail->discountSalesProducts;
-                $match          = true;
+                $match = true;
 
                 // Check if the required products and quantities match
                 foreach ($buyingProducts as $buy) {
-                    $prod   = $buy->sales_product ?? $buy->product_id;
+                    $prod = $buy->sales_product ?? $buy->product_id;
                     $reqQty = $buy->sales_quentity ?? $buy->quantity;
 
-                    if (! isset($productsWithQty[$prod]) || $productsWithQty[$prod] != $reqQty) {
+                    if (!isset($productsWithQty[$prod]) || $productsWithQty[$prod] != $reqQty) {
                         $match = false;
                         break;
                     }
                 }
 
                 if ($match && $detail->offerDiscounts->count() > 0) {
-                    $disc       = $detail->offerDiscounts->first();
-                    $discType   = $disc->discount_type;
+                    $disc = $detail->offerDiscounts->first();
+                    $discType = $disc->discount_type;
                     $discAmount = $disc->discount_quentity;
 
                     // Calculate bundle cost using product prices
                     $bundleCost = 0;
                     foreach ($buyingProducts as $buy) {
                         $product = $buy->product ?? $buy->salesProduct;
-                        $prodId  = $buy->sales_product ?? $buy->product_id;
-                        $reqQty  = $buy->sales_quentity ?? $buy->quantity;
+                        $prodId = $buy->sales_product ?? $buy->product_id;
+                        $reqQty = $buy->sales_quentity ?? $buy->quantity;
 
                         // Fallback to product MRP if available
-                        $price       = $product->mrp ?? 0;
+                        $price = $product->mrp ?? 0;
                         $bundleCost += $price * $reqQty;
                     }
 
@@ -866,7 +838,7 @@ class SalesOrderService
 
         $offers = Offer::with([
             'offerDetails.discountSalesProducts.product',
-            'offerDetails.offerDiscounts',
+            'offerDetails.offerDiscounts'
         ])
             ->where('rule_status', 'running')
             ->whereDate('applied_date', '<=', $invoiceDate)
@@ -879,15 +851,15 @@ class SalesOrderService
         foreach ($offers as $offer) {
             foreach ($offer->offerDetails as $detail) {
                 $buyingProducts = $detail->discountSalesProducts;
-                $match          = true;
+                $match = true;
 
                 // ✅ Check if required products and quantities match
                 foreach ($buyingProducts as $buy) {
-                    $prod   = $buy->sales_product ?? $buy->product_id;
+                    $prod = $buy->sales_product ?? $buy->product_id;
                     $reqQty = $buy->sales_quentity ?? $buy->quantity;
 
                     // if (!isset($productsWithQty[$prod]) || $productsWithQty[$prod] < $reqQty) {
-                    if (! isset($productsWithQty[$prod])) {
+                    if (!isset($productsWithQty[$prod])) {
                         $match = false;
                         break;
                     }
@@ -895,27 +867,27 @@ class SalesOrderService
 
                 // ✅ Apply discount if matched
                 if ($match && $detail->offerDiscounts->count() > 0) {
-                    $disc       = $detail->offerDiscounts->first();
-                    $discType   = $disc->discount_type;
+                    $disc = $detail->offerDiscounts->first();
+                    $discType = $disc->discount_type;
                     $discAmount = $disc->discount_quentity;
 
                     // ✅ Calculate total bundle cost
-                    $bundleCost     = 0;
+                    $bundleCost = 0;
                     $productDetails = [];
                     foreach ($buyingProducts as $buy) {
                         $product = $buy->product ?? $buy->salesProduct;
-                        $prodId  = $buy->sales_product ?? $buy->product_id;
-                        $reqQty  = $buy->sales_quentity ?? $buy->quantity;
-                        $price   = $product->mrp ?? 0;
+                        $prodId = $buy->sales_product ?? $buy->product_id;
+                        $reqQty = $buy->sales_quentity ?? $buy->quantity;
+                        $price = $product->mrp ?? 0;
 
                         $bundleCost += $price * $reqQty;
 
                         $productDetails[] = [
-                            'product_id'   => $prodId,
+                            'product_id' => $prodId,
                             'product_name' => $product->name ?? null,
                             'required_qty' => $reqQty,
-                            'price'        => $price,
-                            'subtotal'     => $price * $reqQty,
+                            'price' => $price,
+                            'subtotal' => $price * $reqQty,
                         ];
                     }
 
@@ -928,12 +900,12 @@ class SalesOrderService
                     $formattedDiscountType = $discType === 'percentage_discount' ? 'percentage' : 'fixed';
 
                     $discountResults[] = [
-                        'offer_id'        => $offer->id,
-                        'offer_name'      => $offer->name ?? null,
-                        'discount_type'   => $formattedDiscountType,
-                        'discount_value'  => $discAmount,
+                        'offer_id' => $offer->id,
+                        'offer_name' => $offer->name ?? null,
+                        'discount_type' => $formattedDiscountType,
+                        'discount_value' => $discAmount,
                         'discount_amount' => $discountPerBundle,
-                        'products'        => $productDetails,
+                        'products' => $productDetails,
                     ];
                 }
             }
@@ -941,6 +913,7 @@ class SalesOrderService
 
         return $discountResults;
     }
+
 
     public function getClearageDetailsForProducts($salesOrder, ?string $invoiceDate = null)
     {
@@ -956,7 +929,7 @@ class SalesOrderService
             ->get();
 
         $matchedOffers = [];
-        $netAmount     = $salesOrder->net_amount;
+        $netAmount = $salesOrder->net_amount;
         // dd($netAmount);
 
         foreach ($offers as $offer) {
@@ -973,6 +946,7 @@ class SalesOrderService
         return $matchedOffers;
     }
 
+
     /**
      * Process delivery with stock details.
      *
@@ -983,39 +957,39 @@ class SalesOrderService
      */
     protected function processDeliverywithStockDetails($delivery, $salesOrderDetails)
     {
-        $deliveryService      = app(DeliveryService::class);
-        $deliveryDetails      = ['product_id' => [], 'quantity' => []];
+        $deliveryService = app(DeliveryService::class);
+        $deliveryDetails = ['product_id' => [], 'quantity' => []];
         $deliveryStockDetails = ['lot_no' => [], 'lots_quantity' => [], 'serial_no' => []];
 
         $hasStockDetails = false;
 
         foreach ($salesOrderDetails as $index => $detail) {
             $productId = $detail->product_id;
-            $quantity  = $detail->quantity;
+            $quantity = $detail->quantity;
 
             if ($detail->stock_details) {
                 $stockDetails = json_decode($detail->stock_details, true);
 
-                if (! empty($stockDetails)) {
+                if (!empty($stockDetails)) {
                     $hasStockDetails = true;
 
-                    if (! isset($deliveryStockDetails['lot_no'][$productId])) {
+                    if (!isset($deliveryStockDetails['lot_no'][$productId])) {
                         $deliveryStockDetails['lot_no'][$productId] = [];
                     }
-                    if (! isset($deliveryStockDetails['lots_quantity'][$productId])) {
+                    if (!isset($deliveryStockDetails['lots_quantity'][$productId])) {
                         $deliveryStockDetails['lots_quantity'][$productId] = [];
                     }
-                    if (! isset($deliveryStockDetails['serial_no'][$productId])) {
+                    if (!isset($deliveryStockDetails['serial_no'][$productId])) {
                         $deliveryStockDetails['serial_no'][$productId] = [];
                     }
 
                     foreach ($stockDetails as $stock) {
-                        $batchNo       = $stock['batch_no'] ?? '';
-                        $stockType     = $stock['type'] ?? 'lot';
+                        $batchNo = $stock['batch_no'] ?? '';
+                        $stockType = $stock['type'] ?? 'lot';
                         $stockQuantity = $stock['quantity'] ?? 1;
 
                         if ($stockType === 'lot') {
-                            $deliveryStockDetails['lot_no'][$productId][]        = $batchNo;
+                            $deliveryStockDetails['lot_no'][$productId][] = $batchNo;
                             $deliveryStockDetails['lots_quantity'][$productId][] = $stockQuantity;
                         } elseif ($stockType === 'serial') {
                             $deliveryStockDetails['serial_no'][$productId][] = $batchNo;
@@ -1024,8 +998,8 @@ class SalesOrderService
                 }
             }
 
-            $deliveryDetails['product_id'][]     = $productId;
-            $deliveryDetails['quantity'][]       = $quantity;
+            $deliveryDetails['product_id'][] = $productId;
+            $deliveryDetails['quantity'][] = $quantity;
             $deliveryDetails['sales_quantity'][] = $quantity;
         }
 
@@ -1038,34 +1012,34 @@ class SalesOrderService
     {
         DB::beginTransaction();
         $data = [
-            'customer_id'      => $salesRequisition->customer_id,
-            'service_id'       => $salesRequisition->service_id,
+            'customer_id' => $salesRequisition->customer_id,
+            'service_id' => $salesRequisition->service_id,
             'additional_phone' => $salesRequisition->additional_phone,
-            'invoice_date'     => $salesRequisition->invoice_date,
-            'total_amount'     => $salesRequisition->total_amount,
-            'discount'         => $salesRequisition->discount,
-            'commission'       => $salesRequisition->commission ?? 0,
-            'total'            => $salesRequisition->total,
-            'vat'              => $salesRequisition->vat ?? 0,
-            'net_amount'       => $salesRequisition->net_amount,
-            'remarks'          => $salesRequisition->remarks,
-            'status'           => 'pending',
-            'is_shipment'      => $salesRequisition->is_shipment,
-            'is_courier'       => $salesRequisition->is_courier,
-            'delivery_date'    => $salesRequisition->delivery_date,
-            'sales_type'       => 'general_sales',
-            'reference_id'     => $salesRequisition->reference_id,
-            'source_type'      => SalesRequisition::class,
-            'source_id'        => $salesRequisition->id,
+            'invoice_date' => $salesRequisition->invoice_date,
+            'total_amount' => $salesRequisition->total_amount,
+            'discount' => $salesRequisition->discount,
+            'commission' => $salesRequisition->commission ?? 0,
+            'total' => $salesRequisition->total,
+            'vat' => $salesRequisition->vat ?? 0,
+            'net_amount' => $salesRequisition->net_amount,
+            'remarks' => $salesRequisition->remarks,
+            'status' => 'pending',
+            'is_shipment' => $salesRequisition->is_shipment,
+            'is_courier' => $salesRequisition->is_courier,
+            'delivery_date' => $salesRequisition->delivery_date,
+            'sales_type' => 'general_sales',
+            'reference_id' => $salesRequisition->reference_id,
+            'source_type' => SalesRequisition::class,
+            'source_id' => $salesRequisition->id,
         ];
 
         $salesOrderDetails = [
-            'product_ids'           => [],
-            'quantity'              => [],
-            'price'                 => [],
-            'unit_discount'         => [],
-            'total_discount'        => [],
-            'amount'                => [],
+            'product_ids' => [],
+            'quantity' => [],
+            'price' => [],
+            'unit_discount' => [],
+            'total_discount' => [],
+            'amount' => [],
             'sales_order_detail_id' => [],
         ];
 
@@ -1080,65 +1054,65 @@ class SalesOrderService
         }
 
         foreach ($salesRequisition->salesRequisitionDetails as $key => $salesRequisitionDetail) {
-            $salesOrderDetails['product_ids'][$key]    = $salesRequisitionDetail->product_id;
-            $salesOrderDetails['quantity'][$key]       = $salesRequisitionDetail->quantity;
-            $salesOrderDetails['price'][$key]          = $salesRequisitionDetail->price;
-            $salesOrderDetails['unit_discount'][$key]  = $salesRequisitionDetail->unit_discount;
+            $salesOrderDetails['product_ids'][$key] = $salesRequisitionDetail->product_id;
+            $salesOrderDetails['quantity'][$key] = $salesRequisitionDetail->quantity;
+            $salesOrderDetails['price'][$key] = $salesRequisitionDetail->price;
+            $salesOrderDetails['unit_discount'][$key] = $salesRequisitionDetail->unit_discount;
             $salesOrderDetails['total_discount'][$key] = $salesRequisitionDetail->total_discount;
-            $salesOrderDetails['amount'][$key]         = $salesRequisitionDetail->amount;
+            $salesOrderDetails['amount'][$key] = $salesRequisitionDetail->amount;
 
-            $existingDetail                                   = $existingDetails->get($salesRequisitionDetail->product_id);
+            $existingDetail = $existingDetails->get($salesRequisitionDetail->product_id);
             $salesOrderDetails['sales_order_detail_id'][$key] = $existingDetail ? $existingDetail->id : null;
         }
 
         $salesOrderShipments = [];
         if ($salesRequisition->shipment) {
-            $shipment            = $salesRequisition->shipment;
+            $shipment = $salesRequisition->shipment;
             $salesOrderShipments = [
-                'courier_id'            => $shipment->courier_id,
-                'area_id'               => $shipment->area_id,
-                'address'               => $shipment->address,
-                'contact_person_name'   => $shipment->contact_person_name,
+                'courier_id' => $shipment->courier_id,
+                'area_id' => $shipment->area_id,
+                'address' => $shipment->address,
+                'contact_person_name' => $shipment->contact_person_name,
                 'contact_person_number' => $shipment->contact_person_number,
-                'condition'             => $shipment->condition,
-                'additional_amount'     => $shipment->additional_amount,
-                'condition_remarks'     => $shipment->condition_remarks,
+                'condition' => $shipment->condition,
+                'additional_amount' => $shipment->additional_amount,
+                'condition_remarks' => $shipment->condition_remarks,
             ];
             $data['is_shipment'] = 1;
         }
 
         $payments = [];
         if ($salesRequisition->payments->count() > 0) {
-            $payments['payments_pay_mode']       = [];
-            $payments['payments_bank_id']        = [];
-            $payments['payments_branch_id']      = [];
+            $payments['payments_pay_mode'] = [];
+            $payments['payments_bank_id'] = [];
+            $payments['payments_branch_id'] = [];
             $payments['payments_transaction_id'] = [];
-            $payments['payments_emi_id']         = [];
-            $payments['payments_amount']         = [];
-            $payments['payments_date']           = [];
-            $payments['payments_attachments']    = [];
-            $payments['payments_verified']       = [];
-            $payments['payments_remark']         = [];
+            $payments['payments_emi_id'] = [];
+            $payments['payments_amount'] = [];
+            $payments['payments_date'] = [];
+            $payments['payments_attachments'] = [];
+            $payments['payments_verified'] = [];
+            $payments['payments_remark'] = [];
 
             foreach ($salesRequisition->payments as $key => $payment) {
-                $payments['payments_pay_mode'][$key]       = $payment->pay_mode;
-                $payments['payments_bank_id'][$key]        = $payment->bank_id ?? null;
-                $payments['payments_branch_id'][$key]      = $payment->branch_id ?? null;
+                $payments['payments_pay_mode'][$key] = $payment->pay_mode;
+                $payments['payments_bank_id'][$key] = $payment->bank_id ?? null;
+                $payments['payments_branch_id'][$key] = $payment->branch_id ?? null;
                 $payments['payments_transaction_id'][$key] = $payment->transaction_id ?? null;
-                $payments['payments_emi_id'][$key]         = $payment->e_m_i_entries_id ?? null;
-                $payments['payments_amount'][$key]         = $payment->amount ?? 0;
-                $payments['payments_date'][$key]           = $payment->date;
-                $payments['payments_attachments'][$key]    = $payment->attachments ?? null;
-                $payments['payments_verified'][$key]       = $payment->verified ?? false;
-                $payments['payments_remark'][$key]         = $payment->remarks ?? null;
+                $payments['payments_emi_id'][$key] = $payment->e_m_i_entries_id ?? null;
+                $payments['payments_amount'][$key] = $payment->amount ?? 0;
+                $payments['payments_date'][$key] = $payment->date;
+                $payments['payments_attachments'][$key] = $payment->attachments ?? null;
+                $payments['payments_verified'][$key] = $payment->verified ?? false;
+                $payments['payments_remark'][$key] = $payment->remarks ?? null;
             }
         }
 
         if ($existingSalesOrder) {
-            $result     = $this->update($existingSalesOrder, $data, $salesOrderDetails, $salesOrderShipments, $payments);
+            $result = $this->update($existingSalesOrder, $data, $salesOrderDetails, $salesOrderShipments, $payments);
             $salesOrder = $result;
         } else {
-            $result     = $this->store($data, $salesOrderDetails, $salesOrderShipments, $payments);
+            $result = $this->store($data, $salesOrderDetails, $salesOrderShipments, $payments);
             $salesOrder = $result['salesOrder'];
         }
 
@@ -1150,30 +1124,30 @@ class SalesOrderService
     {
         DB::beginTransaction();
         $data = [
-            'customer_id'  => $backupChallan->customer_id,
+            'customer_id' => $backupChallan->customer_id,
             'invoice_date' => now()->format('Y-m-d'),
             'total_amount' => $backupChallan->total_amount,
-            'discount'     => $backupChallan->discount ?? 0,
-            'commission'   => 0, // Assuming no commission from challan
-            'total'        => $backupChallan->total_amount - ($backupChallan->discount ?? 0),
-            'vat'          => $backupChallan->vat ?? 0,
-            'net_amount'   => $backupChallan->total_amount,
-            'remarks'      => $backupChallan->remarks ?? 'Created from Challan ' . $backupChallan->challan_id,
-            'status'       => 'pending',
-            'is_shipment'  => false, // Assuming no shipment info from challan, can be adjusted
-            'is_courier'   => false,
-            'sales_type'   => 'general_sales',
-            'source_type'  => BackupChallan::class,
-            'source_id'    => $backupChallan->id,
+            'discount' => $backupChallan->discount ?? 0,
+            'commission' => 0, // Assuming no commission from challan
+            'total' => $backupChallan->total_amount - ($backupChallan->discount ?? 0),
+            'vat' => $backupChallan->vat ?? 0,
+            'net_amount' => $backupChallan->total_amount,
+            'remarks' => $backupChallan->remarks ?? 'Created from Challan ' . $backupChallan->challan_id,
+            'status' => 'pending',
+            'is_shipment' => false, // Assuming no shipment info from challan, can be adjusted
+            'is_courier' => false,
+            'sales_type' => 'general_sales',
+            'source_type' => BackupChallan::class,
+            'source_id' => $backupChallan->id,
         ];
 
         $salesOrderDetails = [
-            'product_ids'           => [],
-            'quantity'              => [],
-            'price'                 => [],
-            'unit_discount'         => [],
-            'total_discount'        => [],
-            'amount'                => [],
+            'product_ids' => [],
+            'quantity' => [],
+            'price' => [],
+            'unit_discount' => [],
+            'total_discount' => [],
+            'amount' => [],
             'sales_order_detail_id' => [],
         ];
 
@@ -1189,39 +1163,39 @@ class SalesOrderService
 
         foreach ($backupChallan->backupChallanDetails as $key => $challanDetail) {
             // dd($challanDetail);
-            $salesOrderDetails['product_ids'][$key]    = $challanDetail->product_id;
-            $salesOrderDetails['quantity'][$key]       = $challanDetail->quantity;
-            $salesOrderDetails['price'][$key]          = $challanDetail->price;
-            $salesOrderDetails['unit_discount'][$key]  = 0; // Assuming no unit discount from challan
+            $salesOrderDetails['product_ids'][$key] = $challanDetail->product_id;
+            $salesOrderDetails['quantity'][$key] = $challanDetail->quantity;
+            $salesOrderDetails['price'][$key] = $challanDetail->price;
+            $salesOrderDetails['unit_discount'][$key] = 0; // Assuming no unit discount from challan
             $salesOrderDetails['total_discount'][$key] = 0; // Assuming no total discount from challan
-            $salesOrderDetails['amount'][$key]         = $challanDetail->amount;
+            $salesOrderDetails['amount'][$key] = $challanDetail->amount;
 
-            $existingDetail                                   = $existingDetails->get($challanDetail->product_id);
+            $existingDetail = $existingDetails->get($challanDetail->product_id);
             $salesOrderDetails['sales_order_detail_id'][$key] = $existingDetail ? $existingDetail->id : null;
         }
 
         // BackupChallan does not seem to have shipment or payment info.
         // If it does, logic can be added here similar to saveFromRequisition.
         $salesOrderShipments = [];
-        $payments            = [
-            'payments_pay_mode'       => [],
-            'payments_bank_id'        => [],
-            'payments_branch_id'      => [],
+        $payments = [
+            'payments_pay_mode' => [],
+            'payments_bank_id' => [],
+            'payments_branch_id' => [],
             'payments_transaction_id' => [],
-            'payments_emi_id'         => [],
-            'payments_amount'         => [],
-            'payments_date'           => [],
-            'payments_attachments'    => [],
-            'payments_verified'       => [],
-            'payments_remark'         => [],
-            'payments_total_amount'   => $data['net_amount'],
+            'payments_emi_id' => [],
+            'payments_amount' => [],
+            'payments_date' => [],
+            'payments_attachments' => [],
+            'payments_verified' => [],
+            'payments_remark' => [],
+            'payments_total_amount' => $data['net_amount'],
             'payments_payable_amount' => $data['net_amount'],
         ];
 
         if ($existingSalesOrder) {
             $salesOrder = $this->update($existingSalesOrder, $data, $salesOrderDetails, $salesOrderShipments, $payments);
         } else {
-            $result     = $this->store($data, $salesOrderDetails, $salesOrderShipments, $payments);
+            $result = $this->store($data, $salesOrderDetails, $salesOrderShipments, $payments);
             $salesOrder = $result['salesOrder'];
         }
 
@@ -1240,9 +1214,9 @@ class SalesOrderService
                     foreach ($payments['cash_payment_amount'][$index] as $key => $cashAmount) {
                         SalesPaymentCash::create([
                             'sales_payment_detail_id' => $salesPaymentDetail->id,
-                            'cash_payment_date'       => $payments['cash_payment_date'][$index][$key],
-                            'cash_payment_amount'     => $cashAmount,
-                            'cash_payment_remarks'    => $payments['cash_payment_remarks'][$index][$key] ?? null,
+                            'cash_payment_date' => $payments['cash_payment_date'][$index][$key],
+                            'cash_payment_amount' => $cashAmount,
+                            'cash_payment_remarks' => $payments['cash_payment_remarks'][$index][$key] ?? null,
                         ]);
                     }
                 }
@@ -1253,12 +1227,12 @@ class SalesOrderService
                     foreach ($payments['cheque_no'][$index] as $key => $chequeNo) {
                         SalesPaymentCheque::create([
                             'sales_payment_detail_id' => $salesPaymentDetail->id,
-                            'cheque_bank_id'          => $payments['cheque_bank_id'][$index][$key],
-                            'cheque_branch_id'        => $payments['cheque_branch_id'][$index][$key],
-                            'cheque_no'               => $chequeNo,
-                            'cheque_date'             => $payments['cheque_date'][$index][$key],
-                            'cheque_amount'           => $payments['cheque_amount'][$index][$key],
-                            'cheque_remarks'          => $payments['cheque_remarks'][$index][$key] ?? null,
+                            'cheque_bank_id' => $payments['cheque_bank_id'][$index][$key],
+                            'cheque_branch_id' => $payments['cheque_branch_id'][$index][$key],
+                            'cheque_no' => $chequeNo,
+                            'cheque_date' => $payments['cheque_date'][$index][$key],
+                            'cheque_amount' => $payments['cheque_amount'][$index][$key],
+                            'cheque_remarks' => $payments['cheque_remarks'][$index][$key] ?? null,
                         ]);
                     }
                 }
@@ -1269,11 +1243,11 @@ class SalesOrderService
                     foreach ($payments['bkash_payment_no'][$index] as $key => $bkashNo) {
                         SalesPaymentBkash::create([
                             'sales_payment_detail_id' => $salesPaymentDetail->id,
-                            'bkash_collection_point'  => $payments['bkash_collection_point'][$index][$key],
-                            'bkash_payment_no'        => $bkashNo,
-                            'bkash_payment_date'      => $payments['bkash_payment_date'][$index][$key],
-                            'bkash_payment_amount'    => $payments['bkash_payment_amount'][$index][$key],
-                            'bkash_payment_remarks'   => $payments['bkash_payment_remarks'][$index][$key] ?? null,
+                            'bkash_collection_point' => $payments['bkash_collection_point'][$index][$key],
+                            'bkash_payment_no' => $bkashNo,
+                            'bkash_payment_date' => $payments['bkash_payment_date'][$index][$key],
+                            'bkash_payment_amount' => $payments['bkash_payment_amount'][$index][$key],
+                            'bkash_payment_remarks' => $payments['bkash_payment_remarks'][$index][$key] ?? null,
                         ]);
                     }
                 }
@@ -1284,10 +1258,10 @@ class SalesOrderService
                     foreach ($payments['card_payment_no'][$index] as $key => $cardNo) {
                         SalesPaymentCardPayment::create([
                             'sales_payment_detail_id' => $salesPaymentDetail->id,
-                            'card_payment_no'         => $cardNo,
-                            'card_payment_date'       => $payments['card_payment_date'][$index][$key],
-                            'card_payment_amount'     => $payments['card_payment_amount'][$index][$key],
-                            'card_payment_remarks'    => $payments['card_payment_remarks'][$index][$key] ?? null,
+                            'card_payment_no' => $cardNo,
+                            'card_payment_date' => $payments['card_payment_date'][$index][$key],
+                            'card_payment_amount' => $payments['card_payment_amount'][$index][$key],
+                            'card_payment_remarks' => $payments['card_payment_remarks'][$index][$key] ?? null,
                         ]);
                     }
                 }
@@ -1297,13 +1271,13 @@ class SalesOrderService
                 if (isset($payments['online_deposit_no'][$index])) {
                     foreach ($payments['online_deposit_no'][$index] as $key => $depositNo) {
                         SalesPaymentOnlineDeposit::create([
-                            'sales_payment_detail_id'  => $salesPaymentDetail->id,
-                            'online_deposit_bank_id'   => $payments['online_deposit_bank_id'][$index][$key],
+                            'sales_payment_detail_id' => $salesPaymentDetail->id,
+                            'online_deposit_bank_id' => $payments['online_deposit_bank_id'][$index][$key],
                             'online_deposit_branch_id' => $payments['online_deposit_branch_id'][$index][$key],
-                            'online_deposit_no'        => $depositNo,
-                            'online_deposit_date'      => $payments['online_deposit_date'][$index][$key],
-                            'online_deposit_amount'    => $payments['online_deposit_amount'][$index][$key],
-                            'online_deposit_remarks'   => $payments['online_deposit_remarks'][$index][$key] ?? null,
+                            'online_deposit_no' => $depositNo,
+                            'online_deposit_date' => $payments['online_deposit_date'][$index][$key],
+                            'online_deposit_amount' => $payments['online_deposit_amount'][$index][$key],
+                            'online_deposit_remarks' => $payments['online_deposit_remarks'][$index][$key] ?? null,
                         ]);
                     }
                 }
@@ -1318,7 +1292,7 @@ class SalesOrderService
         $result['salesOrder'] = $salesOrder;
         DB::beginTransaction();
         // Only generate a new sales_order_id if one is not already provided in the data and it's currently empty
-        if ((! isset($data['sales_order_id']) || empty($data['sales_order_id'])) && empty($salesOrder->sales_order_id)) {
+        if ((!isset($data['sales_order_id']) || empty($data['sales_order_id'])) && empty($salesOrder->sales_order_id)) {
             $data['sales_order_id'] = $this->getSalesOrderId($data['customer_id']);
         }
         $data['sales_type'] = $data['sales_type'] ?? 'general_sales';
@@ -1326,17 +1300,17 @@ class SalesOrderService
         $result['salesOrder']->update($data);
         $result['salesOrder']->salesOrderDetails()->whereNotIn('id', $salesOrderDetails['sales_order_detail_id'])->delete();
         $result['salesOrderDetails'] = [];
-        $cashCollectionAmount        = 0; // Initialize cash collection amount for SMS
-        $paymentDate                 = '';
+        $cashCollectionAmount = 0; // Initialize cash collection amount for SMS
+        $paymentDate  = '';
 
         foreach ($salesOrderDetails['product_ids'] as $key => $productId) {
             $detailData = [
-                'product_id'     => $productId,
-                'quantity'       => $salesOrderDetails['quantity'][$key],
-                'price'          => $salesOrderDetails['price'][$key],
-                'unit_discount'  => $salesOrderDetails['unit_discount'][$key],
+                'product_id' => $productId,
+                'quantity' => $salesOrderDetails['quantity'][$key],
+                'price' => $salesOrderDetails['price'][$key],
+                'unit_discount' => $salesOrderDetails['unit_discount'][$key],
                 'total_discount' => $salesOrderDetails['total_discount'][$key],
-                'amount'         => $salesOrderDetails['amount'][$key],
+                'amount' => $salesOrderDetails['amount'][$key],
             ];
 
             // Add discount_type if it exists in the salesOrderDetails array
@@ -1352,22 +1326,22 @@ class SalesOrderService
             }
 
             $result['salesOrderDetails'][] = SalesOrderDetails::updateOrCreate([
-                'id'             => $salesOrderDetails['sales_order_detail_id'][$key] ?? null,
-                'sales_order_id' => $salesOrder->id,
+                'id' => $salesOrderDetails['sales_order_detail_id'][$key] ?? null,
+                'sales_order_id' => $salesOrder->id
             ], $detailData);
         }
 
         if (isset($data['is_shipment']) && $data['is_shipment'] == 1) {
             $salesOrder->shipment()->delete();
             $result['salesOrderShipments'] = $result['salesOrder']->shipment()->create([
-                'courier_id'            => $salesOrderShipments['courier_id'],
-                'area_id'               => $salesOrderShipments['area_id'] == 'address' ? null : $salesOrderShipments['area_id'],
-                'address'               => $salesOrderShipments['address'],
-                'contact_person_name'   => $salesOrderShipments['contact_person_name'],
+                'courier_id' => $salesOrderShipments['courier_id'],
+                'area_id' => $salesOrderShipments['area_id'] == 'address' ? null : $salesOrderShipments['area_id'],
+                'address' => $salesOrderShipments['address'],
+                'contact_person_name' => $salesOrderShipments['contact_person_name'],
                 'contact_person_number' => $salesOrderShipments['contact_person_number'],
-                'condition'             => ($salesOrderShipments['condition'] ?? false) ? true : false,
-                'additional_amount'     => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['additional_amount'] : null,
-                'condition_remarks'     => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['condition_remarks'] : null,
+                'condition' => ($salesOrderShipments['condition'] ?? false) ? true : false,
+                'additional_amount' => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['additional_amount'] : null,
+                'condition_remarks' => ($salesOrderShipments['condition'] ?? false) ? $salesOrderShipments['condition_remarks'] : null,
             ]);
         } else {
             $salesOrder->shipment()->delete();
@@ -1375,7 +1349,7 @@ class SalesOrderService
 
         if ($data['status'] == 'approved') {
             $delivery = Delivery::updateOrCreate([
-                'source_id'   => $salesOrder->id,
+                'source_id' => $salesOrder->id,
                 'source_type' => SalesOrder::class,
             ], [
                 'delivery_date' => $data['delivery_date'] ?? $data['invoice_date'],
@@ -1391,7 +1365,7 @@ class SalesOrderService
             foreach (request()->otp_verifications as $otpJson) {
                 $otpData = json_decode($otpJson, true);
 
-                $otpData['sourceable_id']   = $salesOrder->id;
+                $otpData['sourceable_id'] = $salesOrder->id;
                 $otpData['sourceable_type'] = SalesOrder::class;
 
                 OtpVerification::updateOrCreate(
@@ -1405,22 +1379,25 @@ class SalesOrderService
         foreach ($payments['payments_pay_mode'] ?? [] as $key => $payMode) {
             if ($payMode) {
                 $result['payments'][] = $result['salesOrder']->payments()->create([
-                    'pay_mode'         => $payMode,
-                    'bank_id'          => $payments['payments_bank_id'][$key] ?? null,
-                    'branch_id'        => $payments['payments_branch_id'][$key] ?? null,
-                    'transaction_id'   => $payments['payments_transaction_id'][$key] ?? null,
+                    'pay_mode' => $payMode,
+                    'bank_id' => $payments['payments_bank_id'][$key] ?? null,
+                    'branch_id' => $payments['payments_branch_id'][$key] ?? null,
+                    'transaction_id' => $payments['payments_transaction_id'][$key] ?? null,
                     'e_m_i_entries_id' => $payments['payments_emi_id'][$key] ?? null,
-                    'amount'           => $payments['payments_amount'][$key] ?? 0,
-                    'date'             => $payments['payments_date'][$key] ?? null,
-                    'attachments'      => $payments['payments_attachments'][$key] ?? null,
-                    'verified'         => $payments['payments_verified'][$key] ?? false,
-                    'remarks'          => $payments['payments_remark'][$key] ?? null,
+                    'amount' => $payments['payments_amount'][$key] ?? 0,
+                    'date' => $payments['payments_date'][$key] ?? null,
+                    'attachments' => $payments['payments_attachments'][$key] ?? null,
+                    'verified' => $payments['payments_verified'][$key] ?? false,
+                    'remarks' => $payments['payments_remark'][$key] ?? null,
                 ]);
 
-                /*count cash collection amount*/
+
+                
+
+                /*count cash collection amount*/ 
                 if ($payMode == 'Cash') {
-                    $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;
-                    $paymentDate          = $payments['payments_date'][$key] ?? null;
+                    $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;  
+                    $paymentDate = $payments['payments_date'][$key] ?? null;
                 }
             }
         }
@@ -1428,101 +1405,102 @@ class SalesOrderService
         if ($salesOrder->status == 'approved') {
             $this->makeDummyTransaction($salesOrder);
 
-            if (! empty($payments['payments_pay_mode'])) {
+            if (!empty($payments['payments_pay_mode'])) {
                 $collectionData = [
-                    'payments_total_amount'   => $payments['payments_total_amount'] ?? 0,
+                    'payments_total_amount' => $payments['payments_total_amount'] ?? 0,
                     'payments_advance_amount' => $payments['payments_advance_amount'] ?? 0,
-                    'collection_type'         => "customer",
-                    'collection_from'         => $data['customer_id'] ?? $salesOrder->customer_id,
-                    'collection_date'         => $data['invoice_date'],
+                    'collection_type' => "customer",
+                    'collection_from' => $data['customer_id'] ?? $salesOrder->customer_id,
+                    'collection_date' => $data['invoice_date']
                 ];
                 if (count($result['salesOrder']->payments) > 0) {
                     $this->collectionService->storeForSales($collectionData, $result['salesOrder']->payments, $salesOrder);
                 }
             }
 
-            /*Update:: send sms for invoice create */
-
+            /*Update:: send sms for invoice create */ 
+    
             $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
             $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
-            $sms         = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first();
+            $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
             $smsTemplate = $sms->template_body;
 
-            $customerInfo = Customer::where('id', $salesOrder->customer_id)->first();
+            $customerInfo = Customer::where('id', $salesOrder->customer_id)->first(); 
 
-            $phone         = $customerInfo->contact_for_sms;
-            $customerName  = $customerInfo->company_name;
+            $phone =   $customerInfo->contact_for_sms;
+            $customerName = $customerInfo->company_name;
             $invoiceAmount = $salesOrder->net_amount;
 
             $smsdata = [
-                'customer_name'  => $customerName,
-                'invoice_amount' => $invoiceAmount,
-            ];
+                'customer_name' =>  $customerName,
+                'invoice_amount' => $invoiceAmount
+            ];  
 
             foreach ($smsdata as $key => $value) {
                 $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-            }
+            } 
 
-            $time    = Carbon::parse(now());
+            $time = Carbon::parse(now()); 
             $newTime = $time->addMinutes($triggerName->after_send_time);
 
             SmsInfo::updateOrCreate(
                 [
                     'sms_reference' => $salesOrder->id,
-                    'sms_mem_id'    => $salesOrder->customer_id,
-                    'sms_status'    => 'pending', // condition
-                    'trigger_name'  => 'T08',
+                    'sms_mem_id' => $salesOrder->customer_id,
+                    'sms_status' => 'pending', // condition
+                    'trigger_name' => 'T08', 
                 ],
                 [
                     'sms_send_time' => $newTime,
-                    'sms_to'        => $phone,
-                    'sms_text'      => $smsTemplate,
+                    'sms_to' => $phone,
+                    'sms_text' => $smsTemplate, 
                 ]
             );
 
+                
             /*Update:: send sms for cash collection */
             if ($cashCollectionAmount > 0) {
-
+    
                 $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
                 $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
-                $sms         = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first();
+                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
                 $smsTemplate = $sms->template_body;
 
-                $customerInfo = Customer::where('id', $data['customer_id'])->first();
+                $customerInfo = Customer::where('id', $data['customer_id'])->first(); 
 
-                $phone              = $customerInfo->contact_for_sms;
-                $customerName       = $customerInfo->company_name;
-                $customerPreBalance = Customer::find($data['customer_id'])->getAccount()->balance;
-                $collectionAmount   = $cashCollectionAmount;
-                $receivedDate       = $paymentDate;
-                $customerBalance    = $customerPreBalance + $result['salesOrder']->net_amount - $collectionAmount;
-
+                $phone =   $customerInfo->contact_for_sms; 
+                $customerName = $customerInfo->company_name; 
+                $customerPreBalance = Customer::find($data['customer_id'])->getAccount()->balance; 
+                $collectionAmount = $cashCollectionAmount; 
+                $receivedDate = $paymentDate; 
+                $customerBalance =  $customerPreBalance +  $result['salesOrder']->net_amount - $collectionAmount;
+                
                 $data = [
-                    'customer_name'             => $customerName,
-                    'customer_pre_balance '     => $customerPreBalance,
-                    'collection_amount'         => $collectionAmount,
-                    'received_date'             => $receivedDate,
-                    'customer_current_balance ' => $customerBalance,
-                ];
+                    'customer_name' => $customerName,
+                    'customer_pre_balance ' => $customerPreBalance,
+                    'collection_amount' => $collectionAmount,
+                    'received_date' => $receivedDate,
+                    'customer_current_balance ' => $customerBalance
+                ];   
 
                 foreach ($data as $key => $value) {
                     $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-                }
+                } 
 
-                $time    = Carbon::parse(now());
+                $time = Carbon::parse(now()); 
                 $newTime = $time->addMinutes($triggerName->after_send_time);
 
                 SmsInfo::updateOrCreate(
                     [
                         'sms_reference' => $salesOrder->id,
-                        'sms_mem_id'    => $salesOrder->customer_id,
-                        'sms_status'    => 'pending', // condition
-                        'trigger_name'  => 'T03',
+                        'sms_mem_id' => $salesOrder->customer_id,
+                        'sms_status' => 'pending', // condition
+                        'trigger_name' => 'T03', 
                     ],
                     [
                         'sms_send_time' => $newTime,
-                        'sms_to'        => $phone,
-                        'sms_text'      => $smsTemplate,
+                        'sms_to' => $phone,
+                        'sms_text' => $smsTemplate, 
                     ]
                 );
             }
@@ -1536,31 +1514,31 @@ class SalesOrderService
     {
         $salesOrder->transactions()->delete();
 
-        $customerReceivableAccount    = $salesOrder->customer->getAccount();
-        $vatPayableAccount            = Account::where('name', 'Tax Payable')->first();
+        $customerReceivableAccount = $salesOrder->customer->getAccount();
+        $vatPayableAccount = Account::where('name', 'Tax Payable')->first();
         $customerSalesDiscountAccount = $salesOrder->customer->getSalesDiscountAccount();
 
         $totalInvoiceAmount = $salesOrder->net_amount;
 
         $salesOrder->transactions()->create([
-            'account_id'       => $customerReceivableAccount->id,
-            'balance_type'     => 'debit',
-            'invoice_no'       => $salesOrder->sales_order_id,
-            'debit_amount'     => $totalInvoiceAmount,
-            'credit_amount'    => 0,
-            'description'      => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
-            'transaction_date' => $salesOrder->invoice_date,
+            'account_id' => $customerReceivableAccount->id,
+            'balance_type' => 'debit',
+            'invoice_no' => $salesOrder->sales_order_id,
+            'debit_amount' => $totalInvoiceAmount,
+            'credit_amount' => 0,
+            'description' => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
+            'transaction_date' => $salesOrder->invoice_date
         ]);
         $total_discount = $salesOrder->salesOrderDetails->sum('total_discount');
         if ($total_discount > 0) {
             $salesOrder->transactions()->create([
-                'account_id'       => $customerSalesDiscountAccount->id,
-                'balance_type'     => 'debit',
-                'invoice_no'       => $salesOrder->sales_order_id,
-                'debit_amount'     => $total_discount,
-                'credit_amount'    => 0,
-                'description'      => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
-                'transaction_date' => $salesOrder->invoice_date,
+                'account_id' => $customerSalesDiscountAccount->id,
+                'balance_type' => 'debit',
+                'invoice_no' => $salesOrder->sales_order_id,
+                'debit_amount' => $total_discount,
+                'credit_amount' => 0,
+                'description' => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
+                'transaction_date' => $salesOrder->invoice_date
 
             ]);
         }
@@ -1568,30 +1546,30 @@ class SalesOrderService
         foreach ($salesOrder->salesOrderDetails as $salesOrderDetail) {
             $salesRevenueAccount = $salesOrderDetail->product->getAccount();
             $salesOrder->transactions()->create([
-                'account_id'       => $salesRevenueAccount->id,
-                'balance_type'     => 'credit',
-                'invoice_no'       => $salesOrder->sales_order_id,
-                'debit_amount'     => 0,
-                'credit_amount'    => ($salesOrderDetail->price) * $salesOrderDetail->quantity,
-                'description'      => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
-                'transaction_date' => $salesOrder->invoice_date,
+                'account_id' => $salesRevenueAccount->id,
+                'balance_type' => 'credit',
+                'invoice_no' => $salesOrder->sales_order_id,
+                'debit_amount' => 0,
+                'credit_amount' => ($salesOrderDetail->price) * $salesOrderDetail->quantity,
+                'description' => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
+                'transaction_date' => $salesOrder->invoice_date
             ]);
         }
         // dd( $salesOrder->transactions, $totalInvoiceAmount,$salesOrder->vat , $salesOrder->salesOrderDetails);
 
         if ($salesOrder->vat > 0) {
             $salesOrder->transactions()->create([
-                'account_id'       => $vatPayableAccount->id,
-                'balance_type'     => 'credit',
-                'invoice_no'       => $salesOrder->sales_order_id,
-                'debit_amount'     => 0,
-                'credit_amount'    => $salesOrder->vat,
-                'description'      => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
-                'transaction_date' => $salesOrder->invoice_date,
+                'account_id' => $vatPayableAccount->id,
+                'balance_type' => 'credit',
+                'invoice_no' => $salesOrder->sales_order_id,
+                'debit_amount' => 0,
+                'credit_amount' => $salesOrder->vat,
+                'description' => "Invoice for Sales Order #" . $salesOrder->sales_order_id,
+                'transaction_date' => $salesOrder->invoice_date
             ]);
         }
 
-        $totalDebits  = round($salesOrder->transactions()->sum('debit_amount'));
+        $totalDebits = round($salesOrder->transactions()->sum('debit_amount'));
         $totalCredits = round($salesOrder->transactions()->sum('credit_amount'));
         if ($totalDebits != $totalCredits) {
             logger()->error("Journal entries for Sales Order #" . $salesOrder->sales_order_id . " are unbalanced!", ['debits' => $totalDebits, 'credits' => $totalCredits]);
@@ -1602,10 +1580,10 @@ class SalesOrderService
     public function makeTransaction(SalesOrder $salesOrder)
     {
         $customerReceivableAccount = $salesOrder->customer->getAccount();
-        $salesAccount              = Account::where('account_code', '4000')->first();
-        $vatAccount                = Account::where('account_code', '4100')->first();
+        $salesAccount = Account::where('account_code', '4000')->first();
+        $vatAccount = Account::where('account_code', '4100')->first();
 
-        $invoice_no  = $salesOrder->sales_order_id;
+        $invoice_no = $salesOrder->sales_order_id;
         $description = 'Sales Order';
 
         $this->transactionService->storeTransaction(
@@ -1697,7 +1675,7 @@ class SalesOrderService
             'createdBy',
             'updatedBy',
             'shipment',
-            'payments',
+            'payments'
         ])->findOrFail($id);
     }
 
@@ -1761,11 +1739,11 @@ class SalesOrderService
                 ['id' => $freeSalesInvoiceId],
                 [
                     'sales_order_id' => $salesOrderId,
-                    'customer_id'    => $data['customer_id'],
-                    'invoice_id'     => $invoiceId,
-                    'invoice_date'   => $data['invoice_date'],
-                    'remarks'        => $data['remarks'],
-                    'status'         => $data['status'],
+                    'customer_id' => $data['customer_id'],
+                    'invoice_id' => $invoiceId,
+                    'invoice_date' => $data['invoice_date'],
+                    'remarks' => $data['remarks'],
+                    'status' => $data['status'],
                     // 'created_by' and 'updated_by' are handled by AutoCreateUpdateAndHistory trait
                 ]
             );
@@ -1773,9 +1751,10 @@ class SalesOrderService
             $salesOrder = SalesOrder::findOrFail($salesOrderId);
             // $freeSalesInvoice->customer_id = $salesOrder->customer_id;
 
+
             // Handle details
             $existingDetailIds = $freeSalesInvoice->details->pluck('id')->toArray();
-            $newDetailIds      = [];
+            $newDetailIds = [];
 
             foreach ($data['product_ids'] as $key => $productId) {
                 $detailId = $data['free_sales_invoice_detail_id'][$key] ?? null;
@@ -1784,8 +1763,8 @@ class SalesOrderService
                     ['id' => $detailId],
                     [
                         'free_sales_invoice_id' => $freeSalesInvoice->id, // Ensure correct foreign key
-                        'product_id'            => $productId,
-                        'quantity'              => $data['quantity'][$key],
+                        'product_id' => $productId,
+                        'quantity' => $data['quantity'][$key],
                     ]
                 );
                 $newDetailIds[] = $detail->id;
@@ -1793,7 +1772,7 @@ class SalesOrderService
 
             // Delete details that are no longer present in the request
             $detailsToDelete = array_diff($existingDetailIds, array_filter($newDetailIds));
-            if (! empty($detailsToDelete)) {
+            if (!empty($detailsToDelete)) {
                 $freeSalesInvoice->details()->whereIn('id', $detailsToDelete)->delete();
             }
 
@@ -1802,18 +1781,18 @@ class SalesOrderService
 
             // @dd($freeSalesInvoice->details );
             // Initialize result array
-            $result                      = [];
+            $result = [];
             $result['salesOrderDetails'] = [];
 
             // $freeSalesInvoice->details add to sales order details as offers product
             foreach ($freeSalesInvoice->details as $detail) {
                 $detailData = [
-                    'product_id'        => $detail->product_id,
-                    'quantity'          => $detail->quantity,
-                    'price'             => $detail->product->mrp,
-                    'unit_discount'     => $detail->product->mrp,
-                    'total_discount'    => $detail->product->mrp * $detail->quantity,
-                    'amount'            => 0,
+                    'product_id' => $detail->product_id,
+                    'quantity' => $detail->quantity,
+                    'price' => $detail->product->mrp,
+                    'unit_discount' => $detail->product->mrp,
+                    'total_discount' => $detail->product->mrp * $detail->quantity,
+                    'amount' => 0,
                     'is_offers_product' => 2,
                 ];
 
@@ -1826,9 +1805,10 @@ class SalesOrderService
 
                 $result['salesOrderDetails'][] = SalesOrderDetails::updateOrCreate([
                     'sales_order_id' => $salesOrder->id,
-                    'product_id'     => $detail->product_id,
+                    'product_id' => $detail->product_id,
                 ], $detailData);
             }
+
 
             DB::commit();
             return $freeSalesInvoice;
@@ -1841,9 +1821,9 @@ class SalesOrderService
     // Renamed from storeFreeSalesInvoice to generateFreeSalesInvoiceId and made private
     private function generateFreeSalesInvoiceId(): string
     {
-        $prefix     = 'FREE-';
+        $prefix = 'FREE-';
         $todayCount = FreeSalesInvoice::whereDate('created_at', Carbon::today())->count();
-        $id         = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
+        $id = str_pad($todayCount + 1, 4, '0', STR_PAD_LEFT);
         return $prefix . date('Ymd') . '-' . $id;
     }
 }

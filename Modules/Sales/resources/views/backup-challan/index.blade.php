@@ -55,7 +55,7 @@
                                                 <select name="status" id="status" class="form-control tom-select"
                                                     data-placeholder="Select Status">
                                                     <option value=""></option>
-                                                    <option value="pendding" {{ request('status') == 'pendding' ? 'selected' : '' }}>Pending</option>
+                                                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                                                     <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                                                     <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                                                     <option value="delivered" {{ request('status') == 'delivered' ? 'selected' : '' }}>Delivered</option>
@@ -93,16 +93,46 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $backupChallans])'
+                            <style>
+                                .backupchallan-table-custom,
+                                .backupchallan-table-custom th,
+                                .backupchallan-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .backupchallan-table-custom th,
+                                .backupchallan-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+                                .backupchallan-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                            </style>
+                            
+                            <table id="zero-config" class="table backupchallan-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $backupChallans])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Sl</th>
-                                        <th>Invoice Date</th>
+                                        {{-- <th>Invoice Date</th> --}}
                                         <th>Invoice Id</th>
                                         <th>Customer</th>
                                         <th>Customer Address</th>
-                                        <th>Type</th>
+                                        {{-- <th>Type</th> --}}
                                         <th>Total Amount</th>
                                         <th>Status</th>
                                         <th>Remaining Date</th>
@@ -114,14 +144,13 @@
                                     @foreach ($backupChallans as $value)
                                         <tr>
                                             <td class="text-center">{{ ($backupChallans->currentPage() - 1) * $backupChallans->perPage() + $loop->iteration  }}</td>
-                                            <td>{{ $value->invoice_date }}</td>
-                                            <td>
-                                                <a
-                                                    href="{{ route('sales.backup-challans.show', $value->id) }}">{{ $value->invoice_id }}</a>
+                                            {{-- <td>{{ $value->invoice_date }}</td> --}}
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                                <a href="{{ route('sales.backup-challans.show', $value->id) }}">{{ $value->invoice_id }}</a>
                                             </td>
-                                            <td>{{ $value->customer->company_name }}</td>
-                                            <td>{{ $value->customer->address }}</td>
-                                            <td>{{ $value->type }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $value->customer->company_name }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $value->customer->address }}</td>
+                                            {{-- <td>{{ $value->type }}</td> --}}
                                             <td>{{ $value->total_amount }}</td>
                                             <td>
                                                 @if ($value->status == 'pending')
@@ -134,7 +163,6 @@
                                                     <span class="badge badge-round badge-danger">Rejected</span>
                                                 @elseif ($value->status == 'Sales')
                                                     <span class="badge badge-round badge-info">Sales Order Created</span>
-                                                
                                                 @else
                                                     <span class="badge badge-round badge-info">{{ $value->status }}</span>
                                                 @endif
@@ -172,9 +200,9 @@
                                                     @endif
                                                     @if ($value->status == "delivered" && $value->type == "Challan")
                                                         @if (hasPermission('sales.backup-challan.sales.order'))
-                                                                <a class="btn btn-outline-secondary"
-                                                                    href="{{ route('sales.backup-challan.sales.order', $value->id) }}"><i
-                                                                        class="fas fa-cart-plus"></i></a>
+                                                            <a class="btn btn-outline-secondary"
+                                                                href="{{ route('sales.backup-challan.sales.order', $value->id) }}"><i
+                                                                    class="fas fa-cart-plus"></i></a>
                                                         @endif
                                                     @endif
                                                     @if (hasPermission('sales.backup-challans.destroy'))
@@ -187,7 +215,6 @@
                                                         <a class="btn btn-outline-primary"
                                                             href="{{ route('sales.backup-challans.show', $value->id) }}"
                                                             title="View"><i class="fas fa-eye"></i></a>
-                                                        
                                                     @endif
 
                                                 </div>
@@ -196,7 +223,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-
 
                             <div class="d-none">
                                 <form class="delete-form" action="" method="POST">
@@ -215,7 +241,6 @@
         aria-labelledby="recommendModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
-
                 <div class="modal-header" id="recommendModalLabel">
                     <h5 class="modal-title">Recommend </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
@@ -224,15 +249,13 @@
                     @csrf
                     @method('put')
                     <div class="modal-body">
-
                         <div class="row mb-4">
-                            <label class="col-sm-12 col-form-label">Recomended Comments</label>
+                            <label class="col-sm-12 col-form-label">Recommended Comments</label>
                             <div class="col-sm-12">
                                 <textarea name="recommended_comments" id="recommended_comments" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
                             data-bs-dismiss="modal">Cancel</button>
@@ -243,12 +266,10 @@
         </div>
     </div>
 
-
     <div class="modal fade inputForm-modal" id="approveModal" tabindex="-1" role="dialog"
         aria-labelledby="approveModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
             <div class="modal-content">
-
                 <div class="modal-header" id="approveModalLabel">
                     <h5 class="modal-title">Approve </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
@@ -257,15 +278,13 @@
                     @csrf
                     @method('put')
                     <div class="modal-body">
-
                         <div class="row mb-4">
                             <label class="col-sm-12 col-form-label">Approve Comments</label>
                             <div class="col-sm-12">
-                                <textarea name="approveed_comments" id="approveed_comments" class="form-control"></textarea>
+                                <textarea name="approved_comments" id="approved_comments" class="form-control"></textarea>
                             </div>
                         </div>
                     </div>
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
                             data-bs-dismiss="modal">Cancel</button>
@@ -277,13 +296,11 @@
     </div>
 @endsection
 @section('page_scripts')
-
     <script>
         $(".datePicker").datepicker({
             format: 'dd-mm-yyyy',
             autoclose: true
         });
-
 
         $(document).ready(function () {
             const companySelect = new TomSelect("#customer_id", {
@@ -291,16 +308,14 @@
                 labelField: "text",
                 searchField: [], 
                 load: function(query, callback) {
-
                     if (!query.length || query.length < 2) return callback();
-
                     $.ajax({
                         url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
                         type: "GET",
                         data: { search: query },
                         success: function(res) {
                             companySelect.clearOptions();
-                            callback(res.map(item => ({ id: item.text, text: item.label })));
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
                         },
                         error: function() {
                             callback();
@@ -318,4 +333,4 @@
             @endif
         }); 
     </script>
-@endSection
+@endsection

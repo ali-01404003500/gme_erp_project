@@ -87,7 +87,36 @@
                 </div>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $vendors])' style="width:100%">
+                                                <style>
+                            .vendor-table-custom,
+                            .vendor-table-custom th,
+                            .vendor-table-custom td {
+                                border: 1px solid #dee2e6 !important;
+                                border-collapse: collapse !important;
+                            }
+                            .vendor-table-custom th,
+                            .vendor-table-custom td {
+                                padding: 12px;
+                                vertical-align: middle;
+                            }
+                            .vendor-table-custom thead th {
+                                background-color: #f8f9fa;
+                                border-bottom-width: 2px !important;
+                            }
+                            .table thead th {
+                            background-color: #35526e !important;
+                            color: #ffffff !important;
+                            font-weight: 600 !important;
+                            text-transform: uppercase;
+                            font-size: 0.85rem !important;
+                            letter-spacing: 0.08em;
+                            border-bottom: 2px solid #2a4054 !important;
+                            padding: 14px 16px !important;
+                            vertical-align: middle;
+                            text-align: center;
+                        }
+                        </style>
+                        <table id="zero-config"class="table vendor-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $vendors])' style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
@@ -105,12 +134,12 @@
                                 @foreach ($vendors as $value)
                                     <tr>
                                         <td class="text-center">{{ ($vendors->currentPage() - 1) * $vendors->perPage() + $loop->iteration  }}</td>
-                                        <td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                             <a href="{{ route('purchase.vendors.show', $value->id) }}">{{ $value->company_name }}</a>
                                         </td>
                                         <td>{{ $value->phone }}</td>
                                         <td>{{ $value->email }}</td>
-                                        <td>{{ $value->address }}</td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $value->address }}</td>
                                         <td>{{ $value->opening_balance }}</td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">

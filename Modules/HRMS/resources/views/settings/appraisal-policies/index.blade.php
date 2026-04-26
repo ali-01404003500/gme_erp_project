@@ -44,7 +44,7 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                            <table id="zero-config" class="table table-bordered dt-table-hover" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>

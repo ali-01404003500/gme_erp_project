@@ -39,7 +39,12 @@ class CenterWiseStockReportController extends Controller
 
     private function buildReportQuery($request)
     {
+        $defaultDate = Carbon::parse('2026-04-18')->startOfDay();
         $fromDate = $request->from ? Carbon::parse($request->from)->startOfDay() : null;
+        if (!$fromDate || $fromDate->lt($defaultDate)) {
+            $fromDate = $defaultDate;
+          
+        } 
         $toDate = $request->to ? Carbon::parse($request->to)->endOfDay() : Carbon::now()->endOfDay();
         
         $query = Stock::withoutGlobalScope('latest')
@@ -54,10 +59,15 @@ class CenterWiseStockReportController extends Controller
 
 
         // Apply filters
-        if ($request->filled('branch_id') && $request->branch_id != 'all') {
-            $query->where('branch_id', $request->branch_id);
-        }
+        if ($request->filled('branch_id')) {
 
+            if ($request->branch_id == 'all') {
+                $query->where('branch_id', '!=', 4); //  branch_id 4 বাদ
+            } else {
+                $query->where('branch_id', $request->branch_id);
+            }
+
+        }
         if ($request->filled('product_id')) {
             $query->where('product_id', $request->product_id);
         }
@@ -111,6 +121,7 @@ class CenterWiseStockReportController extends Controller
 
         return Stock::where('product_id', $productId)
             ->where('branch_id', $branchId)
+            ->where('date', '>=', $openingDate)
             ->where('created_at', '<=', $openingDate)
             ->sum(DB::raw('CASE WHEN stock_type = "in" THEN in_qty ELSE -out_qty END'));
     }
@@ -190,7 +201,12 @@ class CenterWiseStockReportController extends Controller
 
     public function centerStockDetail(Request $request, $productId)
     {
-        $fromDate = $request->from ? Carbon::parse($request->from)->startOfDay() : null;
+        $defaultDate = Carbon::parse('2026-04-18')->startOfDay();
+        $fromDate =  $request->from ? Carbon::parse($request->from)->startOfDay() : null; 
+        if (!$fromDate || $fromDate->lt($defaultDate)) {
+            $fromDate = $defaultDate;
+          
+        }
         $toDate = $request->to ? Carbon::parse($request->to)->endOfDay() : Carbon::now()->endOfDay();
         $branchId = $request->branch_id;
 

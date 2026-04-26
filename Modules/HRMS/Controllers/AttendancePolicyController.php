@@ -50,15 +50,19 @@ class AttendancePolicyController extends Controller
             'name'           => 'required|string|max:255',
             'effective_from' => 'required|date',
         ]);
+ 
 
         try {
             
             $this->service->storePolicy($request->all());
             return redirect()->route('hrm.attendance-policies.index')
                 ->with('success', 'Attendance Policy created successfully.');
-        } catch (Exception $e) {
+        }catch (Exception $e) {
             Log::error("Attendance Policy Store Error: " . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Something went wrong while saving.');
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $e->getMessage()); // 👈 actual error show
         }
     }
 

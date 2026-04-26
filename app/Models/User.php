@@ -1,19 +1,19 @@
 <?php
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Models\AccessControl\Branch;
 use App\Models\AccessControl\CompanyInfo;
 use App\Models\AccessControl\Role;
+use Modules\HRMS\Models\Employee;
+use App\Models\AccessControl\Branch;
 use App\Models\Notifications\GeneralNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\CRM\Models\Customer\Customer;
-use Modules\HRMS\Models\Employee;
-use Modules\HRMS\Models\SalarySignatory;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -30,7 +30,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'branch_id',
-        'user_status',
+        'user_status'
     ];
 
     /**
@@ -41,7 +41,7 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
-        'user_status',
+        'user_status'
     ];
 
     /**
@@ -51,8 +51,8 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password'          => 'hashed',
-        'user_status'       => 'string',
+        'password' => 'hashed',
+        'user_status' => 'string',
     ];
 
     public function roles()
@@ -89,13 +89,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function branch()
     {
-        return $this->belongsTo(Branch::class, );
+        return $this->belongsTo(Branch::class,);
     }
     public function company()
     {
         $company = CompanyInfo::first();
         return $company;
     }
+
 
     // Add methods required by JWTSubject
     public function getJWTIdentifier()
@@ -106,9 +107,5 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
-    }
-    public function salarySignatory()
-    {
-        return $this->hasOne(SalarySignatory::class);
     }
 }
