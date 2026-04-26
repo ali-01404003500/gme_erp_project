@@ -88,9 +88,9 @@
                                         <table id="zero-config" class="table dt-table-hover table-bordered align-top" style="width: 100%; table-layout: fixed;">
                                             <thead class="align-top">
                                                 <tr>
-                                                    <th class="text-center text-wrap" style="width: 8%">SL</th>
+                                                    <th class="text-center text-wrap" style="width: 2%">SL</th>
                                                     <th class="text-left text-wrap" style="width: 8%">Token</th>
-                                                    <th class="text-left text-wrap" style="width: 10%">Customer</th>
+                                                    <th class="text-left text-wrap" style="width: 16%">Customer</th>
                                                     <th class="text-left text-wrap" style="width: 24%">Product</th>
                                                     <th class="text-left text-wrap" style="width: 10%">Problem Type</th>
                                                     <th class="text-left text-wrap" style="width: 6%">Service Date</th>
@@ -113,7 +113,8 @@
                                                         </td>
                                                         <td class="text-wrap" style="word-break: break-word; min-width: 200px; white-space: normal;">
                                                           Product Name:   {{ optional(optional($task)->product)->getRawOriginal('name') }} <br>
-                                                        Brand: <span class="text-muted">{{ optional(optional(optional($task)->product)->brand)->getRawOriginal('name') ?? 'N/A' }}</span> 
+                                                     <span class="text-muted">Model: {{ (optional($task)->product)->model ?? 'N/A' }}</span> <br>
+                                                          <span class="text-muted">Brand: {{ ((optional($task)->product)->brand)->getRawOriginal('name') ?? 'N/A' }}</span>
 
 
                                                         </td>

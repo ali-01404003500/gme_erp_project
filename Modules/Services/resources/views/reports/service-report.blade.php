@@ -161,13 +161,13 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover table-bordered table-sm" id="serviceReportTable"
+                                <table class="table table-hover table-bordered table-sm align-top" id="serviceReportTable"
                                      style="font-size: 11px; table-layout: fixed; width: 100%;">   {{--ekhane table layout fixed kora hoyeche then sob jaygay wrap --}}
-                                   <thead class="bg-primary text-white">
+                                   <thead class="bg-primary text-white align-top">
                                         <tr>
                                             <th class="text-center" style="width: 5%;">SL</th>
                                             <th style="width: 10%;" class="text-wrap">Service Date</th>                                         
-                                            <th style="width: 15%;" class="text-wrap">Customer Name</th>    
+                                            <th style="min-width: 300px;" class="text-wrap">Customer Name</th>    
                                             <th style="min-width: 300px;" class="text-wrap">Name of Problematic Product</th>                                       
                                             <th style="width: 10%;" class="text-wrap">Service Status</th>
                                             <th style="width: 10%;" class="text-wrap">Service Type</th>                                                                                    
@@ -175,7 +175,7 @@
                                             <th style="width: 10%;" class="text-wrap">Completion Info</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="align-top">
                                         @php
                                             $totalServiceFee = 0;
                                             $totalSparePartsFee = 0;
@@ -223,7 +223,7 @@
                                             @endphp
                                             <tr>
                                                 <td class="text-center">{{ $rowNumber }}</td>
-                                                <td class="text-wrap">{{ $token->token_date ? \Carbon\Carbon::parse($token->token_date)->format('d-M-Y') : 'N/A' }}
+                                                <td class="text-wrap">{{ $token->token_date ? \Carbon\Carbon::parse($token->token_date)->format('d-m-y') : 'N/A' }}
                                                 </td>
                                                 <td >
                                                     <a href="#" class="text-primary font-weight-bold text-wrap"

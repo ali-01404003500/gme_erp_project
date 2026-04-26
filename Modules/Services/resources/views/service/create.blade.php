@@ -245,13 +245,13 @@
                                                 <tr>
                                                                                               
                                                     <th style="width: 4%;" class="text-wrap">Sl</th>
-                                                    <th style="width: 10%;">Attachment</th>
-                                                    <th style="width: 18%;">Customer</th>
-                                                    <th style="width: 18%;">Product</th>
+                                                    <th style="width: 10%;" class="text-wrap">File</th>
+                                                    <th style="width: 17%;" class="text-wrap">Customer</th>
+                                                    <th style="width: 17%;" class="text-wrap">Product</th>
                                                     <th style="width: 8%;" class="text-wrap">Quantity</th>
                                                     <th style="width: 18%;" class="text-wrap">Serial Number</th>
-                                                    <th style="width: 18%;">Problem Details</th>
-                                                    <th style="width: 6%;">Action</th>
+                                                    <th style="width: 18%;" class="text-wrap">Problem Details</th>
+                                                    <th style="width: 8%;" class="text-wrap">Action</th>
                                                 </tr>
                                                     
 
@@ -704,12 +704,12 @@
                                 </button>
                             </div>
                         </div>
-                        <input type="hidden" name="documents[]" value="" class="attachments_input">
+                        <input type="hidden" name="documents[]" value="" class="attachments_input text-wrap">
                     </td>
                     <td class="text-wrap">${customer_name}</td>
                     <td class="text-wrap">${product_name}</td>
                     <td><input type="number" name="quantity[]" value="1" class="form-control text-left" min="1" style="width: 60px; margin: 0 auto; min-width: 50px;"></td>
-                    <td class="text-wrap ">${serial_number}</td>
+                    <td class="text-wrap " style="min-width: 300px;">${serial_number}</td>
                     <td class="text-wrap text-break" >${problem_details}</td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger text-wrap" onclick="removeRow(this)">
