@@ -85,8 +85,8 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $uSGOrOPGLicenseRequisitions])'
-                                style="width:100%">
+                            <table id="zero-config" class="table dt-table-hover table-bordered text-wrap" data-page='@include('utils.table_paginate', ['data' => $uSGOrOPGLicenseRequisitions])'
+                                style="width:100%; ">
                                 <thead>
                                     <tr>
                                         <th>Sl</th>
@@ -96,7 +96,7 @@
                                         <th>Generated Date</th>
                                         <th>Prepared By</th>
                                         <th>Status</th>
-                                        <th class="no-content">Action</th>
+                                        <th class="no-content text-center">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,10 +105,10 @@
                                         <tr>
                                         <td class="text-center">{{ ($uSGOrOPGLicenseRequisitions->currentPage() - 1) * $uSGOrOPGLicenseRequisitions->perPage() + $loop->iteration  }}</td>
                                             <td>{{ $value->license_id }}</td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $value->customer->company_name }}
                                             </td>
-                                            <td>{{ $value->dongles->dongle_id }}</td>
+                                            <td class="text-wrap">{{ $value->dongles->dongle_id }}</td>
                                             <td>{{ date('Y-m-d', strtotime($value->created_at)) }}</td>
                                             <td>{{ $value->createdBy->name }}</td>
                                             <td>@if($value->status == 'Approved') <span class="badge badge-round badge-success">Approved</span>  @endif

@@ -49,7 +49,7 @@ class ServiceDocumentEntryController extends Controller
             'product_id' => 'required|exists:product_catalogs,id',
             'document_date' => 'nullable',
             'documents' => 'nullable|string',
-            'remarks' => 'nullable|string',
+            'remarks' => 'nullable|string|max:255',
         ]);
         $this->service->store($validate);
         return redirect()->route('services.document-entries.index')->with('success', 'Service Document Entry created successfully.');

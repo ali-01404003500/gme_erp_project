@@ -209,17 +209,17 @@ $(document).ready(function() {
             <div class="row">
                 <div class="col-md-6">
                     <table class="table table-bordered table-sm">
-                        <tr><th>Customer</th><td>${d.customer_name}</td></tr>
-                        <tr><th>Serial</th><td>${d.serial_no}</td></tr>
-                        <tr><th>Product</th><td>${d.product_name}</td></tr>
+                        <tr><th>Customer</th><td class="text-wrap">${d.customer_name}</td></tr>
+                        <tr><th>Serial</th><td class="text-wrap">${d.serial_no}</td></tr>
+                        <tr><th>Product</th><td class="text-wrap">${d.product_name}</td></tr>
                     </table>
                 </div>
                 <div class="col-md-6">
                     <table class="table table-bordered table-sm">
-                        <tr><th>Invoice Date</th><td>${d.invoice_date_formatted}</td></tr>
-                        <tr><th>Warranty Period</th><td>${d.warranty_period}</td></tr>
-                        <tr><th>Expiry Date</th><td>${d.warranty_expiry_formatted}</td></tr>
-                        <tr><th>Remaining Warranty Period</th><td>${d.remaining_period}</td></tr>
+                        <tr><th>Invoice Date</th><td class="text-wrap">${d.invoice_date_formatted}</td></tr>
+                        <tr><th>Warranty Period</th><td class="text-wrap">${d.warranty_period}</td></tr>
+                        <tr><th>Expiry Date</th><td class="text-wrap">${d.warranty_expiry_formatted}</td></tr>
+                        <tr><th>Remaining Warranty Period</th class="text-wrap"><td>${d.remaining_period}</td></tr>
                     </table>
                 </div>
             </div>

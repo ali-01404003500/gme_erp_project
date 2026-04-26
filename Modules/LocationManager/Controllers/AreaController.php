@@ -32,6 +32,7 @@ class AreaController extends Controller
     {
         $data['areas'] = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
+        
 
         if ($request->export == "pdf") {
             set_time_limit(1000);

@@ -297,10 +297,10 @@ class SalesOrderService
             /*Create:: sms send for cash collection*/ 
             if ($cashCollectionAmount > 0) {
 
-                $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
-                $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
-                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
-                $smsTemplate = $sms->template_body;
+                // $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
+                // $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
+                // $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+                // $smsTemplate = $sms->template_body;
 
                 $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first(); 
 
@@ -319,27 +319,27 @@ class SalesOrderService
                     'customer_current_balance ' => $customerBalance
                 ];   
 
-                foreach ($data as $key => $value) {
-                    $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-                } 
+                // foreach ($data as $key => $value) {
+                //     $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                // } 
 
-                $time = Carbon::parse(now()); 
-                $newTime = $time->addMinutes($triggerName->after_send_time);
+                // $time = Carbon::parse(now()); 
+                // $newTime = $time->addMinutes($triggerName->after_send_time);
 
-                SmsInfo::updateOrCreate(
-                    [
-                        'sms_reference' => $result['salesOrder']->id,
-                        'sms_mem_id' => $result['salesOrder']->customer_id,
-                        'sms_status' => 'pending', // condition
-                        'trigger_name' => 'T03', 
+                // SmsInfo::updateOrCreate(
+                //     [
+                //         'sms_reference' => $result['salesOrder']->id,
+                //         'sms_mem_id' => $result['salesOrder']->customer_id,
+                //         'sms_status' => 'pending', // condition
+                //         'trigger_name' => 'T03', 
                           
-                    ],
-                    [
-                        'sms_send_time' => $newTime,
-                        'sms_to' => $phone,
-                        'sms_text' => $smsTemplate, 
-                    ]
-                );
+                //     ],
+                //     [
+                //         'sms_send_time' => $newTime,
+                //         'sms_to' => $phone,
+                //         'sms_text' => $smsTemplate, 
+                //     ]
+                // );
 
                 
                 // dd($smsTemplate);  
@@ -1422,8 +1422,8 @@ class SalesOrderService
     
             $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
             $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
-            $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
-            $smsTemplate = $sms->template_body;
+            // $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+            // $smsTemplate = $sms->template_body;
 
             $customerInfo = Customer::where('id', $salesOrder->customer_id)->first(); 
 
@@ -1431,40 +1431,40 @@ class SalesOrderService
             $customerName = $customerInfo->company_name;
             $invoiceAmount = $salesOrder->net_amount;
 
-            $smsdata = [
-                'customer_name' =>  $customerName,
-                'invoice_amount' => $invoiceAmount
-            ];  
+            // $smsdata = [
+            //     'customer_name' =>  $customerName,
+            //     'invoice_amount' => $invoiceAmount
+            // ];  
 
-            foreach ($smsdata as $key => $value) {
-                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-            } 
+            // foreach ($smsdata as $key => $value) {
+            //     $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            // } 
 
-            $time = Carbon::parse(now()); 
-            $newTime = $time->addMinutes($triggerName->after_send_time);
+            // $time = Carbon::parse(now()); 
+            // $newTime = $time->addMinutes($triggerName->after_send_time);
 
-            SmsInfo::updateOrCreate(
-                [
-                    'sms_reference' => $salesOrder->id,
-                    'sms_mem_id' => $salesOrder->customer_id,
-                    'sms_status' => 'pending', // condition
-                    'trigger_name' => 'T08', 
-                ],
-                [
-                    'sms_send_time' => $newTime,
-                    'sms_to' => $phone,
-                    'sms_text' => $smsTemplate, 
-                ]
-            );
+            // SmsInfo::updateOrCreate(
+            //     [
+            //         'sms_reference' => $salesOrder->id,
+            //         'sms_mem_id' => $salesOrder->customer_id,
+            //         'sms_status' => 'pending', // condition
+            //         'trigger_name' => 'T08', 
+            //     ],
+            //     [
+            //         'sms_send_time' => $newTime,
+            //         'sms_to' => $phone,
+            //         'sms_text' => $smsTemplate, 
+            //     ]
+            // );
 
                 
             /*Update:: send sms for cash collection */
             if ($cashCollectionAmount > 0) {
     
                 $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
-                $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
-                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
-                $smsTemplate = $sms->template_body;
+                // $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
+                // $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+                // $smsTemplate = $sms->template_body;
 
                 $customerInfo = Customer::where('id', $data['customer_id'])->first(); 
 
@@ -1483,26 +1483,26 @@ class SalesOrderService
                     'customer_current_balance ' => $customerBalance
                 ];   
 
-                foreach ($data as $key => $value) {
-                    $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
-                } 
+                // foreach ($data as $key => $value) {
+                //     $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                // } 
 
-                $time = Carbon::parse(now()); 
-                $newTime = $time->addMinutes($triggerName->after_send_time);
+                // $time = Carbon::parse(now()); 
+                // $newTime = $time->addMinutes($triggerName->after_send_time);
 
-                SmsInfo::updateOrCreate(
-                    [
-                        'sms_reference' => $salesOrder->id,
-                        'sms_mem_id' => $salesOrder->customer_id,
-                        'sms_status' => 'pending', // condition
-                        'trigger_name' => 'T03', 
-                    ],
-                    [
-                        'sms_send_time' => $newTime,
-                        'sms_to' => $phone,
-                        'sms_text' => $smsTemplate, 
-                    ]
-                );
+                // SmsInfo::updateOrCreate(
+                //     [
+                //         'sms_reference' => $salesOrder->id,
+                //         'sms_mem_id' => $salesOrder->customer_id,
+                //         'sms_status' => 'pending', // condition
+                //         'trigger_name' => 'T03', 
+                //     ],
+                //     [
+                //         'sms_send_time' => $newTime,
+                //         'sms_to' => $phone,
+                //         'sms_text' => $smsTemplate, 
+                //     ]
+                // );
             }
         }
 

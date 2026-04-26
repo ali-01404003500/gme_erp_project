@@ -161,21 +161,21 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover table-bordered table-sm" id="serviceReportTable"
-                                    style="font-size: 11px;">
-                                    <thead class="bg-primary text-white">
+                                <table class="table table-hover table-bordered table-sm align-top" id="serviceReportTable"
+                                     style="font-size: 11px; table-layout: fixed; width: 100%;">   {{--ekhane table layout fixed kora hoyeche then sob jaygay wrap --}}
+                                   <thead class="bg-primary text-white align-top">
                                         <tr>
-                                            <th class="text-center">SL</th>
-                                            <th>Service Date</th>
-                                            <th>Customer Name</th>
-                                            <th>Service Status</th>
-                                            <th>Service Type</th>
-                                            <th>Name of Problematic Product</th>
-                                            <th style="min-width: 300px;">Problem & Solution Details</th>
-                                            <th>Completion Info</th>
+                                            <th class="text-center" style="width: 5%;">SL</th>
+                                            <th style="width: 10%;" class="text-wrap">Service Date</th>                                         
+                                            <th style="min-width: 300px;" class="text-wrap">Customer Name</th>    
+                                            <th style="min-width: 300px;" class="text-wrap">Name of Problematic Product</th>                                       
+                                            <th style="width: 10%;" class="text-wrap">Service Status</th>
+                                            <th style="width: 10%;" class="text-wrap">Service Type</th>                                                                                    
+                                            <th style="min-width: 300px;" class="text-wrap">Problem & Solution Details</th>                                           
+                                            <th style="width: 10%;" class="text-wrap">Completion Info</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="align-top">
                                         @php
                                             $totalServiceFee = 0;
                                             $totalSparePartsFee = 0;
@@ -223,35 +223,40 @@
                                             @endphp
                                             <tr>
                                                 <td class="text-center">{{ $rowNumber }}</td>
-                                                <td>{{ $token->token_date ? \Carbon\Carbon::parse($token->token_date)->format('d-M-Y') : 'N/A' }}
+                                                <td class="text-wrap">{{ $token->token_date ? \Carbon\Carbon::parse($token->token_date)->format('d-m-y') : 'N/A' }}
                                                 </td>
-                                                <td>
-                                                    <a href="#" class="text-primary font-weight-bold"
+                                                <td >
+                                                    <a href="#" class="text-primary font-weight-bold text-wrap"
                                                         data-toggle="modal" data-target="#customerLedgerModal"
                                                         data-customer-id="{{ $token->customer_id }}">
                                                         {{ $token->customer->company_name ?? 'N/A' }}
                                                     </a>
                                                     <br>
                                                     <small
-                                                        class="text-muted">{{ $token->customer->address ?? '' }}</small>
+                                                        class="text-muted text-wrap">{{ $token->customer->address ?? '' }}</small>
                                                     <br>
-                                                    <small class="text-info">Service ID:
+                                                    <small class="text-info text-wrap">Service ID:
                                                         {{ $token->service->service_unique_id ?? 'N/A' }}</small>
                                                 </td>
-                                                <td>
-                                                    <span
-                                                        class="badge {{ $statusClass }} badge-round">{{ $status }}</span>
-                                                </td>
-                                                <td>{{ $token->service_type ?? 'N/A' }}</td>
-                                                <td>
-                                                    <strong>{{ $token->product->name ?? 'N/A' }}</strong>
+
+                                                 <td class="text-wrap">
+                                                    <strong class="fw-light">{{ $token->product->getRawOriginal('name') ?? 'N/A' }}</strong> <br>
+                                                    Brand: <span class="text-muted">{{ $token->product->brand->name }}</span> 
                                                     @if ($token->product && $token->product->model_no)
                                                         <br><small class="text-muted">Model:
                                                             {{ $token->product->model_no }}</small>
                                                     @endif
                                                 </td>
+
+
                                                 <td>
-                                                    <div class="problem-solution-details">
+                                                    <span
+                                                        class="badge {{ $statusClass }} badge-round">{{ $status }}</span>
+                                                </td>
+                                                <td class="text-wrap">{{ $token->service_type ?? 'N/A' }}</td>
+                                               
+                                                <td>
+                                                    <div class="problem-solution-details text-wrap">
                                                         <div class="mb-2">
                                                             <strong class="text-danger">Problem:</strong>
                                                             <p class="mb-1">{{ $token->problem_details ?? 'N/A' }}</p>
@@ -290,7 +295,7 @@
                                                             @else
                                                                 {{-- Fallback to main description --}}
                                                                 <div class="mb-2">
-                                                                    <strong class="text-success">Solution:</strong>
+                                                                    <strong class="text-success text-wrap">Solution:</strong>
                                                                     <p class="mb-1">
                                                                         {{ $token->serviceMyTask->description ?? 'N/A' }}
                                                                     </p>
@@ -310,7 +315,7 @@
                                                             </div>
 
                                                             @if ($token->serviceMyTask->bill_description)
-                                                                <div class="mb-2">
+                                                                <div class="mb-2 text-wrap">
                                                                     <strong>Remarks:</strong>
                                                                     <p class="mb-1">{{ $token->serviceMyTask->bill_description }}
                                                                     </p>
@@ -320,7 +325,7 @@
 
                                                         @if ($token->service && $token->service->emergencyNotes->count() > 0)
                                                             <div class="mb-2">
-                                                                <strong class="text-warning">Emergency Notes:</strong>
+                                                                <strong class="text-warning text-wrap">Emergency Notes:</strong>
                                                                 @foreach ($token->service->emergencyNotes as $note)
                                                                     <div class="border-left border-warning pl-2 ml-2 mb-1">
                                                                         <small>
@@ -336,7 +341,7 @@
                                                         @endif
                                                     </div>
                                                 </td>
-                                                <td>
+                                                <td class="text-wrap">
                                                     @if ($token->service)
                                                         <div class="mb-1">
                                                             <strong>Entry By:</strong><br>
@@ -355,7 +360,7 @@
                                                         </div>
 
                                                         @if ($token->serviceMyTask->updated_at)
-                                                            <div class="mb-1">
+                                                            <div class="mb-1 text-wrap">
                                                                 <strong>Completion Date:</strong><br>
                                                                 {{ $token->serviceMyTask->updated_at->format('d-M-Y h:i A') }}
                                                             </div>
@@ -363,7 +368,7 @@
                                                     @endif
 
                                                     @if ($token->service && $token->service->emergencyNotes->count() > 0)
-                                                        <div class="mt-2">
+                                                        <div class="mt-2 text-wrap">
                                                             <strong>Note:</strong><br>
                                                             <small>{{ $token->service->emergencyNotes->last()->note ?? '' }}</small>
                                                         </div>

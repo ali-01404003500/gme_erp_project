@@ -172,6 +172,7 @@
                                         <tr class="text-center">
                                             <td class="text-center fw-bold text-muted small">
                                                 {{ ($documentHeads->currentPage() - 1) * $documentHeads->perPage() + $loop->iteration }}
+                                              
                                             </td>
                                             <td class="text-center">
                                                 <span

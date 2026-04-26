@@ -157,7 +157,7 @@
                                                 {{-- @dd($shipmentVerifies) --}}
                                                 <td class="text-center"><input type="checkbox" class="form-check-input row-checkbox"
                                                         value="{{ $shipmentVerify->id }}" /></td>
-                                                <td class="text-center">{{ $key + 1 }}</td>
+                                                <td class="text-center">{{ ($shipmentVerifies->currentPage() - 1) * $shipmentVerifies->perPage() + $loop->iteration  }}</td>
                                                 {{-- <td>{{ $shipmentVerify->shipment_id }}</td> --}}
                                                 <td>
                                                     {{ $shipmentVerify->customer->company_name }}
@@ -170,7 +170,11 @@
                                                 <td> {{ $shipmentVerify->courier_date }}  </td>
                                                 {{-- @dd( ) --}}
                                                 <td>  {{ numberFormat($shipmentVerify->source?->source?->net_amount ?? 0) }} </td>
-                                                <td> {{ numberFormat(($shipmentVerify->source?->source?->shipment?->additional_amount ?? 0) + ($shipmentVerify->source?->source->due_amount ?? 0)) }}  </td>
+                                                @php
+                                                    $totalCdlAmt = ($shipmentVerify->source?->source?->shipment?->additional_amount ?? 0) + 
+                                                                ($shipmentVerify->source?->source->due_amount ?? 0);
+                                                @endphp
+                                                <td style="border: 1px solid #989090 !important; {{ $totalCdlAmt > 0 ? 'background-color: #d4edda; font-weight: bold;' : '' }}"> {{ numberFormat(($shipmentVerify->source?->source?->shipment?->additional_amount ?? 0) + ($shipmentVerify->source?->source->due_amount ?? 0)) }}  </td>
                                                 <td>{{$shipmentVerify->receipt_no}}</td>
                                                 <td>{{ numberFormat($shipmentVerify->service_charge ?? 0, 2) }} (S) | {{ numberFormat($shipmentVerify->delivery_charge ?? 0, 2) }} (D) | {{ $shipmentVerify->other_charge !== null && $shipmentVerify->other_charge !== '' ? numberFormat($shipmentVerify->other_charge, 2) : '-' }} (O)</td>
                                                 {{-- <td>{{ $shipmentVerify->source }}</td> --}}

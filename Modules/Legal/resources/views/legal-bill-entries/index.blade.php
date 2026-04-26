@@ -73,7 +73,7 @@
                    
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $legalBillEntrys])'
+                            <table id="zero-config"class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $legalBillEntrys])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -101,7 +101,7 @@
                                             Prepared By
                                         </th>
                                        
-                                        <th class="no-content">
+                                        <th class="no-content text-center">
                                             Actions
                                         </th>
                                     </tr>
@@ -121,7 +121,7 @@
                                             <td>
                                                 {{ $bill->legalEntry->case_no ?? 'N/A' }}
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $bill->vendor->company_name ?? 'N/A' }}
                                             </td>
                                             <td>

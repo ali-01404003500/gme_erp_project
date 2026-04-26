@@ -29,7 +29,7 @@ class DeliveryService
         $this->shipmentVerifyService = $shipmentVerifyService;
     }
 
-    public function getAll(int $limit = 20)
+    public function getAll(int $limit = 100)
     {
         if (!request()->has('status')) {
             request()->merge(['status' => 'pending']);

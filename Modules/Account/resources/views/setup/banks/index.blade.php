@@ -46,21 +46,21 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $banks])'
-                                style="width:100%">
+                                style="width:100%; table-layout: fixed;">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center no-content">Action</th>
+                                        <th class="text-center text-wrap" style="width: 8%">Sl</th>
+                                        <th class="text-center text-wrap">Name</th>
+                                        <th class="text-center text-wrap no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @csrf
                                     @foreach ($banks as $key => $bank)
                                         <tr>
-<td class="text-center">{{ ($banks->currentPage() - 1) * $banks->perPage() + $loop->iteration  }}</td>
-                                            <td class="text-center">{{ $bank->name }}</td>
-                                            <td class="text-center">
+                                            <td class="text-center text-wrap">{{ ($banks->currentPage() - 1) * $banks->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center text-wrap">{{ $bank->name }}</td>
+                                            <td class="text-center text-wrap">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 
@@ -115,7 +115,7 @@
                                 <div class="modal-body">
                                     
                                     <div class="row mb-4">
-                                        <label class="col-sm-12 col-form-label">Name</label>
+                                        <label class="col-sm-12 col-form-label">Name<span class="text-danger">*</span></label>
                                         <div class="col-sm-12">
                                             <input type="text" name="name" class="form-control" placeholder=" Name *"
                                                 required>
@@ -156,7 +156,7 @@
                         
 
                         <div class="row mb-4">
-                            <label class="col-sm-12 col-form-label">Name</label>
+                            <label class="col-sm-12 col-form-label">Name<span class="text-danger">*</span></label>
                             <div class="col-sm-12">
                                 <input type="text" name="name" id="name" class="form-control" placeholder=" Name *"
                                     required>

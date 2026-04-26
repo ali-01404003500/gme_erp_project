@@ -49,19 +49,19 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="name">Name</label>
+                                        <label for="name">Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Name">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="account_number">Account Number</label>
+                                        <label for="account_number">Account Number <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="account_number" name="account_number" value="{{ old('account_number') }}" placeholder="Account Number">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="account_group_id">Account Group</label>
+                                        <label for="account_group_id">Account Group <span class="text-danger">*</span></label>
                                         <select class="form-control tom-select" id="account_group_id" name="account_group_id">
                                             <option value="">Select Account Group</option>
                                             @foreach ($accountGroups as $key => $accountGroup)
@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="account_control_id">Account Control</label>
+                                        <label for="account_control_id">Account Control<span class="text-danger">*</span></label>
                                         <select class="form-control tom-select" id="account_control_id" name="account_control_id">
                                             <option value="">Select Account Control</option>
                                             @foreach ($accountControls as $key => $accountControl)
@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="account_subsidiary_id">Account Subsidiaries</label>
+                                        <label for="account_subsidiary_id">Account Subsidiaries<span class="text-danger">*</span></label>
                                         <select class="form-control tom-select" id="account_subsidiary_id" name="account_subsidiary_id">
                                             <option value="">Select Account Subsidiaries</option>
                                             @foreach ($accountSubsidiaries as $key => $accountSubsidiary)

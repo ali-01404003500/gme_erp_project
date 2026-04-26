@@ -95,7 +95,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center gap-3">
                             <h6 class="mb-0"><i class="las la-file-alt"></i>Installation & Servicing Reports</h6>
                             <span class="badge badge-round badge-primary badge-lg">
                                 Total: {{ $reports->total() }}
@@ -104,16 +104,16 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
+                            <table class="table table-hover table-bordered" style="width: 100%; table-layout: fixed;">
                                 <thead class="bg-primary text-white">
                                     <tr>
-                                        <th style="width: 5%;">SL</th>
-                                        <th style="width: 15%;">Report No</th>
-                                        <th style="width: 20%;">Customer Name</th>
-                                        <th style="width: 15%;">Engineer Name</th>
-                                        <th style="width: 10%;">Type</th>
-                                        <th style="width: 20%;">Installation/Servicing Date & Time</th>
-                                        <th style="width: 15%;" class="text-center">Action</th>
+                                        <th style="width: 5%;" class="text-wrap">SL</th>
+                                        <th style="width: 15%;" class="text-wrap">Report No</th>
+                                        <th style="width: 20%;" class="text-wrap">Customer Name</th>
+                                        <th style="width: 15%;" class="text-wrap">Engineer Name</th>
+                                        <th style="width: 10%;" class="text-wrap">Type</th>
+                                        <th style="width: 20%;" class="text-wrap">Installation/Servicing Date & Time</th>
+                                        <th style="width: 15%;" class="text-center text-wrap">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -135,32 +135,32 @@
                                             }
                                         @endphp
                                         <tr>
-                                            <td class="text-center">{{ $rowNumber }}</td>
-                                            <td>
+                                            <td class="text-center text-wrap">{{ $rowNumber }}</td>
+                                            <td class="text-wrap">
                                                 <strong class="text-primary">{{ $reportNo ?? 'N/A' }}</strong>
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 <strong>{{ $token->customer->company_name ?? 'N/A' }}</strong>
                                                 <br>
                                                 <small class="text-muted">{{ $token->customer->phone ?? '' }}</small>
                                             </td>
-                                            <td>{{ $engineerName }}</td>
-                                            <td>
+                                            <td class="text-wrap">{{ $engineerName }}</td>
+                                            <td class="text-wrap">
                                                 {{ $type }}
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ @$token->serviceMyTask->updated_at ? $token->serviceMyTask->updated_at->format('Y-m-d H:i:s') : 'N/A' }}
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-center text-wrap">
                                                 <a href="{{ route('services.reports.installation-report-details', $token->id) }}" 
-                                                   class="btn btn-sm btn-primary" target="_blank">
-                                                    <i class="las la-file-pdf"></i> View PDF
+                                                    target="_blank">
+                                                    <i class="las la-file-pdf" style="font-size: 28px;" title="view PDF"></i> 
                                                 </a>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center py-4">
+                                            <td colspan="7" class="text-center py-4 text-wrap">
                                                 <i class="las la-inbox" style="font-size: 48px; color: #ddd;"></i>
                                                 <p class="mb-0 mt-2">No service reports found</p>
                                             </td>

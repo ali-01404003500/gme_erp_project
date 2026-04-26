@@ -52,7 +52,7 @@
                                                 </td>
 
                                              
-                                                <td>
+                                                <td class="w-25">
                                                     <select name="status" id="status" class="form-select tom-select">
                                                         <option value="">Select status</option>
                                                         <option value="live" {{ request('status') == 'live' ? 'selected' : '' }}>Live</option>
@@ -85,49 +85,71 @@
                             <div class="card-body">
                                 <form>
                                     <div class="col-sm-12">
-                                        <table id="zero-config" class="table dt-table-hover" style="width:100%">
-                                            <thead>
+                                        <table id="zero-config" class="table dt-table-hover table-bordered align-top" style="width: 100%; table-layout: fixed;">
+                                            <thead class="align-top">
                                                 <tr>
-                                                    <th class="text-center" style="width: 8%">SL</th>
-                                                    <th class="text-center">Token</th>
-                                                    <th class="text-center">Product</th>
-                                                    <th class="text-center">Customer</th>
-                                                    <th class="text-center">Problem Type</th>
-                                                    <th class="text-center">Service Date</th>
-                                                    <th class="text-center">Service Status</th>
-                                                    <th class="text-center">Assign By</th>
-                                                    <th class="text-center">Priority</th>
-                                                    <th class="text-center">Service Type</th>
-                                                    <th class="text-center no-content">Action</th>
+                                                    <th class="text-center text-wrap" style="width: 2%">SL</th>
+                                                    <th class="text-left text-wrap" style="width: 8%">Token</th>
+                                                    <th class="text-left text-wrap" style="width: 16%">Customer</th>
+                                                    <th class="text-left text-wrap" style="width: 24%">Product</th>
+                                                    <th class="text-left text-wrap" style="width: 10%">Problem Type</th>
+                                                    <th class="text-left text-wrap" style="width: 6%">Service Date</th>
+                                                    <th class="text-left text-wrap" style="width: 6%">Service Status</th>
+                                                    <th class="text-left text-wrap" style="width: 8%">Assign By</th>
+                                                    {{-- <th class="text-left" style="width: 6%">Priority</th> --}}
+                                                    <th class="text-left text-wrap" style="width: 6%">Service Type</th>
+                                                    <th class="text-center no-content" style="width: 8%">Action</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="align-top">
                                                 @foreach ($myTasks as $key => $task)
                                                     <tr>
-                                                        <td class="text-center">{{ $key + 1 }}</td>
-                                                        <td class="text-center">{{ $task->service->service_unique_id }}</td>
-                                                        <td>{{ optional(optional($task)->product)->name }}</td>
-                                                        <td>{{ optional($task)->customer->company_name }}</td>
-                                                        <td>{{ $task->problem_type }}</td>
-                                                        <td>{{ $task->token_date }}</td>
-                                                        <td>
-                                                            {{ $task->action }}
+                                                        <td class="text-center text-wrap">{{ $key + 1 }}</td>
+                                                        <td class="text-left text-wrap">{{ $task->service->service_unique_id }}</td>
+                                                         <td class="text-wrap" style="word-break: break-word; min-width: 180px; white-space: normal;">
+                                                            {{ optional($task)->customer->company_name }} <br>
+                                                            <span class="text-muted">Address: {{ optional($task)->customer->address }}</span> 
+
                                                         </td>
+                                                        <td class="text-wrap" style="word-break: break-word; min-width: 200px; white-space: normal;">
+                                                          Product Name:   {{ optional(optional($task)->product)->getRawOriginal('name') }} <br>
+                                                     <span class="text-muted">Model: {{ (optional($task)->product)->model ?? 'N/A' }}</span> <br>
+                                                          <span class="text-muted">Brand: {{ ((optional($task)->product)->brand)->getRawOriginal('name') ?? 'N/A' }}</span>
+
+
+                                                        </td>
+                                                       
+                                                        <td class="text-wrap">{{ $task->problem_type }}</td>
+                                                        <td class="text-wrap">{{ $task->token_date }}</td>
+                                                        <td class="text-wrap text-center" style="word-break: break-word; min-width: 80px; vertical-align: middle;">
+                                                                @php
+                                                                    $status = strtolower($task->action); 
+                                                                    $badgeClass = 'badge-secondary'; 
+
+                                                                    if($status == 'live') $badgeClass = 'badge-success';
+                                                                    elseif($status == 'started') $badgeClass = 'badge-info';
+                                                                    elseif($status == 'done') $badgeClass = 'badge-primary';
+                                                                    elseif($status == 'cancelled') $badgeClass = 'badge-danger';
+                                                                @endphp
+
+                                                                <span class="badge {{ $badgeClass }} p-2" style="text-transform: capitalize;">
+                                                                    {{ $task->action }}
+                                                                </span>
+                                                            </td>
                                                         {{-- @dd($task->engineerAssign) --}}
-                                                        <td>{{ @$task->engineerAssign->createdBy->name }}</td>
-                                                        <td>{{ @$task->engineerAssign->service_priority }}</td>
-                                                        <td>{{ @$task->engineerAssign->serviceType->name??@$task->engineerAssign->service_type }}</td>
-                                                        <td>
-                                                         <div class="btn-group btn-group-sm" role="group"
-                                                              aria-label="Small button group">
+                                                        <td class="text-wrap">{{ @$task->engineerAssign->createdBy->name }}</td>
+                                                        {{-- <td>{{ @$task->engineerAssign->service_priority }}</td> --}}
+                                                        <td class="text-wrap">{{ @$task->engineerAssign->serviceType->name??@$task->engineerAssign->service_type }}</td>
+                                                        <td class="text-center align-middle" style="vertical-align: middle;">
+                                                         <div class="d-flex flex-wrap  justify-content-center" style="gap: 5px;">
                                                             @if ((hasPermission('services.service-my-task.create') || hasPermission('services.service-my-task.update') || hasPermission('services.service-bills.create') ) && $task->action != 'Done')
-                                                                <a href="{{ route('services.service-bills.create', ['token_id' => $task->id]) }}" class="btn btn-danger btn-xs"><i class="fa fa-eye"></i> Details</a>
+                                                                <a href="{{ route('services.service-bills.create', ['token_id' => $task->id]) }}" class="btn btn-danger btn-xs" title="Details"><i class="fas fa-info-circle"></i>
                                                             @endif
                                                             @if (hasPermission('services.quotations.create'))
-                                                                <a href="{{ route('services.quotations.create', ['service_id' => $task->service_id]) }}" class="btn btn-success btn-xs"><i class="fas fa-file-invoice"></i> Send to Quotation</a>
+                                                                <a href="{{ route('services.quotations.create', ['service_id' => $task->service_id]) }}" class="btn btn-success btn-xs" title="Send to quotations"><i class="fas fa-file-invoice"></i></a>
                                                             @endif
                                                             @if (hasPermission('sales.sales-orders.create'))
-                                                                <a href="{{ route('sales.sales-orders.create', ['service_id' => $task->service_id]) }}" class="btn btn-info btn-xs"><i class="fas fa-file-invoice"></i> Send to Sales</a>
+                                                                <a href="{{ route('sales.sales-orders.create', ['service_id' => $task->service_id]) }}" class="btn btn-info btn-xs " title=" Send to Sales"><i class="fas fa-bars" ></i></a>
                                                             @endif
                                                          </div>
                                                         </td>

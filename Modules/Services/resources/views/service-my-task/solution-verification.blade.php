@@ -31,41 +31,46 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="col-sm-12">
-                                    <table id="zero-config" class="table dt-table-hover" style="width:100%">
-                                        <thead>
+                                    <table id="zero-config" class="table dt-table-hover table-responsive table-bordered align-top" style=" table-layout: fixed;;width:100%">
+                                        <thead class="align-top">
                                             <tr>
-                                                <th class="text-center" style="width: 2%">Sl</th>
-                                                <th class="text-center" style="width: 15%">Customer</th>
-                                                <th class="text-center" style="width: 15%">Product info</th>
-                                                <th class="text-center" style="width: 15%">Problem Type</th>
-                                                <th class="text-center" style="width: 15%">Date</th>
-                                                <th class="text-center no-content" style="width: 20%">Old Solution
+                                                <th class="text-center text-wrap" style="width: 4%">Sl</th>
+                                                <th class="text-left text-wrap" style="width: 15%">Customer</th>
+                                                <th class="text-left text-wrap" style="width: 15%">Product info</th>
+                                                <th class="text-left text-wrap" style="width: 15%">Problem Type</th>
+                                                <th class="text-left text-wrap" style="width: 15%">Date</th>
+                                                <th class="text-left text-wrap no-content" style="width: 20%">Old Solution
                                                 </th>
-                                                <th class="text-center no-content" style="width: 23%">Action</th>
+                                                <th class="text-left no-content" style="width: 16%">Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody class="align-top">
                                             @foreach ($serviceMyTasks as $key => $task)
                                                 <tr data-action="{{ $task->action }}">
-                                                    <td class="text-center" style="vertical-align: top; width: 2%;">
+                                                    <td class="text-center" style=" width: 2%;">
                                                         {{ $key + 1 }}</td>
-                                                    <td style="vertical-align: top;">{{ optional($task->serviceToken->customer)->company_name }}</td>
-                                                    <td style="vertical-align: top;">
+                                                    <td style=" min-width: 300px;" class="text-wrap">
+                                                        {{ optional($task->serviceToken->customer)->company_name }} <br>
+                                                     <span class="text-muted">{{ optional($task->serviceToken->customer)->address }}</span>    
+
+
+                                                    </td>
+                                                    <td style=" min-width: 300px;" class="text-wrap">
                                                         Invoice ID: {{ @$task->serviceToken->service->service_unique_id }} <br>
-                                                        Product Name: {{ @$task->serviceToken->product->name }} <br>
+                                                        Product Name: {{ @$task->serviceToken->product->getRawOriginal('name') }} <br>
                                                         Serial No: {{ @$task->serviceToken->serial_number }}
                                                     </td>
-                                                    <td style="vertical-align: top; width: 15%;">{{ $task->serviceToken->problem_type }}</td>
-                                                    <td style="vertical-align: top; width: 15%;">
+                                                    <td style=" width: 15%;">{{ $task->serviceToken->problem_type }}</td>
+                                                    <td style=" width: 15%;">
                                                         Invoice Date: {{ @$task->serviceToken->invoice_date }} <br>
                                                         Expire Date: {{ @$task->serviceToken->expire_date }}
                                                     </td>
-                                                    <td style="vertical-align: top; width: 20%;">
+                                                    <td style=" min-width: 300px;" class="text-wrap"">
                                                         <div style="overflow: hidden; white-space: wrap;">
                                                             {{ $task->description ?? '' }}
                                                         </div>
                                                     </td>
-                                                    <td style="vertical-align: top; width: 20%;">
+                                                    <td style=" width: 20%;">
                                                         <form id="service-form-{{ $key + 1 }}"
                                                             action="{{ route('services.service-my-task.solution-verification-store', $task->id) }}"
                                                             method="POST">

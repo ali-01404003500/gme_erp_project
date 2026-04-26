@@ -73,7 +73,7 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
+                            <table id="zero-config"class="table  dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -93,9 +93,9 @@
                                 <tbody>
                                     @foreach ($deliveries as $deliverie)
                                         <tr>
-                                            <td class="text-center">{{ ($deliveries->currentPage() - 1) * $deliveries->perPage() + $loop->iteration  }}</td>
+                                            <td style="border: 1px solid #989090 !important;" class="text-center">{{ ($deliveries->currentPage() - 1) * $deliveries->perPage() + $loop->iteration  }}</td>
 
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 @if ($deliverie->source->sales_order_id??null)
                                                     <a href="{{ route('sales.sales-orders.show',$deliverie->source->id) }}">
                                                         {{ $deliverie->source->sales_order_id }}
@@ -105,17 +105,17 @@
                                                 @endif
                                             </td>
 
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ $deliverie->delivery_date}}  
                                             </td>
 
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 @if (@$deliverie->source->customer??null)
                                                      <a href="{{ route('crm.customers.show', $deliverie->source->customer->id) }}">{{ @$deliverie->source->customer->company_name }} </a>
                                                 @endif
                                             </td>
 
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 @if (class_basename($deliverie->source_type) == SalesOrder::class)
                                                     Sales Order
                                                 @elseif (class_basename($deliverie->source_type) == Quotation::class)
@@ -124,20 +124,20 @@
                                                     {{ class_basename($deliverie->source_type) }}
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ @$deliverie->source->customer->address }}
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ $deliverie->source->details->sum('quantity') }}
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ @$deliverie->source->createdBy->name }}
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ $deliverie->deliveryDetails->sum('quantity')  }}
                                             </td>
 
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 

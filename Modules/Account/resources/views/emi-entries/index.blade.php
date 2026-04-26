@@ -73,59 +73,55 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $eMIEntrys])'
-                                style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>SL</th>
-                                        <th>
-                                            EMI ID
-                                        </th>
-                                        <th>
-                                            Customer
-                                        </th>
-                                        <th>
-                                           No Of EMI
-                                        </th>
-                                        <th>
-                                            prepared by
-                                        </th>
-                                        <th>
-                                            Amount
-                                        </th>
-                                        <th>
-                                            Date
-                                        </th>
-                                        <th>
-                                            Action
-                                        </th>
-                                    </tr>
+                            <table id="zero-config"class="table dt-table-hover table-bordered align-top" data-page='@include('utils.table_paginate', ['data' => $eMIEntrys])'
+                                style="width:100%; table-layout: fixed;">                              
+                                    <thead>
+                                        <tr class="align-top ">
+                                            <th class="text-wrap" style="width: 5%;">SL</th>
+                                            
+                                            <th class="text-wrap" style="width: 15%;">EMI ID</th>
+                                            
+                                            <th class="text-wrap" style="width: 25%;">Customer</th>
+                                            
+                                            <th class="text-wrap" style="width: 10%;">No Of EMI</th>
+                                            
+                                            <th class="text-wrap" style="width: 15%;">Prepared By</th>
+                                            
+                                            <th class="text-wrap" style="width: 10%;">Amount</th>
+                                            
+                                            <th class="text-wrap" style="width: 10%;">Date</th>
+                                            
+                                            <th class="text-wrap no-content" style="width: 10%;">Action</th>
+                                                                            
+
+                                        </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="align-top">
                                     @foreach ($eMIEntrys as $emi)
                                         <tr>
-                                            <td class="text-center">{{ ($eMIEntrys->currentPage() - 1) * $eMIEntrys->perPage() + $loop->iteration  }}</td>
-                                            <td>
+                                            <td class="text-center text-wrap">{{ ($eMIEntrys->currentPage() - 1) * $eMIEntrys->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-wrap">
                                                 {{ $emi->emi_number }}
                                             </td>
-                                            <td>
-                                                {{ optional($emi->customer)->company_name }}
+                                            <td class="text-wrap">
+                                                {{ optional($emi->customer)->company_name }} <br>
+                                               <span class="text-muted">Address: {{ optional($emi->customer)->address }}</span> 
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $emi->tenure_no  }} ({{ $emi->tenure_type }})
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ optional($emi->createdBy)->name }}
                                             </td>
-                                            <th>
+                                            <th class="text-wrap">
                                                 {{ $emi->emi_amount }}
                                             </th>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $emi->created_at->format('Y M d') }}
                                             </td>
                                             
-                                            <td>
-                                                <div class="btn-group">
+                                            <td class="text-wrap ">
+                                                <div class="d-flex flex-wrap justify-content-center" style="gap: 5px;">
                                                     @if (hasPermission('account.emi-entries.update'))
                                                     <a class="btn btn-xs btn-outline-warning"
                                                         href="{{ route('account.emi-entries.edit', $emi->id) }}"><i
