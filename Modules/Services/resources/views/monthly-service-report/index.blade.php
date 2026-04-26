@@ -83,7 +83,7 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center gap-3">
                                 <h6 class="mb-0"><i class="las la-table"></i> Monthly Service Report</h6>
                                 <span class="badge badge-round badge-primary badge-lg">Total Engineers: {{ $totals['total_engineers'] }}</span>
                             </div>
@@ -317,8 +317,8 @@
     </td>
 
     <td class="text-center">
-        <a href="${serviceLink}" target="_blank" class="btn btn-sm btn-primary">
-            <i class="las la-file-invoice"></i> View
+        <a href="${serviceLink}" target="_blank" >
+            <i class="las la-file-invoice" style="font-size: 25px;" title="Service Challan"></i> 
         </a>
     </td>
 </tr>

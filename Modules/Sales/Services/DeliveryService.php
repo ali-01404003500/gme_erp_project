@@ -24,19 +24,7 @@ class DeliveryService
         $this->shipmentVerifyService = $shipmentVerifyService;
     }
 
-    // public function getAll(int $limit = 20)
-    // {
-    //     if (! request()->has('status')) {
-    //         request()->merge(['status' => 'pending']);
-    //     }
-    //     return Delivery::query()
-    //         ->whereHas('source')
-    //         ->searchByFields(['status'])
-    //         ->filterByDateRange('delivery_date')
-    //         ->paginate($limit);
-    // }
-
-    public function getAll(int $limit = 20)
+    public function getAll(int $limit = 100)
     {
         if (! request()->has('status')) {
             request()->merge(['status' => 'pending']);

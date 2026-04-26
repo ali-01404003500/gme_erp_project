@@ -73,73 +73,56 @@
                    
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $legalEntrys])'
-                                style="width:100%">
-                                <thead>
+                            <table id="zero-config"class="table dt-table-hover table-bordered align-top" data-page='@include('utils.table_paginate', ['data' => $legalEntrys])'
+                                style="width:100%; table-layout: fixed;">
+                                <thead class="align-top">
                                     <tr>
-                                        <th>SL</th>
-                                        <th>
-                                            Legal ID
-                                        </th>
-                                        <th>
-                                            Customer Name
-                                        </th>
-                                        <th>
-                                            Convict Name
-                                        </th>
-                                        <th>
-                                            Complainant Name
-                                        </th>
-                                        <th>
-                                            Advocate Name
-                                        </th>
-                                       
-                                        <th>
-                                            Prepared By
-                                        </th>
-                                        <th>
-                                           Date
-                                        </th>
-                                        <th class="no-content">
-                                            Actions
-                                        </th>
+                                        <th style="width: 4%;" class="text-wrap">SL</th>
+                                        <th style="width: 10%;" class="text-wrap">Legal ID</th>
+                                        <th style="width: 20%;" class="text-wrap">Customer Name</th> 
+                                        <th style="width: 18%;" class="text-wrap">Convict Name</th> 
+                                        <th style="width: 15%;" class="text-wrap">Complainant Name</th>
+                                        <th style="width: 12%;" class="text-wrap">Advocate Name</th>
+                                        <th style="width: 10%;" class="text-wrap">Prepared By</th>
+                                        <th style="width: 7%;" class="text-wrap">Date</th>
+                                        <th class="no-content" style="width: 4%;" class="text-wrap">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="align-top">
                                     {{-- @dd($legalEntrys) --}}
                                     @foreach ($legalEntrys as $legal)
                                         {{-- @dd($salesOrder->delivery) --}}
                                         <tr>
-                                            <td class="text-center">{{ ($legalEntrys->currentPage() - 1) * $legalEntrys->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center text-wrap">{{ ($legalEntrys->currentPage() - 1) * $legalEntrys->perPage() + $loop->iteration  }}</td>
 
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $legal->legal_id }}
                                             </td>
-                                             <td>
+                                             <td class="text-wrap">
                                                 @foreach ($legal->convicts as $convict )
                                                     {{ $convict->customer->company_name }},
                                                 @endforeach
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 @foreach ($legal->convicts as $convict )
                                                     {{ $convict->convict_name }},
                                                 @endforeach
                                             </td>
                                            
                                            
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $legal->complainant->complainant_name }}
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $legal->advocate_name }}
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ $legal->createdBy->name }}
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 {{ \Carbon\Carbon::parse($legal->created_at)->format('d-m-Y') }}
                                             </td>
-                                            <td>
+                                            <td class="text-wrap">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 

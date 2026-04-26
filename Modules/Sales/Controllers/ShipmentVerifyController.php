@@ -49,7 +49,7 @@ class ShipmentVerifyController extends Controller
             'additional_phone' => $request->get('additional_phone'),
         ];
 
-        $shipmentVerifies = $this->service->getAll(20, $filters);
+        $shipmentVerifies = $this->service->getAll(100, $filters);
         $data['shipmentVerifies'] = $shipmentVerifies;
         $data['couriers'] = Courier::all();
         $data['customers'] = Customer::select('id', 'company_name as name')->get();

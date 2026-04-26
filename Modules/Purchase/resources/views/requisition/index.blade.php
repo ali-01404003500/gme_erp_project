@@ -39,6 +39,34 @@
                 </div>
             </div>
 
+            <style>
+                .nav-icon la la-cart-arrow-down{
+                    font-size: 26px;
+                }
+                /* Grid line styles for table */
+                .grid-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .grid-table th,
+                .grid-table td {
+                    border: 1px solid #dee2e6;
+                    padding: 12px;
+                    vertical-align: middle;
+                }
+                .grid-table thead th {
+                    background-color: #f8f9fa;
+                    border-bottom: 2px solid #dee2e6;
+                }
+                /* Card inner table border override */
+                .card .table-bordered {
+                    border-collapse: collapse;
+                }
+                .card .table-bordered td,
+                .card .table-bordered th {
+                    border: 1px solid #dee2e6;
+                }
+            </style>
 
             <div class="row">
                 <div class="col-md-12">
@@ -134,40 +162,8 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                                <style>
-                                    .jobs-table-custom,
-                                    .jobs-table-custom th,
-                                    .jobs-table-custom td {
-                                        border: 1px solid #dee2e6 !important;
-                                        border-collapse: collapse !important;
-                                    }
-
-                                    .jobs-table-custom th,
-                                    .jobs-table-custom td {
-                                        padding: 12px;
-                                        vertical-align: middle;
-                                    }
-
-                                    .jobs-table-custom thead th {
-                                        background-color: #f8f9fa;
-                                        border-bottom-width: 2px !important;
-                                    }
-
-                                    .table thead th {
-                                        background-color: #35526e !important;
-                                        color: #ffffff !important;
-                                        font-weight: 600 !important;
-                                        text-transform: uppercase;
-                                        font-size: 0.85rem !important;
-                                        letter-spacing: 0.08em;
-                                        border-bottom: 2px solid #2a4054 !important;
-                                        padding: 14px 16px !important;  
-                                        vertical-align: middle;
-                                        text-align: center;
-                                    }
-                                </style>
                             {{-- Main data table with grid lines --}}
-                            <table id="zero-config" class="table jobs-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $requisitions])'
+                            <table id="zero-config" class="grid-table" data-page='@include('utils.table_paginate', ['data' => $requisitions])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -186,13 +182,13 @@
                                     @foreach ($requisitions as $value)
                                         <tr>
                                             <td>{{ ($requisitions->currentPage() - 1) * $requisitions->perPage() + $loop->iteration }}</td>
-                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                            <td>
                                                 <a href="{{ route('purchase.requisitions.show', $value->id) }}">{{ $value->requisition_no }}</a>
                                             </td>
                                             <td>{{ $value->invoice_date }}</td>
-                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->supplier)->company_name }}</td>
-                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->customer)->company_name }}</td>
-                                            {{-- <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->warehouse)->name }}</td> --}}
+                                            <td>{{ optional($value->supplier)->company_name }}</td>
+                                            <td>{{ optional($value->customer)->company_name }}</td>
+                                            <td>{{ optional($value->warehouse)->name }}</td>
                                             <td>
                                                 @if ($value->status == 0)
                                                     <span class="badge badge-round badge-warning">Pending</span>

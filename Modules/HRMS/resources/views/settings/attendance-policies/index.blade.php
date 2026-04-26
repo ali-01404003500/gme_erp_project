@@ -62,9 +62,9 @@
                                 <th>In time</th>
                                 <th>Delay Buffer</th>
                                 <th>Ex. Delay Buffer</th>
-                                {{-- <th>Ignore OT & Deduction</th> --}}
-                                {{-- <th>Exclude From Att. Reports</th> --}}
-                                {{-- <th>Discard Att. On Weekend</th> --}}
+                                <th>Ignore OT & Deduction</th>
+                                <th>Exclude From Att. Reports</th>
+                                <th>Discard Att. On Weekend</th>
                                 <th>Status</th>
                                 <th class="text-center">Actions</th>
                             </tr>
@@ -77,9 +77,9 @@
                                     <td>{{ $policy->in_time }}</td>
                                     <td>{{ $policy->delay_buffer }}</td>
                                     <td>{{ $policy->ex_delay_buffer }}</td>
-                                    {{-- <td>{{ $policy->ignore_ot_deduction ? 'Yes' : 'No' }}</td> --}}
-                                    {{-- <td>{{ $policy->exclude_from_reports ? 'Yes' : 'No' }}</td> --}}
-                                    {{-- <td>{{ $policy->discard_weekend ? 'Yes' : 'No' }}</td> --}}
+                                    <td>{{ $policy->ignore_ot_deduction ? 'Yes' : 'No' }}</td>
+                                    <td>{{ $policy->exclude_from_reports ? 'Yes' : 'No' }}</td>
+                                    <td>{{ $policy->discard_weekend ? 'Yes' : 'No' }}</td>
                                     <td>{{ $policy->status === 1 ? 'Active' : 'Inactive' }}</td>
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center align-items-center">

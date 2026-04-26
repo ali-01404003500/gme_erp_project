@@ -66,37 +66,7 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <style>
-                                .deliveries-table-custom,
-                                .deliveries-table-custom th,
-                                .deliveries-table-custom td {
-                                    border: 1px solid #dee2e6 !important;
-                                    border-collapse: collapse !important;
-                                }
-                                .deliveries-table-custom th,
-                                .deliveries-table-custom td {
-                                    padding: 12px;
-                                    vertical-align: middle;
-                                }
-                                .deliveries-table-custom thead th {
-                                    background-color: #f8f9fa;
-                                    border-bottom-width: 2px !important;
-                                }
-                                                                .table thead th {
-                    background-color: #35526e !important;
-                    color: #ffffff !important;
-                    font-weight: 600 !important;
-                    text-transform: uppercase;
-                    font-size: 0.85rem !important;
-                    letter-spacing: 0.08em;
-                    border-bottom: 2px solid #2a4054 !important;
-                    padding: 14px 16px !important;
-                    vertical-align: middle;
-                    text-align: center;
-                }
-                            </style>
-                            
-                            <table id="zero-config" class="table deliveries-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
+                            <table id="zero-config"class="table  dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -115,9 +85,9 @@
                                 <tbody>
                                     @foreach ($deliveries as $deliverie)
                                         <tr>
-                                            <td class="text-center">{{ ($deliveries->currentPage() - 1) * $deliveries->perPage() + $loop->iteration  }}</td>
+                                            <td style="border: 1px solid #989090 !important;" class="text-center">{{ ($deliveries->currentPage() - 1) * $deliveries->perPage() + $loop->iteration  }}</td>
 
-                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                            <td style="border: 1px solid #989090 !important;">
                                                 @if ($deliverie->source->sales_order_id??null)
                                                     <a href="{{ route('sales.sales-orders.show',$deliverie->source->id) }}">
                                                         {{ $deliverie->source->sales_order_id }}
@@ -127,39 +97,39 @@
                                                 @endif
                                             </td>
 
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ $deliverie->delivery_date}}  
                                             </td>
 
-                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                            <td style="border: 1px solid #989090 !important;">
                                                 @if (@$deliverie->source->customer??null)
                                                     <a href="{{ route('crm.customers.show', $deliverie->source->customer->id) }}">{{ @$deliverie->source->customer->company_name }} </a>
                                                 @endif
                                             </td>
 
-                                            {{-- <td>
-                                                @if (class_basename($deliverie->source_type) == 'SalesOrder')
+                                            <td style="border: 1px solid #989090 !important;">
+                                                @if (class_basename($deliverie->source_type) == SalesOrder::class)
                                                     Sales Order
                                                 @elseif (class_basename($deliverie->source_type) == 'Quotation')
                                                     Quotation
                                                 @else
                                                     {{ class_basename($deliverie->source_type) }}
                                                 @endif
-                                            </td> --}}
-                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                            </td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ @$deliverie->source->customer->address }}
                                             </td>
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ $deliverie->source->details->sum('quantity') }}
                                             </td>
-                                            {{-- <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ @$deliverie->source->createdBy->name }}
-                                            </td> --}}
-                                            <td>
+                                            </td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 {{ $deliverie->deliveryDetails->sum('quantity')  }}
                                             </td>
 
-                                            <td>
+                                            <td style="border: 1px solid #989090 !important;">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 

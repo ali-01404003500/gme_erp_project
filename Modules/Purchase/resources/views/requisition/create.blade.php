@@ -193,15 +193,34 @@
 
 @section('page_scripts')
 <script>
+       const initialRow = $("#product_info_table tbody tr:first-child").clone();
+    initialRow.find('input').val('');
+    initialRow.find('tom-select option:selected').removeAttr('selected');                   //table er first er row k dhora 
+    initialRow.find('#remove_row').removeClass('disabled').removeAttr('disabled');
+
+    $("#add_row").click(function() {
+        const newRow = initialRow.clone();
+        newRow.find('.tom-select').each(function() {     //TOm select apply korar jonno
+            new TomSelect(this, {});
+        });
+        $("#product_info_table tbody").append(newRow);
+    });
+
     $(document).ready(function() {
-        // Function to calculate row amount
-        function calculateRowAmount(row) {
-            let qty = parseFloat(row.find('.quantity').val()) || 0;
-            let price = parseFloat(row.find('.price').val()) || 0;
-            let amount = qty * price;
-            row.find('.amount').val(amount.toFixed(2));
-            return amount;
-        }
+ 
+    // Event delegation for dynamic elements
+    $("#product_info_table tbody").on("keyup change" , "#quantity, #price, .product_ids", function() {
+        const row = $(this).closest('tr');
+        calculateTotalPrice(row);
+        calculateTotalAmount();
+        calculateNetAmount();
+    });
+    $("#product_info_table tbody").on("click", "#remove_row", function() {
+        $(this).closest('tr').remove();
+        calculateTotalAmount();
+        calculateNetAmount();
+        
+    });
 
         // Function to calculate total amount
         function calculateTotalAmount() {

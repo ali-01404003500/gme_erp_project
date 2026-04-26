@@ -95,6 +95,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'key'         => 'crm.daily-credit-calls',
                 'parent_key'  => 'crm',
             ],
+            
             //customer-types
             [
                 'title'       => 'Customer Types',
@@ -434,10 +435,131 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key'  => 'hrm.settings',
             ],
             [
-                'title'       => 'Departments',
-                'description' => 'Permission of Add, Remove, Update, Delete Departments',
-                'key'         => 'hrm.settings.departments',
-                'parent_key'  => 'hrm.settings',
+                'title' => 'Loan Payments',
+                'description' => 'Permission of Add, Remove, Update, Delete Loan Payments',
+                'key' => 'account.payments.loan-payment',
+                'parent_key' => 'account.payments',
+            ],
+
+            //Loan Payments
+            [
+                'title' => 'Fund Transfer',
+                'description' => 'Permission of Add, Remove, Update, Delete, Verify, Approve Fund Transfer',
+                'key' => 'account.fund-transfers',
+                'parent_key' => 'accounts',
+            ],
+
+            //Vendor Bills
+            [
+                'title' => 'Vendor Bills',
+                'description' => 'Permission of Add, Remove, Update, Delete Vendor Bills',
+                'key' => 'account.vendor-bills',
+                'parent_key' => 'accounts',
+            ],
+            //Vendor Bills Settings
+            [
+                'title' => 'Vendor Bills Settings',
+                'description' => 'Permission of Add, Remove, Update, Delete Vendor Bills Settings',
+                'key' => 'account.vendor-bills.settings',
+                'parent_key' => 'account.vendor-bills',
+            ],
+            //Vendor Bills Generated
+            [
+                'title' => 'Generated Vendor Bills',
+                'description' => 'Permission of Add, Remove, Update, Delete Generated Vendor Bills',
+                'key' => 'account.vendor-bills.generated-vendor-bills',
+                'parent_key' => 'account.vendor-bills',
+            ],
+
+            //I/O U Requisitions
+            [
+                'title' => 'I/O U Requisitions',
+                'description' => 'Permission of Add, Remove, Update, Delete I/O U Requisitions',
+                'key' => 'account.i-o-u-requisition',
+                'parent_key' => 'accounts',
+            ],
+            //I/O U Requisitions Entries
+            [
+                'title' => 'I/O U Requisitions Entries',
+                'description' => 'Permission of Add, Remove, Update, Delete I/O U Requisitions Entries',
+                'key' => 'account.i-o-u-requisition.i-o-u-requisition-entries',
+                'parent_key' => 'account.i-o-u-requisition',
+            ],
+
+            // Supplier Payments
+            // [
+            //     'title' => 'Supplier Payments',
+            //     'description' => 'Permission of Add, Remove, Update, Delete Supplier Payments',
+            //     'key' => 'account.payments.supplier-payments',
+            //     'parent_key' => 'accounts',
+            // ],
+
+            //Account vouchers
+            [
+                'title' => 'Contra Vouchers',
+                'description' => 'Permission of Add, Remove, Update, Delete Contra Vouchers',
+                'key' => 'account.voucher-contras',
+                'parent_key' => 'accounts',
+            ],
+
+            //Journal Vouchers
+            [
+                'title' => 'Journal Vouchers',
+                'description' => 'Permission of Add, Remove, Update, Delete Journal Vouchers',
+                'key' => 'account.voucher-journals',
+                'parent_key' => 'accounts',
+            ],
+            //Payment Vouchers
+            [
+                'title' => 'Payment Vouchers',
+                'description' => 'Permission of Add, Remove, Update, Delete Payment Vouchers',
+                'key' => 'account.voucher-payments',
+                'parent_key' => 'accounts',
+            ],
+            //Receiving Vouchers
+            [
+                'title' => 'Receiving Vouchers',
+                'description' => 'Permission of Add, Remove, Update, Delete Receiving Vouchers',
+                'key' => 'account.voucher-receives',
+                'parent_key' => 'accounts',
+            ],
+
+            //Account Reports
+            [
+                'title' => 'Account Reports',
+                'description' => 'Permission of Add, Remove, Update, Delete Account Reports',
+                'key' => 'account.report',
+                'parent_key' => 'accounts',
+            ],
+
+            // cash transafer 
+            [
+                'title' => 'Cash Transfer',
+                'description' => 'Permission of Add, Remove, Update, Delete Cash Transfer',
+                'key' => 'account.cash-transfers',
+                'parent_key' => 'accounts',
+            ],
+ 
+
+            
+           
+            [
+                'title' => 'Access Control',
+                'description' => "Permission of Add, Remove, Update, Delete Users",
+                'key' => 'access_control',
+            ],
+            [
+                'title' => 'Role',
+                'description' => "Permission of Add, Remove, Update, Delete Role",
+                'key' => 'access_control.roles',
+                'parent_key' => 'access_control',
+            ],
+
+            //verification.verification-requests
+            [
+                'title' => 'Verifications',
+                'description' => 'Verification of One Time Permissions',
+                'key' => 'verification',
             ],
             [
                 'title'       => 'Designations',
@@ -457,977 +579,33 @@ class PermissionMasterTableSeeder extends Seeder
                 'key'         => 'hrm.settings.appraisal-policies',
                 'parent_key'  => 'hrm.settings',
             ],
-                [
-                'title'       => 'KPIs',
-                'description' => 'Permission of Add, Remove, Update, Delete KPIs',
-                'key'         => 'hrm.kpis',
+            
 
-                //notice type
-                [
-                    'title'       => 'Notice Types',
-                    'description' => 'Permission of Add, Remove, Update, Delete Notice Types',
-                    'key'         => 'hrm.notice-types',
+            
+ 
+           
+            
+          
+           
+            
+            
 
-                    'parent_key'  => 'hrm',
-                ],
 
-                //report
-                [
-                    'title'       => 'Report',
-                    'description' => 'Permission of Add, Remove, Update, Delete Report',
-                    'key'         => 'hrm.report',
-                    'parent_key'  => 'hrm',
-                ],
 
-                [
-                    'title'       => 'Jobs',
-                    'description' => 'Permission of Add, Remove, Update, Delete Jobs',
-                    'key'         => 'hrm.jobs',
-                    'parent_key'  => 'hrm',
-                ],
-                [
-                    'title'       => 'Job Templates',
-                    'description' => 'Permission of Add, Remove, Update, Delete Job Templates',
-                    'key'         => 'hrm.job-templates',
-                    'parent_key'  => 'hrm',
-                ],
-                [
-                    'title'       => 'Job Applications',
-                    'description' => 'Permission of Add, Remove, Update, Delete Job Applications',
-                    'key'         => 'hrm.job-applications',
-                    'parent_key'  => 'hrm',
-                ],
-                [
-                    'title'       => 'Reports',
-                    'description' => 'Permission of View Reports',
-                    'key'         => 'hrm.reports',
-                    'parent_key'  => 'hrm',
-                ],
-                //hrm settings
-                [
-                    'title'       => 'Settings',
-                    'description' => 'Permission of Add, Remove, Update, Delete HRMS Settings',
-                    'key'         => 'hrm.settings',
-                    'parent_key'  => 'hrm',
-                ],
-                //shifts
-                [
-                    'title'       => 'Shifts',
-                    'description' => 'Permission of Add, Remove, Update, Delete Shifts',
-                    'key'         => 'hrm.settings.shifts',
-                    'parent_key'  => 'hrm.settings',
-                ],
 
-                //holiday
-                [
-                    'title'       => 'Holidays',
-                    'description' => 'Permission of Add, Remove, Update, Delete Holidays',
-                    'key'         => 'hrm.settings.holidays',
-                    'parent_key'  => 'hrm.settings',
-                ],
 
-                //hotspots
-                [
-                    'title'       => 'Hotspots',
-                    'description' => 'Permission of Add, Remove, Update, Delete Hotspots',
-                    'key'         => 'hrm.settings.hotspots',
-                    'parent_key'  => 'hrm.settings',
-                ],
-                //appraisal policies
-                [
-                    'title'       => 'Appraisal Policies',
-                    'description' => 'Permission of Add, Remove, Update, Delete Appraisal Policies',
-                    'key'         => 'hrm.settings.appraisal-policies',
-                    'parent_key'  => 'hrm.settings',
-                ],
-                //expense types
-                [
-                    'title'       => 'Expense Types',
-                    'description' => 'Permission of Add, Remove, Update, Delete Expense Types',
-                    'key'         => 'hrm.settings.expense-types',
-                    'parent_key'  => 'hrm.settings',
-                ],
-                //transport types
-                [
-                    'title'       => 'Transport Types',
-                    'description' => 'Permission of Add, Remove, Update, Delete Transport Types',
-                    'key'         => 'hrm.settings.transport-types',
-                    'parent_key'  => 'hrm.settings',
-                ],
+        ];
 
-                //purchase
-                [
-                    'title'       => 'Purchase',
-                    'description' => 'Permission of Add, Remove, Update, Delete Purchase',
-                    'key'         => 'purchase',
-                ],
-                //purchase requisitions
-                [
-                    'title'       => 'Requisition',
-                    'description' => 'Permission of Add, Remove, Update, Delete Requisition',
-                    'key'         => 'purchase.requisitions',
-                    'parent_key'  => 'purchase',
-                ],
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        DB::table('permissions')->truncate();
+        PermissionMaster::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-                //purchase orders
-                [
-                    'title'       => 'Orders',
-                    'description' => 'Permission of Add, Remove, Update, Delete Orders',
-                    'key'         => 'purchase.orders',
-                    'parent_key'  => 'purchase',
-                ],
-                //Purchase Returns
-                [
-                    'title'       => 'Purchase Returns',
-                    'description' => 'Permission of Add, Remove, Update, Delete Purchase Returns',
-                    'key'         => 'purchase.returns',
-                    'parent_key'  => 'purchase',
-                ],
-
-                //offices purchase
-                [
-                    'title'       => 'Offices',
-                    'description' => 'Permission of Add, Remove, Update, Delete Offices',
-                    'key'         => 'purchase.offices',
-                    'parent_key'  => 'purchase',
-                ],
-
-                //suppliers
-                [
-                    'title'       => 'Suppliers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Suppliers',
-                    'key'         => 'purchase.suppliers',
-                    'parent_key'  => 'purchase',
-                ],
-
-                //vendors
-                [
-                    'title'       => 'Vendors',
-                    'description' => 'Permission of Add, Remove, Update, Delete Vendors',
-                    'key'         => 'purchase.vendors',
-                    'parent_key'  => 'purchase',
-                ],
-
-                //Reports
-                [
-                    'title'       => 'Reports',
-                    'description' => 'Permission of Add, Remove, Update, Delete Reports',
-                    'key'         => 'purchase.reports',
-                    'parent_key'  => 'purchase',
-                ],
-
-                //sales
-                [
-                    'title'       => 'Sales',
-                    'description' => 'Permission of Add, Remove, Update, Delete Sales',
-                    'key'         => 'sales',
-                ],
-
-                //sales orders
-                [
-                    'title'       => 'Sales Orders',
-                    'description' => 'Permission of Add, Remove, Update, Delete Sales Orders',
-                    'key'         => 'sales.sales-orders',
-                    'parent_key'  => 'sales',
-                ],
-
-                //sales order deliveries
-                // [
-                //     'title' => 'Sales Order Deliveries',
-                //     'description' => 'Permission of Add, Remove, Update, Delete Sales Order Deliveries',
-                //     'key' => 'sales.sales-order-deliveries',
-                //     'parent_key' => 'sales',
-                // ],
-
-                //sales deliveries
-                [
-                    'title'       => 'Deliveries',
-                    'description' => 'Permission of Add, Remove, Update, Delete Deliveries',
-                    'key'         => 'sales.deliveries',
-                    'parent_key'  => 'sales',
-                ],
-
-                //sales.shipments
-                [
-                    'title'       => 'Shipment Verifies',
-                    'description' => 'Permission of Add, Remove, Update, Delete Shipments',
-                    'key'         => 'sales.shipment-verifies',
-                    'parent_key'  => 'sales',
-                ],
-
-                //sales.condition-amount-collects
-                [
-                    'title'       => 'Condition Amount Collects',
-                    'description' => 'Permission of Add, Remove, Update, Delete Condition Amount Collects',
-                    'key'         => 'sales.condition-amount-collects',
-                    'parent_key'  => 'sales',
-                ],
-
-                //sales.condition-approval
-                [
-                    'title'       => 'Condition Approval',
-                    'description' => 'Permission of Add, Remove, Update, Delete Condition Amount Collects',
-                    'key'         => 'sales.condition-amount-collects',
-                    'parent_key'  => 'sales',
-                ],
-
-                //Fake Invoices
-                [
-                    'title'       => 'Fake Invoices',
-                    'description' => 'Permission of Add, Remove, Update, Delete Fake Invoices',
-                    'key'         => 'sales.fake-invoices',
-                    'parent_key'  => 'sales',
-                ],
-
-                //sales requisitions
-                [
-                    'title'       => 'Sales Requisitions',
-                    'description' => 'Permission of Add, Remove, Update, Delete Sales Requisitions',
-                    'key'         => 'sales.sales-requisitions',
-                    'parent_key'  => 'sales',
-                ],
-
-                //sales order returns
-                [
-                    'title'       => 'Sales Returns',
-                    'description' => 'Permission of Add, Remove, Update, Delete Sales Returns',
-                    'key'         => 'sales.sales-returns',
-                    'parent_key'  => 'sales',
-
-                ],
-
-                //sales commissions
-                [
-                    'title'       => 'Sales Commissions',
-                    'description' => 'Permission of Add, Remove, Update, Delete Sales Commissions',
-                    'key'         => 'sales.sales-commissions',
-                    'parent_key'  => 'sales',
-                ],
-
-                //backup challans
-                [
-                    'title'       => 'Backup Challans',
-                    'description' => 'Permission of Add, Remove, Update, Delete Backup Challans',
-                    'key'         => 'sales.backup-challans',
-                    'parent_key'  => 'sales',
-                ],
-
-                //quotations
-                [
-                    'title'       => 'Quotations',
-                    'description' => 'Permission of Add, Remove, Update, Delete Quotations',
-                    'key'         => 'sales.quotations',
-                    'parent_key'  => 'sales',
-                ],
-
-                //couriers
-                [
-                    'title'       => 'Setting Couriers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Couriers',
-                    'key'         => 'sales.couriers',
-                    'parent_key'  => 'sales',
-                ],
-                //Reports
-                [
-                    'title'       => 'Reports',
-                    'description' => 'Permission of Add, Remove, Update, Delete Reports',
-                    'key'         => 'sales.reports',
-                    'parent_key'  => 'sales',
-                ],
-
-                // Sales Target
-                [
-                    'title'       => 'Sales Target',
-                    'description' => "Permission of Add, Remove, Update, Delete Sales Target",
-                    'key'         => 'sales_target',
-                ],
-
-                //Sales Target Setup
-                [
-                    'title'       => 'Sales Target Setup',
-                    'description' => "Permission of Add, Remove, Update, Delete Sales Target Setup",
-                    'key'         => 'sales_target.target',
-                    'parent_key'  => 'sales_target',
-                ],
-
-                //Sales Target Acheivement List
-                [
-                    'title'       => 'Sales Target Acheivement List',
-                    'description' => "Permission of Add, Remove, Update, Delete Sales Target Acheivement List",
-                    'key'         => 'sales_target.perfomence',
-                    'parent_key'  => 'sales_target',
-                ],
-
-                //Sales Incentive Setup
-                [
-                    'title'       => 'Sales Incentive Setup',
-                    'description' => "Permission of Add, Remove, Update, Delete Sales Incentive Setup",
-                    'key'         => 'sales_target.incentives',
-                    'parent_key'  => 'sales_target',
-                ],
-
-                //inventory
-                [
-                    'title'       => 'Inventory',
-                    'description' => 'Permission of Add, Remove, Update, Delete Inventory',
-                    'key'         => 'inventory',
-                ],
-
-                //product-catalogs
-                [
-                    'title'       => 'Product Inventory',
-                    'description' => 'Permission of Add, Remove, Update, Delete Product Catalogs',
-                    'key'         => 'inventory.product-catalogs',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //product-transfer-requests
-                [
-                    'title'       => 'Product Transfers Requests',
-                    'description' => 'Permission of Add, Remove, Update, Delete Product Transfers Requests',
-                    'key'         => 'inventory.product-transfer-requests',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //product-transfers
-                [
-                    'title'       => 'Product Transfers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Product Transfers',
-                    'key'         => 'inventory.product-transfers',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //approvers
-                [
-                    'title'       => 'Approvers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Approvers',
-                    'key'         => 'inventory.approvers',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //product-transfers receive
-                [
-                    'title'       => 'Product Transfer Receive',
-                    'description' => 'Permission of Add, Remove, Update, Delete Product Transfer Receive',
-                    'key'         => 'inventory.product-transfers-receives',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //gift/offers
-                [
-                    'title'       => 'Gift/Offers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Offers Requests',
-                    'key'         => 'inventory.offers',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //products price list
-                [
-                    'title'       => 'Products Price',
-                    'description' => 'Permission of Add, Remove, Update, Delete Products',
-                    'key'         => 'inventory.products',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //stocks
-                [
-                    'title'       => 'Stocks',
-                    'description' => 'Permission of Add, Remove, Update, Delete Stocks',
-                    'key'         => 'inventory.stocks',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //inventory settings
-                [
-                    'title'       => 'Inventory Settings',
-                    'description' => 'Permission of Add, Remove, Update, Delete Inventory Settings',
-                    'key'         => 'inventory.settings',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //product units
-                [
-                    'title'       => 'Product Units',
-                    'description' => 'Permission of Add, Remove, Update, Delete Product Units',
-                    'key'         => 'inventory.settings.units',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //product-types
-                [
-                    'title'       => 'Product Types',
-                    'description' => 'Permission of Add, Remove, Update, Delete Product Types',
-                    'key'         => 'inventory.settings.product-types',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //tags
-                [
-                    'title'       => 'Tags',
-                    'description' => 'Permission of Add, Remove, Update, Delete Tags',
-                    'key'         => 'inventory.settings.tags',
-                    'parent_key'  => 'inventory',
-                ],
-                //brands
-                [
-                    'title'       => 'Brands',
-                    'description' => 'Permission of Add, Remove, Update, Delete Brands',
-                    'key'         => 'inventory.settings.brands',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //Reports
-                [
-                    'title'       => 'Reports',
-                    'description' => 'Permission of Add, Remove, Update, Delete Reports',
-                    'key'         => 'inventory.reports',
-                    'parent_key'  => 'inventory',
-                ],
-
-                //location-manager
-                [
-                    'title'       => 'Location Manager',
-                    'description' => 'Permission of Add, Remove, Update, Delete Location Manager',
-                    'key'         => 'location_manager',
-                ],
-
-                //divisions
-                [
-                    'title'       => 'Divisions',
-                    'description' => 'Permission of Add, Remove, Update, Delete Divisions',
-                    'key'         => 'location_manager.divisions',
-                    'parent_key'  => 'location_manager',
-                ],
-                //districts
-                [
-                    'title'       => 'Districts',
-                    'description' => 'Permission of Add, Remove, Update, Delete Districts',
-                    'key'         => 'location_manager.districts',
-                    'parent_key'  => 'location_manager',
-                ],
-                //thanas
-                [
-                    'title'       => 'Thanas',
-                    'description' => 'Permission of Add, Remove, Update, Delete Thanas',
-                    'key'         => 'location_manager.thanas',
-                    'parent_key'  => 'location_manager',
-                ],
-
-                //areas
-                [
-                    'title'       => 'Areas',
-                    'description' => 'Permission of Add, Remove, Update, Delete Areas',
-                    'key'         => 'location_manager.areas',
-                    'parent_key'  => 'location_manager',
-                ],
-
-                //location-types
-                [
-                    'title'       => 'Location Types',
-                    'description' => 'Permission of Add, Remove, Update, Delete Location Types',
-                    'key'         => 'location_manager.location-types',
-                    'parent_key'  => 'location_manager',
-                ],
-
-                // Licenses
-                [
-                    'title'       => 'Licenses',
-                    'description' => "Licenses of Add, Remove, Update, Delete Hrm & Payroll",
-                    'key'         => 'licenses',
-                ],
-                //Dongle Or Serial Entries
-                [
-                    'title'       => 'Dongle Or Serial Entries',
-                    'description' => "Dongle Or Serial Entries of Add, Remove, Update, Delete Employee",
-                    'key'         => 'licenses.dongle-or-serial-entries',
-                    'parent_key'  => 'licenses',
-                ],
-
-                //usg-opg-license-requisitions
-                [
-                    'title'       => 'USG OPG License Requisitions',
-                    'description' => "USG OPG License Requisitions of Add, Remove, Update, Delete Employee",
-                    'key'         => 'licenses.usg-opg-license-requisitions',
-                    'parent_key'  => 'licenses',
-                ],
-
-                //cbc-license-requisitions
-                [
-                    'title'       => 'CBC License Requisitions',
-                    'description' => "CBC License Requisitions of Add, Remove, Update, Delete",
-                    'key'         => 'licenses.cbc-license-requisitions',
-                    'parent_key'  => 'licenses',
-                ],
-                //usg-opg-sms
-                [
-                    'title'       => 'USG OPG SMS',
-                    'description' => "USG OPG SMS of Add, Remove, Update, Delete",
-                    'key'         => 'licenses.usg-opg-sms',
-                    'parent_key'  => 'licenses',
-                ],
-                //cbc-sms
-                [
-                    'title'       => 'CBC SMS',
-                    'description' => "CBC SMS of Add, Remove, Update, Delete",
-                    'key'         => 'licenses.cbc-sms',
-                    'parent_key'  => 'licenses',
-                ],
-                //report
-                [
-                    'title'       => 'Report',
-                    'description' => "Report of Add, Remove, Update, Delete",
-                    'key'         => 'licenses.reports',
-                    'parent_key'  => 'licenses',
-                ],
-
-                //services
-                [
-                    'title'       => 'Services',
-                    'description' => "Services of Add, Remove, Update, Delete",
-                    'key'         => 'services',
-                ],
-
-                //service
-                [
-                    'title'       => 'Service',
-                    'description' => "Service of Add, Remove, Update, Delete",
-                    'key'         => 'services.service',
-                    'parent_key'  => 'services',
-                ],
-                //service assign
-                [
-                    'title'       => 'Service Assign',
-                    'description' => "Service of Add, Remove, Update, Delete",
-                    'key'         => 'services.service-assign',
-                    'parent_key'  => 'services',
-                ],
-
-                //service my task
-                [
-                    'title'       => 'My Task',
-                    'description' => "Service of Add, Remove, Update, Delete",
-                    'key'         => 'services.service-my-task',
-                    'parent_key'  => 'services',
-                ],
-
-                //service settings
-                [
-                    'title'       => 'Service Settings',
-                    'description' => "Service Settings of Add, Remove, Update, Delete",
-                    'key'         => 'services.settings',
-                    'parent_key'  => 'services',
-                ],
-
-                [
-                    'title'       => 'Service quotations',
-                    'description' => "Service quotations of Add, Remove, Update, Delete",
-                    'key'         => 'services.quotations',
-                    'parent_key'  => 'services',
-                ],
-                [
-                    'title'       => 'Service Document Entries',
-                    'description' => "Service Document Entries of Add, Remove, Update, Delete",
-                    'key'         => 'services.document-entries',
-                    'parent_key'  => 'services',
-                ],
-
-                //service types
-                [
-                    'title'       => 'Service Types',
-                    'description' => "Service Types of Add, Remove, Update, Delete",
-                    'key'         => 'services.settings.service-types',
-                    'parent_key'  => 'services.settings',
-                ],
-                //service reports
-                [
-                    'title'       => 'Service Reports',
-                    'description' => "Service Reports view permission",
-                    'key'         => 'services.reports',
-                    'parent_key'  => 'services',
-                ],
-
-                //Legal
-                [
-                    'title'       => 'Legal',
-                    'description' => "Legal of Add, Remove, Update, Delete",
-                    'key'         => 'legal',
-                ],
-                [
-                    'title'       => 'Legal Entries',
-                    'description' => "Permission of Add, Remove, Update, Delete Legal Entries",
-                    'key'         => 'legal.legal-entries',
-                    'parent_key'  => 'legal',
-                ],
-                [
-                    'title'       => 'Legal Bill Entries',
-                    'description' => "Permission of Add, Remove, Update, Delete Legal Bill Entries",
-                    'key'         => 'legal.legal-bill-entries',
-                    'parent_key'  => 'legal',
-                ],
-
-                //Accounts
-                [
-                    'title'       => 'Accounts',
-                    'description' => 'Permission of Add, Remove, Update, Delete Accounts',
-                    'key'         => 'accounts',
-                ],
-
-                //Account Setup
-                //Account Setup
-                [
-                    'title'       => 'Account Setup',
-                    'description' => 'Permission of Add, Remove, Update, Delete Account Setup',
-                    'key'         => 'account.account-setup',
-                    'parent_key'  => 'accounts',
-                ],
-                //Account groups
-                [
-                    'title'       => 'Account Groups',
-                    'description' => 'Permission of Add, Remove, Update, Delete Account Groups',
-                    'key'         => 'account.account-setup.account-groups',
-                    'parent_key'  => 'account.account-setup',
-                ],
-
-                //Account controls
-                [
-                    'title'       => 'Account Controls',
-                    'description' => 'Permission of Add, Remove, Update, Delete Account Controls',
-                    'key'         => 'account.account-setup.account-controls',
-                    'parent_key'  => 'account.account-setup',
-                ],
-
-                //Account subsidiaries
-                [
-                    'title'       => 'Account Subsidiaries',
-                    'description' => 'Permission of Add, Remove, Update, Delete Account Subsidiaries',
-                    'key'         => 'account.account-setup.account-subsidiaries',
-                    'parent_key'  => 'account.account-setup',
-                ],
-
-                //Accounts
-                [
-                    'title'       => 'Accounts',
-                    'description' => 'Permission of Add, Remove, Update, Delete Accounts',
-                    'key'         => 'account.account-setup.accounts',
-                    'parent_key'  => 'account.account-setup',
-                ],
-                //Account Opening Balances
-                [
-                    'title'       => 'Account Opening Balances',
-                    'description' => 'Permission of Add, Remove, Update, Delete Account Opening Balances',
-                    'key'         => 'account.account-setup.account-opening-balances',
-                    'parent_key'  => 'account.account-setup',
-                ],
-                //Bank Accounts
-                [
-                    'title'       => 'Bank Accounts',
-                    'description' => 'Permission of Add, Remove, Update, Delete Bank Accounts',
-                    'key'         => 'account.account-setup.bank-accounts',
-                    'parent_key'  => 'account.account-setup',
-                ],
-                //Bank Branches
-                [
-                    'title'       => 'Bank Branches',
-                    'description' => 'Permission of Add, Remove, Update, Delete Bank Branches',
-                    'key'         => 'account.account-setup.bank-branches',
-                    'parent_key'  => 'account.account-setup',
-                ],
-                //Banks
-                [
-                    'title'       => 'Banks',
-                    'description' => 'Permission of Add, Remove, Update, Delete Banks',
-                    'key'         => 'account.account-setup.banks',
-                    'parent_key'  => 'account.account-setup',
-                ],
-                [
-                    'title'       => 'Cheque Verifications',
-                    'description' => 'Permission of Approve or Deny Cheque Verifications',
-                    'key'         => 'account.cheque-verifications',
-                    'parent_key'  => 'accounts',
-                ],
-
-                [
-                    'title'       => 'Online Deposit Verifications',
-                    'description' => 'Permission of Approve or Deny Online Deposit Verifications',
-                    'key'         => 'account.online-deposit-verifications',
-                    'parent_key'  => 'accounts',
-                ],
-
-                [
-                    'title'       => 'Mfs Verifications',
-                    'description' => 'Permission of Approve or Deny Mfs Verifications',
-                    'key'         => 'account.mfs-verifications',
-                    'parent_key'  => 'accounts',
-                ],
-
-                [
-                    'title'       => 'EMI Entries',
-                    'description' => 'Permission of Add, Remove, Update, Delete EMI Entries',
-                    'key'         => 'account.emi-entries',
-                    'parent_key'  => 'accounts',
-                ],
-                [
-                    'title'       => 'EMI Reports',
-                    'description' => 'Permission of Add, Remove, Update, Delete EMI Reports',
-                    'key'         => 'account.emi-reports',
-                    'parent_key'  => 'accounts',
-                ],
-                [
-                    'title'       => 'Advance Cheque Entries',
-                    'description' => 'Permission of Add, Remove, Update, Delete Advance Cheque Entries',
-                    'key'         => 'account.advance-cheque-entries',
-                    'parent_key'  => 'accounts',
-                ],
-
-                //Collections
-                [
-                    'title'       => 'Collections',
-                    'description' => 'Permission of Add, Remove, Update, Delete Collections',
-                    'key'         => 'account.collections',
-                    'parent_key'  => 'accounts',
-                ],
-                //Collections
-
-                [
-                    'title'       => 'Collections',
-                    'description' => 'Permission of Add, Remove, Update, Delete Collections',
-                    'key'         => 'account.collections.collections',
-                    'parent_key'  => 'account.collections',
-                ],
-                //Invoice-wise Collections
-                [
-                    'title'       => 'Invoice-wise Collections',
-                    'description' => 'Permission of Add, Remove, Update, Delete Invoice-wise Collections',
-                    'key'         => 'account.collections.invoice-wise-collections',
-                    'parent_key'  => 'account.collections',
-                ],
-
-                //Default Payable & Receivables
-                // [
-                //     'title' => 'Default Payable & Receivables',
-                //     'description' => 'Permission of Add, Remove, Update, Delete Default Payable & Receivables',
-                //     'key' => 'account.account-settings.default-payable-receivables',
-                //     'parent_key' => 'accounts',
-                // ],
-
-                //Payments
-                [
-                    'title'       => 'Payments',
-                    'description' => 'Permission of Add, Remove, Update, Delete Payments',
-                    'key'         => 'account.payments',
-                    'parent_key'  => 'accounts',
-                ],
-
-                //Customer Payments
-                [
-                    'title'       => 'Make Payments',
-                    'description' => 'Permission of Add, Remove, Update, Delete Make Payments',
-                    'key'         => 'account.payments.make-payments',
-                    'parent_key'  => 'account.payments',
-                ],
-                //invoice-wise-payments
-                [
-                    'title'       => 'Invoice-wise Payments',
-                    'description' => 'Permission of Add, Remove, Update, Delete Invoice-wise Payments',
-                    'key'         => 'account.payments.invoice-wise-payments',
-                    'parent_key'  => 'account.payments',
-                ],
-
-                //Broker Payments
-                [
-                    'title'       => 'Broker Payments',
-                    'description' => 'Permission of Add, Remove, Update, Delete Broker Payments',
-                    'key'         => 'account.payments.broker-payments',
-                    'parent_key'  => 'account.payments',
-                ],
-
-                //TA/DA Payments
-                [
-                    'title'       => 'TA/DA Payments',
-                    'description' => 'Permission of Add, Remove, Update, Delete TA/DA Payments',
-                    'key'         => 'account.payments.petty-cash-payments',
-                    'parent_key'  => 'account.payments',
-                ],
-
-                //Loan Payments
-                [
-                    'title'       => 'Loan Payments',
-                    'description' => 'Permission of Add, Remove, Update, Delete Loan Payments',
-                    'key'         => 'account.payments.loan-payment',
-                    'parent_key'  => 'account.payments',
-                ],
-
-                //Loan Payments
-                [
-                    'title'       => 'Fund Transfer',
-                    'description' => 'Permission of Add, Remove, Update, Delete, Verify, Approve Fund Transfer',
-                    'key'         => 'account.fund-tranfers',
-                    'parent_key'  => 'accounts',
-                ],
-
-                //Vendor Bills
-                [
-                    'title'       => 'Vendor Bills',
-                    'description' => 'Permission of Add, Remove, Update, Delete Vendor Bills',
-                    'key'         => 'account.vendor-bills',
-                    'parent_key'  => 'accounts',
-                ],
-                //Vendor Bills Settings
-                [
-                    'title'       => 'Vendor Bills Settings',
-                    'description' => 'Permission of Add, Remove, Update, Delete Vendor Bills Settings',
-                    'key'         => 'account.vendor-bills.settings',
-                    'parent_key'  => 'account.vendor-bills',
-                ],
-                //Vendor Bills Generated
-                [
-                    'title'       => 'Generated Vendor Bills',
-                    'description' => 'Permission of Add, Remove, Update, Delete Generated Vendor Bills',
-                    'key'         => 'account.vendor-bills.generated-vendor-bills',
-                    'parent_key'  => 'account.vendor-bills',
-                ],
-
-                //I/O U Requisitions
-                [
-                    'title'       => 'I/O U Requisitions',
-                    'description' => 'Permission of Add, Remove, Update, Delete I/O U Requisitions',
-                    'key'         => 'account.i-o-u-requisition',
-                    'parent_key'  => 'accounts',
-                ],
-                //I/O U Requisitions Entries
-                [
-                    'title'       => 'I/O U Requisitions Entries',
-                    'description' => 'Permission of Add, Remove, Update, Delete I/O U Requisitions Entries',
-                    'key'         => 'account.i-o-u-requisition.i-o-u-requisition-entries',
-                    'parent_key'  => 'account.i-o-u-requisition',
-                ],
-
-                // Supplier Payments
-                // [
-                //     'title' => 'Supplier Payments',
-                //     'description' => 'Permission of Add, Remove, Update, Delete Supplier Payments',
-                //     'key' => 'account.payments.supplier-payments',
-                //     'parent_key' => 'accounts',
-                // ],
-
-                //Account vouchers
-                [
-                    'title'       => 'Contra Vouchers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Contra Vouchers',
-                    'key'         => 'account.voucher-contras',
-                    'parent_key'  => 'accounts',
-                ],
-
-                //Journal Vouchers
-                [
-                    'title'       => 'Journal Vouchers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Journal Vouchers',
-                    'key'         => 'account.voucher-journals',
-                    'parent_key'  => 'accounts',
-                ],
-                //Payment Vouchers
-                [
-                    'title'       => 'Payment Vouchers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Payment Vouchers',
-                    'key'         => 'account.voucher-payments',
-                    'parent_key'  => 'accounts',
-                ],
-                //Receiving Vouchers
-                [
-                    'title'       => 'Receiving Vouchers',
-                    'description' => 'Permission of Add, Remove, Update, Delete Receiving Vouchers',
-                    'key'         => 'account.voucher-receives',
-                    'parent_key'  => 'accounts',
-                ],
-
-                //Account Reports
-                [
-                    'title'       => 'Account Reports',
-                    'description' => 'Permission of Add, Remove, Update, Delete Account Reports',
-                    'key'         => 'account.report',
-                    'parent_key'  => 'accounts',
-                ],
-
-                // cash transafer
-                [
-                    'title'       => 'Cash Transfer',
-                    'description' => 'Permission of Add, Remove, Update, Delete Cash Transfer',
-                    'key'         => 'account.cash-transfers',
-                    'parent_key'  => 'accounts',
-                ],
-
-                [
-                    'title'       => 'Access Control',
-                    'description' => "Permission of Add, Remove, Update, Delete Users",
-                    'key'         => 'access_control',
-                ],
-                [
-                    'title'       => 'Role',
-                    'description' => "Permission of Add, Remove, Update, Delete Role",
-                    'key'         => 'access_control.roles',
-                    'parent_key'  => 'access_control',
-                ],
-
-                //verification.verification-requests
-                [
-                    'title'       => 'Verifications',
-                    'description' => 'Verification of One Time Permissions',
-                    'key'         => 'verification',
-                ],
-
-                //branchs
-                [
-                    'title'       => 'Branches',
-                    'description' => 'Permission of Add, Remove, Update, Delete Branches',
-                    'key'         => 'access_control.branchs',
-                    'parent_key'  => 'access_control',
-                ],
-                //Branch Types
-                [
-                    'title'       => 'Branch Types',
-                    'description' => 'Permission of Add, Remove, Update, Delete Branch Types',
-                    'key'         => 'access_control.branch-types',
-                    'parent_key'  => 'access_control',
-                ],
-                [
-                    'title'       => 'Global Setting',
-                    'description' => "Permission of Add, Remove, Update, Delete Global Setting",
-                    'key'         => 'access_control.global-settings',
-                    'parent_key'  => 'access_control',
-                ],
-
-            ];
-
-            DB::statement('SET FOREIGN_KEY_CHECKS=0');
-            DB::table('permissions')->truncate();
-            PermissionMaster::truncate();
-            DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
-            foreach ($data as $value) {
-                if (isset($value['parent_key'])) {
-                    $parent = PermissionMaster::where('key', $value['parent_key'])->first();
-                    if ($parent == null) {
-                        dd($value['parent_key']);
-                    }
-                    PermissionMaster::updateOrCreate(
-                        ['key' => $value['key']],
-                        [
-                            'title'       => $value['title'],
-                            'description' => $value['description'],
-                            'key'         => $value['key'],
-                            'parent_id'   => $parent->id,
-                        ]
-                    );
-                } else {
-                    PermissionMaster::updateOrCreate(
-                        ['key' => $value['key']],
-                        [
-                            'title'       => $value['title'],
-                            'description' => $value['description'],
-                            'key'         => $value['key'],
-                            'parent_id'   => null,
-                        ]
-                    );
+        foreach ($data as $value) {
+            if (isset($value['parent_key'])) {
+                $parent = PermissionMaster::where('key', $value['parent_key'])->first();
+                if ($parent == null) {
+                    dd($value['parent_key']);
                 }
             }
         }

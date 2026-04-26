@@ -45,17 +45,17 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $bankAccounts])'
-                                style="width:100%">
+                            <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $bankAccounts])'
+                                style="width:100%; table-layout: fixed;">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 5%">Sl</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center">Payment Mode</th>
-                                        <th class="text-center">Bank</th>
-                                        <th class="text-center">Branch</th>
-                                        <th class="text-center">Account No</th>
-                                        <th class="text-center no-content">Action</th>
+                                      <th class="text-center" style="width: 5%">Sl</th>
+                                        <th class="text-center text-wrap" style="width: 30%">Name</th> 
+                                        <th class="text-center text-wrap" style="width: 12%">Payment Mode</th>
+                                        <th class="text-center text-wrap" style="width: 13%">Bank</th>
+                                        <th class="text-center text-wrap" style="width: 13%">Branch</th>
+                                        <th class="text-center text-wrap" style="width: 15%">Account No</th>
+                                        <th class="text-center no-content text-wrap" style="width: 12%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,13 +63,13 @@
                                     @foreach ($bankAccounts as $key => $bank)
                                     {{-- @dd($bank->bankBranch); --}}
                                         <tr>
-<td class="text-center">{{ ($bankAccounts->currentPage() - 1) * $bankAccounts->perPage() + $loop->iteration  }}</td>
-                                            <td class="text-center">{{ $bank->account_name }}</td>
-                                            <td class="text-center">{{ $bank->payment_mode }}</td>
-                                            <td class="text-center">{{ $bank->bank->name ?? '-' }}</td>
-                                            <td class="text-center">{{ $bank->bankBranch->name ?? '-' }}</td>
-                                            <td class="text-center">{{ $bank->bank_account_no ?? '-' }}</td>
-                                            <td class="text-center">
+                                            <td class="text-center text-wrap">{{ ($bankAccounts->currentPage() - 1) * $bankAccounts->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-left text-wrap">{{ $bank->account_name }}</td>
+                                            <td class="text-left text-wrap">{{ $bank->payment_mode }}</td>
+                                            <td class="text-left text-wrap">{{ $bank->bank->name ?? '-' }}</td>
+                                            <td class="text-left text-wrap">{{ $bank->bankBranch->name ?? '-' }}</td>
+                                            <td class="text-left text-wrap">{{ $bank->bank_account_no ?? '-' }}</td>
+                                            <td class="text-left text-wrap">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 
@@ -217,7 +217,7 @@
                     <div class="modal-body">
                         <div class="row mb-4">
                             <div class="row mb-4">
-                                <label class="col-sm-12 col-form-label">Select Payment Mode</label>
+                                <label class="col-sm-12 col-form-label">Select Payment Mode <span class="text-danger">*</span></label>
                                 <div class="col-sm-12">
                                     <select name="payment_mode" class="form-control tom-select" required>
                                         <option value="">Select</option>
@@ -231,13 +231,13 @@
                                 </div>
                             </div>
                             <div class="row mb-4">
-                                <label class="col-sm-12 col-form-label">Account Name</label>
+                                <label class="col-sm-12 col-form-label">Account Name <span class="text-danger">*</span></label>
                                 <div class="col-sm-12">
                                     <input type="text" name="account_name" class="form-control" placeholder=" Account Name *" required>
                                 </div>
                             </div>
                             <div class="row mb-4">
-                                <label class="col-sm-12 col-form-label">Account Code</label>
+                                <label class="col-sm-12 col-form-label">Account Code <span class="text-danger">*</span></label>
                                 <div class="col-sm-12">
                                     <input type="text" name="account_code" class="form-control" placeholder=" Account Code *" required>
                                 </div>
@@ -249,7 +249,7 @@
                                 </div>
                             </div>
                             <div class="row mb-4 bank-details" style="display: none;">
-                                <label class="col-sm-12 col-form-label">Select Bank</label>
+                                <label class="col-sm-12 col-form-label">Select Bank <span class="text-danger">*</span></label>
                                 <div class="col-sm-12">
                                     <select name="bank_id" class="form-control tom-select">
                                         <option value="">Select</option>
@@ -260,7 +260,7 @@
                                 </div>
                             </div>
                             <div class="row mb-4 bank-details" style="display: none;">
-                                <label class="col-sm-12 col-form-label">Select Branch</label>
+                                <label class="col-sm-12 col-form-label">Select Branch <span class="text-danger">*</span></label>
                                 <div class="col-sm-12">
                                     <select name="bank_branch_id" class="form-control tom-select">
                                         <option value="">Select</option>
@@ -271,7 +271,7 @@
                                 </div>
                             </div>
                             <div class="row mb-4 bank-details" style="display: none;">
-                                <label class="col-sm-12 col-form-label">Bank Account No</label>
+                                <label class="col-sm-12 col-form-label">Bank Account No <span class="text-danger">*</span></label>
                                 <div class="col-sm-12">
                                     <input type="text" name="bank_account_no" class="form-control" placeholder=" Bank Account No *">
                                 </div>

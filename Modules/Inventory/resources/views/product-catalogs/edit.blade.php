@@ -533,7 +533,7 @@
                                                                                 <h4>Keyword
                                                                                     & Description</h4>
                                                                             </div>
-                                                                            <textarea class="form-control trumbowyg" id="description" name="description" rows="4">{{ old('description', $productCatalog->description) }}</textarea>
+                                                                            <textarea class="form-control" id="description" name="description" rows="4">{{ old('description', $productCatalog->description) }}</textarea>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -599,6 +599,60 @@
 @endsection
 
 @section('page_scripts')
+
+    <script src="{{ url('tinymce/tinymce.min.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            tinymce.init({
+                selector: '#description',
+                height: 600,
+                license_key: 'gpl',
+                branding: false,
+                promotion: false,
+
+                // =====================
+                // PLUGINS (FIXED)
+                // =====================
+                plugins: [
+                    'advlist',
+                    'lists',
+                    'link',
+                    'image',
+                    'table',
+                    'code',
+                    'preview',
+                    'fullscreen',
+                    'wordcount'
+                ],
+
+                // =====================
+                // TOOLBAR (FIXED LIST SECTION)
+                // =====================
+                toolbar: `
+                    undo redo | formatselect |
+                    bold italic underline |
+                    bullist numlist |
+                    outdent indent |
+                    alignleft aligncenter alignright |
+                    removeformat | link | table | code | preview | fullscreen
+                `,
+
+                // =====================
+                // ADVANCED LIST CONTROL
+                // =====================
+                advlist_bullet_styles: 'disc circle square',
+                advlist_number_styles: 'decimal lower-alpha lower-roman upper-alpha upper-roman',
+
+                lists_indent_on_tab: true,
+
+                menubar: true,
+
+                content_style: `
+                    body { font-family: Arial; font-size: 14px; }
+                `
+            });
+        });
+    </script>
 
     <script>
         function calculateTotalPrice() {

@@ -7,8 +7,8 @@ use App\Models\GeoLocation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Transaction;
+use Modules\Inventory\Services\ExportService;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\Inventory\Services\ExportService;
 
@@ -305,8 +305,8 @@ class CustomerBalanceReportController extends Controller
 
             $row = [
                 'customer_id'      => $customerId,
-                'account_id'       => $accountId,
-                'customer_name'    => $customer->company_name,
+                'account_id'       => $aggregated['account_ids'][$customerId]  ?? null,
+                'customer_name'    => $customer->company_name, 
                 'address'          => $customer->address,
                 'phone'            => $customer->phone,
                 'has_machine_code' => $aggregated['machine_codes'][$customerId] ?? false,
@@ -318,10 +318,27 @@ class CustomerBalanceReportController extends Controller
                 'waiver'           => $aggregated['period_waivers'][$customerId] ?? 0,
             ];
 
-            // OPTIMIZED: Get from pre-fetched balances instead of separate query
-            $balance                = $transactionBalances[$accountId] ?? ['total_debit' => 0, 'total_credit' => 0];
-            $row['closing_balance'] = $balance['total_debit'] - $balance['total_credit'];
+
+            // Get transactions
+            $transaction = Transaction::query()
+                ->searchByField('company_id')
+                ->where('account_id', $aggregated['account_ids'][$customerId])
+                ->when($start, function ($q) use ($start) {
+                    $q->whereDate('transaction_date', '>=', $start);
+                })
+                ->when($end, function ($q) use ($end) {
+                    $q->whereDate('transaction_date', '<=', $end);
+                })
+                ->selectRaw('
+                    SUM(debit_amount) as total_debit,
+                    SUM(credit_amount) as total_credit
+                ')
+                ->first();
+                 
+            $row['closing_balance'] = $transaction->total_debit - $transaction->total_credit;
+
             $row['due']             = $row['sales'] - $row['sales_return'] - $row['collection'];
+            //$row['closing_balance'] = $row['opening_balance'] + $row['sales'] - $row['collection'] + $row['charge'];
 
             $recoveryPerc = 0;
             if ($row['opening_balance'] > 0) {
@@ -345,9 +362,9 @@ class CustomerBalanceReportController extends Controller
     private function fetchCustomers(array $filters): \Illuminate\Support\Collection
     {
         $query = Customer::actived()
-            ->select('id', 'company_name', 'phone', 'address', 'company_place_id', 'customer_id')->with('area');
-        // company_place_id is the FK; eager-loading area prevents lazy hits
-        // inside whereHas callbacks and any downstream blade rendering.
+            ->select('id', 'company_name', 'phone', 'address', 'company_place_id','customer_id')->with('area');
+            // company_place_id is the FK; eager-loading area prevents lazy hits
+            // inside whereHas callbacks and any downstream blade rendering.
 
         if ($filters['due_type'] === 'machine_code') {
             $query->whereHas('usgOrOpgLicenseRequisitions');

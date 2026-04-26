@@ -62,13 +62,13 @@
                                 </select>
                             </div>
                         </x-table-filter-component>
-                        <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $accountSubsidiaries])' style="width:100%">
+                        <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $accountSubsidiaries])' style="width:100%; table-layout: fixed;">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 8%">Sl</th>
-                                    <th class="text-center">Account Group</th>
-                                    <th class="text-center">Account Control</th>
-                                    <th class="text-center">Name</th>
+                                    <th class="text-left text-wrap">Account Group</th>
+                                    <th class="text-left text-wrap">Account Control</th>
+                                    <th class="text-left text-wrap">Name</th>
                                     <th class="text-center no-content">Action</th>
                                 </tr>
                             </thead>
@@ -77,10 +77,10 @@
                                     <tr>
                                         <td class="text-center">{{ ($accountSubsidiaries->currentPage() - 1) * $accountSubsidiaries->perPage() + $loop->iteration  }}</td>
                                         <td class="text-center">{{ $accountSubsidiary->accountGroup->name ?? '' }}</td>
-                                        <td class="text-center">({{ $accountSubsidiary->account_control_id }}) - {{ $accountSubsidiary->accountControl->name ?? '' }}</td>
-                                        <td class="text-center">({{ $accountSubsidiary->id }}) - {{ $accountSubsidiary->name }}</td>
+                                        <td class="text-center text-wrap">({{ $accountSubsidiary->account_control_id }}) - {{ $accountSubsidiary->accountControl->name ?? '' }}</td>
+                                        <td class="text-center text-wrap">({{ $accountSubsidiary->id }}) - {{ $accountSubsidiary->name }}</td>
                                     
-                                        <td class="text-center">
+                                        <td class="text-center text-wrap">
                                             <div class="btn-group btn-group-sm" role="group"
                                                 aria-label="Small button group">
 

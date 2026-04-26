@@ -70,26 +70,26 @@
                 </div> --}}
                 <div class="card mb-4">
                     <div class="card-body">
-                        <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $serviceDocumentEntrys])' style="width:100%">
+                        <table id="zero-config"class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $serviceDocumentEntrys])' style="width: 100%; table-layout: fixed;">
                             <thead>
                                 <tr>
-                                    <th>Sl</th>
-                                    <th>Product</th>
-                                    <th>Model</th>
-                                    <th>Note</th>
-                                    <th>Date</th>
-                                    <th class="no-content">Action</th>
+                                    <th class="text-center" style="width: 10%";>Sl</th>
+                                    <th style="width: 40%">Product</th>
+                                    <th style="width: 10%">Model</th>
+                                    <th style="width: 20%">Note</th>
+                                    <th style="width: 10%">Date</th>
+                                    <th class="no-content" style="width: 10%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($serviceDocumentEntrys as $value )
                                 {{-- @dd($value); --}}
                                     <tr>
-<td class="text-center">{{ ($serviceDocumentEntrys->currentPage() - 1) * $serviceDocumentEntrys->perPage() + $loop->iteration  }}</td>         
-                                        <td>{{ $value->product->name }}</td>
-                                        <td>{{ $value->product->model }}</td>
-                                        <td>{{ $value->remarks }}</td>
-                                        <td>{{ $value->document_date }}</td>
+                                        <td class="text-center">{{ ($serviceDocumentEntrys->currentPage() - 1) * $serviceDocumentEntrys->perPage() + $loop->iteration  }}</td>         
+                                        <td class="text-wrap">{{ $value->product->withoutModelSuffix()->name }}</td>
+                                        <td class="text-wrap">{{ $value->product->model }}</td>
+                                        <td style="word-break: break-word; white-space: normal; min-width: 200px; max-width: 300px;">{{ $value->remarks }}</td>
+                                        <td class="text-wrap">{{ $value->document_date }}</td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
 

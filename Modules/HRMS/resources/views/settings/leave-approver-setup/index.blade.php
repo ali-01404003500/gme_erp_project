@@ -17,12 +17,12 @@
                         {{-- 1. Main Employee Selection --}}
                         <div class="row mb-4">
 
-                            <div class="col-md-12 justify-content-start">
+                            <div class="col-md-12 justify-content-center">
 
                                 <form action="{{ route('hrm.settings.leave-approvers.store') }}" method="POST">
                                     @csrf
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-5 offset-md-3">
                                             <!-- Step 1: Select Employee -->
                                             <div class="form-group">
                                                 <label class="form-label fw-bold">Select Employee <span
@@ -39,9 +39,10 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-8"></div>
+                                      
 
-                                        <div class="col-md-4">
+
+                                        <div class="col-md-5 offset-md-3">
                                             <div class="form-group">
                                                 <label class="form-label fw-bold">Select Approver From Here <span
                                                         class="text-danger">*</span></label>
