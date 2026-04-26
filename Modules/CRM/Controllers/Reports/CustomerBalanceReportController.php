@@ -43,16 +43,58 @@ class CustomerBalanceReportController extends Controller
     // =========================================================================
     // PUBLIC ENTRY POINT
     // =========================================================================
+    // public function index(Request $request)
+    // {
+    //     $filters = $this->extractFilters($request);
+
+    //     $reportData = $this->buildReportData($filters);
+    //     $totals     = $this->calculateTotals($reportData);
+
+    //     if ($request->filled('export_type')) {
+    //         $filterData = $this->getFilterData();
+    //         return $this->exportReport($reportData, $filterData, $totals, $request->export_type, $filters);
+    //     }
+
+    //     $filterData = $this->getFilterData();
+
+    //     return view('CRM::customer-balance-details.index', [
+    //         'reportData'     => $reportData,
+    //         'customersearch' => $filterData['customersearch'],
+    //         'company_info'   => $filterData['company_info'],
+    //         'filters'        => $filters,
+    //         'divisions'      => $filterData['divisions'],
+    //         'districts'      => $filterData['districts'],
+    //         'totals'         => $totals,
+    //     ]);
+    // }
+
     public function index(Request $request)
     {
         $filters = $this->extractFilters($request);
 
-        $reportData = $this->buildReportData($filters);
-        $totals     = $this->calculateTotals($reportData);
+        // রিপোর্ট ডাটা বিল্ড করা
+        $allReportData = $this->computeReportData($filters);
 
+        // পেজিনেশন - প্রতি পেজে ৫০টি রেকর্ড
+        $perPage     = $request->input('per_page', 50);
+        $currentPage = $request->input('page', 1);
+
+        // পেজিনেটেড ডাটা তৈরি করা
+        $reportData = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allReportData->forPage($currentPage, $perPage),
+            $allReportData->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        // টোটাল ক্যালকুলেশন
+        $totals = $this->calculateTotals($allReportData);
+
+        // এক্সপোর্ট চেক
         if ($request->filled('export_type')) {
             $filterData = $this->getFilterData();
-            return $this->exportReport($reportData, $filterData, $totals, $request->export_type, $filters);
+            return $this->exportReport($allReportData, $filterData, $totals, $request->export_type, $filters);
         }
 
         $filterData = $this->getFilterData();
