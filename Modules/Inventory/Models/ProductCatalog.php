@@ -195,6 +195,7 @@ class ProductCatalog extends BaseModel
         return "{$value} Model: {$model} Brand: {$brand}";
     }
 
+ 
 
     public function scopeActive($query)
     {

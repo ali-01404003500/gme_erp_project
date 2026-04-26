@@ -24,13 +24,8 @@ class ProductService
 
     public function create()
     {
-        $data['product_types'] = ProductType::query()->where('status', 1)->get();
-        $data['brands'] = Brand::all();
-        $data['units'] = Unit::all();
-        $data['tags'] = Tag::all();
-        $data['product_catalogs'] = ProductCatalog::query()->get();
-
-        return $data;
+     
+         
     }
     
     public function store(array $data, array $barcodes=[])

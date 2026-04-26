@@ -23,15 +23,25 @@ class DongleOrSerialEntryController extends Controller
     function __construct(DongleOrSerialEntryService $service)
     {
         $this->service = $service;
-        $this->middleware('permited')->except(['productAutocomplete','customerAutocomplete']);
+        $this->middleware('permited')->except(['productAutocomplete','customerAutocomplete','dongleAutocomplete']);
     }
 
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $data['customers'] = Customer::activeCustomers()->get();
+    { 
+        $data['customer'] =  $data['product'] = "";
+
+        if (request('customer_id')) {
+            $data['customer'] = Customer::find(request('customer_id'));
+        }
+
+        if (request('product_id')) {
+            $data['product'] = ProductCatalog::find(request('product_id'));
+        }
+
+        
         $data['dongleOrSerialEntrys'] = $this->service->getAll();
 
         return view("Licenses::dongle-or-serial-entry.index", $data);
@@ -173,5 +183,20 @@ class DongleOrSerialEntryController extends Controller
         ); 
         return response()->json($data);
     }
+
+
+    public function dongleAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            DongleOrSerialEntry::class,
+            ['dongle_id','dongle_id'],
+            $request->search,
+            ['dongle_id', 'dongle_id'],
+            30
+        ); 
+        return response()->json($data);
+    }
+ 
     
 }

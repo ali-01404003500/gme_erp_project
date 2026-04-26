@@ -4,6 +4,7 @@ namespace Modules\Licenses\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Services\AutocompleteService;
 use Modules\Licenses\Models\CbcSms;
 use Modules\Licenses\Models\UsgOrOpgSms;
 use Carbon\Carbon;
@@ -12,10 +13,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Modules\CRM\Models\Customer\Customer;
 
 class LicenseReportController extends Controller
-{
+{ 
+
     public function index(Request $request)
     {
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['customer'] = "";
+
+        if (request('customer_id')) {
+            $data['customer'] = Customer::find(request('customer_id'));
+        }
+
 
         $data['cbcSms'] = CbcSms::where('status', 'Send')
             ->searchByFields(['customer_id'])
@@ -68,6 +75,22 @@ class LicenseReportController extends Controller
         $data['reports'] = $paginated;
 
         return view('Licenses::report.index', $data);
+    }
+
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    { 
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $data = $autocompleteService->customerSearch(
+            Customer::class,
+            ['company_name','address','phone'],
+            $request->search,
+            ['id', 'company_name','company_place_id', 'phone', 'customer_type', 'address'],
+            30
+        ); 
+
+        
+        return response()->json($data);
     }
 
 

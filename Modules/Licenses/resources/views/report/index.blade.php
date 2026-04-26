@@ -32,15 +32,9 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td>
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select"
-                                                    data-placeholder="Select Customer">
-                                                    <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ optional($value)->company_name }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <select name="customer_id" id="customer_id" class="form-control"  data-placeholder="Select Customer">
+                                                    <option value=""></option> 
+                                                </select> 
                                             </td>
                                           
                                             <td colspan="2">
@@ -80,11 +74,9 @@
                                 <thead>
                                     <tr>
                                         <th>Sl</th>
-                                        <th>Customer Name</th>
-                                        <th>Address</th>
+                                        <th>Customer Name</th> 
                                         <th>SMS</th>
-                                        <th>Status</th>
-                                        <th>Phone</th>
+                                        <th>Status</th> 
                                         <th>Dongle Id</th>
                                         <th>License Key</th>
                                         <th>Activation Date</th>
@@ -97,10 +89,12 @@
                                     @foreach ($reports as $value)
                                         <tr>
                                         <td class="text-center">{{ ($reports->currentPage() - 1) * $reports->perPage() + $loop->iteration  }}</td>
-                                            <td>
-                                                {{ $value->customer->company_name }}
+                                            <td style="width: 400px;" >
+                                                {{ $value->customer->company_name }}<br>
+                                                <span class="text-muted">{{ $value->phone }}</span><br>
+                                                <span class="text-muted text-wrap">{{ $value->address }}</span>
                                             </td>
-                                            <td>{{ $value->address }}</td>
+                                           
                                             <td>
                                                 <div style="width: 200px;" class="text-wrap" >
                                                 {{ $value->sms }}
@@ -108,8 +102,7 @@
                                             </td>
                                             <td>
                                                 @if($value->status == 'Send') <span class="badge badge-round badge-success">SMS Send</span> @endif
-                                            </td>                                            
-                                            <td>{{ $value->phone }}</td>
+                                            </td>                           
                                             <td>{{ $value->dongles->dongle_id }}</td>
                                             <td>{{ $value->license_key }}</td>
                                             <td>{{ $value->start_date}}</td>
@@ -141,6 +134,42 @@
     $(".datePicker").datepicker({
         format: 'dd-mm-yyyy',
         autoclose: true
+    });
+
+    $(document).ready(function () {
+        const companySelect = new TomSelect("#customer_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('licenses.license-report-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        companySelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        $('#customer_id option:selected').text();
+ 
+        @if(isset($customer) && $customer)
+            companySelect.addOption({
+                id: "{{ $customer->id }}",
+                text: "{{ $customer->name }}"
+            });
+            companySelect.setValue("{{ $customer->id }}");
+        @endif
+
     });
 </script>
 

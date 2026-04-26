@@ -50,7 +50,25 @@
                                             <td>
                                                 <input type="text" class="form-control" name="dongle_id" id="dongle_id" value="{{ request('dongle_id') }}" placeholder="Dongle Id">
                                             </td>
-                                           
+                                            <td>
+                                                <input type="text" class="form-control" name="product_id" id="product_id" value="{{ request('product_id') }}" placeholder="Product Name">
+                                            </td>
+                                            <td>
+                                                <select name="product_type" id="product_type" class="form-control">
+                                                    <option value="" {{ request('product_type') == '' ? 'selected' : '' }}>All</option>
+
+                                                    <option value="Imaging/Radiology Product"
+                                                        {{ request('product_type') == 'Imaging/Radiology Product' ? 'selected' : '' }}>
+                                                        Imaging/Radiology Product
+                                                    </option>
+
+                                                    <option value="Hematology Analyzer"
+                                                        {{ request('product_type') == 'Hematology Analyzer' ? 'selected' : '' }}>
+                                                        Hematology Analyzer
+                                                    </option>
+                                                </select>
+                                            </td>
+                                          
                                             <td colspan="5" class="text-right">
                                                 <div class="btn-group btn-corner">
                                                     <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
@@ -87,6 +105,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                
 
                                     @foreach ($dongleOrSerialEntrys as $value)
                                         <tr>
@@ -96,7 +115,7 @@
                                                     href="{{ route('licenses.dongle-or-serial-entries.show', $value->id) }}">{{ $value->customer->company_name }}</a>
                                             </td>
                                             <td>{{ $value->dongle_id }}</td>
-                                            <td>{{ $value->product->name }}</td>
+                                            <td>{{ $value->product->withoutModelSuffix()->name }} </td>
                                             <td>{{ $value->product->model }}</td>
                                             <td>{{ $value->product_type }}</td>
                                             <td>
@@ -245,15 +264,81 @@
                     });
                 }
             }); 
-
-            @if(request('customer_id'))
-                companySelect.addOption({
-                    id: "{{ request('customer_id') }}",
-                    text: "{{ request('customer_id') }}"
-                });
-                companySelect.setValue("{{ request('customer_id') }}");
-            @endif
  
+            @if(isset($customer) && $customer)
+                companySelect.addOption({
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->name }}"
+                });
+                companySelect.setValue("{{ $customer->id }}");
+            @endif 
+
+
+            const dongleSelect = new TomSelect("#dongle_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('licenses.dongle-or-serial-autocomplete.dongles') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            dongleSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+  
+ 
+            @if(request('dongle_id'))
+                dongleSelect.addOption({
+                    id: "{{ request('dongle_id') }}",
+                    text: "{{ request('dongle_id') }}"
+                });
+                dongleSelect.setValue("{{ request('dongle_id') }}");
+            @endif
+
+
+            const productSelect = new TomSelect("#product_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('licenses.dongle-or-serial-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+ 
+            @if(isset($product) && $product)
+                productSelect.addOption({
+                    id: "{{ $product->id }}",
+                    text: "{{ $product->name }}"
+                });
+                productSelect.setValue("{{ $product->id }}");
+            @endif  
+
+            
             
         });
     </script>

@@ -38,7 +38,7 @@
                                 enctype="multipart/form-data">
                                 @csrf
                                 <div class="row mb-4">
-                                    <div class="col-md-4 mt-4">
+                                    <div class="col-md-6 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
                                             <select name="customer_id" id="customer_id" class="form-control required" required>
@@ -46,14 +46,14 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-8 mt-4">
+                                    <div class="col-md-6 mt-4">
                                         <div class="form-group">
                                             <label for="address">Address</label>
                                             <input type="text" name="address" class="form-control" id="address"
                                                 placeholder="Address" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="product_id">Product Name<span class="text-danger">*</span></label>
                                             <select name="product_id" id="product_id" class="form-control" required>
@@ -61,7 +61,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="product_type">Product Type</label>
                                             <select name="product_type" id="product_type" class="form-control" >
@@ -81,20 +81,20 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="software_version">Software Version</label>
-                                            <input type="text" name="software_version" class="form-control" value="{{ old('software_version') }}"
-                                                id="software_version" placeholder="Software Version">
-                                            
-                                        </div>
-                                    </div>
+                                      
+                                            <select name="software_version" id="software_version" class="form-control"> 
+                                                <option value="Old Software Version"  {{ old('software_version') == 'Old Software Version' ? 'selected' : '' }}>Old Software Version</option>
+                                                <option value="New Software Version"  {{ old('software_version') == 'New Software Version' ? 'selected' : '' }}>New Software Version</option>
+                                                <option value="G-55 Power & Smart"  {{ old('software_version') == 'G-55 Power & Smart' ? 'selected' : '' }}>G-55 Power & Smart</option>
+                                                <option value="MAC Id"  {{ old('software_version') == 'MAC Id' ? 'selected' : '' }}>MAC Id</option>
+                                                <option value="Loading"  {{ old('software_version') == 'Loading' ? 'selected' : '' }}>Loading</option>
+                                                <option value="Device Id-12 Digit"  {{ old('software_version') == 'Device Id-12 Digit' ? 'selected' : '' }}>Device Id-12 Digit</option>
+                                                <option value="Device Id-16 Digit"  {{ old('software_version') == 'Device Id-16 Digit' ? 'selected' : '' }}>Device Id-16 Digit</option>
+                                                <option value="Others"  {{ old('software_version') == 'Others' ? 'selected' : '' }}>Others</option>
+                                                
+                                                
+                                            </select>
 
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label for="file_upload">File Up</label>
-                                          <x-file-uploader  name="file_upload"/>
-
-                                            {{-- <input type="file"
-                                                class="file-control form-control"
-                                                id="file_upload" name="file_upload"> --}}
                                         </div>
                                     </div>
 
@@ -109,6 +109,16 @@
                                     </div>
 
 
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="file_upload">File Up</label>
+                                          <x-file-uploader  name="file_upload"/>
+
+                                            {{-- <input type="file"
+                                                class="file-control form-control"
+                                                id="file_upload" name="file_upload"> --}}
+                                        </div>
+                                    </div> 
                                    
                                     <div class="col-md-12">
                                         <div
@@ -251,7 +261,7 @@
             @endif
 
 
-            const productSelect = new TomSelect(".product_ids", {
+            const productSelect = new TomSelect("#product_id", {
                 valueField: "id",
                 labelField: "text",
                 searchField: [], 
@@ -274,12 +284,12 @@
                 }
             }); 
 
-            @if(request('product_ids'))
+            @if(request('product_id'))
                 productSelect.addOption({
-                    id: "{{ request('product_ids') }}",
-                    text: "{{ request('product_ids') }}"
+                    id: "{{ request('product_id') }}",
+                    text: "{{ request('product_id') }}"
                 });
-                productSelect.setValue("{{ request('product_ids') }}");
+                productSelect.setValue("{{ request('product_id') }}");
             @endif
             
         });

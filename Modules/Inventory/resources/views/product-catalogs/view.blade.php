@@ -1,231 +1,214 @@
-<style>
-    .catalog-container {
-        width: 100%;
-        background-color: #ffffff;
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-bottom: 5px;
-        padding-top: 0px;
-    }
+@section('title', 'Product Catalog Information')
+@section('description', 'Product Catalog Information')
+@extends('layout.app')
+@section('content')
 
-    .product-card {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 22px;
-        padding-top: 0;
-        border-radius: 10px;
+    <style>
+        :root {
+            --half-inch: 0.5in;
+            --main-blue: #3b5998;
+        }
 
-    }
+        body { background-color: #d1d4d7; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        .a4-page {
+            width: 250mm;
+            height: 297mm;
+            margin: 5px auto;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        /* --- Left Sidebar --- */
+        .left-sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: var(--half-inch);
+            height: 100%;
+            background: var(--main-blue);
+            z-index: 10;
+            clip-path: polygon(0 0, 100% 0, 100% 25%, 70% 28%, 70% 65%, 100% 68%, 100% 100%, 0 100%);
+            
+            /* Content middle-e anar jonno */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-url {
+            color: white;
+            font-size: 10px; /* Text ektu choto korle 0.5 inch sidebar-e bhalo dekhay */
+            font-weight: 600;
+            white-space: nowrap;
+            
+            transform: rotate(-90deg);
+            transform-origin: center; /* Center theke rotate hobe */
+            
+            /* Exact centering adjustment */
+            width: 200px; /* Ekta fixed width dile alignment easy hoy */
+            text-align: center;
+        }
 
-    .product-image {
-        flex: 1;
-        min-width: 100%;
-        max-width: 100%;
+        /* --- Header Area (0.5 Inch Top) --- */
+        .header-wrapper {
+            margin-left: 0.4in;
+            padding-top:  0.2in; /* 0.5 inch from top */
+            padding-right: 0.4in;
+        }
 
-    }
+        /* .logo-box {
+            border: 1px solid #ccc;
+            padding: 4px 15px;
+            display: inline-block;
+            border-radius: 0 0 35px 0;
+            margin-bottom: 5px;
+        } */
 
-    .product-image img {
-        width: 300px;
-        height: auto;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
+        .company-header-text {
+            text-align: left;
+            border-bottom: 1.5px solid var(--main-blue);
+            padding-bottom: 3px;
+        }
 
-    .product-details {
-        flex: 2;
-        min-width: 250px;
-        padding-left: 20px;
-        max-height: 500px;
-    }
+        .company-name {
+            font-family: 'Times New Roman', Times, serif;
+            color: #1a3a5f;
+            font-weight: 900;
+            font-size: 43px;
+            margin: 0;
+            line-height: 1;
+        }
 
-    .product-details h2 {
-        color: #007BFF;
-        margin-top: 0;
-        font-size: 24px;
-    }
+        .slogan {
+            font-size: 15px;
+            color: #ff8300;
+            margin: 0;
+        }
 
-    .product-details p {
-        margin: 10px 0;
-        font-size: 16px;
-    }
+        /* --- Content Area --- */
+        .main-content {
+            margin-left: 0.6in;
+            margin-right: 0.5in;
+            margin-top: 0.4in;
+            min-height: 5in;
+        }
 
-    .product-details span {
-        font-weight: bold;
-        color: #555;
-    }
+        /* --- Footer Area (0.5 Inch Bottom) --- */
+        .footer-wrapper {
+            position: absolute; 
+            right: 0;
+            padding: 10px 0.4in;
+            border-top: 1px solid #ddd;
+            font-size: 12px;
+            color: #333;
+        }
 
-    .keyword-description {
-        margin-top: 20px;
-    }
+        .footer-col { padding: 0 15px; border-right: 1px solid #ccc; }
+        .footer-col:last-child { border-right: none; }
 
-    .keyword-description p {
-        margin: 5px 0;
-    }
+        @media print {
+            body { background: none; margin: 0; }
+            .a4-page { margin: 0; box-shadow: none; border: none; }
+            .no-print { display: none; }
+        }
+    </style>
 
-    .uploaded-images {
-        width: 100%;
-        margin-top: 20px;
-    }
+    <!-- CONTENT AREA -->
+    <div class="container-fluid"> 
+        <div class="a4-page">
+            <div class="left-sidebar">
+                <div class="sidebar-url">www.gmebd.com</div>
+            </div>
 
-    .uploaded-images h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
-
-    .images-container {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .images-container img {
-        width: 250px;
-        height: auto;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-</style>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        font-size: 12px;
-    }
-
-    @page {
-        margin-top: 120px;
-        margin-bottom: 80px;
-        margin-left: 40px;
-        margin-right: 40px;
-    }
-
-    header {
-        position: fixed;
-        top: -110px;
-        left: -40px;
-        right: -40px;
-        height: 110px;
-        background-color: #fff;
-        text-align: center;
-        line-height: 1.4;
-    }
-
-    footer {
-        position: fixed;
-        bottom: -80px;
-        left: -40px;
-        right: -40px;
-        height: 80px;
-        background-color: #fff;
-        text-align: center;
-        line-height: 1.3;
-        border-top: 1px solid #ccc;
-    }
-
-    .content {
-        margin-top: 0;
-        /* Adjust based on header height */
-        margin-bottom: 0px;
-        /* Adjust based on footer height */
-        line-height: 1.5;
-
-    }
-</style>
-<div>
-
-    {{-- <div class="card">
-        <div class="card-header"> --}}
-            <header>
-                @include('partials._for_pdf_header')
-            </header>
-
-            <body>
-                <h1 style="font-size:30px;text-align:center; padding-top:0; margin-top:0">Product Information</h1>
-                <div class="catalog-container">
-                    <div class="product-card">
-                        <div class="row product-image">
-                            <table class="table">
-                                <tr>
-                                    <td width="47%">
-                                        @if($productCatalog->profile_image_upload)
-                                            <img src="{{ s3FileToBase64($productCatalog->profile_image_upload) }}"
-                                                alt="Product Image" style="width:100%;font-size:24pt;">
-                                        @else
-                                            {{-- <img src="https://placehold.co/600x400?text=No+Image"
-                                                alt="No Image Available" style="width:100%;font-size:24pt;"> --}}
-                                        @endif
-                                        <p style="font-size:14pt;text-align:center;">
-                                            <strong>{{ $productCatalog->name }}</strong></p>
-                                    </td>
-                                    <td width="53%">
-                                        <table class="table" style="padding: 0;font-size:14px;">
-                                            <tr style="padding: 0; margin:0;">
-                                                <td style="width: 30%; font-size:22px!important;color:blue;">Model</td>
-                                                <th style="width:70%;">{{ $productCatalog->model }}</th>
-                                            </tr>
-                                            <tr style="padding: 0; margin:0;">
-                                                <td>Product Name</td>
-                                                <td>{{ $productCatalog->name }}</td>
-                                            </tr>
-                                            <tr style="padding: 0; margin:0;">
-                                                <td>Brand</td>
-                                                <td>{{ optional($productCatalog->brand)->name }}</td>
-                                            </tr>
-                                            <tr style="padding: 0; margin:0;">
-                                                <td>MRP</td>
-                                                <td>{{ $productCatalog->mrp }}</td>
-                                            </tr>
-                                            <tr style="padding: 0; margin:0;">
-                                                <td>Unit Type</td>
-                                                <td>{{ $productCatalog->unit->name }}</td>
-                                            </tr>
-                                            <tr style="padding: 0; margin:0;">
-                                                <td>Product Origin</td>
-                                                <td>{{ $productCatalog->product_origin }}</td>
-                                            </tr>
-                                            <tr style="padding: 0; margin:0;">
-                                                <td>Warranty Period</td>
-                                                <td>{{$productCatalog->warranty_period_input}}
-                                                    {{ $productCatalog->warranty_period }}</td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="keyword-description">
-                            <h2 class="mt-4 mb-4">Keyword & Descriptions</h2>
-                            <p>{!! $productCatalog->description !!}</p>
-                        </div>
-
-
+            <div class="header-wrapper">
+                <div class="d-flex justify-content-between align-items-end">
+                    <div class="logo-box"> 
+                        <img src="{{ asset('assets/img/gme-logo.png') }}"  alt="GME Logo"  style="height:85px;width:135px;">
                     </div>
-                    <div class="uploaded-images">
-                        <h3>Product Images</h3>
-                        <table class="table table-bordered" style="border-color: white;">
-                            <tbody>
-                                @foreach (json_decode($productCatalog->image_uploads ?? "[]") as $index => $image)
-                                    @if ($index % 2 == 0)
-                                        <tr style="border-color: white;">
-                                    @endif
-                                        <td width="50%" style="border-color: white;">
-                                            <img src="{{ s3FileToBase64($image) }}" width="auto"
-                                                style="border: 2px solid #d1d1d1; border-radius: 5px; height:200px;">
-                                        </td>
-                                        @if ($index % 2 == 1 || $index == count(json_decode($productCatalog->image_uploads)) - 1)
-                                            </tr>
-                                        @endif
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="company-header-text flex-grow-1 ms-3">
+                        <h1 class="company-name">Global Medical Engineering (BD) Ltd.</h1>
+                        <p class="slogan">Provider of Medical Equipment and Solutions for Hospitals, Clinics, Diagnostics and Healthcare Institutes.</p>
                     </div>
                 </div>
-            </body>
-            {{--
+            </div>
+
+            <div class="main-content">  
+                <div class="product-card">
+                    <div class="row product-image">
+                        <div class="col-md-4">
+                            @if($productCatalog->profile_image_upload)
+                                <img src="{{ $productCatalog->profile_image_upload }}"
+                                    alt="Product Image">
+                            @else
+                                <img src="{{ asset('assets\img\No-image.jpg.jpg') }}" alt="No Image Available">
+                            @endif
+                        </div>
+                        <div class="product-details col-md-8">
+                            <h2 style="font-size: 30px; margin-bottom: 5px;">Model: <span
+                                    style="font-size: 31px;">{{ $productCatalog->model }}</span>
+                            </h2>
+                            <h4 style="font-size: 14px; margin-bottom: 5px;">Product Name: <span
+                                    style="font-size: 16px;">{{ $productCatalog->withoutModelSuffix()->name }}</span></h4>
+                            <p style="font-size: 14px; margin-bottom: 5px;">Brand: <span
+                                    style="font-size: 16px;">{{ optional($productCatalog->brand)->name }}</span>
+                            </p>
+                            <p style="font-size: 14px; margin-bottom: 5px;">MRP: <span
+                                    style="font-size: 16px;">{{ $productCatalog->mrp }}</span></p>
+                            <p style="font-size: 14px; margin-bottom: 5px;">Unit Type: <span
+                                    style="font-size: 16px;">{{ $productCatalog->unit->name }}</span>
+                            </p>
+                            <p style="font-size: 14px; margin-bottom: 5px;">Product Origin: <span
+                                    style="font-size: 16px;">{{ $productCatalog->product_origin }}</span>
+                            </p>
+                            <p style="font-size: 14px; margin-bottom: 5px;">Warranty Period: <span
+                                    style="font-size: 16px;">{{$productCatalog->warranty_period_input}} {{ $productCatalog->warranty_period }}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="keyword-description">
+                        <h2 class="mt-4 mb-4">Product Features</h2>
+                        <p>{!! $productCatalog->description !!}</p>
+                    </div> 
+
+                </div>  
+
+                   
+            </div>
+
+            <div class="footer-wrapper">
+                <div class="row g-0">
+                    <div class="col-7 footer-col">
+                        <strong>Corporate Office :</strong><br>
+                        House # 17/2, Topkhana Road (2nd Floor), Dhaka-1000, Bangladesh<br>
+                        Hotline: +88 096780 20555, +88 01404 003500 | Order: +88 01404 003501<br>
+                        Service: +88 01404 003535 | E-mail: info@gmebd.com, gmebd@hotmail.com
+                    </div>
+                    <div class="col-5 ps-3">
+                        <strong>China Office :</strong><br>
+                        190 # longping Road, Huate Industrial Zone<br>
+                        Longgang District, Shenzhen<br>
+                        GuangDong China 518116.
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-    </div> --}}
+    @endsection
+    <!-- CONTENT AREA -->
+    @section('page_scripts')
 
-
-</div>
+        <!-- Initialize Slick Slider -->
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.slider').slick({
+                    dots: true,
+                    infinite: true,
+                    speed: 300,
+                    slidesToShow: 1,
+                    adaptiveHeight: true
+                });
+            });
+        </script>
+    @endsection

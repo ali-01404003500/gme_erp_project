@@ -30,6 +30,14 @@
                                 </ol>
                             </nav>
                         </div>
+                        <div class="action-btn mt-sm-0 mt-15">
+                            @if (hasPermission('inv.product-catalogs.index'))
+                            <a href="{{ route('inv.product-catalogs.index') }}"
+                                class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
+                                    class="fa fa-list"></i> List</a>
+                            @endif
+                        </div>
+                          
                     </div>
                 </div>
             </div>
@@ -83,36 +91,42 @@
                                                             <div class="tab-pane fade show active" id="product_unit_sales"
                                                                 role="tabpanel">
                                                                 <div class="row">
-                                                                    <div class="col-md-4 mb-2">
+                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="product_catalog_id">Product
-                                                                                Name:</label>
-                                                                            <select class="form-control tom-select"
-                                                                                id="product_catalog_id"
-                                                                                name="product_catalog_id"
+                                                                            <label for="product_catalog_id">Product  Name</label>
+                                                                            <select class="form-control" id="product_catalog_id"  name="product_catalog_id"
                                                                                 @if (request()->has('product_catalog_id')) readonly @endif>
-                                                                                <option value="">Select Product Catalog</option>
-                                                                                @foreach ($product_catalogs ?? [] as $product_catalog)
-                                                                                    <option value="{{ $product_catalog->id }}"
-                                                                                        @if (old('product_catalog_id',$product->product_catalog_id?? request()->input('product_catalog_id')) == $product_catalog->id) selected @endif
-                                                                                        data-mrp={{ $product_catalog->mrp }}>
-                                                                                        {{ $product_catalog->name }}
-                                                                                    </option>
-                                                                                @endforeach
-                                                                            </select>
+                                                                                <option value="{{ $productCatalog->id }}">{{ $productCatalog->withoutModelSuffix()->name}}</option> 
+                                                                            </select> 
+                                                                        </div>
+                                                                    </div>
+
+                                                                     <div class="col-md-4 mb-2">
+                                                                        <div class="form-group">
+                                                                            <label for="product_catalog_id">Product  Model</label>
+                                                                            <input type="text" id="product_model" name="product_model"
+                                                                                class="form-control" value="{{ $productCatalog->model }}" readonly>
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="dollar_price">Dollar Price:</label>
+                                                                            <label for="product_catalog_id">Product  Brand</label>
+                                                                            <input type="text" id="product_brand" name="product_brand"
+                                                                                class="form-control" value="{{ $productCatalog->brand->name }}" readonly>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-4 mb-2">
+                                                                        <div class="form-group">
+                                                                            <label for="dollar_price">Dollar Price</label>
                                                                             <input type="text" id="dollar_price" name="dollar_price"
                                                                                 class="form-control numberOnly" value="{{ old('dollar_price',numberFormat($product->dollar_price)) }}">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="hs_code">HS Code:</label>
+                                                                            <label for="hs_code">HS Code</label>
                                                                             <input type="text" id="hs_code" name="hs_code"
                                                                                 class="form-control" value="{{ old('hs_code',$product->hs_code) }}">
                                                                         </div>
@@ -120,7 +134,7 @@
 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="last_cost_price">Last Cost Price:</label>
+                                                                            <label for="last_cost_price">Last Cost Price</label>
                                                                             <input type="number" step="0.01"
                                                                                 class="form-control" id="last_cost_price"
                                                                                 name="last_cost_price"
@@ -131,7 +145,7 @@
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="reminder_quantity">Reminder
-                                                                                Quantity:</label>
+                                                                                Quantity</label>
                                                                             <input type="text" class="form-control numberOnly"
                                                                                 id="reminder_quantity"
                                                                                 name="remainder_quantity"
@@ -142,7 +156,7 @@
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="product_status">Product
-                                                                                Settings:</label>
+                                                                                Settings</label>
                                                                             <div class="input-group">
                                                                                 {{-- Product Status Radio Group --}}
                                                                                 <div class="form-check form-check-inline">
@@ -178,7 +192,7 @@
 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label>Discount Type:</label>
+                                                                            <label>Discount Type</label>
                                                                             <div class="form-group" id="discount_type">
                                                                                 <div class="form-check form-check-inline">
                                                                                     <input class="form-check-input"
@@ -229,22 +243,23 @@
                                                                                     value="{{ old('max_discount',$product->max_discount) }}">
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-
-                                                                    <div class="col-md-4 mb-2">
-                                                                        <div class="form-group">
-                                                                            <label>Product Tag:</label>
-                                                                            <select class="form-control tom-select"
-                                                                                name="product_tag_id" required>
-                                                                                <option value="">Select Product Tag
-                                                                                </option>
-                                                                                @foreach ($tags as $tag)
-                                                                                    <option value="{{ $tag->id }}" @if(old('product_tag_id', $product->product_tag_id) == $tag->id) selected @endif>
-                                                                                        {{ $tag->name }}</option>
-                                                                                @endforeach
-                                                                            </select>
+                                                                        <div class="col-md-6 mb-2">
+                                                                            <div class="form-group" id="discount_percentage">
+                                                                                <label>Product Tag</label>
+                                                                                <select class="form-control tom-select"
+                                                                                    name="product_tag_id" required>
+                                                                                    <option value="">Select Product Tag
+                                                                                    </option>
+                                                                                    @foreach ($tags as $tag)
+                                                                                        <option value="{{ $tag->id }}" @if(old('product_tag_id', $product->product_tag_id) == $tag->id) selected @endif>
+                                                                                            {{ $tag->name }}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
+                                                                        
+                                                                    </div> 
+                                                                   
                                                                     <input type="hidden" id="active_tab" name="active_tab" value="">
 
                                                                 </div>
@@ -258,7 +273,7 @@
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="max_sales_quantity">Maximus Sales
-                                                                                Quantity:</label>
+                                                                                Quantity</label>
                                                                             <input type="number"
                                                                                 class="form-control numberOnly"
                                                                                 id="max_sales_quantity"
@@ -270,7 +285,7 @@
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="total_sales_qty">Total Sales
-                                                                                Qty:</label>
+                                                                                Qty</label>
                                                                             <input type="text" class="form-control"
                                                                                 id="total_sales_qty"
                                                                                 name="total_sales_qty"
@@ -280,7 +295,7 @@
 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="applied_type">Applied Type:</label>
+                                                                            <label for="applied_type">Applied Type</label>
                                                                             <select name="applied_type" id="applied_type" class="form-control">
                                                                                 <option value="">Select</option>
                                                                                 <option value="once_in_time" @if(old("applied_type",$product->applied_type) == "once_in_time") selected @endif>Once in time</option>
@@ -294,7 +309,7 @@
 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="inv_no">Inv No:</label>
+                                                                            <label for="inv_no">Inv No</label>
                                                                             <input type="text" class="form-control"
                                                                                 id="inv_no" name="inv_no"
                                                                                 value="{{ old('inv_no',$product->inv_no) }}">
@@ -303,7 +318,7 @@
 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="status">Status:</label>
+                                                                            <label for="status">Status</label>
                                                                             <div class="status-radio">
                                                                                 <div class="form-check form-check-inline">
                                                                                     <input class="form-check-input"
@@ -326,7 +341,7 @@
 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="stock_info">Sales Stock Info:</label>
+                                                                            <label for="stock_info">Sales Stock Info</label>
                                                                             <div class="stock-radio">
                                                                                 <div class="form-check form-check-inline">
                                                                                     <input class="form-check-input"
@@ -357,7 +372,7 @@
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="max_purchase_quantity">Maximus
-                                                                                Purchase Quantity:</label>
+                                                                                Purchase Quantity</label>
                                                                             <input type="number"
                                                                                 class="form-control numberOnly"
                                                                                 id="max_purchase_quantity"
@@ -369,7 +384,7 @@
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="total_purchase_qty">Total Purchase
-                                                                                Qty:</label>
+                                                                                Qty</label>
                                                                             <input type="number"
                                                                                 class="form-control numberOnly"
                                                                                 id="total_purchase_qty"
@@ -381,14 +396,14 @@
 
                                                                     {{-- <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="dollar_price">Dollar Price:</label>
+                                                                            <label for="dollar_price">Dollar Price</label>
                                                                             <input type="text" id="dollar_price" name="dollar_price"
                                                                                 class="form-control numberOnly" value="{{ old('dollar_price', $product->dollar_price) }}">
                                                                         </div>
                                                                     </div> --}}
                                                                     {{-- <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="hs_code">HS Code:</label>
+                                                                            <label for="hs_code">HS Code</label>
                                                                             <input type="text" id="hs_code" name="hs_code"
                                                                                 class="form-control" value="{{ old('hs_code', $product->hs_code) }}">
                                                                         </div>
@@ -397,7 +412,7 @@
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="last_purchase_price">Last Purchase
-                                                                                Price:</label>
+                                                                                Price</label>
                                                                             <input type="number"
                                                                                 class="form-control numberOnly"
                                                                                 id="last_purchase_price"
@@ -408,7 +423,7 @@
 
                                                                     {{-- <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
-                                                                            <label for="stock_info">Stock Info:</label>
+                                                                            <label for="stock_info">Stock Info</label>
                                                                             <div class="form-group">
                                                                                 <div class="form-check form-check-inline">
                                                                                     <input class="form-check-input"
@@ -440,7 +455,7 @@
 
                                             <div
                                                 class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
-                                                <a href="{{ route('inv.product-catalogs.index') }}" class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i class="fa fa-list"></i> List</a>
+                                               
                                                 <button type="submit"
                                                     class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">Submit</button>
                                             </div>
@@ -477,19 +492,34 @@
                 this.tomselect.lock();
             });
 
-            if('Fixed' == $('#discount_type').find('input:checked').val()){
+               if('NA' == $('#discount_type').find('input:checked').val()){
+                $('#discount_fixed,#discount_percentage').hide();
+            }
+            else if('Fixed' == $('#discount_type').find('input:checked').val()){
                 $('#discount_fixed').show();
+                $('#discount_percentage').hide();
             }else{
                 $('#discount_fixed').hide();
+                $('#discount_percentage').show();
             }
+
+
+
             $('#discount_type').on("change", function() {
-                console.log($(this).find('input:checked').val());
-                if('Fixed' == $(this).find('input:checked').val()){
+                //console.log($(this).find('input:checked').val());
+                if('NA' == $(this).find('input:checked').val()){
+                    $('#discount_fixed,#discount_percentage').hide();
+                }
+                else if('Fixed' == $(this).find('input:checked').val()){
                     $('#discount_fixed').show();
+                    $('#discount_percentage').hide();
+                    
                 }else{
                     $('#discount_fixed').hide();
+                    $('#discount_percentage').show();
                 }
-            });
+            })
+
 
         });
 

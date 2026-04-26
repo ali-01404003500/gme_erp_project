@@ -12,27 +12,17 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        {{ trans('menu.usg-opg-license-requisition-list-menu-title') }}</li>
+                                        {{ trans('menu.cbc-license-requisition-verify-list-menu-title') }}</li>
                                 </ol>
                             </nav>
-                        </div>
-                        <div class="breadcrumb-main__wrapper">
-                            <div class="action-btn mt-sm-0 mt-15">
-                                @if (hasPermission('licenses.usg-opg-license-requisitions.create'))
-                                    <a href="{{ route('licenses.usg-opg-license-requisitions.create') }}" class="btn px-20 btn-primary ">
-                                        <i class="las la-plus fs-16"></i>Add New
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-
+                        </div> 
                     </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <h4 class="text-capitalize breadcrumb-title">{{ trans('menu.usg-opg-license-requisition-list-menu-title')}}</h4>
+                    <h4 class="text-capitalize breadcrumb-title">{{ trans('menu.cbc-license-requisition-list-menu-title')}}</h4>
                 </div>
                 <div class="col-md-12 my-4">
                     <div class="card">
@@ -41,30 +31,29 @@
                                 <div class="col-sm-12">
                                     <table class="table table-bordered">
                                         <tr>
-
                                             <td>
-                                                <select name="status" id="status" class="form-control"  data-placeholder="Select Type">
-                                                   @if (hasPermission('licenses.usg-opg-license-requisitions.show'))
+                                                <select name="status" id="status" class="form-control" data-placeholder="Select Type">
+                                                   
+                                                    @if (hasPermission('licenses.cbc-license-requisitions.show'))
                                                         <option value="" {{ request('status') == '' ? 'selected' : '' }}>All</option> 
                                                     @endif
-                                                    @if (hasPermission('licenses.usg-opg-license-requisitions.update'))
+                                                    @if (hasPermission('licenses.cbc-license-requisitions.update'))
                                                         <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                                    @endif  
+                                                    @endif
 
-                                                    @if (hasPermission('licenses.usg-opg-license-requisitions.approve'))
+                                                    @if (hasPermission('licenses.cbc-license-requisitions.approve'))
                                                         <option value="Approved" {{ request('status') == 'Approved' ? 'selected' : '' }}>Verified</option>
                                                     @endif 
                                                 
-                                                    @if (hasPermission('licenses.usg-opg-sms.update'))
+                                                    @if (hasPermission('licenses.cbc-sms.update'))
                                                         <option value="SMS Send" {{ request('status') == 'SMS Send' ? 'selected' : '' }}>Complete</option>
-                                                    @endif 
+                                                    @endif
+                                            
+                                                
+                                                  
                                                     
                                                 </select>
-                                            </td>  
-
-                    
-                                                      
-
+                                            </td>   
 
                                             <td>
                                                 <select name="customer_id" id="customer_id" class="form-control"
@@ -105,12 +94,12 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $uSGOrOPGLicenseRequisitions])'
+                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $cBCLicenseRequisitions])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>Sl</th>
-                                        <th>Customer Name</th> 
+                                        <th>Sl</th> 
+                                        <th>Customer Name</th>
                                         <th>Product Name</th>
                                         <th>Dongle Id</th> 
                                         <th>Balance</th>
@@ -122,14 +111,15 @@
                                 </thead>
                                 <tbody>
 
-                                    @foreach ($uSGOrOPGLicenseRequisitions as $value)
+                                    @foreach ($cBCLicenseRequisitions as $value)
                                         <tr>
-                                        <td class="text-center">{{ ($uSGOrOPGLicenseRequisitions->currentPage() - 1) * $uSGOrOPGLicenseRequisitions->perPage() + $loop->iteration  }}</td> 
+                                        <td class="text-center">{{ ($cBCLicenseRequisitions->currentPage() - 1) * $cBCLicenseRequisitions->perPage() + $loop->iteration  }}</td> 
                                             <td>
                                                 {{ $value->customer->company_name }}<br>
                                                 <span class="text-muted">{{ $value->customer->address }}</span>
                                             </td>
-                                           <td>
+
+                                            <td>
                                                 {{ $value->product->withoutModelSuffix()->name }}<br>
                                                 <span class="text-muted">{{ $value->product->model }}</span>
                                             </td>  
@@ -149,43 +139,43 @@
                                                 @if($value->status == 'Rejected') <span class="badge badge-round badge-danger">Rejected</span> @endif
                                                 @if($value->status == 'SMS Send') <span class="badge badge-round badge-info">SMS Send</span> @endif
                                                 @if($value->status == 'SMS Deny') <span class="badge badge-round badge-danger">SMS Deny</span> @endif
-                                            </td>          
-                                            
-                                            
+                                            </td>
+                                           
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
+                                                    
                                                     @if ($value->status == 'Pending')
-                                                        @if (hasPermission('licenses.usg-opg-license-requisitions.approve'))
+                                                        @if (hasPermission('licenses.cbc-license-requisitions.approve'))
                                                             <a class="btn btn-outline-success"
-                                                                href="{{ route('licenses.usg-opg-license-requisitions.approve', $value->id) }}"
+                                                                href="{{ route('licenses.cbc-license-requisitions.approve', $value->id) }}"
                                                                 title="Approve"><i class="fas fa-check"></i></a>
                                                         @endif
-                                                    @endif      
+                                                    @endif 
                                                     @if ($value->status == 'Approved')
-                                                        @if (hasPermission('licenses.usg-opg-sms.update'))
+                                                        @if (hasPermission('licenses.cbc-sms.update'))
                                                             <a class="btn btn-outline-success"
-                                                                href="{{ route('licenses.usg-opg-sms.edit', $value->id) }}"
+                                                                href="{{ route('licenses.cbc-sms.edit', $value->id) }}"
                                                                 title="SMS Send"><i class="fas fa-envelope"></i></a>
                                                         @endif
-                                                    @endif      
+                                                    @endif  
                                                     @if( $value->status == 'Approved'|| $value->status == 'Pending')
-                                                        @if (hasPermission('licenses.usg-opg-license-requisitions.update'))
+                                                        @if (hasPermission('licenses.cbc-license-requisitions.update'))
                                                             <a class="btn btn-outline-warning"
-                                                                href="{{ route('licenses.usg-opg-license-requisitions.edit', $value->id) }}"
+                                                                href="{{ route('licenses.cbc-license-requisitions.edit', $value->id) }}"
                                                                 title="Edit"><i class="far fa-edit"></i></a>
                                                         @endif
                                                     
-                                                        @if (hasPermission('licenses.usg-opg-license-requisitions.destroy'))
+                                                        @if (hasPermission('licenses.cbc-license-requisitions.destroy'))
                                                             <button type="button"
-                                                                data-action="{{ route('licenses.usg-opg-license-requisitions.destroy', $value->id) }}"
+                                                                data-action="{{ route('licenses.cbc-license-requisitions.destroy', $value->id) }}"
                                                                 class="btn btn-outline-danger delete-confirm"
                                                                 title="Delete"><i class="far fa-trash-alt"></i></button>
                                                         @endif
                                                     @endif
-                                                    @if (hasPermission('licenses.usg-opg-license-requisitions.show'))
+                                                    @if (hasPermission('licenses.cbc-license-requisitions.show'))
                                                         <a class="btn btn-outline-primary"
-                                                            href="{{ route('licenses.usg-opg-license-requisitions.show', $value->id) }}"
+                                                            href="{{ route('licenses.cbc-license-requisitions.show', $value->id) }}"
                                                             title="View"><i class="fas fa-eye"></i></a>
                                                         
                                                     @endif
@@ -283,7 +273,7 @@
         autoclose: true
     });
 
-     $(document).ready(function () {
+    $(document).ready(function () {
         const companySelect = new TomSelect("#customer_id", {
             valueField: "id",
             labelField: "text",

@@ -20,11 +20,25 @@
                     {{ t_('menu.USG/OPG License Requisitions') }}</a>
             </li>
         @endif
+        @if (hasPermission('licenses.usg-opg-license-requisitions.verifylist'))
+            <li><a href="{{ route('licenses.usg-opg-license-requisitions.verifylist') }}"
+                    class="{{ request()->routeIs('licenses.usg-opg-license-requisitions.*') ? 'active' : '' }}">
+                    <span class="nav-icon fa fa-file" style="margin-right: 20px;"></span>
+                    {{ t_('menu.USG/OPG License Requisitions Verify') }}</a>
+            </li>
+        @endif
         @if (hasPermission('licenses.cbc-license-requisitions.create'))
             <li><a href="{{ route('licenses.cbc-license-requisitions.create') }}"
                     class="{{ request()->routeIs('licenses.cbc-license-requisitions.*') ? 'active' : '' }}">
                     <span class="nav-icon fa fa-file-archive" style="margin-right: 20px;"></span>
                     {{ t_('menu.CBC License Requisitions') }}</a>
+            </li>
+        @endif
+        @if (hasPermission('licenses.cbc-license-requisitions.verifylist'))
+            <li><a href="{{ route('licenses.cbc-license-requisitions.verifylist') }}"
+                    class="{{ request()->routeIs('licenses.cbc-license-requisitions.*') ? 'active' : '' }}">
+                    <span class="nav-icon fa fa-file-archive" style="margin-right: 20px;"></span>
+                    {{ t_('menu.CBC License Requisitions Verify') }}</a>
             </li>
         @endif
         @if (hasPermission('licenses.reports.index'))

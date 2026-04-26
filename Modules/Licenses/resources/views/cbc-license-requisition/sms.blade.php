@@ -79,6 +79,7 @@
                                             <label for="product_model">Product Model : {{ $license->product_model }}</label>
                                             <input type="hidden" name="product_model" class="form-control" value="{{ $license->product_model }}"
                                                 id="product_model" placeholder="Product Model" readonly>
+                                            <input type="hidden" name="product_id" class="form-control"  id="product_id" placeholder="Product Id" value="{{ $license->product_id }}">
                                         </div>
                                     </div>
                                     <div class="col-md-4"></div>
@@ -191,7 +192,7 @@
                                                 </div>
                                             </div>
                                             <div class="row mt-4">
-                                                <div class="col-md-12 p-4">
+                                                <div class="col-md-6 offset-3 p-4">
                                                     <table class="table table-bordered" id="product_info_table">
                                                         <thead>
                                                             <tr>
