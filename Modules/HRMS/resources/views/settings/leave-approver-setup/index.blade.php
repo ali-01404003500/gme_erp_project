@@ -50,7 +50,7 @@
                                                     name="approver_id">
                                                     <option value="">-- Select Approver --</option>
                                                     @foreach ($employees as $emp)
-                                                        <option value="{{ $emp->id }}" data-designation="{{ $emp->employementDetail->designation->name }}">
+                                                        <option value="{{ $emp->id }}" data-designation="{{ $emp->employementDetail->designation->name ?? 'N/A' }}">
                                                             {{ $emp->full_name }}
                                                         </option>
                                                     @endforeach
@@ -64,53 +64,62 @@
                                                 New</button>
                                         </div>
 
-                                    
-
-                                        <div class="col-md-12 mt-5">
-                                            <table class="table" id="approver-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Hiarachy</th>
-                                                        {{-- <th>Approver Code</th> --}}
-                                                        <th>Approver Name</th>
-                                                        <th>Designation</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {{-- JS diye data inject hobe --}}
-                                                    @foreach ($approvers as $key => $approver)
-                                                        <tr>
-                                                            <td>
-                                                                 <input type="hidden" class="approver_ids"
-                                                                    name="approver_update_id[]"
-                                                                    value="{{ $approver->id }}">
-                                                                {{ $approver->hierarchy_level }}</td>
-
-                                                            {{-- <td>{{ $approver->approver->epf_number }}</td> --}}
-                                                            <td>
-                                                                {{ $approver->approver->full_name }}
-                                                                <input type="hidden" class="approver_ids"
-                                                                    name="approver_ids[]"
-                                                                    value="{{ $approver->approver_id }}">
-                                                            </td>
-                                                            <td>{{ $approver->approver->employementDetail->designation->name ?? 'N/A' }}</td>
-
-                                                            <td><button class="btn btn-danger remove"
-                                                                    type="button">Remove</button></td>
-
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-
-                                        {{-- Step 2: Build Hierarchy Section --}}
                                     </div>
 
+                                    <div class="col-md-12 mt-5">
+                                        <style>
+                                            .approver-table-custom,
+                                            .approver-table-custom th,
+                                            .approver-table-custom td {
+                                                border: 1px solid #dee2e6 !important;
+                                                border-collapse: collapse !important;
+                                            }
+                                            .approver-table-custom th,
+                                            .approver-table-custom td {
+                                                padding: 12px;
+                                                vertical-align: middle;
+                                            }
+                                            .approver-table-custom thead th {
+                                                background-color: #f8f9fa;
+                                                border-bottom-width: 2px !important;
+                                            }
+                                        </style>
+                                        
+                                        <table class="table approver-table-custom" id="approver-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hierarchy</th>
+                                                    <th>Approver Name</th>
+                                                    <th>Designation</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{-- JS diye data inject hobe --}}
+                                                @foreach ($approvers as $key => $approver)
+                                                    <tr>
+                                                        <td>
+                                                            <input type="hidden" class="approver_ids"
+                                                                name="approver_update_id[]"
+                                                                value="{{ $approver->id }}">
+                                                            {{ $approver->hierarchy_level }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $approver->approver->full_name }}
+                                                            <input type="hidden" class="approver_ids"
+                                                                name="approver_ids[]"
+                                                                value="{{ $approver->approver_id }}">
+                                                        </td>
+                                                        <td>{{ $approver->approver->employementDetail->designation->name ?? 'N/A' }}</td>
+                                                        <td><button class="btn btn-danger remove"
+                                                                type="button">Remove</button></td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                    <div class="row">
+                                    <div class="row mt-4">
                                         <div class="col-12 d-flex justify-content-end">
                                             <button type="submit" class="btn btn-success px-3">
                                                 Submit
@@ -118,16 +127,9 @@
                                         </div>
                                     </div>
 
-
                                 </form>
 
                             </div>
-
-
-
-                            {{-- 3. Current Status Table --}}
-
-
 
                         </div>
                     </div>
@@ -139,9 +141,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
     @endsection
 
-
     @section('page_scripts')
-
         <script>
             $(document).ready(function() {
 
@@ -150,9 +150,8 @@
                     const approverSelect = $("#approver-select").val()
                     const employeeSelect = $("#employeeSelect").val()
 
-                  if (!approverSelect || !employeeSelect) {
+                    if (!approverSelect || !employeeSelect) {
                         toastr.error('Please select both Approver and Employee');
-                        
                         return
                     }
 
@@ -160,30 +159,24 @@
                     const approverId = approverSelect;
                     if ($('.approver_ids[value=\'' + approverId + '\']').length > 0) {
                         toastr.error('Approver already added');
-
                         return
-
                     }
                     const name = approverOption.text();
                     const designation = approverOption.data('designation');
-                    // const epfNumber = approverOption.data('epf_number');
                     const approverTable = $("#approver-table");
+                    const rowCount = approverTable.find('tbody tr').length;
+                    
                     approverTable.find('tbody').append($(`
-
-                                                 <tr>
-                                                    <td>${ approverTable.find('tbody tr').length+1}</td>                                                    
-                                                    <td>
-                                                        ${name}
-                                                        <input type="hidden" class="approver_ids" name="approver_ids[]" value="${approverId}">
-                                                        </td>
-                                                    <td>${designation}</td>
-                                                    <td><button class="btn btn-danger remove" type="button">Remove</button></td>
-                                                </tr>
-                `))
-
-
-
-
+                        <tr>
+                            <td>${rowCount + 1}</td>                                                    
+                            <td>
+                                ${name}
+                                <input type="hidden" class="approver_ids" name="approver_ids[]" value="${approverId}">
+                            </td>
+                            <td>${designation}</td>
+                            <td><button class="btn btn-danger remove" type="button">Remove</button></td>
+                        </tr>
+                    `));
                 })
 
                 // Another function
@@ -194,14 +187,15 @@
                     }
                 })
 
-                
                 //Another Function
                 $(document).on("click", ".remove", function() {
                     const row = $(this).closest('tr');
                     row.remove();
+                    // Re-index remaining rows
+                    $('#approver-table tbody tr').each(function(index) {
+                        $(this).find('td:first').text(index + 1);
+                    });
                 })
-
-
 
             });
         </script>

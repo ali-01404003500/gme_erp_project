@@ -16,6 +16,15 @@
                                 </ol>
                             </nav>
                         </div>
+                        <div class="breadcrumb-main__wrapper">
+                            <div class="action-btn mt-sm-0 mt-15">
+                                @if (hasPermission('licenses.usg-opg-license-requisitions.create'))
+                                    <a href="{{ route('licenses.usg-opg-license-requisitions.create') }}" class="btn px-20 btn-primary ">
+                                        <i class="las la-plus fs-16"></i>Add New
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
                         <div class="action-btn mt-sm-0 mt-15 row">
                             <a href="{{ route('licenses.usg-opg-license-requisitions.index') }}"
                                 class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i

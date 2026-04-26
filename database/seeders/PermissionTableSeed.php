@@ -120,7 +120,649 @@ class PermissionTableSeed extends Seeder
                 'key' => 'cms.application-entries',
             ],
 
+
+
+            //employees
+            [
+                'name' => 'Create Employee',
+                'slug' => 'hrm.employees.create',
+                'description' => 'Employee create permission',
+                'key' => 'hrm.employees'
+            ],
+
+            [
+                'name' => 'Employee List',
+                'slug' => 'hrm.employees.index',
+                'description' => 'Employee list permission',
+                'key' => 'hrm.employees'
+            ],
+
+            [
+                'name' => 'Employee Update',
+                'slug' => 'hrm.employees.update',
+                'description' => 'Employee update permission',
+                'key' => 'hrm.employees'
+            ],
+
+            [
+                'name' => 'Employee View',
+                'slug' => 'hrm.employees.show',
+                'description' => 'Employee show permission',
+                'key' => 'hrm.employees'
+            ],
+
+            [
+                'name' => 'Employee Delete',
+                'slug' => 'hrm.employees.destroy',
+                'description' => 'Employee delete permission',
+                'key' => 'hrm.employees'
+            ],
+
+
+            //attendance
+            [
+                'name' => 'Attendance List',
+                'slug' => 'hrm.attendances.index',
+                'description' => 'Attendance list permission',
+                'key' => 'hrm.attendances'
+            ],
+
+            [
+                'name' => 'Create Attendance',
+                'slug' => 'hrm.attendances.create',
+                'description' => 'Attendance create permission',
+                'key' => 'hrm.attendances'
+            ],
+
+            [
+                'name' => 'Attendance Update',
+                'slug' => 'hrm.attendances.update',
+                'description' => 'Attendance update permission',
+                'key' => 'hrm.attendances'
+            ],
+
+
+            [
+                'name' => 'Attendance Delete',
+                'slug' => 'hrm.attendances.destroy',
+                'description' => 'Attendance delete permission',
+                'key' => 'hrm.attendances'
+            ],
+
+
+            //leave application
+            [
+                'name' => 'Leave Application List',
+                'slug' => 'hrm.leaves.index',
+                'description' => 'Leave application list permission',
+                'key' => 'hrm.leaves'
+            ],
+
+            [
+                'name' => 'Create Leave Application',
+                'slug' => 'hrm.leaves.create',
+                'description' => 'Leave application create permission',
+                'key' => 'hrm.leaves'
+            ],
+
+            [
+                'name' => 'Leave Application Update',
+                'slug' => 'hrm.leaves.update',
+                'description' => 'Leave application update permission',
+                'key' => 'hrm.leaves'
+            ],
+
+
+
+            [
+                'name' => 'Leave Application Delete',
+                'slug' => 'hrm.leaves.destroy',
+                'description' => 'Leave application delete permission',
+                'key' => 'hrm.leaves'
+            ],
+            [
+                'name' => 'Leave Application Recommended',
+                'slug' => 'hrm.leaves.recommended',
+                'description' => 'Leave application recommended permission',
+                'key' => 'hrm.leaves'
+            ],
+
+            [
+                'name' => 'Leave Application Approved',
+                'slug' => 'hrm.leaves.approved',
+                'description' => 'Leave application approved permission',
+                'key' => 'hrm.leaves'
+            ],
+
+            //notice board
+            [
+                'name' => 'Notice Board List',
+                'slug' => 'hrm.noticeboards.index',
+                'description' => 'Notice board list permission',
+                'key' => 'hrm.noticeboards'
+            ],
+
+            [
+                'name' => 'Create Notice Board',
+                'slug' => 'hrm.noticeboards.create',
+                'description' => 'Notice board create permission',
+                'key' => 'hrm.noticeboards'
+            ],
+
+            [
+                'name' => 'Notice Board Update',
+                'slug' => 'hrm.noticeboards.update',
+                'description' => 'Notice board update permission',
+                'key' => 'hrm.noticeboards'
+            ],
+
+            [
+                'name' => 'Notice Board View',
+                'slug' => 'hrm.noticeboards.show',
+                'description' => 'Notice board show permission',
+                'key' => 'hrm.noticeboards'
+            ],
+
+            [
+                'name' => 'Notice Board Delete',
+                'slug' => 'hrm.noticeboards.destroy',
+                'description' => 'Notice board delete permission',
+                'key' => 'hrm.noticeboards'
+            ],
+
+            //TA/DA
+            [
+                'name' => 'TA/DA List',
+                'slug' => 'hrm.bills.index',
+                'description' => 'TA/DA list permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'Create TA/DA',
+                'slug' => 'hrm.bills.create',
+                'description' => 'TA/DA create permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA Update',
+                'slug' => 'hrm.bills.update',
+                'description' => 'TA/DA update permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA View',
+                'slug' => 'hrm.bills.show',
+                'description' => 'TA/DA show permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA Delete',
+                'slug' => 'hrm.bills.destroy',
+                'description' => 'TA/DA delete permission',
+                'key' => 'hrm.bills'
+            ],
+            [
+                'name' => 'TA/DA Team Leader Verify',
+                'slug' => 'hrm.bills.team_leader_verify',
+                'description' => 'TA/DA team leader verify permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA HR/Accounts Verify',
+                'slug' => 'hrm.bills.accounts_verify',
+                'description' => 'TA/DA HR/accounts verify permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA Final Approve',
+                'slug' => 'hrm.bills.final_approve',
+                'description' => 'TA/DA final approve permission',
+                'key' => 'hrm.bills'
+            ],
+
+            [
+                'name' => 'TA/DA Verify',
+                'slug' => 'hrm.bills.verify',
+                'description' => 'TA/DA Verification List',
+                'key' => 'hrm.bills'
+            ],
+
+
+            // PermissionTableSeeder additions
+            // Employee Salary
+
+            [
+                'name' => 'Create Employee Salary',
+                'slug' => 'hrm.employee-salarys.create',
+                'description' => 'Employee salary create permission',
+                'key' => 'hrm.employee-salarys',
+            ],
+            // Daily Visit Plans
+            [
+                'name' => 'Daily Visit Plans List',
+                'slug' => 'hrm.daily-visit-plans.index',
+                'description' => 'Daily visit plans list permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Create Daily Visit Plan',
+                'slug' => 'hrm.daily-visit-plans.create',
+                'description' => 'Daily visit plan create permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan Update',
+                'slug' => 'hrm.daily-visit-plans.update',
+                'description' => 'Daily visit plan update permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan View',
+                'slug' => 'hrm.daily-visit-plans.show',
+                'description' => 'Daily visit plan show permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan Delete',
+                'slug' => 'hrm.daily-visit-plans.destroy',
+                'description' => 'Daily visit plan delete permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan Approve',
+                'slug' => 'hrm.daily-visit-plans.approve',
+                'description' => 'Daily visit plan approve permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+            [
+                'name' => 'Daily Visit Plan Deny',
+                'slug' => 'hrm.daily-visit-plans.deny',
+                'description' => 'Daily visit plan deny permission',
+                'key' => 'hrm.daily-visit-plans',
+            ],
+
+            // Loans
+            [
+                'name' => 'Loans List',
+                'slug' => 'hrm.loans.index',
+                'description' => 'Loans list permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Create Loan',
+                'slug' => 'hrm.loans.create',
+                'description' => 'Loan create permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan Update',
+                'slug' => 'hrm.loans.update',
+                'description' => 'Loan update permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan View',
+                'slug' => 'hrm.loans.show',
+                'description' => 'Loan show permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan Delete',
+                'slug' => 'hrm.loans.destroy',
+                'description' => 'Loan delete permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan Approve',
+                'slug' => 'hrm.loans.approve',
+                'description' => 'Loan approve permission',
+                'key' => 'hrm.loans',
+            ],
+            [
+                'name' => 'Loan Deny',
+                'slug' => 'hrm.loans.deny',
+                'description' => 'Loan deny permission',
+                'key' => 'hrm.loans',
+            ],
+
+            // Salary 
+            [
+                'name' => 'Payrolls View',
+                'slug' => 'hrm.payrolls',
+                'description' => 'Payrolls view permission',
+                'key' => 'hrm.salary-generates',
+            ],
+            [
+                'name' => 'Salary Generates List',
+                'slug' => 'hrm.salary-generates.index',
+                'description' => 'Salary generates list permission',
+                'key' => 'hrm.salary-generates',
+            ],
+            [
+                'name' => 'Create Salary Generate',
+                'slug' => 'hrm.salary-generates.create',
+                'description' => 'Salary generate create permission',
+                'key' => 'hrm.salary-generates',
+            ],
+            [
+                'name' => 'Salary Generate Update',
+                'slug' => 'hrm.salary-generates.update',
+                'description' => 'Salary generate update permission',
+                'key' => 'hrm.salary-generates',
+            ],
+            [
+                'name' => 'Salary Generate View',
+                'slug' => 'hrm.salary-generates.show',
+                'description' => 'Salary generate show permission',
+                'key' => 'hrm.salary-generates',
+            ],
+
+
+            // Settings: Leave Types
+            [
+                'name' => 'Leave Types List',
+                'slug' => 'hrm.leave-types.index',
+                'description' => 'Leave types list permission',
+                'key' => 'hrm.leave-types',
+            ],
+            [
+                'name' => 'Create Leave Type',
+                'slug' => 'hrm.leave-types.create',
+                'description' => 'Leave type create permission',
+                'key' => 'hrm.leave-types',
+            ],
+            [
+                'name' => 'Leave Type Update',
+                'slug' => 'hrm.leave-types.update',
+                'description' => 'Leave type update permission',
+                'key' => 'hrm.leave-types',
+            ],
+            [
+                'name' => 'Leave Type Delete',
+                'slug' => 'hrm.leave-types.destroy',
+                'description' => 'Leave type delete permission',
+                'key' => 'hrm.leave-types',
+            ],
+
+            // Settings: Shifts
+            [
+                'name' => 'Shifts List',
+                'slug' => 'hrm.settings.shifts.index',
+                'description' => 'Shifts list permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+            [
+                'name' => 'Create Shift',
+                'slug' => 'hrm.settings.shifts.create',
+                'description' => 'Shift create permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+            [
+                'name' => 'Shift Update',
+                'slug' => 'hrm.settings.shifts.update',
+                'description' => 'Shift update permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+            [
+                'name' => 'Shift Delete',
+                'slug' => 'hrm.settings.shifts.destroy',
+                'description' => 'Shift delete permission',
+                'key' => 'hrm.settings.shifts',
+            ],
+
+            // Settings: Hotspots
+            [
+                'name' => 'Hotspots List',
+                'slug' => 'hrm.settings.hotspots.index',
+                'description' => 'Hotspots list permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Create Hotspot',
+                'slug' => 'hrm.settings.hotspots.create',
+                'description' => 'Hotspot create permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Update',
+                'slug' => 'hrm.settings.hotspots.update',
+                'description' => 'Hotspot update permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+            [
+                'name' => 'Hotspot Delete',
+                'slug' => 'hrm.settings.hotspots.destroy',
+                'description' => 'Hotspot delete permission',
+                'key' => 'hrm.settings.hotspots',
+            ],
+
+            // Settings: Holidays
+            [
+                'name' => 'Holidays List',
+                'slug' => 'hrm.settings.holidays.index',
+                'description' => 'Holidays list permission',
+                'key' => 'hrm.settings.holidays',
+            ],
+            [
+                'name' => 'Create Holiday',
+                'slug' => 'hrm.settings.holidays.create',
+                'description' => 'Holiday create permission',
+                'key' => 'hrm.settings.holidays',
+            ],
+            [
+                'name' => 'Holiday Update',
+                'slug' => 'hrm.settings.holidays.update',
+                'description' => 'Holiday update permission',
+                'key' => 'hrm.settings.holidays',
+            ],
+
+            [
+                'name' => 'Holiday Delete',
+                'slug' => 'hrm.settings.holidays.destroy',
+                'description' => 'Holiday delete permission',
+                'key' => 'hrm.settings.holidays',
+            ],
+
+            // Settings: Notice Types
+            [
+                'name' => 'Notice Types List',
+                'slug' => 'hrm.settings.notice-types.index',
+                'description' => 'Notice types list permission',
+                'key' => 'hrm.settings.notice-types',
+            ],
+            [
+                'name' => 'Create Notice Type',
+                'slug' => 'hrm.settings.notice-types.create',
+                'description' => 'Notice type create permission',
+                'key' => 'hrm.settings.notice-types',
+            ],
+            [
+                'name' => 'Notice Type Update',
+                'slug' => 'hrm.settings.notice-types.update',
+                'description' => 'Notice type update permission',
+                'key' => 'hrm.settings.notice-types',
+            ],
+            [
+                'name' => 'Notice Type Delete',
+                'slug' => 'hrm.settings.notice-types.destroy',
+                'description' => 'Notice type delete permission',
+                'key' => 'hrm.settings.notice-types',
+            ],
+
+            // Settings: Expense Types
+            [
+                'name' => 'Expense Types List',
+                'slug' => 'hrm.settings.expense-types.index',
+                'description' => 'Expense types list permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
+            [
+                'name' => 'Create Expense Type',
+                'slug' => 'hrm.settings.expense-types.create',
+                'description' => 'Expense type create permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
+            [
+                'name' => 'Expense Type Update',
+                'slug' => 'hrm.settings.expense-types.update',
+                'description' => 'Expense type update permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
+            [
+                'name' => 'Expense Type Delete',
+                'slug' => 'hrm.settings.expense-types.destroy',
+                'description' => 'Expense type delete permission',
+                'key' => 'hrm.settings.expense-types',
+            ],
+
+            // Settings: Transport Types
+            [
+                'name' => 'Transport Types List',
+                'slug' => 'hrm.settings.transport-types.index',
+                'description' => 'Transport types list permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+            [
+                'name' => 'Create Transport Type',
+                'slug' => 'hrm.settings.transport-types.create',
+                'description' => 'Transport type create permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+            [
+                'name' => 'Transport Type Update',
+                'slug' => 'hrm.settings.transport-types.update',
+                'description' => 'Transport type update permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+            [
+                'name' => 'Transport Type Delete',
+                'slug' => 'hrm.settings.transport-types.destroy',
+                'description' => 'Transport type delete permission',
+                'key' => 'hrm.settings.transport-types',
+            ],
+
+            // Settings: Departments
+            [
+                'name' => 'Departments List',
+                'slug' => 'hrm.settings.departments.index',
+                'description' => 'Departments list permission',
+                'key' => 'hrm.settings.departments',
+            ],
+            [
+                'name' => 'Create Department',
+                'slug' => 'hrm.settings.departments.create',
+                'description' => 'Department create permission',
+                'key' => 'hrm.settings.departments',
+            ],
+            [
+                'name' => 'Department Update',
+                'slug' => 'hrm.settings.departments.update',
+                'description' => 'Department update permission',
+                'key' => 'hrm.settings.departments',
+            ],
+            [
+                'name' => 'Department Delete',
+                'slug' => 'hrm.settings.departments.destroy',
+                'description' => 'Department delete permission',
+                'key' => 'hrm.settings.departments',
+            ],
+
+            // Settings: Designations
+            [
+                'name' => 'Designations List',
+                'slug' => 'hrm.settings.designations.index',
+                'description' => 'Designations list permission',
+                'key' => 'hrm.settings.designations',
+            ],
+            [
+                'name' => 'Create Designation',
+                'slug' => 'hrm.settings.designations.create',
+                'description' => 'Designation create permission',
+                'key' => 'hrm.settings.designations',
+            ],
+            [
+                'name' => 'Designation Update',
+                'slug' => 'hrm.settings.designations.update',
+                'description' => 'Designation update permission',
+                'key' => 'hrm.settings.designations',
+            ],
+            [
+                'name' => 'Designation Delete',
+                'slug' => 'hrm.settings.designations.destroy',
+                'description' => 'Designation delete permission',
+                'key' => 'hrm.settings.designations',
+            ],
+
+            // Settings: Salary Setups
+            [
+                'name' => 'Salary Setups List',
+                'slug' => 'hrm.salary-setups.index',
+                'description' => 'Salary setups list permission',
+                'key' => 'hrm.salary-setups',
+            ],
+            [
+                'name' => 'Create Salary Setup',
+                'slug' => 'hrm.salary-setups.create',
+                'description' => 'Salary setup create permission',
+                'key' => 'hrm.salary-setups',
+            ],
+            [
+                'name' => 'Salary Setup Update',
+                'slug' => 'hrm.salary-setups.update',
+                'description' => 'Salary setup update permission',
+                'key' => 'hrm.salary-setups',
+            ],
+
+            [
+                'name' => 'Salary Setup Delete',
+                'slug' => 'hrm.salary-setups.destroy',
+                'description' => 'Salary setup delete permission',
+                'key' => 'hrm.salary-setups',
+            ],
+
+            // Settings: Appraisal Policies
+            [
+                'name' => 'Appraisal Policies List',
+                'slug' => 'hrm.settings.appraisal-policies.index',
+                'description' => 'Appraisal policies list permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
+            [
+                'name' => 'Create Appraisal Policy',
+                'slug' => 'hrm.settings.appraisal-policies.create',
+                'description' => 'Appraisal policy create permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
+            [
+                'name' => 'Appraisal Policy Update',
+                'slug' => 'hrm.settings.appraisal-policies.update',
+                'description' => 'Appraisal policy update permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
+            [
+                'name' => 'Appraisal Policy Delete',
+                'slug' => 'hrm.settings.appraisal-policies.destroy',
+                'description' => 'Appraisal policy delete permission',
+                'key' => 'hrm.settings.appraisal-policies',
+            ],
+
+            // KPIs: KPI Setups
+            // Score Wise Suggestions
+            [
+                'name' => 'Score Wise Suggestions List',
+                'slug' => 'hrm.kpis.score-wise-suggestions.index',
+                'description' => 'Score wise suggestions list permission',
+                'key' => 'hrm.kpis.score-wise-suggestions',
+            ],
+
             // Document Types
+
             [
                 'name' => 'Create Document Type',
                 'slug' => 'cms.document-types.create',

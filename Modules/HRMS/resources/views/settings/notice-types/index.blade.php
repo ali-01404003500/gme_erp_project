@@ -46,7 +46,43 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $noticeTypes])'
+                                <style>
+                .nav-icon la la-cart-arrow-down {
+                    font-size: 26px;
+                }
+
+                .noticetype-table-custom,
+                .noticetype-table-custom th,
+                .noticetype-table-custom td {
+                    border: 1px solid #dee2e6 !important;
+                    border-collapse: collapse !important;
+                }
+
+                .noticetype-table-custom th,
+                .noticetype-table-custom td {
+                    padding: 12px;
+                    vertical-align: middle;
+                }
+
+                .noticetype-table-custom thead th {
+                    background-color: #f8f9fa;
+                    border-bottom-width: 2px !important;
+                }
+
+                .table thead th {
+                    background-color: #35526e !important;
+                    color: #ffffff !important;
+                    font-weight: 600 !important;
+                    text-transform: uppercase;
+                    font-size: 0.85rem !important;
+                    letter-spacing: 0.08em;
+                    border-bottom: 2px solid #2a4054 !important;
+                    padding: 14px 16px !important;
+                    vertical-align: middle;
+                    text-align: center;
+                }
+            </style>
+                                <table id="zero-config" class="table noticetype-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $noticeTypes])'
                                     style="width:100%">
                                     <thead>
                                         <tr>

@@ -46,26 +46,58 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" style="width:100%" data-page='@include('utils.table_paginate', ['data' => $brands])'>
+                            <style>
+                                    .inventory-brand-table,
+                                    .inventory-brand-table th,
+                                    .inventory-brand-table td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+
+                                    .inventory-brand-table th,
+                                    .inventory-brand-table td {
+                                        padding: 12px;
+                                        vertical-align: middle;
+                                    }
+
+                                    .inventory-brand-table thead th {
+                                        background-color: #f8f9fa;
+                                        border-bottom-width: 2px !important;
+                                    }
+
+                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                                </style>
+                            <table id="zero-config" class="table inventory-brand-table dt-table-hover" style="width:100%" data-page='@include('utils.table_paginate', ['data' => $brands])'>
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Code</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center">Brand Company Name</th>
-                                        <th class="text-center no-content">Action</th>
+                                        <th class="text-left" style="width: 8%">Sl</th>
+                                        <th class="text-left">Code</th>
+                                        <th class="text-left">Name</th>
+                                        <th class="text-left">Brand Company Name</th>
+                                        <th class="text-left no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @csrf
                                     @foreach ($brands as $key => $item)
                                         <tr>
-                                            <td class="text-center">                                                {{ ($brands->currentPage() - 1) * $brands->perPage() + $loop->iteration  }}
+                                            <td class="text-left">                                                {{ ($brands->currentPage() - 1) * $brands->perPage() + $loop->iteration  }}
 </td>
-                                            <td class="text-center">{{ $item->code }}</td>
-                                            <td class="text-center">{{ $item->name }}</td>
-                                            <td class="text-center">{{ optional($item->supplier)->company_name }}</td>
-                                            <td class="text-center">
+                                            <td class="text-left">{{ $item->code }}</td>
+                                            <td class="text-left">{{ $item->name }}</td>
+                                            <td class="text-left">{{ optional($item->supplier)->company_name }}</td>
+                                            <td class="text-left">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 

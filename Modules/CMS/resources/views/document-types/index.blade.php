@@ -174,7 +174,7 @@
                             <table id="zero-config" class="table table-bordered mb-0"
                                 data-page='@include('utils.table_paginate', ['data' => $documentTypes])'>
                                 <thead>
-                                    <tr class="text-center">
+                                    <tr class="text-left">
                                         <th width="60">Sl</th>
                                         <th>Document Name</th>
                                         <th>Description</th>
@@ -183,11 +183,11 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($documentTypes as $value)
-                                        <tr class="text-center">
-                                            <td class="text-center fw-bold text-muted small">
+                                        <tr class="text-left">
+                                            <td class="text-left fw-bold text-muted small">
                                                 {{ ($documentTypes->currentPage() - 1) * $documentTypes->perPage() + $loop->iteration }}
                                             </td>
-                                            <td class="fw-bold text-dark text-center">{{ $value->name }}</td>
+                                            <td class="fw-bold text-dark text-left">{{ $value->name }}</td>
                                             <td class="text-muted">{{ $value->description ?? '---' }}</td>
                                             <td class="text-center">
                                                 <div class="btn-group action-btn-group shadow-sm">

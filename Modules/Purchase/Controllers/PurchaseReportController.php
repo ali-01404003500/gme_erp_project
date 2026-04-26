@@ -1,34 +1,144 @@
 <?php
-
 namespace Modules\Purchase\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\Branch;
 use App\Models\AccessControl\CompanyInfo;
 use App\Models\User;
-use Modules\Inventory\Services\ExportService;
+use Illuminate\Http\Request;
+use Modules\CRM\Models\Customer\Customer;
 use Modules\Inventory\Models\ProductCatalog;
+use Modules\Inventory\Services\ExportService;
 use Modules\Purchase\Models\PurchaseReturn;
 use Modules\Purchase\Models\Requisition;
 use Modules\Purchase\Models\Supplier;
-use Modules\CRM\Models\Customer\Customer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PurchaseReportController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     // Base query for requisitions
+    //     $query = Requisition::with([
+    //         'customer',
+    //         'supplier',
+    //         'warehouse',
+    //         'requisitionDetails.product',
+    //         'createdBy',
+    //         'paymentDetails.makePayment',
+    //         'transactions',
+    //         'invoiceWisePaymentInvoices.invoiceWisePayment' // NEW
+    //     ]);
+
+    //     $query = $this->applyRequisitionFilters($query, $request);
+
+    //     if ($request->filled('export_type')) {
+    //         $requisitions = $query->orderBy('created_at', 'desc')->get();
+    //     } else {
+    //         $requisitions = $query->orderBy('created_at', 'desc')->paginate(50);
+    //     }
+
+    //     // Base query for Purchase Returns
+    //     $returnQuery = PurchaseReturn::with([
+    //         'supplier',
+    //         'requisition.warehouse',
+    //         'purchaseReturnDetails.product',
+    //         'createdBy'
+    //     ]);
+
+    //     $returnQuery = $this->applyReturnFilters($returnQuery, $request);
+    //     $purchaseReturns = $returnQuery->orderBy('created_at', 'desc')->get();
+
+    //     // Combine data for unified report
+    //     $reportData = collect();
+
+    //     // Add Purchases
+    //     if (!$request->filled('invoice_type') || $request->invoice_type !== 'return') {
+    //         foreach ($requisitions as $requisition) {
+    //             if ($request->filled('product_id')) {
+    //                 $hasProduct = $requisition->requisitionDetails->contains('product_id', $request->product_id);
+    //                 if (!$hasProduct) continue;
+    //             }
+
+    //             $reportData->push([
+    //                 'type' => 'Purchase',
+    //                 'data' => $requisition,
+    //                 'date' => $requisition->invoice_date
+    //             ]);
+    //         }
+    //     }
+
+    //     // Add Returns
+    //     if (!$request->filled('invoice_type') || $request->invoice_type !== 'purchase') {
+    //         foreach ($purchaseReturns as $return) {
+    //             if ($request->filled('product_id')) {
+    //                 $hasProduct = $return->purchaseReturnDetails->contains('product_id', $request->product_id);
+    //                 if (!$hasProduct) continue;
+    //             }
+
+    //             $reportData->push([
+    //                 'type' => 'Purchase Return',
+    //                 'data' => $return,
+    //                 'date' => $return->return_date
+    //             ]);
+    //         }
+    //     }
+
+    //     $reportData = $reportData->sortByDesc('date')->values();
+
+    //     $data = [
+    //         'reportData' => $reportData,
+    //         'requisitions' => $requisitions,
+    //         'purchaseReturns' => $purchaseReturns,
+    //         'suppliers' => Supplier::where('status', 1)->get(),
+    //         'customers' => Customer::activeCustomers()->get(),
+    //         'branches' => Branch::all(),
+    //         'products' => ProductCatalog::where('status', 'active')->get(),
+    //         'users' => User::whereDoesntHave('roles', function ($query) {
+    //             $query->where('slug', 'customer');
+    //         })->get(),
+    //         'company_info' => CompanyInfo::first(),
+    //     ];
+
+    //     if ($request->filled('export_type')) {
+    //         $filename = 'Purchase_Report_' . now()->format('Y_m_d_His');
+    //         return (new ExportService())->exportData(
+    //             $data,
+    //             'Purchase::reports.export.',
+    //             $filename,
+    //             $request->export_type
+    //         );
+    //     }
+
+    //     return view('Purchase::reports.purchase-reports', $data);
+    // }
+
+    /**
+     * Apply filters to requisition query
+     */
+
     public function index(Request $request)
     {
-        // Base query for requisitions
+        // Optimized Requisition query with specific columns in eager loading
         $query = Requisition::with([
-            'customer',
-            'supplier',
-            'warehouse',
-            'requisitionDetails.product',
-            'createdBy',
-            'paymentDetails.makePayment',
-            'transactions',
-            'invoiceWisePaymentInvoices.invoiceWisePayment' // NEW
+            'customer'                   => function ($q) {
+                $q->select('id', 'company_name');
+            },
+            'supplier'                   => function ($q) {
+                $q->select('id', 'company_name');
+            },
+            'warehouse'                  => function ($q) {
+                $q->select('id', 'name');
+            },
+            'requisitionDetails'         => function ($q) {
+                $q->select('id', 'requisition_id', 'product_id', 'quantity', 'price', 'amount');
+            },
+            'requisitionDetails.product' => function ($q) {
+                $q->select('id', 'name');
+            },
+            'createdBy'                  => function ($q) {
+                $q->select('id', 'name');
+            },
+            'paymentDetails',
         ]);
 
         $query = $this->applyRequisitionFilters($query, $request);
@@ -39,66 +149,87 @@ class PurchaseReportController extends Controller
             $requisitions = $query->orderBy('created_at', 'desc')->paginate(50);
         }
 
-        // Base query for Purchase Returns
+        // Optimized Purchase Returns query
         $returnQuery = PurchaseReturn::with([
-            'supplier',
-            'requisition.warehouse',
-            'purchaseReturnDetails.product',
-            'createdBy'
+            'supplier'                      => function ($q) {
+                $q->select('id', 'company_name');
+            },
+            'requisition'                   => function ($q) {
+                $q->select('id', 'branch_id', 'requisition_no');
+            },
+            'requisition.warehouse'         => function ($q) {
+                $q->select('id', 'name');
+            },
+            'purchaseReturnDetails'         => function ($q) {
+                $q->select('id', 'purchase_return_id', 'product_id', 'quantity', 'price', 'amount');
+            },
+            'purchaseReturnDetails.product' => function ($q) {
+                $q->select('id', 'name');
+            },
+            'createdBy'                     => function ($q) {
+                $q->select('id', 'name');
+            },
         ]);
 
-        $returnQuery = $this->applyReturnFilters($returnQuery, $request);
+        $returnQuery     = $this->applyReturnFilters($returnQuery, $request);
         $purchaseReturns = $returnQuery->orderBy('created_at', 'desc')->get();
 
         // Combine data for unified report
         $reportData = collect();
 
         // Add Purchases
-        if (!$request->filled('invoice_type') || $request->invoice_type !== 'return') {
+        if (! $request->filled('invoice_type') || $request->invoice_type !== 'return') {
             foreach ($requisitions as $requisition) {
                 if ($request->filled('product_id')) {
                     $hasProduct = $requisition->requisitionDetails->contains('product_id', $request->product_id);
-                    if (!$hasProduct) continue;
+                    if (! $hasProduct) {
+                        continue;
+                    }
+
                 }
 
                 $reportData->push([
                     'type' => 'Purchase',
                     'data' => $requisition,
-                    'date' => $requisition->invoice_date
+                    'date' => $requisition->invoice_date,
                 ]);
             }
         }
 
         // Add Returns
-        if (!$request->filled('invoice_type') || $request->invoice_type !== 'purchase') {
+        if (! $request->filled('invoice_type') || $request->invoice_type !== 'purchase') {
             foreach ($purchaseReturns as $return) {
                 if ($request->filled('product_id')) {
                     $hasProduct = $return->purchaseReturnDetails->contains('product_id', $request->product_id);
-                    if (!$hasProduct) continue;
+                    if (! $hasProduct) {
+                        continue;
+                    }
+
                 }
 
                 $reportData->push([
                     'type' => 'Purchase Return',
                     'data' => $return,
-                    'date' => $return->return_date
+                    'date' => $return->return_date,
                 ]);
             }
         }
 
         $reportData = $reportData->sortByDesc('date')->values();
 
+        // OPTIMIZED: Filter data with select only needed columns
         $data = [
-            'reportData' => $reportData,
-            'requisitions' => $requisitions,
+            'reportData'      => $reportData,
+            'requisitions'    => $requisitions,
             'purchaseReturns' => $purchaseReturns,
-            'suppliers' => Supplier::where('status', 1)->get(),
-            'customers' => Customer::activeCustomers()->get(),
-            'branches' => Branch::all(),
-            'products' => ProductCatalog::where('status', 'active')->get(),
-            'users' => User::whereDoesntHave('roles', function ($query) {
+            'suppliers'       => Supplier::where('status', 1)->select('id', 'company_name')->get(),
+            'customers'       => Customer::activeCustomers()->select('id', 'company_name')->get(),
+            'branches'        => Branch::select('id', 'name')->get(),
+            'products'        => ProductCatalog::where('status', 'active')->select('id', 'name')->get(),
+            'users'           => User::whereDoesntHave('roles', function ($query) {
                 $query->where('slug', 'customer');
-            })->get(),
-            'company_info' => CompanyInfo::first(),
+            })->select('id', 'name')->get(),
+            'company_info'    => CompanyInfo::first(),
         ];
 
         if ($request->filled('export_type')) {
@@ -113,10 +244,6 @@ class PurchaseReportController extends Controller
 
         return view('Purchase::reports.purchase-reports', $data);
     }
-
-    /**
-     * Apply filters to requisition query
-     */
     private function applyRequisitionFilters($query, $request)
     {
         // Supplier filter
@@ -238,24 +365,24 @@ class PurchaseReportController extends Controller
     public function getPaymentDetails(Request $request, $requisitionId)
     {
         $requisition = Requisition::with('paymentDetails.makePayment')->findOrFail($requisitionId);
-        
+
         $payments = $requisition->paymentDetails->map(function ($detail) {
             return [
-                'payment_id' => $detail->makePayment->payment_id ?? 'N/A',
-                'date' => $detail->makePayment->date ?? null,
-                'amount' => $detail->amount,
-                'pay_mode' => $detail->pay_mode,
+                'payment_id'     => $detail->makePayment->payment_id ?? 'N/A',
+                'date'           => $detail->makePayment->date ?? null,
+                'amount'         => $detail->amount,
+                'pay_mode'       => $detail->pay_mode,
                 'transaction_id' => $detail->transaction_id,
-                'verified' => $detail->verified,
+                'verified'       => $detail->verified,
             ];
         });
 
         return response()->json([
-            'success' => true,
-            'payments' => $payments,
-            'total_paid' => $requisition->paymentDetails->sum('amount'),
+            'success'      => true,
+            'payments'     => $payments,
+            'total_paid'   => $requisition->paymentDetails->sum('amount'),
             'total_amount' => $requisition->net_amount,
-            'due_amount' => $requisition->net_amount - $requisition->paymentDetails->sum('amount'),
+            'due_amount'   => $requisition->net_amount - $requisition->paymentDetails->sum('amount'),
         ]);
     }
 
@@ -263,86 +390,86 @@ class PurchaseReportController extends Controller
      * Update editable field
      */
     /**
- * Update editable field
- */
-public function updateField(Request $request)
-{
-    $request->validate([
-        'id' => 'required',
-        'type' => 'required|in:remarks,reference_invoice,creation_date',
-        'value' => 'nullable',
-        'record_type' => 'required|in:requisition,purchase_return', // Add record_type to distinguish between Requisition and PurchaseReturn
-    ]);
-
-    try {
-        $record_type = $request->record_type;
-        $id = $request->id;
-        $type = $request->type;
-        $value = $request->value;
-
-        if ($record_type === 'requisition') {
-            $requisition = Requisition::findOrFail($id);
-
-            // For reference_invoice in Requisition, check if it's editable
-            if ($type === 'reference_invoice') {
-                // Check if there is an associated PurchaseReturn with a reference_invoice
-                $hasReturnWithReference = PurchaseReturn::where('requisition_id', $id)
-                    ->whereNotNull('reference_invoice')
-                    ->exists();
-
-                if (!$hasReturnWithReference) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Reference invoice is read-only for purchases without associated returns.'
-                    ], 403);
-                }
-            }
-
-            switch ($type) {
-                case 'remarks':
-                    $requisition->description = $value;
-                    break;
-                case 'reference_invoice':
-                    $requisition->purchase_invoice = $value;
-                    break;
-                case 'creation_date':
-                    // Validate date format
-                    $date = \Carbon\Carbon::parse($value)->format('Y-m-d');
-                    $requisition->invoice_date = $date;
-                    break;
-            }
-
-            $requisition->save();
-        } elseif ($record_type === 'purchase_return') {
-            $purchaseReturn = PurchaseReturn::findOrFail($id);
-
-            switch ($type) {
-                case 'remarks':
-                    $purchaseReturn->remarks = $value;
-                    break;
-                case 'reference_invoice':
-                    $purchaseReturn->reference_invoice = $value;
-                    break;
-                case 'creation_date':
-                    // Validate date format
-                    $date = \Carbon\Carbon::parse($value)->format('Y-m-d');
-                    $purchaseReturn->return_date = $date;
-                    break;
-            }
-
-            $purchaseReturn->save();
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Field updated successfully',
-            'value' => $value
+     * Update editable field
+     */
+    public function updateField(Request $request)
+    {
+        $request->validate([
+            'id'          => 'required',
+            'type'        => 'required|in:remarks,reference_invoice,creation_date',
+            'value'       => 'nullable',
+            'record_type' => 'required|in:requisition,purchase_return', // Add record_type to distinguish between Requisition and PurchaseReturn
         ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Failed to update field: ' . $e->getMessage()
-        ], 500);
+
+        try {
+            $record_type = $request->record_type;
+            $id          = $request->id;
+            $type        = $request->type;
+            $value       = $request->value;
+
+            if ($record_type === 'requisition') {
+                $requisition = Requisition::findOrFail($id);
+
+                // For reference_invoice in Requisition, check if it's editable
+                if ($type === 'reference_invoice') {
+                    // Check if there is an associated PurchaseReturn with a reference_invoice
+                    $hasReturnWithReference = PurchaseReturn::where('requisition_id', $id)
+                        ->whereNotNull('reference_invoice')
+                        ->exists();
+
+                    if (! $hasReturnWithReference) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Reference invoice is read-only for purchases without associated returns.',
+                        ], 403);
+                    }
+                }
+
+                switch ($type) {
+                    case 'remarks':
+                        $requisition->description = $value;
+                        break;
+                    case 'reference_invoice':
+                        $requisition->purchase_invoice = $value;
+                        break;
+                    case 'creation_date':
+                        // Validate date format
+                        $date                      = \Carbon\Carbon::parse($value)->format('Y-m-d');
+                        $requisition->invoice_date = $date;
+                        break;
+                }
+
+                $requisition->save();
+            } elseif ($record_type === 'purchase_return') {
+                $purchaseReturn = PurchaseReturn::findOrFail($id);
+
+                switch ($type) {
+                    case 'remarks':
+                        $purchaseReturn->remarks = $value;
+                        break;
+                    case 'reference_invoice':
+                        $purchaseReturn->reference_invoice = $value;
+                        break;
+                    case 'creation_date':
+                        // Validate date format
+                        $date                        = \Carbon\Carbon::parse($value)->format('Y-m-d');
+                        $purchaseReturn->return_date = $date;
+                        break;
+                }
+
+                $purchaseReturn->save();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Field updated successfully',
+                'value'   => $value,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update field: ' . $e->getMessage(),
+            ], 500);
+        }
     }
-}
 }

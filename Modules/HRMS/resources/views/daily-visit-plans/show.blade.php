@@ -13,6 +13,23 @@
             padding: 10px;
             margin: 10px;
         }
+        
+        .visitplan-details-table,
+        .visitplan-details-table th,
+        .visitplan-details-table td {
+            border: 1px solid #dee2e6 !important;
+            border-collapse: collapse !important;
+        }
+        .visitplan-details-table th,
+        .visitplan-details-table td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+        .visitplan-details-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            width: 200px;
+        }
     </style>
 @endsection
 
@@ -63,7 +80,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered">
+                            <table class="table visitplan-details-table">
                                 <tbody>
                                     <tr>
                                         <th>Company's Name</th>
@@ -90,20 +107,19 @@
                                     <tr>
                                         <th>Attachments</th>
                                         <td colspan="3">
-                                             @php
-                                                    $documents = is_string($dailyVisitPlan->attachment)
-                                                        ? json_decode($dailyVisitPlan->attachment, true)
-                                                        : $dailyVisitPlan->attachment;
+                                            @php
+                                                $documents = is_string($dailyVisitPlan->attachment)
+                                                    ? json_decode($dailyVisitPlan->attachment, true)
+                                                    : $dailyVisitPlan->attachment;
 
-                                                    // Ensure it's an array and remove null/empty values
-                                                    $documents = is_array($documents) ? array_filter($documents) : [];
-                                                @endphp
+                                                $documents = is_array($documents) ? array_filter($documents) : [];
+                                            @endphp
 
-                                                @if (!empty($documents))
-                                                    @foreach ($documents as $doc)
-                                                        <a href="{{ $doc }}" target="_blank"><i class="fa fa-download" style="font-size: 24px;"></i></a>
-                                                    @endforeach
-                                                @endif
+                                            @if (!empty($documents))
+                                                @foreach ($documents as $doc)
+                                                    <a href="{{ $doc }}" target="_blank"><i class="fa fa-download" style="font-size: 24px;"></i></a>
+                                                @endforeach
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>

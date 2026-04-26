@@ -1,18 +1,13 @@
 <?php
 
-use Modules\Sales\Controllers\BrandSupplierSalesReportController;
 use Illuminate\Support\Facades\Route;
-use Modules\Account\Controllers\CustomerController;
-use Modules\Account\Controllers\ProductController;
-use Modules\Inventory\Models\Product\Settings\Brand;
 use Modules\Sales\Controllers\BackupChallanController;
-use Modules\Sales\Controllers\BackupChallanDeliveryController;
+use Modules\Sales\Controllers\BrandSupplierSalesReportController;
 use Modules\Sales\Controllers\BrokerCommissionReportController;
 use Modules\Sales\Controllers\CourierController;
 use Modules\Sales\Controllers\DeliveryController;
 use Modules\Sales\Controllers\FakeInvoiceController;
 use Modules\Sales\Controllers\FakeSalesReportController;
-use Modules\Sales\Controllers\FreeSalesController;
 use Modules\Sales\Controllers\QuotationController;
 use Modules\Sales\Controllers\SalesCommissionController;
 use Modules\Sales\Controllers\SalesOrderController;
@@ -23,7 +18,6 @@ use Modules\Sales\Controllers\SalesRequisitionController;
 use Modules\Sales\Controllers\SalesReturnController;
 use Modules\Sales\Controllers\ShipmentExplorerReportController;
 use Modules\Sales\Controllers\ShipmentVerifyController;
- 
 
 Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], function () {
 
@@ -35,8 +29,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::get('sales-orders-product-free-sales-invoice/{id}', [SalesOrderController::class, 'productFreeSalesInvoice'])->name("sales-orders.product-free-sales-invoice");
     Route::post('sales-orders-product-free-sales-invoice/{id}', [SalesOrderController::class, 'storeProductFreeSalesInvoice'])->name("sales-orders.product-free-sales-invoice.store");
     Route::get('sales-orders-product-free-sales-invoice/view/{id}', [SalesOrderController::class, 'viewProductFreeSalesInvoice'])->name("sales-orders.product-free-sales-invoice.view");
-    Route::get('sales-orders-autocomplete-customers', [SalesOrderController::class, 'customerAutocomplete']) ->name('sales-orders-autocomplete.customers');
-    Route::get('sales-orders-autocomplete-products', [SalesOrderController::class, 'productAutocomplete']) ->name('sales-orders-autocomplete.products');
+    Route::get('sales-orders-autocomplete-customers', [SalesOrderController::class, 'customerAutocomplete'])->name('sales-orders-autocomplete.customers');
+    Route::get('sales-orders-autocomplete-products', [SalesOrderController::class, 'productAutocomplete'])->name('sales-orders-autocomplete.products');
     Route::get('sales-orders-references', [SalesOrderController::class, 'getReferences'])->name('sales-orders.references');
 
     // Sales Order Import Routes
@@ -49,7 +43,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
         Route::post('/validate-json', [SalesOrderImportController::class, 'validateJson'])->name('sales-order-import.validate-json');
         Route::post('/validate-file', [SalesOrderImportController::class, 'validateFile'])->name('sales-order-import.validate-file');
     });
-
 
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('sales-report', [SalesReportController::class, 'index'])->name('sales-report');
@@ -73,10 +66,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     });
 
     Route::resource('sales-order-deliveries', SalesOrderDeliveryController::class);
-    Route::get('sales-orders-autocomplete-employees', [SalesOrderController::class, 'employeeAutocomplete']) ->name('sales-orders-autocomplete.employees'); 
+    Route::get('sales-orders-autocomplete-employees', [SalesOrderController::class, 'employeeAutocomplete'])->name('sales-orders-autocomplete.employees');
     Route::resource('fake-invoices', FakeInvoiceController::class);
-    Route::get('sales-orders-autocomplete-invoice', [SalesOrderController::class, 'invoiceAutocomplete']) ->name('sales-orders-autocomplete.invoice'); 
-
+    Route::get('sales-orders-autocomplete-invoice', [SalesOrderController::class, 'invoiceAutocomplete'])->name('sales-orders-autocomplete.invoice');
 
     Route::resource('sales-commissions', SalesCommissionController::class);
 
@@ -119,6 +111,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::put('approve/{id}', [SalesReturnController::class, 'approveStore'])->name('sales-returns.approve.store');
     Route::get('{product_id}/{sales_order_id}/{sales_return_id}/select-stock', [SalesReturnController::class, 'selectStock'])->name('sales-returns.select-stock');
 
+    Route::get('sales-returns/export-pdf', [SalesReturnController::class, 'exportPdf'])->name('sales.sales-returns.export-pdf');
+
     Route::resource('condition-amount-collects', \Modules\Sales\Controllers\ConditionAmountCollectController::class);
     Route::get('condition-amount-collects-received-details', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'getReceivedDetails'])->name('condition-amount-collects.received-details');
     // POST for action
@@ -128,7 +122,5 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::get('condition-amount-collects/{id}/claim-pdf', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'claimPdf'])->name('condition-amount-collects.claim-pdf');
     Route::post('condition-amount-collects/send-bulk-message', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'sendBulkMessage'])->name('condition-amount-collects.send-bulk-message');
     Route::post('condition-amount-collects/bulk-receive', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'bulkReceive'])->name('condition-amount-collects.bulk-receive');
-
- 
 
 });

@@ -46,9 +46,39 @@
                 </div>
 
                 <div class="col-md-12">
-                    <div class="card mb-4">
+                    <div class="card">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salarySetups])'
+                            <style>
+                                .salarysetup-table-custom,
+                                .salarysetup-table-custom th,
+                                .salarysetup-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .salarysetup-table-custom th,
+                                .salarysetup-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+                                .salarysetup-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                            </style>
+                            
+                            <table id="zero-config" class="table salarysetup-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salarySetups])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -59,11 +89,11 @@
                                         <th>House Rent(%)</th>
                                         <th>Conveyance(%)</th>
                                         <th>Medical(%)</th> 
-                                        <th>Entertainment (%)</th>
-                                        <th>Leave Fare(%)</th>
-                                        <th>Utility (%)</th>
-                                        <th>Unkeep(%)</th>
-                                        <th>Others(%)</th>
+                                        {{-- <th>Entertainment (%)</th> --}}
+                                        {{-- <th>Leave Fare(%)</th> --}}
+                                        {{-- <th>Utility (%)</th> --}}
+                                        {{-- <th>Unkeep(%)</th> --}}
+                                        {{-- <th>Others(%)</th> --}}
                                         <th>Status</th>
                                         <th class="no-content">Action</th>
                                     </tr>
@@ -72,20 +102,20 @@
 
                                     @foreach ($salarySetups as $value)
                                         <tr>
-                                        <td class="text-center">{{ ($salarySetups->currentPage() - 1) * $salarySetups->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">{{ ($salarySetups->currentPage() - 1) * $salarySetups->perPage() + $loop->iteration  }}</td>
                                             <td>
                                                 {{ $value->title }}
                                             </td>
                                             <td>{{ $value->effective_date }}</td>
                                             <td>{{ number_format($value->basic) }}</td>
-                                            <td>{{  number_format($value->house_rent) }}</td>
-                                            <td>{{  number_format($value->conveyance) }}</td>
-                                            <td>{{  number_format($value->medical) }}</td>
-                                            <td>{{  number_format($value->entertainment) }}</td>
-                                            <td>{{  number_format($value->leave_fare) }}</td>
-                                            <td>{{  number_format($value->utility) }}</td>
-                                            <td>{{  number_format($value->unkeep) }}</td>
-                                            <td>{{  number_format($value->others) }}</td> 
+                                            <td>{{ number_format($value->house_rent) }}</td>
+                                            <td>{{ number_format($value->conveyance) }}</td>
+                                            <td>{{ number_format($value->medical) }}</td>
+                                            {{-- <td>{{ number_format($value->entertainment) }}</td> --}}
+                                            {{-- <td>{{ number_format($value->leave_fare) }}</td> --}}
+                                            {{-- <td>{{ number_format($value->utility) }}</td> --}}
+                                            {{-- <td>{{ number_format($value->unkeep) }}</td> --}}
+                                            {{-- <td>{{ number_format($value->others) }}</td>  --}}
 
                                             <td>
                                                 @if ($value->status == '0')
@@ -104,7 +134,6 @@
                                                             href="{{ route('hrm.salary-setups.edit', $value->id) }}"
                                                             title="Edit"><i class="far fa-edit"></i></a>
                                                     @endif
-                                                  
                                                     @if (hasPermission('hrm.salary-setups.destroy'))
                                                         <button type="button"
                                                             data-action="{{ route('hrm.salary-setups.destroy', $value->id) }}"
@@ -119,7 +148,6 @@
                                 </tbody>
                             </table>
 
-
                             <div class="d-none">
                                 <form class="delete-form" action="" method="POST">
                                     @csrf
@@ -132,10 +160,6 @@
             </div>
         </div>
     </div>
-
-   
 @endsection
 @section('page_scripts')
-
-
-@endSection
+@endsection

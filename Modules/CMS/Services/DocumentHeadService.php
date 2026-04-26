@@ -1,18 +1,19 @@
 <?php
-
 namespace Modules\CMS\Services;
 
 use Modules\CMS\Models\DocumentHead;
 
 class DocumentHeadService
 {
-    
-    public function getAll(int $limit = 20) {
+
+    public function getAll(int $limit = 20)
+    {
         return DocumentHead::query()
-        ->searchByFields(['name'])
-        ->paginate($limit);
+            ->with(['documentType']) // ← Eager Loading যোগ করুন
+            ->searchByFields(['name'])
+            ->paginate($limit);
     }
-    
+
     public function store(array $data)
     {
         return DocumentHead::create($data);
@@ -31,6 +32,6 @@ class DocumentHeadService
 
     public function show($id)
     {
-        return DocumentHead::findOrFail($id);
+        return DocumentHead::with(['documentType'])->findOrFail($id); // ← যোগ করুন
     }
 }

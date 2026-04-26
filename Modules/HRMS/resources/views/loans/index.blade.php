@@ -69,9 +69,39 @@
             <!-- Loan/Advance Table -->
             <div class="row">
                 <div class="col-md-12">
-                    <div class="card mb-4">
+                    <div class="card">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $loans])'
+                            <style>
+                                .loan-table-custom,
+                                .loan-table-custom th,
+                                .loan-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .loan-table-custom th,
+                                .loan-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+                                .loan-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                            </style>
+                            
+                            <table id="zero-config" class="table loan-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $loans])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -79,11 +109,8 @@
                                         <th>Employee</th>
                                         <th>Amount</th>
                                         <th>Duration (Months)</th>
-                                        <th>Monthly Reduction</th>
                                         <th>Remaining Balance</th>
                                         <th>Start From</th>
-                                        <th>Payment Date</th>
-                                        <th>Remarks</th>
                                         <th>Status</th>
                                         <th class="no-content">Actions</th>
                                     </tr>
@@ -95,23 +122,19 @@
                                             <td>{{ $loan->employee->full_name ?? 'N/A' }}</td>
                                             <td>{{ number_format($loan->amount) }}</td>
                                             <td>{{ $loan->duration }}</td>
-                                            <td>{{ number_format($loan->monthly_reduction) }}</td>
                                             <td>{{ number_format($loan->remaining_balance) }}</td>
                                             <td>{{ $loan->start_month }}</td>
-                                            <td>{{ $loan->payment_date ? \Carbon\Carbon::parse($loan->payment_date)->format('d M Y') : '-' }}
-                                            </td>
-                                            <td>{{ $loan->remarks }}</td>
                                             <td>
                                                 @if ($loan->status == 'pending')
-                                                    <span class="badge badge-round  badge-warning">Pending</span>
+                                                    <span class="badge badge-round badge-warning">Pending</span>
                                                 @elseif ($loan->status == 'approved')
-                                                    <span class="badge badge-round  badge-success">Approved</span>
+                                                    <span class="badge badge-round badge-success">Approved</span>
                                                 @elseif ($loan->status == 'deny')
                                                     <span class="badge badge-round badge-danger">Denied</span>
                                                 @elseif ($loan->status == 'paid')
                                                     <span class="badge badge-round badge-primary">Paid</span>
                                                 @else
-                                                    <span class="badge badge-round  badge-secondary">Unknown</span>
+                                                    <span class="badge badge-round badge-secondary">Unknown</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -128,7 +151,6 @@
                                                         </a>
                                                     @endif
                                                     @if (hasPermission('hrm.loans.deny') && $loan->status == 'pending')
-
                                                         <a href="{{ route('hrm.loans.deny', $loan->id) }}"
                                                             class="btn btn-xs btn-outline-danger reject-confirm-loan"
                                                             data-action="{{ route('hrm.loans.deny', $loan->id) }}"
@@ -187,7 +209,6 @@
     <div class="modal fade" id="loanDetailModal" tabindex="-1" role="dialog" aria-labelledby="loanDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title" id="loanDetailModalLabel">
                         <i class="fas fa-eye"></i> View Loan List Details
@@ -196,14 +217,11 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
                 <div class="modal-body" id="loanModalContent">
-                    {{-- Will be injected by AJAX --}}
                     <div class="text-center">
                         <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times-circle"></i> Close
@@ -212,8 +230,6 @@
             </div>
         </div>
     </div>
-
-
 @endsection
 
 @section('page_scripts')

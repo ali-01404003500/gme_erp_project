@@ -15,13 +15,6 @@
                                 </ol>
                             </nav>
                         </div>
-                        {{-- <div class="action-btn mt-sm-0 mt-15">
-                            @if (hasPermission('sales.sales-order-deliveries.create'))
-                                <a href="{{ route('sales.sales-order-deliveries.create', app()->getLocale()) }}" class="btn px-20 btn-primary ">
-                                    <i class="las la-plus fs-16"></i>Add New
-                                </a>
-                            @endif
-                        </div> --}}
                         <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" target="_blank"
                             class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
                             <i class="las la-file-pdf fs-16"></i> PDF
@@ -81,11 +74,10 @@
                                         <th>Invoice Id</th>
                                         <th>Invoice Date</th>
                                         <th>Customer</th>
-                                        <th>Invoice Type</th>
+                                        {{-- <th>Invoice Type</th> --}}
                                         <th>Address</th>
                                         <th>Total Quantity</th>
-                                        {{-- <th>Order Qty</th> --}}
-                                        <th>Prepared By</th>
+                                        {{-- <th>Prepared By</th> --}}
                                         <th>Delivered Qty</th>
                                         <th class="no-content">Actions</th>
                                     </tr>
@@ -111,14 +103,14 @@
 
                                             <td style="border: 1px solid #989090 !important;">
                                                 @if (@$deliverie->source->customer??null)
-                                                     <a href="{{ route('crm.customers.show', $deliverie->source->customer->id) }}">{{ @$deliverie->source->customer->company_name }} </a>
+                                                    <a href="{{ route('crm.customers.show', $deliverie->source->customer->id) }}">{{ @$deliverie->source->customer->company_name }} </a>
                                                 @endif
                                             </td>
 
                                             <td style="border: 1px solid #989090 !important;">
                                                 @if (class_basename($deliverie->source_type) == SalesOrder::class)
                                                     Sales Order
-                                                @elseif (class_basename($deliverie->source_type) == Quotation::class)
+                                                @elseif (class_basename($deliverie->source_type) == 'Quotation')
                                                     Quotation
                                                 @else
                                                     {{ class_basename($deliverie->source_type) }}
@@ -148,35 +140,12 @@
                                                         </a>
                                                     @endif
 
-                                                    {{-- @if(hasPermission('sales.sales-order-deliveries.update') && $deliverie->status == "pending" )
-                                                        <a class="btn btn-outline-warning"
-                                                            href="{{ route('sales.sales-order-deliveries.edit', $deliverie->id) }}"><i
-                                                                class="far fa-edit"></i>
-                                                        </a>
-                                                    @endif
-
-                                                    @if(hasPermission('sales.sales-order-deliveries.destroy') && $deliverie->status == "pending")
-                                                        <button type="button"
-                                                            data-action="{{ route('sales.sales-order-deliveries.destroy', $deliverie->id) }}"
-                                                            class="btn btn-outline-danger delete-confirm"><i
-                                                                class="far fa-trash-alt"></i>
-                                                        </button>
-                                                    @endif --}}
-
                                                     @if(hasPermission('sales.deliveries.show'))
                                                         <a class="btn btn-outline-primary"
                                                             href="{{ route('sales.deliveries.show', $deliverie->id) }}"><i class="fas fa-eye"></i>
                                                         </a>
                                                     @endif
-
-                                                    {{-- @if(hasPermission('sales.sales-order-deliveries.create'))
-                                                        <a class="btn btn-outline-info"
-                                                            href="{{ route('sales.sales-order-deliveries.create', ['sales_order_id' => $deliverie->id]) }}"><i
-                                                                class="fas fa-truck"></i>
-                                                        </a>
-                                                    @endif --}}
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @endforeach
@@ -202,4 +171,4 @@
             autoclose: true
         });
     </script>
-@endSection
+@endsection

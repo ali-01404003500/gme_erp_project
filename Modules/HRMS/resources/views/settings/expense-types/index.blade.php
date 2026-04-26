@@ -46,7 +46,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $expenseTypes])'
+                                <table id="zero-config" class="table table-bordered dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $expenseTypes])'
                                     style="width:100%">
                                     <thead>
                                         <tr>

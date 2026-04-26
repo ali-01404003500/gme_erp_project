@@ -9,12 +9,27 @@ use Modules\HRMS\Models\Settings\Shift;
 class AttendanceService
 {
 
+    // public function getAll(?int $employeeId = null, int $limit = 20)
+    // {
+    //     return Attendance::query()
+    //         ->when($employeeId, function ($qr) use ($employeeId) {
+    //             $qr->where('employee_id', $employeeId);
+    //         })
+    //         ->searchByFields(['employee_id'])
+    //         ->when(request()->filled('from'), function ($qr) {
+    //             $qr->where('date', '>=', Carbon::parse(request('from'))->format('Y-m-d'));
+    //         })
+    //         ->when(request()->filled('to'), function ($qr) {
+    //             $qr->where('date', '<=', Carbon::parse(request('to'))->format('Y-m-d'));
+    //         })
+    //         ->paginate($limit);
+    // }
+
     public function getAll(?int $employeeId = null, int $limit = 20)
     {
         return Attendance::query()
-            ->when($employeeId, function ($qr) use ($employeeId) {
-                $qr->where('employee_id', $employeeId);
-            })
+            ->with(['employee', 'shift', 'employee.employementDetail.department', 'employee.employementDetail.branch']) // ← এই লাইন যোগ করুন
+            ->when($employeeId, fn($qr) => $qr->where('employee_id', $employeeId))
             ->searchByFields(['employee_id'])
             ->when(request()->filled('from'), function ($qr) {
                 $qr->where('date', '>=', Carbon::parse(request('from'))->format('Y-m-d'));
@@ -24,20 +39,31 @@ class AttendanceService
             })
             ->paginate($limit);
     }
+    // public function getAllForExport(?int $employeeId = null)
+    // {
+    //     return Attendance::query()
+    //         ->when($employeeId, function ($qr) use ($employeeId) {
+    //             $qr->where('employee_id', $employeeId);
+    //         })
+    //         ->searchByFields(['employee_id'])
+    //         ->when(request()->filled('from'), function ($qr) {
+    //             $qr->whereDate('date', '>=', request('from'));
+    //         })
+    //         ->when(request()->filled('to'), function ($qr) {
+    //             $qr->whereDate('date', '<=', request('to'));
+    //         })
+    //         ->get(); // IMPORTANT: get(), not paginate()
+    // }
+
     public function getAllForExport(?int $employeeId = null)
     {
         return Attendance::query()
-            ->when($employeeId, function ($qr) use ($employeeId) {
-                $qr->where('employee_id', $employeeId);
-            })
+            ->with(['employee', 'shift', 'employee.employementDetail.department', 'employee.employementDetail.branch']) // ← এই লাইন যোগ করুন
+            ->when($employeeId, fn($qr) => $qr->where('employee_id', $employeeId))
             ->searchByFields(['employee_id'])
-            ->when(request()->filled('from'), function ($qr) {
-                $qr->whereDate('date', '>=', request('from'));
-            })
-            ->when(request()->filled('to'), function ($qr) {
-                $qr->whereDate('date', '<=', request('to'));
-            })
-            ->get(); // IMPORTANT: get(), not paginate()
+            ->when(request()->filled('from'), fn($qr) => $qr->whereDate('date', '>=', request('from')))
+            ->when(request()->filled('to'), fn($qr) => $qr->whereDate('date', '<=', request('to')))
+            ->get();
     }
 
     public function delete(Attendance $attendance)
@@ -45,9 +71,15 @@ class AttendanceService
         $attendance->delete();
     }
 
+    // public function show($id)
+    // {
+    //     return Attendance::findOrFail($id);
+    // }
+
     public function show($id)
     {
-        return Attendance::findOrFail($id);
+        return Attendance::with(['employee', 'shift', 'employee.employementDetail.department', 'employee.employementDetail.branch']) // ← এই লাইন যোগ করুন
+            ->findOrFail($id);
     }
 
     /**

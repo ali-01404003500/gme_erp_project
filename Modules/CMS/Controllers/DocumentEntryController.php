@@ -1,14 +1,13 @@
 <?php
-
 namespace Modules\CMS\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
-use Modules\CMS\Models\DocumentEntry;
-use Modules\CMS\Services\DocumentEntryService;
 use Illuminate\Http\Request;
+use Modules\CMS\Models\DocumentEntry;
 use Modules\CMS\Models\DocumentHead;
 use Modules\CMS\Models\DocumentType;
+use Modules\CMS\Services\DocumentEntryService;
 use Modules\Inventory\Services\ExportService;
 
 class DocumentEntryController extends Controller
@@ -19,28 +18,26 @@ class DocumentEntryController extends Controller
      *
      * @var DocumentEntryService
      */
-    private $service; 
-    function __construct(DocumentEntryService $service)
+    private $service;
+    public function __construct(DocumentEntryService $service)
     {
         $this->service = $service;
     }
-    
-    /**
+
+    /**W
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         $data['documentEntries'] = $this->service->getAll();
-        $data['documentTypes'] = DocumentType::all();
-        $data['documentHeads'] = DocumentHead::all();
-
-        $data['company_info'] = CompanyInfo::first();
-
+        $data['documentTypes']   = DocumentType::all();
+        $data['documentHeads']   = DocumentHead::all();
+        $data['company_info']    = CompanyInfo::first();
 
         if ($request->filled('export_type')) {
-            $request->merge(['page' =>  '1']);
+            $request->merge(['page' => '1']);
             $data['documentEntries'] = $this->service->getAll($data['documentEntries']->total());
-            $filename = 'DocumentEntry_list_' . today()->format(date('Y-m-d'), 'Y_m_d');
+            $filename                = 'DocumentEntry_list_' . today()->format(date('Y-m-d'), 'Y_m_d');
 
             return (new ExportService())->exportData($data, 'CMS::document-entries.export.', $filename);
         }
@@ -54,13 +51,13 @@ class DocumentEntryController extends Controller
 
     /**
      * Show the form for creating a new resource.
-    */
-    
+     */
+
     public function create()
     {
         $data['documentTypes'] = DocumentType::all();
         $data['documentHeads'] = DocumentHead::all();
-        return view('CMS::document-entries.create',$data);
+        return view('CMS::document-entries.create', $data);
     }
 
     /**
@@ -72,9 +69,9 @@ class DocumentEntryController extends Controller
         $validate = $request->validate([
             'document_type_id' => 'required|exists:document_types,id',
             'document_head_id' => 'required|exists:document_heads,id',
-            'date'=>'required|date',
-            'remarks'=> 'nullable',
-            'attachment'=>'required',
+            'date'             => 'required|date',
+            'remarks'          => 'nullable',
+            'attachment'       => 'required',
 
         ]);
         $this->service->store($validate);
@@ -84,7 +81,7 @@ class DocumentEntryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
         $data['documentEntry'] = $this->service->show($id);
 
@@ -108,11 +105,11 @@ class DocumentEntryController extends Controller
     public function update(Request $request, DocumentEntry $documentEntry)
     {
         $validate = $request->validate([
-          'document_type_id' => 'required|exists:document_types,id',
+            'document_type_id' => 'required|exists:document_types,id',
             'document_head_id' => 'required|exists:document_heads,id',
-            'date'=>'required|date',
-            'remarks'=> 'nullable',
-            'attachment'=>'nullable',
+            'date'             => 'required|date',
+            'remarks'          => 'nullable',
+            'attachment'       => 'nullable',
         ]);
         $this->service->update($documentEntry, $validate);
 

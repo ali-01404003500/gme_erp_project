@@ -1,19 +1,18 @@
 <?php
-
 namespace Modules\Purchase\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
-use Modules\Purchase\Models\OfficePurchase;
-use Modules\Purchase\Models\Supplier;
-use Modules\Purchase\Models\Vendor;
 use App\Services\Notifications\GeneralNotificationService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Modules\Purchase\Models\OfficePurchase;
+use Modules\Purchase\Models\Vendor;
 use Modules\Purchase\Services\OfficePurchaseService;
+
 class OfficePurchaseController extends Controller
 {
 
@@ -22,7 +21,7 @@ class OfficePurchaseController extends Controller
      *
      * @var OfficePurchaseService
      */
-    private $service; 
+    private $service;
 
     /**
      * GeneralNotificationService variable
@@ -30,20 +29,20 @@ class OfficePurchaseController extends Controller
      * @var GeneralNotificationService
      */
     private $generalNotificationService;
-    function __construct(OfficePurchaseService $service, GeneralNotificationService $generalNotificationService)
+    public function __construct(OfficePurchaseService $service, GeneralNotificationService $generalNotificationService)
     {
-        $this->service = $service;
+        $this->service                    = $service;
         $this->generalNotificationService = $generalNotificationService;
         // $this->middleware('permited');
     }
-    
+
     /**
      * Display a listing of the resource.
      */
-    public function index( Request $request)
+    public function index(Request $request)
     {
         $data['officePurchases'] = $this->service->getAll();
-        $data['company_info'] = CompanyInfo::first();
+        $data['company_info']    = CompanyInfo::first();
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
@@ -53,7 +52,7 @@ class OfficePurchaseController extends Controller
             $options = new Options();
             $options->setIsHtml5ParserEnabled(true);
             $options->setIsRemoteEnabled(true);
-            
+
             $dompdf = new Dompdf($options);
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'portrait');
@@ -74,38 +73,43 @@ class OfficePurchaseController extends Controller
         return view('Purchase::office-purchases.create', $data);
     }
 
+    // public function create()
+    // {
+    //     $data['vendors'] = Vendor::query()->where('status', 1)->select('id', 'name')->get();
+    //     return view('Purchase::office-purchases.create', $data);
+    // }
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $invoice_no = $this->getOPNumber(); 
+        $invoice_no = $this->getOPNumber();
 
         $validate = $request->validate([
-            'vendor_id' => 'required|exists:vendors,id',
-            'date'=> 'required',
-            'reference_bill'=> 'required',
-            'particular'=> 'required',
-            'bill_amount'=> 'required|numeric',
-            'remarks'=> 'nullable',
-            'file_upload' =>  'nullable',
+            'vendor_id'      => 'required|exists:vendors,id',
+            'date'           => 'required',
+            'reference_bill' => 'required',
+            'particular'     => 'required',
+            'bill_amount'    => 'required|numeric',
+            'remarks'        => 'nullable',
+            'file_upload'    => 'nullable',
         ]);
         $validate['invoice_no'] = $invoice_no;
 
         $officePurchase = $this->service->store($validate);
         $this->generalNotificationService->store([
-            'title' => 'New Office Purchase',
+            'title'       => 'New Office Purchase',
             'description' => 'New Office Purchase Added needed approval',
-            'action' => $this->generalNotificationService->actionBuilder(OfficePurchaseController::class, 'approve', [$officePurchase->id]),
-         ],$this->generalNotificationService->getPermittedUsers('purchase.offices.approve'));
-        return redirect()->route('purchase.offices.edit',$officePurchase->id)->with('success', 'OfficePurchase created successfully.');
+            'action'      => $this->generalNotificationService->actionBuilder(OfficePurchaseController::class, 'approve', [$officePurchase->id]),
+        ], $this->generalNotificationService->getPermittedUsers('purchase.offices.approve'));
+        return redirect()->route('purchase.offices.edit', $officePurchase->id)->with('success', 'OfficePurchase created successfully.');
     }
     private function getOPNumber()
     {
         $today = date('Y-m-d');
 
-        $authUser = auth()->user()->id;
-        $authUserBranch = auth()->user()->branch_id;
+        $authUser           = auth()->user()->id;
+        $authUserBranch     = auth()->user()->branch_id;
         $authUserBranchType = auth()->user()->branch->branch_type_id;
 
         // Count today's purchase orders created by this user
@@ -116,11 +120,11 @@ class OfficePurchaseController extends Controller
         // Generate PO number in required format
         $poNumber = sprintf(
             'SCT-%02d-SC-%02d-%s-USR-%06d-FP-%05d',
-            $authUserBranch,        // Branch ID (2 digits, padded)
-            $authUserBranchType,    // Branch Type (2 digits, padded)
-            date('Ymd'),            // YYYYMMDD
-            $authUser,              // User ID (6 digits, padded)
-            $todayOrders + 1        // Count of today’s entries (5 digits, padded)
+            $authUserBranch,     // Branch ID (2 digits, padded)
+            $authUserBranchType, // Branch Type (2 digits, padded)
+            date('Ymd'),         // YYYYMMDD
+            $authUser,           // User ID (6 digits, padded)
+            $todayOrders + 1     // Count of today’s entries (5 digits, padded)
         );
 
         return $poNumber;
@@ -131,7 +135,7 @@ class OfficePurchaseController extends Controller
     public function show($id, Request $request)
     {
         $data['officePurchase'] = $this->service->show($id);
-        $data['company_info'] = CompanyInfo::first();
+        $data['company_info']   = CompanyInfo::first();
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
@@ -155,11 +159,19 @@ class OfficePurchaseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit( $id)
+    // public function edit($id)
+    // {
+    //     $officePurchase         = OfficePurchase::findOrFail($id);
+    //     $data['officePurchase'] = $officePurchase;
+    //     $data['vendors']        = Vendor::query()->where('status', 1)->get();
+    //     return view("Purchase::office-purchases.edit", $data);
+    // }
+
+    public function edit($id)
     {
-        $officePurchase = OfficePurchase::findOrFail($id);
+        $officePurchase         = OfficePurchase::with(['vendor'])->findOrFail($id); // ← eager loading
         $data['officePurchase'] = $officePurchase;
-        $data['vendors'] = Vendor::query()->where('status', 1)->get();
+        $data['vendors']        = Vendor::query()->where('status', 1)->select('id', 'name')->get();
         return view("Purchase::office-purchases.edit", $data);
     }
 
@@ -168,13 +180,13 @@ class OfficePurchaseController extends Controller
         $officePurchase = OfficePurchase::findOrFail($id);
 
         $validate = $request->validate([
-            'vendor_id' => 'required|exists:vendors,id',
-            'date'=> 'required',
-            'reference_bill'=> 'required',
-            'particular'=> 'required',
-            'bill_amount'=> 'required|numeric',
-            'remarks'=> 'nullable',
-            'file_upload' =>  'nullable|',
+            'vendor_id'      => 'required|exists:vendors,id',
+            'date'           => 'required',
+            'reference_bill' => 'required',
+            'particular'     => 'required',
+            'bill_amount'    => 'required|numeric',
+            'remarks'        => 'nullable',
+            'file_upload'    => 'nullable|',
         ]);
         $officePurchase = $this->service->update($officePurchase, $validate);
 
@@ -191,10 +203,17 @@ class OfficePurchaseController extends Controller
         return redirect()->route('purchase.offices.index')->with('success', 'OfficePurchase deleted successfully.');
     }
 
-    public function approve( $id)
+    // public function approve($id)
+    // {
+    //     $data['officePurchase'] = $this->service->show($id);
+    //     $data['vendors']        = Vendor::query()->where('status', 1)->get();
+    //     return view("Purchase::office-purchases.approve", $data);
+    // }
+
+    public function approve($id)
     {
-        $data['officePurchase'] = $this->service->show($id);
-        $data['vendors'] = Vendor::query()->where('status', 1)->get();
+        $data['officePurchase'] = $this->service->show($id); // Service এ eager loading থাকবে
+        $data['vendors']        = Vendor::query()->where('status', 1)->select('id', 'name')->get();
         return view("Purchase::office-purchases.approve", $data);
     }
 
@@ -204,30 +223,28 @@ class OfficePurchaseController extends Controller
         $officePurchase = $this->service->show($id);
 
         $validate = $request->validate([
-            'vendor_id' => 'required|exists:vendors,id',
-            'date'=> 'required',
-            'reference_bill'=> 'required',
-            'particular'=> 'required',
-            'bill_amount'=> 'required',
-            'remarks'=> 'nullable',
-            'file_upload' =>  'nullable',
-            'status' => 'required',
+            'vendor_id'      => 'required|exists:vendors,id',
+            'date'           => 'required',
+            'reference_bill' => 'required',
+            'particular'     => 'required',
+            'bill_amount'    => 'required',
+            'remarks'        => 'nullable',
+            'file_upload'    => 'nullable',
+            'status'         => 'required',
         ]);
 
         $validate['approved_by'] = Auth::user()->id;
 
         $officePurchase = $this->service->update($officePurchase, $validate);
 
-        if($validate['status'] == '1'){
+        if ($validate['status'] == '1') {
             // dd($officePurchase);
             $this->service->makeDummyTransaction($officePurchase);
 
             return redirect()->route('purchase.offices.index')->with('success', 'Office Purchase approved successfully.');
-        }
-        else{
+        } else {
             return redirect()->route('purchase.offices.index')->with('success', 'Office Purchase Rejected successfully.');
         }
     }
 
-    
 }

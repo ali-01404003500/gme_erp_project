@@ -1,25 +1,44 @@
 <?php
-
 namespace Modules\Purchase\Services;
 
-use Carbon\Carbon;
 use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Purchase\Models\PurchaseOrderDetail;
 
 class PurchaseOrderService
 {
-    
-    public function getAll(int $limit = 20) {
+
+    // public function getAll(int $limit = 20)
+    // {
+    //     return PurchaseOrder::query()
+    //         ->searchByFields(['po_number'])
+    //         ->filterByDateRange('po_date')
+    //         ->paginate($limit);
+    // }
+
+    public function getAll(int $limit = 20)
+    {
         return PurchaseOrder::query()
-        ->searchByFields(['po_number'])
-        ->filterByDateRange('po_date')
-        ->paginate($limit);
+            ->with(['supplier']) // ← Eager loading
+            ->searchByFields(['po_number', 'supplier_id'])
+            ->when(request()->filled('from'), function ($qr) {
+                $qr->where('po_date', '>=', request('from'));
+            })
+            ->when(request()->filled('to'), function ($qr) {
+                $qr->where('po_date', '<=', request('to'));
+            })
+            ->paginate($limit);
     }
-    
-    public function store(array $data, array  $purchaseOrderDetails)
+
+    public function show($id)
+    {
+        return PurchaseOrder::with(['supplier', 'orderDetails.product'])
+            ->findOrFail($id);
+    }
+
+    public function store(array $data, array $purchaseOrderDetails)
     {
 
-        $result['purchaseOrder'] =  PurchaseOrder::create($data);
+        $result['purchaseOrder'] = PurchaseOrder::create($data);
 
         $result['purchaseOrderDetails'] = [];
 
@@ -27,14 +46,14 @@ class PurchaseOrderService
             foreach ($purchaseOrderDetails['product_ids'] as $key => $value) {
                 $result['purchaseOrderDetails'][] = PurchaseOrderDetail::create([
 
-                    'purchase_order_id' => $result['purchaseOrder']->id,
-                    'product_id' => $purchaseOrderDetails['product_ids'][$key],
-                    'product_model' => $purchaseOrderDetails['product_model'][$key],
-                    'product_description'=> $purchaseOrderDetails['product_description'][$key],
-                    'hs_code'=> $purchaseOrderDetails['hs_code'][$key],
-                    'price'=> $purchaseOrderDetails['price'][$key],
-                    'quantity'=> $purchaseOrderDetails['quantity'][$key],
-                    'amount'=> $purchaseOrderDetails['amount'][$key],
+                    'purchase_order_id'   => $result['purchaseOrder']->id,
+                    'product_id'          => $purchaseOrderDetails['product_ids'][$key],
+                    'product_model'       => $purchaseOrderDetails['product_model'][$key],
+                    'product_description' => $purchaseOrderDetails['product_description'][$key],
+                    'hs_code'             => $purchaseOrderDetails['hs_code'][$key],
+                    'price'               => $purchaseOrderDetails['price'][$key],
+                    'quantity'            => $purchaseOrderDetails['quantity'][$key],
+                    'amount'              => $purchaseOrderDetails['amount'][$key],
                 ]);
             }
         }
@@ -49,14 +68,14 @@ class PurchaseOrderService
 
         foreach ($detailes['product_ids'] as $key => $value) {
             $purchaseOrderDetail = PurchaseOrderDetail::create([
-                'purchase_order_id' => $purchaseOrder->id,
-                'product_id' => $detailes['product_ids'][$key],
-                'product_model' => $detailes['product_model'][$key],
-                'product_description'=> $detailes['product_description'][$key],
-                'hs_code'=> $detailes['hs_code'][$key],
-                'price'=> $detailes['price'][$key],
-                'quantity'=> $detailes['quantity'][$key],
-                'amount'=> $detailes['amount'][$key],
+                'purchase_order_id'   => $purchaseOrder->id,
+                'product_id'          => $detailes['product_ids'][$key],
+                'product_model'       => $detailes['product_model'][$key],
+                'product_description' => $detailes['product_description'][$key],
+                'hs_code'             => $detailes['hs_code'][$key],
+                'price'               => $detailes['price'][$key],
+                'quantity'            => $detailes['quantity'][$key],
+                'amount'              => $detailes['amount'][$key],
             ]);
         }
         return $purchaseOrder;
@@ -68,8 +87,8 @@ class PurchaseOrderService
         $purchaseOrder->delete();
     }
 
-    public function show($id)
-    {
-        return PurchaseOrder::findOrFail($id);
-    }
+    // public function show($id)
+    // {
+    //     return PurchaseOrder::findOrFail($id);
+    // }
 }

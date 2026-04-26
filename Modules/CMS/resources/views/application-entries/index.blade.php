@@ -109,6 +109,19 @@
         .breadcrumb-main {
             background: transparent;
         }
+
+        .table thead th {
+            background-color: #35526e !important;
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+            font-size: 0.85rem !important;
+            letter-spacing: 0.08em;
+            border-bottom: 2px solid #2a4054 !important;
+            padding: 14px 16px !important;
+            vertical-align: middle;
+            text-align: center;
+        }
     </style>
 
     <div class="container-fluid py-4">

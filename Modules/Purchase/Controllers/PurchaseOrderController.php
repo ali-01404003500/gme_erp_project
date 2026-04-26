@@ -1,23 +1,21 @@
 <?php
-
 namespace Modules\Purchase\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\Branch;
 use App\Models\AccessControl\CompanyInfo;
-use Modules\Inventory\Models\Product\Settings\Brand;
-use Modules\Inventory\Models\Product\Settings\ProductType;
-use Modules\Inventory\Models\ProductCatalog;
-use Modules\Inventory\Models\Settings\Unit;
-use Modules\Inventory\Models\warehouse;
-use Modules\Purchase\Models\PurchaseOrder;
-use Modules\Purchase\Services\PurchaseOrderService;
-use Illuminate\Http\Request;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\CRM\Models\Customer\Customer;
+use Modules\Inventory\Models\ProductCatalog;
+use Modules\Inventory\Models\Product\Settings\Brand;
+use Modules\Inventory\Models\Product\Settings\ProductType;
+use Modules\Inventory\Models\Settings\Unit;
+use Modules\Purchase\Models\PurchaseOrder;
 use Modules\Purchase\Models\Supplier;
+use Modules\Purchase\Services\PurchaseOrderService;
 
 class PurchaseOrderController extends Controller
 {
@@ -28,7 +26,7 @@ class PurchaseOrderController extends Controller
      * @var PurchaseOrderService
      */
     private $service;
-    function __construct(PurchaseOrderService $service)
+    public function __construct(PurchaseOrderService $service)
     {
         $this->service = $service;
         $this->middleware('permited')->only('create', 'store', 'edit', 'update', 'destroy');
@@ -41,7 +39,7 @@ class PurchaseOrderController extends Controller
     public function index(Request $request)
     {
         $data['purchaseOrders'] = $this->service->getAll();
-        $data['company_info'] = CompanyInfo::first();
+        $data['company_info']   = CompanyInfo::first();
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
@@ -66,15 +64,28 @@ class PurchaseOrderController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    // public function create()
+    // {
+    //     $data['warehouses']   = Branch::query()->get();
+    //     $data['productTypes'] = ProductType::query()->where('status', 1)->get();
+    //     $data['units']        = Unit::all();
+    //     $data['products']     = ProductCatalog::where('status', 'active')->get();
+    //     $data['brands']       = Brand::all();
+    //     $data['suppliers']    = Supplier::query()->where('status', 1)->get();
+    //     $data['customers']    = Customer::activeCustomers()->get();
+    //     return view('Purchase::order.create', $data);
+    // }
+
     public function create()
     {
-        $data['warehouses'] = Branch::query()->get();
-        $data['productTypes'] = ProductType::query()->where('status', 1)->get();
-        $data['units'] = Unit::all();
-        $data['products'] = ProductCatalog::where('status', 'active')->get();
-        $data['brands'] = Brand::all();
-        $data['suppliers'] = Supplier::query()->where('status', 1)->get();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['warehouses']   = Branch::query()->select('id', 'name')->get();
+        $data['productTypes'] = ProductType::query()->where('status', 1)->select('id', 'name')->get();
+        $data['units']        = Unit::select('id', 'name')->get();
+        $data['products']     = ProductCatalog::where('status', 'active')->select('id', 'name')->get();
+        $data['brands']       = Brand::select('id', 'name')->get();
+        $data['suppliers']    = Supplier::query()->where('status', 1)->select('id', 'company_name')->get();
+        $data['customers']    = Customer::activeCustomers()->select('id', 'company_name')->get();
+
         return view('Purchase::order.create', $data);
     }
 
@@ -105,40 +116,40 @@ class PurchaseOrderController extends Controller
         $po_number = $this->getPONumber($request->supplier_id);
 
         $validate = $request->validate([
-            'supplier_id' => 'nullable',
-            'po_date' => 'nullable|date',
+            'supplier_id'        => 'nullable',
+            'po_date'            => 'nullable|date',
             'search_by_brand_id' => 'nullable',
-            'total_amount' => 'nullable|numeric|min:0',
-            'transport_cost' => 'nullable|numeric|min:0',
-            'net_amount' => 'nullable|numeric|min:0',
-            'remarks' => 'nullable|string',
-            'transport_title' => 'nullable|string',
-            'shipping_method' => 'nullable|string',
-            'shipping_terms' => 'nullable|string',
-            'delivery_date' => 'nullable|date',
+            'total_amount'       => 'nullable|numeric|min:0',
+            'transport_cost'     => 'nullable|numeric|min:0',
+            'net_amount'         => 'nullable|numeric|min:0',
+            'remarks'            => 'nullable|string',
+            'transport_title'    => 'nullable|string',
+            'shipping_method'    => 'nullable|string',
+            'shipping_terms'     => 'nullable|string',
+            'delivery_date'      => 'nullable|date',
         ]);
         $productValidate = $request->validate([
-            'product_ids' => 'required|array',
-            'product_ids.*' => 'required|exists:product_catalogs,id',
-            'hs_code' => 'nullable|array',
-            'hs_code.*' => 'nullable|string',
-            'product_description' => 'nullable|array',
+            'product_ids'           => 'required|array',
+            'product_ids.*'         => 'required|exists:product_catalogs,id',
+            'hs_code'               => 'nullable|array',
+            'hs_code.*'             => 'nullable|string',
+            'product_description'   => 'nullable|array',
             'product_description.*' => 'nullable|string',
-            'product_model' => 'nullable|array',
-            'product_model.*' => 'nullable|string',
-            'price' => 'nullable|array',
-            'price.*' => 'nullable',
-            'quantity' => 'nullable|array',
-            'quantity.*' => 'nullable',
-            'amount' => 'nullable|array',
-            'amount.*' => 'nullable|numeric|min:0',
+            'product_model'         => 'nullable|array',
+            'product_model.*'       => 'nullable|string',
+            'price'                 => 'nullable|array',
+            'price.*'               => 'nullable',
+            'quantity'              => 'nullable|array',
+            'quantity.*'            => 'nullable',
+            'amount'                => 'nullable|array',
+            'amount.*'              => 'nullable|numeric|min:0',
         ]);
         $validate['po_number'] = $po_number;
 
         if (isset($request->product_ids[0])) {
             $request->validate([
                 'product_ids.*' => 'required',
-                'hs_code.*' => 'required',
+                'hs_code.*'     => 'required',
             ]);
         }
 
@@ -147,9 +158,9 @@ class PurchaseOrderController extends Controller
 
     }
 
-   public function getPONumber($supplier_id)
+    public function getPONumber($supplier_id)
     {
-        $today = date('Y-m-d');
+        $today    = date('Y-m-d');
         $authUser = auth()->user()->id;
 
         // Count today's purchase orders created by this user
@@ -160,15 +171,13 @@ class PurchaseOrderController extends Controller
         // Generate PO number in required format
         $poNumber = sprintf(
             'PO-SUP-%06d-%s-%04d',
-            $supplier_id,              
-            date('Y'),            
-            $todayOrders + 1       
+            $supplier_id,
+            date('Y'),
+            $todayOrders + 1
         );
 
         return $poNumber;
     }
-
-
 
     /**
      * Display the specified resource.
@@ -178,7 +187,6 @@ class PurchaseOrderController extends Controller
         $data['purchaseOrder'] = $this->service->show($id);
         // $data['company_info'] = CompanyInfo::first();
         $purchaseOrder = $this->service->show($id);
-
 
         $data = [
             'purchaseOrder' => $purchaseOrder,
@@ -209,16 +217,30 @@ class PurchaseOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    // public function edit($id)
+    // {
+    //     $data['purchaseOrder'] = PurchaseOrder::find($id);
+    //     $data['warehouses']    = Branch::query()->get();
+    //     $data['productTypes']  = ProductType::query()->where('status', 1)->get();
+    //     $data['units']         = Unit::all();
+    //     $data['products']      = ProductCatalog::where('status', 'active')->get();
+    //     $data['brands']        = Brand::all();
+    //     $data['suppliers']     = Supplier::query()->where('status', 1)->get();
+    //     $data['customers']     = Customer::activeCustomers()->get();
+    //     return view("Purchase::order.edit", $data);
+    // }
+
     public function edit($id)
     {
-        $data['purchaseOrder'] = PurchaseOrder::find($id);
-        $data['warehouses'] = Branch::query()->get();
-        $data['productTypes'] = ProductType::query()->where('status', 1)->get();
-        $data['units'] = Unit::all();
-        $data['products'] = ProductCatalog::where('status', 'active')->get();
-        $data['brands'] = Brand::all();
-        $data['suppliers'] = Supplier::query()->where('status', 1)->get();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['purchaseOrder'] = PurchaseOrder::with(['supplier', 'orderDetails.product'])->find($id);
+        $data['warehouses']    = Branch::query()->select('id', 'name')->get();
+        $data['productTypes']  = ProductType::query()->where('status', 1)->select('id', 'name')->get();
+        $data['units']         = Unit::select('id', 'name')->get();
+        $data['products']      = ProductCatalog::where('status', 'active')->select('id', 'name')->get();
+        $data['brands']        = Brand::select('id', 'name')->get();
+        $data['suppliers']     = Supplier::query()->where('status', 1)->select('id', 'company_name')->get();
+        $data['customers']     = Customer::activeCustomers()->select('id', 'company_name')->get();
+
         return view("Purchase::order.edit", $data);
     }
 
@@ -230,39 +252,39 @@ class PurchaseOrderController extends Controller
         $purchaseOrder = PurchaseOrder::find($id);
 
         $validate = $request->validate([
-            'supplier_id' => 'nullable',
-            'po_date' => 'nullable|date',
+            'supplier_id'        => 'nullable',
+            'po_date'            => 'nullable|date',
             'search_by_brand_id' => 'nullable',
-            'total_amount' => 'nullable|numeric|min:0',
-            'transport_cost' => 'nullable|numeric|min:0',
-            'net_amount' => 'nullable|numeric|min:0',
-            'remarks' => 'nullable|string',
-            'transport_title' => 'nullable|string',
-            'shipping_method' => 'nullable|string',
-            'shipping_terms' => 'nullable|string',
-            'delivery_date' => 'nullable|date',
+            'total_amount'       => 'nullable|numeric|min:0',
+            'transport_cost'     => 'nullable|numeric|min:0',
+            'net_amount'         => 'nullable|numeric|min:0',
+            'remarks'            => 'nullable|string',
+            'transport_title'    => 'nullable|string',
+            'shipping_method'    => 'nullable|string',
+            'shipping_terms'     => 'nullable|string',
+            'delivery_date'      => 'nullable|date',
         ]);
         $productValidate = $request->validate([
-            'product_ids' => 'required|array',
-            'product_ids.*' => 'required|exists:product_catalogs,id',
-            'hs_code' => 'nullable|array',
-            'hs_code.*' => 'nullable|string',
-            'product_description' => 'nullable|array',
+            'product_ids'           => 'required|array',
+            'product_ids.*'         => 'required|exists:product_catalogs,id',
+            'hs_code'               => 'nullable|array',
+            'hs_code.*'             => 'nullable|string',
+            'product_description'   => 'nullable|array',
             'product_description.*' => 'nullable|string',
-            'product_model' => 'nullable|array',
-            'product_model.*' => 'nullable|string',
-            'price' => 'nullable|array',
-            'price.*' => 'nullable',
-            'quantity' => 'nullable|array',
-            'quantity.*' => 'nullable',
-            'amount' => 'nullable|array',
-            'amount.*' => 'nullable|numeric|min:0',
+            'product_model'         => 'nullable|array',
+            'product_model.*'       => 'nullable|string',
+            'price'                 => 'nullable|array',
+            'price.*'               => 'nullable',
+            'quantity'              => 'nullable|array',
+            'quantity.*'            => 'nullable',
+            'amount'                => 'nullable|array',
+            'amount.*'              => 'nullable|numeric|min:0',
         ]);
 
         if (isset($request->product_ids[0])) {
             $request->validate([
                 'product_ids.*' => 'required',
-                'hs_code.*' => 'required',
+                'hs_code.*'     => 'required',
             ]);
         }
         $this->service->update($purchaseOrder, $validate, $productValidate);

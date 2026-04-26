@@ -34,7 +34,7 @@
                             <form method="GET" action="{{ route('crm.daily-credit-calls.index') }}">
                                 <div class="row">
                                     <!-- Search Field -->
-                                    <div class="col-md-3 mb-3">
+                                    <div class="col-md-3 mb-3" >
                                         <label>Search Customer</label>
                                         <select name="search" id="company_name" class="form-control tom-select"
                                             data-placeholder="Select Customer">
@@ -99,7 +99,53 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table dt-table-hover" id="zero-config"
+                                <style>
+                                .condition-table-custom {
+                                    width: 100% !important;
+                                    margin-bottom: 0 !important;
+                                }
+
+                                .condition-table-custom th,
+                                .condition-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    padding: 10px 15px !important;
+                                    vertical-align: middle !important;
+                                    font-size: 0.875rem;
+                                }
+
+                                .condition-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    white-space: nowrap;
+                                    font-weight: 700;
+                                }
+                                .text-wrap-column {
+                                    min-width: 150px;
+                                    max-width: 250px;
+                                    white-space: normal !important;
+                                    word-break: break-word;
+                                }
+                                .table-responsive::-webkit-scrollbar {
+                                    height: 8px;
+                                }
+
+                                .table-responsive::-webkit-scrollbar-thumb {
+                                    background: #ccc;
+                                    border-radius: 4px;
+                                }
+                                .table thead th {
+                                background-color: #35526e !important;
+                                color: #ffffff !important;
+                                font-weight: 600 !important;
+                                text-transform: uppercase;
+                                font-size: 0.85rem !important;
+                                letter-spacing: 0.08em;
+                                border-bottom: 2px solid #2a4054 !important;
+                                padding: 14px 16px !important;
+                                vertical-align: middle;
+                                text-align: center;
+                            }
+                                </style>
+                                <table class="table condition-table-custom dt-table-hover" id="zero-config"
                                     style="font-size: 12px;"> 
                                     <thead>
                                         <tr>
@@ -108,7 +154,7 @@
                                             <th style="width: 10%;">Phone</th>
                                             <th style="width: 20%;">Address</th>
                                             <th style="width: 20%;">Reference</th>
-                                            <th class="text-right" style="width: 10%;">Opening Balance
+                                            <th class="text-right fw-bold text-success" style="width: 10%;">Opening Balance
                                                 <br>৳{{ number_format($totals['total_opening_balance']) }}
                                             </th>
                                             <th style="width: 20%;">Action</th>
@@ -118,7 +164,7 @@
                                         @forelse($reportData as $index => $customer)
                                             <tr>
                                                 <td class="text-center">{{ $index + 1 }}</td>
-                                                <td>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                     <a target="_blank" 
                                                         href="{{ route('account.report.customer-ledger', [
                                                         'account_id' => $customer['account_id'],
@@ -130,11 +176,10 @@
                                                 </td>
                                                 <td class="text-left">{{ $customer['phone'] ?? 'N/A' }}  </td> 
                                                 <td class="text-left">{!! wordwrap($customer['address'], 40, '<br>', true) !!}</td>
-                                                <td class="text-left">{{ $customer['user_reference'] ?? 'N/A' }}  </td>
-                                                <td class="text-right">
+                                                <td class="text-left" style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{  $customer['user_reference'] ?? 'N/A' }}  </td>
+                                                <td class="text-right fw-bold text-success">
                                                     ৳{{ number_format($customer['opening_balance']) }}
-                                                </td>   
-                                               
+                                                </td>
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                                         @if (hasPermission('crm.daily-credit-calls.create')) 
@@ -153,7 +198,7 @@
                                                                 data-id='{{$customer['customer_id']}}'
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#creditCallLegalModal">
-                                                              <i class="fas fa-balance-scale"></i>
+                                                            <i class="fas fa-balance-scale"></i>
                                                             </button> 
                                                         @endif
  

@@ -13,12 +13,45 @@
 
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+                    <style>
+                        .eligible-table-custom,
+                        .eligible-table-custom th,
+                        .eligible-table-custom td {
+                            border: 1px solid #dee2e6 !important;
+                            border-collapse: collapse !important;
+                        }
+
+                        .eligible-table-custom th,
+                        .eligible-table-custom td {
+                            padding: 12px;
+                            vertical-align: middle;
+                        }
+
+                        .eligible-table-custom thead th {
+                            background-color: #f8f9fa;
+                            border-bottom-width: 2px !important;
+                        }
+
+                        .table thead th {
+                            background-color: #35526e !important;
+                            color: #ffffff !important;
+                            font-weight: 600 !important;
+                            text-transform: uppercase;
+                            font-size: 0.85rem !important;
+                            letter-spacing: 0.08em;
+                            border-bottom: 2px solid #2a4054 !important;
+                            padding: 14px 16px !important;
+                            vertical-align: middle;
+                            text-align: center;
+                        }
+                    </style>
+
+                    <table class="table eligible-table-custom table-hover align-middle mb-0">
                         <thead>
                             <tr>
                                 <th class="ps-4">Condition Type</th>
                                 <th>Eligibility</th>
-                                <th class="pe-4 text-end">Action</th>
+                                <th class="pe-4 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -26,9 +59,8 @@
                                 <tr>
                                     <td class="ps-4">{{ $item->condition_type }}</td>
                                     <td>{{ $item->eligibility }}</td>
-                                    <td class="text-end pe-4">
-                                        <div class="d-flex justify-content-end gap-2">
-                                            {{-- এডিট বাটন এখন সরাসরি লিঙ্ক --}}
+                                    <td class="text-center pe-4">
+                                        <div class="d-flex justify-content-center gap-2">
                                             <a href="{{ route('hrm.leave-eligible-employees.edit', $item->id) }}"
                                                 class="btn btn-sm border text-secondary">
                                                 <i class="fas fa-edit"></i>
@@ -54,7 +86,6 @@
         </div>
     </div>
 
-    {{-- শুধু Add New এর জন্য মোডাল --}}
     <div class="modal fade" id="addEligibleModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow-lg border-0">

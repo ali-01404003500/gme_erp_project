@@ -1,33 +1,30 @@
 <?php
-
 namespace Modules\Sales\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\AccessControl\Branch;
 use App\Models\AccessControl\CompanyInfo;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Modules\CRM\Models\Customer\Customer;
 use Modules\Inventory\Services\ExportService;
-use Modules\Sales\Models\ShipmentVerify;
 use Modules\Sales\Models\Courier;
 use Modules\Sales\Models\SalesOrder;
-use Modules\CRM\Models\Customer\Customer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
+use Modules\Sales\Models\ShipmentVerify;
 
 class ShipmentExplorerReportController extends Controller
 {
-    // -------------------------------------------------------------------------
-    // CACHE TTL CONSTANTS
-    // -------------------------------------------------------------------------
-    private const REPORT_TTL        = 60;    // 1 min - report data
-    private const DROPDOWN_TTL      = 3_600; // 1 hr - dropdown data
-    private const CUSTOMER_TTL      = 3_600; // 1 hr - customer list
-    private const COURIER_TTL       = 3_600; // 1 hr - courier list
-    private const USER_TTL          = 3_600; // 1 hr - user list
-    private const COMPANY_TTL       = 3_600; // 1 hr - company info
+                                        // -------------------------------------------------------------------------
+                                        // CACHE TTL CONSTANTS
+                                        // -------------------------------------------------------------------------
+    private const REPORT_TTL   = 60;    // 1 min - report data
+    private const DROPDOWN_TTL = 3_600; // 1 hr - dropdown data
+    private const CUSTOMER_TTL = 3_600; // 1 hr - customer list
+    private const COURIER_TTL  = 3_600; // 1 hr - courier list
+    private const USER_TTL     = 3_600; // 1 hr - user list
+    private const COMPANY_TTL  = 3_600; // 1 hr - company info
 
     // -------------------------------------------------------------------------
     // PAGINATION
@@ -50,18 +47,18 @@ class ShipmentExplorerReportController extends Controller
             $selectedColumns = $request->filled('columns')
                 ? explode(',', $request->columns)
                 : ['invoice-id', 'datetime', 'customer', 'courier', 'status', 'shipment-type',
-                   'amount', 'additional', 'conditional', 'remarks', 'carton', 'receipt-date',
-                   'receipt-no', 'service-charge', 'service-type', 'delivery-charge', 'delivery-type',
-                   'other-charge', 'other-type', 'attachment', 'update-by', 'collection-by',
-                   'approved-by', 'user', 'complete-date', 'challan'];
+                'amount', 'additional', 'conditional', 'remarks', 'carton', 'receipt-date',
+                'receipt-no', 'service-charge', 'service-type', 'delivery-charge', 'delivery-type',
+                'other-charge', 'other-type', 'attachment', 'update-by', 'collection-by',
+                'approved-by', 'user', 'complete-date', 'challan'];
 
             $data = [
-                'reportData' => collect($reportData),
-                'customers' => $this->getCustomersForDropdown(),
-                'couriers' => $this->getCouriersForDropdown(),
-                'salesOrders' => $this->getSalesOrdersForDropdown(),
-                'users' => $this->getUsersForDropdown(),
-                'company_info' => $this->getCompanyInfo(),
+                'reportData'      => collect($reportData),
+                'customers'       => $this->getCustomersForDropdown(),
+                'couriers'        => $this->getCouriersForDropdown(),
+                'salesOrders'     => $this->getSalesOrdersForDropdown(),
+                'users'           => $this->getUsersForDropdown(),
+                'company_info'    => $this->getCompanyInfo(),
                 'selectedColumns' => $selectedColumns,
             ];
 
@@ -77,7 +74,7 @@ class ShipmentExplorerReportController extends Controller
 
         // Paginate the report data
         $reportCollection = collect($reportData);
-        $currentPage = request()->input('page', 1);
+        $currentPage      = request()->input('page', 1);
 
         $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
             $reportCollection->forPage($currentPage, self::PER_PAGE),
@@ -89,11 +86,11 @@ class ShipmentExplorerReportController extends Controller
 
         // Prepare view data with cached dropdowns
         $data = [
-            'reportData' => $paginatedData,
-            'customers' => $this->getCustomersForDropdown(),
-            'couriers' => $this->getCouriersForDropdown(),
-            'salesOrders' => $this->getSalesOrdersForDropdown(),
-            'users' => $this->getUsersForDropdown(),
+            'reportData'   => $paginatedData,
+            'customers'    => $this->getCustomersForDropdown(),
+            'couriers'     => $this->getCouriersForDropdown(),
+            'salesOrders'  => $this->getSalesOrdersForDropdown(),
+            'users'        => $this->getUsersForDropdown(),
             'company_info' => $this->getCompanyInfo(),
         ];
 
@@ -106,14 +103,14 @@ class ShipmentExplorerReportController extends Controller
     private function getReportCacheKey(Request $request): string
     {
         $filters = [
-            'shipment_type' => $request->shipment_type,
-            'courier_id' => $request->courier_id,
-            'customer_id' => $request->customer_id,
-            'invoice_id' => $request->invoice_id,
-            'user_id' => $request->user_id,
+            'shipment_type'    => $request->shipment_type,
+            'courier_id'       => $request->courier_id,
+            'customer_id'      => $request->customer_id,
+            'invoice_id'       => $request->invoice_id,
+            'user_id'          => $request->user_id,
             'date_filter_type' => $request->date_filter_type,
-            'from' => $request->from,
-            'to' => $request->to,
+            'from'             => $request->from,
+            'to'               => $request->to,
         ];
 
         return 'shipment_explorer_report_' . md5(serialize($filters));
@@ -132,7 +129,7 @@ class ShipmentExplorerReportController extends Controller
             'source.source.delivery',
             'source.source.shipment',
             'createdBy',
-            'updatedBy'
+            'updatedBy',
         ]);
 
         // Apply filters
@@ -161,37 +158,37 @@ class ShipmentExplorerReportController extends Controller
                 'source.source.delivery',
                 'source.source.shipment',
                 'createdBy',
-                'updatedBy'
+                'updatedBy',
             ])->findOrFail($shipmentVerifyId);
 
             $salesOrder = $shipmentVerify->source?->source;
-            
+
             // Calculate amounts
-            $invoiceAmount = $salesOrder->net_amount ?? 0;
-            $additionalAmount = $salesOrder->shipment?->additional_amount ?? 0;
-            $dueAmount = $salesOrder->due_amount ?? 0;
+            $invoiceAmount     = $salesOrder->net_amount ?? 0;
+            $additionalAmount  = $salesOrder->shipment?->additional_amount ?? 0;
+            $dueAmount         = $salesOrder->due_amount ?? 0;
             $conditionalAmount = $dueAmount + $additionalAmount;
 
             $verificationData = [
-                'shipment_verify' => $shipmentVerify,
-                'sales_order' => $salesOrder,
-                'invoice_amount' => $invoiceAmount,
-                'additional_amount' => $additionalAmount,
+                'shipment_verify'    => $shipmentVerify,
+                'sales_order'        => $salesOrder,
+                'invoice_amount'     => $invoiceAmount,
+                'additional_amount'  => $additionalAmount,
                 'conditional_amount' => $conditionalAmount,
-                'status' => $this->determineShipmentStatus($shipmentVerify, $salesOrder),
-                'shipment_type' => $salesOrder->shipment?->condition ? 'Condition' : 'Without Condition',
+                'status'             => $this->determineShipmentStatus($shipmentVerify, $salesOrder),
+                'shipment_type'      => $salesOrder->shipment?->condition ? 'Condition' : 'Without Condition',
             ];
 
             return response()->json([
                 'success' => true,
-                'data' => $verificationData
+                'data'    => $verificationData,
             ]);
 
         } catch (\Exception $e) {
             Log::error("Error fetching verification details: " . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to fetch verification details.'
+                'message' => 'Failed to fetch verification details.',
             ], 500);
         }
     }
@@ -203,41 +200,41 @@ class ShipmentExplorerReportController extends Controller
     {
         $request->validate([
             'action' => 'required|in:accept,deny',
-            'remark' => 'nullable|string|max:500'
+            'remark' => 'nullable|string|max:500',
         ]);
 
         try {
             $shipmentVerify = ShipmentVerify::findOrFail($shipmentVerifyId);
-            
+
             if ($request->action === 'accept') {
                 $shipmentVerify->update([
                     'approved_at' => now(),
                     'approved_by' => auth()->id(),
-                    'status' => 'verified'
+                    'status'      => 'verified',
                 ]);
-                
+
                 $message = 'Verification accepted successfully.';
             } else {
                 $shipmentVerify->update([
-                    'status' => 'denied',
+                    'status'        => 'denied',
                     'denial_remark' => $request->remark,
-                    'denied_by' => auth()->id(),
-                    'denied_at' => now()
+                    'denied_by'     => auth()->id(),
+                    'denied_at'     => now(),
                 ]);
-                
+
                 $message = 'Verification denied successfully.';
             }
 
             return response()->json([
                 'success' => true,
-                'message' => $message
+                'message' => $message,
             ]);
 
         } catch (\Exception $e) {
             Log::error("Error updating verification status: " . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update verification status.'
+                'message' => 'Failed to update verification status.',
             ], 500);
         }
     }
@@ -260,7 +257,7 @@ class ShipmentExplorerReportController extends Controller
                     });
                     break;
                 case 'without_condition':
-                      $query->whereHas('source', function ($q) {
+                    $query->whereHas('source', function ($q) {
                         $q->whereHas('source', function ($q) {
                             $q->whereHas('shipment', function ($q) {
                                 $q->where('condition', 0);
@@ -283,18 +280,18 @@ class ShipmentExplorerReportController extends Controller
 
         // Invoice ID Filter
         if ($request->filled('invoice_id')) {
-            $query->whereHas('source', function ($q) use ($request){
-                        $q->whereHas('source', function ($q) use ($request) {
-                            $q->where('id', $request->invoice_id);
-                        });
-                    });
+            $query->whereHas('source', function ($q) use ($request) {
+                $q->whereHas('source', function ($q) use ($request) {
+                    $q->where('id', $request->invoice_id);
+                });
+            });
         }
 
         // User Filter
         if ($request->filled('user_id')) {
             $query->where(function ($q) use ($request) {
                 $q->where('created_by', $request->user_id)
-                  ->orWhere('updated_by', $request->user_id);
+                    ->orWhere('updated_by', $request->user_id);
             });
         }
 
@@ -314,7 +311,7 @@ class ShipmentExplorerReportController extends Controller
                     break;
                 case 'complete_date':
                     $query->whereNotNull('approved_at')
-                          ->whereBetween('approved_at', [$request->from, $request->to]);
+                        ->whereBetween('approved_at', [$request->from, $request->to]);
                     break;
             }
         }
@@ -331,51 +328,53 @@ class ShipmentExplorerReportController extends Controller
 
         foreach ($shipmentData as $shipment) {
             $salesOrder = $shipment->source?->source;
-            
-            if (!$salesOrder) continue;
+
+            if (! $salesOrder) {
+                continue;
+            }
 
             // Calculate conditional amount
-            $invoiceAmount = $salesOrder->net_amount ?? 0;
-            $additionalAmount = $salesOrder->shipment?->additional_amount ?? 0;
-            $dueAmount = $salesOrder->due_amount ?? 0;
+            $invoiceAmount     = $salesOrder->net_amount ?? 0;
+            $additionalAmount  = $salesOrder->shipment?->additional_amount ?? 0;
+            $dueAmount         = $salesOrder->due_amount ?? 0;
             $conditionalAmount = $dueAmount + $additionalAmount;
 
             // Determine status
             $status = $this->determineShipmentStatus($shipment, $salesOrder);
 
             $reportData[] = [
-                'shipment_verify_id' => $shipment->id,
-                'invoice_id' => $salesOrder->sales_order_id,
-                'invoice_date' => $salesOrder->invoice_date,
-                'invoice_time' => $salesOrder->created_at->format('h:i A'),
-                'customer_name' => $shipment->customer?->company_name ?? 'N/A',
-                'customer_id' => $shipment->customer_id,
-                'courier_name' => $shipment->courier?->courier_name ?? 'N/A',
-                'courier_id' => $shipment->courier_id,
-                'status' => $status,
-                'shipment_type' => $salesOrder->shipment?->condition ? 'Condition' : 'Without Condition',
-                'invoice_amount' => $invoiceAmount,
-                'additional_cond_amt' => $additionalAmount,
-                'conditional_amount' => $status == 'Complete' ? null : $conditionalAmount,
+                'shipment_verify_id'     => $shipment->id,
+                'invoice_id'             => $salesOrder->sales_order_id,
+                'invoice_date'           => $salesOrder->invoice_date,
+                'invoice_time'           => $salesOrder->created_at->format('h:i A'),
+                'customer_name'          => $shipment->customer?->company_name ?? 'N/A',
+                'customer_id'            => $shipment->customer_id,
+                'courier_name'           => $shipment->courier?->courier_name ?? 'N/A',
+                'courier_id'             => $shipment->courier_id,
+                'status'                 => $status,
+                'shipment_type'          => $salesOrder->shipment?->condition ? 'Condition' : 'Without Condition',
+                'invoice_amount'         => $invoiceAmount,
+                'additional_cond_amt'    => $additionalAmount,
+                'conditional_amount'     => $status == 'Complete' ? null : $conditionalAmount,
                 'con_additional_remarks' => $salesOrder->shipment?->condition_remarks ?? '',
-                'carton_no' => $shipment->cartoon_no ?? '',
-                'receipt_date' => $shipment->receive_date ?? '',
-                'receipt_no' => $shipment->receipt_no ?? '',
-                'service_charge' => $shipment->service_charge ?? 0,
-                'service_type' => $shipment->service_type ?? '',
-                'delivery_charge' => $shipment->delivery_charge ?? 0,
-                'delivery_type' => $shipment->delivery_type ?? '',
-                'other_charge' => $shipment->other_charge ?? 0,
-                'other_type' => $shipment->other_type ?? '',
-                'attachment' => $shipment->files ?? [],
-                'update_by' => $shipment->updatedBy?->name ?? 'N/A',
-                'collection_by' => 'N/A',
-                'approved_by' => 'N/A',
-                'user' => $shipment->createdBy?->name ?? 'N/A',
-                'complete_date' => 'N/A',
-                'challan_no' => $shipment->challan_no,
-                'sales_order' => $salesOrder,
-                'shipment' => $shipment,
+                'carton_no'              => $shipment->cartoon_no ?? '',
+                'receipt_date'           => $shipment->receive_date ?? '',
+                'receipt_no'             => $shipment->receipt_no ?? '',
+                'service_charge'         => $shipment->service_charge ?? 0,
+                'service_type'           => $shipment->service_type ?? '',
+                'delivery_charge'        => $shipment->delivery_charge ?? 0,
+                'delivery_type'          => $shipment->delivery_type ?? '',
+                'other_charge'           => $shipment->other_charge ?? 0,
+                'other_type'             => $shipment->other_type ?? '',
+                'attachment'             => $shipment->files ?? [],
+                'update_by'              => $shipment->updatedBy?->name ?? 'N/A',
+                'collection_by'          => 'N/A',
+                'approved_by'            => 'N/A',
+                'user'                   => $shipment->createdBy?->name ?? 'N/A',
+                'complete_date'          => 'N/A',
+                'challan_no'             => $shipment->challan_no,
+                'sales_order'            => $salesOrder,
+                'shipment'               => $shipment,
             ];
         }
 
