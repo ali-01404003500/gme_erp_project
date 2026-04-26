@@ -1,9 +1,7 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\AccessControl\PermissionMaster;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -20,438 +18,418 @@ class PermissionMasterTableSeeder extends Seeder
 
             //dashboard
             [
-                'title' => 'Dashboard',
+                'title'       => 'Dashboard',
                 'description' => "Dashboard for user or admin ",
-                'key' => 'dashboard', 
+                'key'         => 'dashboard',
             ],
- 
+
             //CMS
             [
-                'title' => 'CMS',
+                'title'       => 'CMS',
                 'description' => "Permission of Add, Remove, Update, Delete CMS",
-                'key' => 'cms',
+                'key'         => 'cms',
             ],
 
             //Document Entries
             [
-                'title' => 'Document Entries',
+                'title'       => 'Document Entries',
                 'description' => "Permission of Add, Remove, Update, Delete Document Entries",
-                'key' => 'cms.document-entries',
-                'parent_key' => 'cms',
+                'key'         => 'cms.document-entries',
+                'parent_key'  => 'cms',
             ],
 
             //Application Entries
             [
-                'title' => 'Application Entries',
+                'title'       => 'Application Entries',
                 'description' => "Permission of Add, Remove, Update, Delete Application Entries",
-                'key' => 'cms.application-entries',
-                'parent_key' => 'cms',
+                'key'         => 'cms.application-entries',
+                'parent_key'  => 'cms',
             ],
 
             //Document Types
             [
-                'title' => 'Document Types',
+                'title'       => 'Document Types',
                 'description' => "Permission of Add, Remove, Update, Delete Document Types",
-                'key' => 'cms.document-types',
-                'parent_key' => 'cms',
+                'key'         => 'cms.document-types',
+                'parent_key'  => 'cms',
             ],
             //Document Head
             [
-                'title' => 'Document Heads',
+                'title'       => 'Document Heads',
                 'description' => "Permission of Add, Remove, Update, Delete Document Heads",
-                'key' => 'cms.document-heads',
-                'parent_key' => 'cms',
+                'key'         => 'cms.document-heads',
+                'parent_key'  => 'cms',
             ],
-
-
 
             //CRM
             [
-                'title' => 'Crm',
+                'title'       => 'Crm',
                 'description' => "Permission of Add, Remove, Update, Delete Crm",
-                'key' => 'crm',
+                'key'         => 'crm',
             ],
             //customers
             [
-                'title' => 'Customer',
+                'title'       => 'Customer',
                 'description' => "Permission of Add, Remove, Update, Delete Customer",
-                'key' => 'crm.customers',
-                'parent_key' => 'crm',
+                'key'         => 'crm.customers',
+                'parent_key'  => 'crm',
             ],
             //brokers
             [
-                'title' => 'Broker',
+                'title'       => 'Broker',
                 'description' => "Permission of Add, Remove, Update, Delete Broker",
-                'key' => 'crm.brokers',
-                'parent_key' => 'crm',
+                'key'         => 'crm.brokers',
+                'parent_key'  => 'crm',
             ],
             //daily-calls
             [
-                'title' => 'Daily Calls',
+                'title'       => 'Daily Calls',
                 'description' => 'Permission of Add, Remove, Update, Delete Daily Calls',
-                'key' => 'crm.daily-calls',
-                'parent_key' => 'crm',
+                'key'         => 'crm.daily-calls',
+                'parent_key'  => 'crm',
             ],
             //daily-Credit-calls
             [
-                'title' => 'Daily Credit Calls',
+                'title'       => 'Daily Credit Calls',
                 'description' => 'Permission of Add, Legal, Show Daily Credit Calls',
-                'key' => 'crm.daily-credit-calls',
-                'parent_key' => 'crm',
+                'key'         => 'crm.daily-credit-calls',
+                'parent_key'  => 'crm',
             ],
             
             //customer-types
             [
-                'title' => 'Customer Types',
+                'title'       => 'Customer Types',
                 'description' => "Permission of Add, Remove, Update, Delete Customer Types",
-                "key" => "crm.customer-types",
-                'parent_key' => 'crm',
+                "key"         => "crm.customer-types",
+                'parent_key'  => 'crm',
             ],
             //customer-ratings
             [
-                'title' => 'Customer Ratings',
+                'title'       => 'Customer Ratings',
                 'description' => "Permission of Add, Remove, Update, Delete Customer Ratings",
-                'key' => 'crm.customer-ratings',
-                'parent_key' => 'crm',
+                'key'         => 'crm.customer-ratings',
+                'parent_key'  => 'crm',
             ],
             //customer-shippings
             [
-                'title' => 'Customer Shippings',
+                'title'       => 'Customer Shippings',
                 'description' => "Permission of Add, Remove, Update, Delete Customer Shippings",
-                'key' => 'crm.customer-shippings',
-                'parent_key' => 'crm',
+                'key'         => 'crm.customer-shippings',
+                'parent_key'  => 'crm',
             ],
-            
+
             //Reports
             [
-                'title' => 'Reports',
+                'title'       => 'Reports',
                 'description' => 'Permission of View Reports',
-                'key' => 'crm.reports',
-                'parent_key' => 'crm',
+                'key'         => 'crm.reports',
+                'parent_key'  => 'crm',
             ],
 
             // hrm
             [
-                'title' => 'Hrm & Payroll',
+                'title'       => 'Hrm & Payroll',
                 'description' => "Permission of Add, Remove, Update, Delete Hrm & Payroll",
-                'key' => 'hrm',
+                'key'         => 'hrm',
             ],
             //employees
             [
-                'title' => 'Employee',
+                'title'       => 'Employee',
                 'description' => "Permission of Add, Remove, Update, Delete Employee",
-                'key' => 'hrm.employees',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.employees',
+                'parent_key'  => 'hrm',
             ],
 
             //department
             [
-                'title' => 'Departments',
+                'title'       => 'Departments',
                 'description' => 'Permission of Add, Remove, Update, Delete Departments',
-                'key' => 'hrm.departments',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.departments',
+                'parent_key'  => 'hrm',
             ],
 
             //designation
             [
-                'title' => 'Designations',
+                'title'       => 'Designations',
                 'description' => 'Permission of Add, Remove, Update, Delete Designations',
-                'key' => 'hrm.designations',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.designations',
+                'parent_key'  => 'hrm',
             ],
-            
+
             //Attendance
             [
-                'title' => 'Attendance',
+                'title'       => 'Attendance',
                 'description' => "Permission of Add, Remove, Update, Delete Employee Attendance",
-                'key' => 'hrm.attendances',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.attendances',
+                'parent_key'  => 'hrm',
             ],
 
             //Attendance Policy
             [
-                'title' => 'Attendance Policy',
+                'title'       => 'Attendance Policy',
                 'description' => "Permission of Add, Remove, Update, Delete Attendance Policy",
-                'key' => 'hrm.attendance-policies',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.attendance-policies',
+                'parent_key'  => 'hrm',
             ],
 
             //Leave
             [
-                'title' => 'Leave',
+                'title'       => 'Leave',
                 'description' => "Permission of Add, Remove, Update, Delete Employee Leave",
-                'key' => 'hrm.leaves',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leaves',
+                'parent_key'  => 'hrm',
             ],
 
             //Leave Application
             [
-                'title' => 'Leave Application',
+                'title'       => 'Leave Application',
                 'description' => "Permission of Add, Remove, Update, Delete Employee Leave Application",
-                'key' => 'hrm.leaves',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leaves',
+                'parent_key'  => 'hrm',
             ],
 
             //leave types
             [
-                'title' => 'Leave Types',
+                'title'       => 'Leave Types',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Types',
-                'key' => 'hrm.leave-types',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leave-types',
+                'parent_key'  => 'hrm',
             ],
 
             //leave group
             [
-                'title' => 'Leave Groups',
+                'title'       => 'Leave Groups',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Groups',
-                'key' => 'hrm.leave-group',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leave-group',
+                'parent_key'  => 'hrm',
             ],
-
 
             //leave Year
             [
-                'title' => 'Leave Years',
+                'title'       => 'Leave Years',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Years',
-                'key' => 'hrm.leave-year',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leave-year',
+                'parent_key'  => 'hrm',
             ],
 
             //leave Approver Setup
             [
-                'title' => 'Leave Approver Setup',
+                'title'       => 'Leave Approver Setup',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Approver Setup',
-                'key' => 'hrm.leave-approver-setup',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leave-approver-setup',
+                'parent_key'  => 'hrm',
             ],
 
             //leave status
             [
-                'title' => 'Leave Status',
+                'title'       => 'Leave Status',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Status',
-                'key' => 'hrm.leave-status',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leave-status',
+                'parent_key'  => 'hrm',
             ],
-
 
             //leave eligible employee
             [
-                'title' => 'Leave Eligible Employees',
+                'title'       => 'Leave Eligible Employees',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Eligible Employees',
-                'key' => 'hrm.leave-eligible-employee',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leave-eligible-employee',
+                'parent_key'  => 'hrm',
             ],
 
             //leave adjustment
             [
-                'title' => 'Leave Adjustments',
+                'title'       => 'Leave Adjustments',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Adjustments',
-                'key' => 'hrm.leave-adjustment',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.leave-adjustment',
+                'parent_key'  => 'hrm',
             ],
 
             //salary generate
             [
-                'title' => 'Payroll Generate',
+                'title'       => 'Payroll Generate',
                 'description' => 'Permission of Add, Remove, Update, Delete Employee Salary',
-                'key' => 'hrm.salary-generates',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.salary-generates',
+                'parent_key'  => 'hrm',
             ],
 
             //salary setup
             [
-                'title' => 'Salary Setup',
+                'title'       => 'Salary Setup',
                 'description' => 'Permission of Add, Remove, Update, Delete Salary Setup',
-                'key' => 'hrm.salary-setups',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.salary-setups',
+                'parent_key'  => 'hrm',
             ],
 
             //salary generation policy
             [
-                'title' => 'Salary Generation Policy',
+                'title'       => 'Salary Generation Policy',
                 'description' => 'Permission of Add, Remove, Update, Delete Salary Generation Policy',
-                'key' => 'hrm.salary-generation-policy',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.salary-generation-policy',
+                'parent_key'  => 'hrm',
             ],
 
             //salary deduction policy
             [
-                'title' => 'Salary Deduction Policy',
+                'title'       => 'Salary Deduction Policy',
                 'description' => 'Permission of Add, Remove, Update, Delete Salary Deduction Policy',
-                'key' => 'hrm.salary-deduction-policy',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.salary-deduction-policy',
+                'parent_key'  => 'hrm',
             ],
 
-             //salary Signatory
+            //salary Signatory
             [
-                'title' => 'Salary Signatory',
+                'title'       => 'Salary Signatory',
                 'description' => 'Permission of Add, Remove, Update, Delete Salary Signatory',
-                'key' => 'hrm.salary-signatories',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.salary-signatories',
+                'parent_key'  => 'hrm',
             ],
 
             //Bills
             [
-                'title' => 'TA/DA',
+                'title'       => 'TA/DA',
                 'description' => "Permission of Add, Remove, Update, Delete TA/DA",
-                'key' => 'hrm.bills',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.bills',
+                'parent_key'  => 'hrm',
             ],
             // daily visit plan
             [
-                'title' => 'Daily Visit Plans',
+                'title'       => 'Daily Visit Plans',
                 'description' => 'Permission of Add, Remove, Update, Delete Daily Visit Plans',
-                'key' => 'hrm.daily-visit-plans',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.daily-visit-plans',
+                'parent_key'  => 'hrm',
             ],
             //loan
             [
-                'title' => 'Loans',
+                'title'       => 'Loans',
                 'description' => 'Permission of Add, Remove, Update, Delete Loans',
-                'key' => 'hrm.loans',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.loans',
+                'parent_key'  => 'hrm',
             ],
- 
+
             //kpi
             [
-                'title' => 'KPIs',
+                'title'       => 'KPIs',
                 'description' => 'Permission of Add, Remove, Update, Delete KPIs',
-                'key' => 'hrm.kpis',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.kpis',
+                'parent_key'  => 'hrm',
             ],
             //monthly kpi template
             [
-                'title' => 'Monthly KPI Appraisals',
+                'title'       => 'Monthly KPI Appraisals',
                 'description' => 'Permission of Add, Remove, Update, Delete Monthly KPI Appraisals',
-                'key' => 'hrm.kpis.monthly-kpi-appraisals',
-                'parent_key' => 'hrm.kpis',
+                'key'         => 'hrm.kpis.monthly-kpi-appraisals',
+                'parent_key'  => 'hrm.kpis',
             ],
             //kpi assign
             [
-                'title' => 'KPI Assignments',
+                'title'       => 'KPI Assignments',
                 'description' => 'Permission of Add, Remove, Update, Delete KPI Assignments',
-                'key' => 'hrm.kpis.kpi-assignments',
-                'parent_key' => 'hrm.kpis',
+                'key'         => 'hrm.kpis.kpi-assignments',
+                'parent_key'  => 'hrm.kpis',
             ],
 
             //kpi template
             [
-                'title' => 'KPI Templates',
+                'title'       => 'KPI Templates',
                 'description' => 'Permission of Add, Remove, Update, Delete KPI Templates',
-                'key' => 'hrm.kpis.kpi-templates',
-                'parent_key' => 'hrm.kpis',
+                'key'         => 'hrm.kpis.kpi-templates',
+                'parent_key'  => 'hrm.kpis',
             ],
 
             //kpi suggestions
             [
-                'title' => 'Score Wise Suggestions',
+                'title'       => 'Score Wise Suggestions',
                 'description' => 'Permission of Add, Remove, Update, Delete Score Wise Suggestions',
-                'key' => 'hrm.kpis.score-wise-suggestions',
-                'parent_key' => 'hrm.kpis',
+                'key'         => 'hrm.kpis.score-wise-suggestions',
+                'parent_key'  => 'hrm.kpis',
             ],
             //kpi responsibility
             [
-                'title' => 'Responsibility Entries',
+                'title'       => 'Responsibility Entries',
                 'description' => 'Permission of Add, Remove, Update, Delete Responsibility Entries',
-                'key' => 'hrm.kpis.responsibility-entries',
-                'parent_key' => 'hrm.kpis',
+                'key'         => 'hrm.kpis.responsibility-entries',
+                'parent_key'  => 'hrm.kpis',
             ],
-          
+
             //NoticeBoard
             [
-                'title' => 'NoticeBoard',
+                'title'       => 'NoticeBoard',
                 'description' => "Permission of Add, Remove, Update, Delete NoticeBoard",
-                'key' => 'hrm.noticeboards',
-                'parent_key' => 'hrm',
-            ],
-            //notice type
-            [
-                'title' => 'Notice Types',
-                'description' => 'Permission of Add, Remove, Update, Delete Notice Types',
-                'key' => 'hrm.notice-types',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.noticeboards',
+                'parent_key'  => 'hrm',
             ],
 
-            //report
+            //TA/DA
             [
-                'title' => 'Report',
-                'description' => 'Permission of Add, Remove, Update, Delete Report',
-                'key' => 'hrm.report',
-                'parent_key' => 'hrm',
+                'title'       => 'TA/DA',
+                'description' => "Permission of Add, Remove, Update, Delete TA/DA",
+                'key'         => 'hrm.bills',
+                'parent_key'  => 'hrm',
             ],
+            // PermissionMasterTableSeeder additions
 
-           
             [
-                'title' => 'Jobs',
-                'description' => 'Permission of Add, Remove, Update, Delete Jobs',
-                'key' => 'hrm.jobs',
-                'parent_key' => 'hrm',
+                'title'       => 'Daily Visit Plans',
+                'description' => 'Permission of Add, Remove, Update, Delete Daily Visit Plans',
+                'key'         => 'hrm.daily-visit-plans',
+                'parent_key'  => 'hrm',
             ],
             [
-                'title' => 'Job Templates',
-                'description' => 'Permission of Add, Remove, Update, Delete Job Templates',
-                'key' => 'hrm.job-templates',
-                'parent_key' => 'hrm',
+                'title'       => 'Loans',
+                'description' => 'Permission of Add, Remove, Update, Delete Loans',
+                'key'         => 'hrm.loans',
+                'parent_key'  => 'hrm',
             ],
             [
-                'title' => 'Job Applications',
-                'description' => 'Permission of Add, Remove, Update, Delete Job Applications',
-                'key' => 'hrm.job-applications',
-                'parent_key' => 'hrm',
+                'title'       => 'Salary Generates',
+                'description' => 'Permission of Add, Remove, Update, Delete Salary Generates',
+                'key'         => 'hrm.salary-generates',
+                'parent_key'  => 'hrm',
             ],
             [
-                'title' => 'Reports',
-                'description' => 'Permission of View Reports',
-                'key' => 'hrm.reports',
-                'parent_key' => 'hrm',
-            ],
-            //hrm settings
-            [
-                'title' => 'Settings',
+                'title'       => 'Settings',
                 'description' => 'Permission of Add, Remove, Update, Delete HRMS Settings',
-                'key' => 'hrm.settings',
-                'parent_key' => 'hrm',
+                'key'         => 'hrm.settings',
+                'parent_key'  => 'hrm',
             ],
-            //shifts
             [
-                'title' => 'Shifts',
+                'title'       => 'Leave Types',
+                'description' => 'Permission of Add, Remove, Update, Delete Leave Types',
+                'key'         => 'hrm.leave-types',
+                'parent_key'  => 'hrm.settings',
+            ],
+            [
+                'title'       => 'Shifts',
                 'description' => 'Permission of Add, Remove, Update, Delete Shifts',
-                'key' => 'hrm.settings.shifts',
-                'parent_key' => 'hrm.settings',
+                'key'         => 'hrm.settings.shifts',
+                'parent_key'  => 'hrm.settings',
             ],
-
-            //holiday
             [
-                'title' => 'Holidays',
-                'description' => 'Permission of Add, Remove, Update, Delete Holidays',
-                'key' => 'hrm.settings.holidays',
-                'parent_key' => 'hrm.settings',
-            ],
-
-            //hotspots
-            [
-                'title' => 'Hotspots',
+                'title'       => 'Hotspots',
                 'description' => 'Permission of Add, Remove, Update, Delete Hotspots',
-                'key' => 'hrm.settings.hotspots',
-                'parent_key' => 'hrm.settings',
+                'key'         => 'hrm.settings.hotspots',
+                'parent_key'  => 'hrm.settings',
             ],
-            //appraisal policies
             [
-                'title' => 'Appraisal Policies',
-                'description' => 'Permission of Add, Remove, Update, Delete Appraisal Policies',
-                'key' => 'hrm.settings.appraisal-policies',
-                'parent_key' => 'hrm.settings',
+                'title'       => 'Holidays',
+                'description' => 'Permission of Add, Remove, Update, Delete Holidays',
+                'key'         => 'hrm.settings.holidays',
+                'parent_key'  => 'hrm.settings',
             ],
-            //expense types
             [
-                'title' => 'Expense Types',
+                'title'       => 'Notice Types',
+                'description' => 'Permission of Add, Remove, Update, Delete Notice Types',
+                'key'         => 'hrm.settings.notice-types',
+                'parent_key'  => 'hrm.settings',
+            ],
+            [
+                'title'       => 'Expense Types',
                 'description' => 'Permission of Add, Remove, Update, Delete Expense Types',
-                'key' => 'hrm.settings.expense-types',
-                'parent_key' => 'hrm.settings',
+                'key'         => 'hrm.settings.expense-types',
+                'parent_key'  => 'hrm.settings',
             ],
-            //transport types
             [
-                'title' => 'Transport Types',
+                'title'       => 'Transport Types',
                 'description' => 'Permission of Add, Remove, Update, Delete Transport Types',
                 'key' => 'hrm.settings.transport-types',
                 'parent_key' => 'hrm.settings',
@@ -1071,119 +1049,6 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'account.account-setup',
             ],
             [
-                'title' => 'Cheque Verifications',
-                'description' => 'Permission of Approve or Deny Cheque Verifications',
-                'key' => 'account.cheque-verifications',
-                'parent_key' => 'accounts',
-            ],
-
-            [
-                'title' => 'Online Deposit Verifications',
-                'description' => 'Permission of Approve or Deny Online Deposit Verifications',
-                'key' => 'account.online-deposit-verifications',
-                'parent_key' => 'accounts',
-            ],
-
-            [
-                'title' => 'Mfs Verifications',
-                'description' => 'Permission of Approve or Deny Mfs Verifications',
-                'key' => 'account.mfs-verifications',
-                'parent_key' => 'accounts',
-            ],
-
-            [
-                'title' => 'EMI Entries',
-                'description' => 'Permission of Add, Remove, Update, Delete EMI Entries',
-                'key' => 'account.emi-entries',
-                'parent_key' => 'accounts',
-            ],
-            [
-                'title' => 'EMI Reports',
-                'description' => 'Permission of Add, Remove, Update, Delete EMI Reports',
-                'key' => 'account.emi-reports',
-                'parent_key' => 'accounts',
-            ],
-            [
-                'title' => 'Advance Cheque Entries',
-                'description' => 'Permission of Add, Remove, Update, Delete Advance Cheque Entries',
-                'key' => 'account.advance-cheque-entries',
-                'parent_key' => 'accounts',
-            ],
-
-
-            //Collections
-            [
-                'title' => 'Collections',
-                'description' => 'Permission of Add, Remove, Update, Delete Collections',
-                'key' => 'account.collections',
-                'parent_key' => 'accounts',
-            ],
-            //Collections
-
-            [
-                'title' => 'Collections',
-                'description' => 'Permission of Add, Remove, Update, Delete Collections',
-                'key' => 'account.collections.collections',
-                'parent_key' => 'account.collections',
-            ],
-            //Invoice-wise Collections
-            [
-                'title' => 'Invoice-wise Collections',
-                'description' => 'Permission of Add, Remove, Update, Delete Invoice-wise Collections',
-                'key' => 'account.collections.invoice-wise-collections',
-                'parent_key' => 'account.collections',
-            ],
-
-            //Default Payable & Receivables
-            // [
-            //     'title' => 'Default Payable & Receivables',
-            //     'description' => 'Permission of Add, Remove, Update, Delete Default Payable & Receivables',
-            //     'key' => 'account.account-settings.default-payable-receivables',
-            //     'parent_key' => 'accounts',
-            // ],
-
-            //Payments
-            [
-                'title' => 'Payments',
-                'description' => 'Permission of Add, Remove, Update, Delete Payments',
-                'key' => 'account.payments',
-                'parent_key' => 'accounts',
-            ],
-
-            //Customer Payments
-            [
-                'title' => 'Make Payments',
-                'description' => 'Permission of Add, Remove, Update, Delete Make Payments',
-                'key' => 'account.payments.make-payments',
-                'parent_key' => 'account.payments',
-            ],
-            //invoice-wise-payments
-            [
-                'title' => 'Invoice-wise Payments',
-                'description' => 'Permission of Add, Remove, Update, Delete Invoice-wise Payments',
-                'key' => 'account.payments.invoice-wise-payments',
-                'parent_key' => 'account.payments',
-            ],
-
-
-            //Broker Payments
-            [
-                'title' => 'Broker Payments',
-                'description' => 'Permission of Add, Remove, Update, Delete Broker Payments',
-                'key' => 'account.payments.broker-payments',
-                'parent_key' => 'account.payments',
-            ],
-
-            //TA/DA Payments
-            [
-                'title' => 'TA/DA Payments',
-                'description' => 'Permission of Add, Remove, Update, Delete TA/DA Payments',
-                'key' => 'account.payments.petty-cash-payments',
-                'parent_key' => 'account.payments',
-            ],
-
-            //Loan Payments
-            [
                 'title' => 'Loan Payments',
                 'description' => 'Permission of Add, Remove, Update, Delete Loan Payments',
                 'key' => 'account.payments.loan-payment',
@@ -1310,26 +1175,23 @@ class PermissionMasterTableSeeder extends Seeder
                 'description' => 'Verification of One Time Permissions',
                 'key' => 'verification',
             ],
-
-            //branchs
             [
-                'title' => 'Branches',
-                'description' => 'Permission of Add, Remove, Update, Delete Branches',
-                'key' => 'access_control.branchs',
-                'parent_key' => 'access_control',
-            ],
-            //Branch Types
-            [
-                'title' => 'Branch Types',
-                'description' => 'Permission of Add, Remove, Update, Delete Branch Types',
-                'key' => 'access_control.branch-types',
-                'parent_key' => 'access_control',
+                'title'       => 'Designations',
+                'description' => 'Permission of Add, Remove, Update, Delete Designations',
+                'key'         => 'hrm.settings.designations',
+                'parent_key'  => 'hrm.settings',
             ],
             [
-                'title' => 'Global Setting',
-                'description' => "Permission of Add, Remove, Update, Delete Global Setting",
-                'key' => 'access_control.global-settings',
-                'parent_key' => 'access_control',
+                'title'       => 'Salary Setups',
+                'description' => 'Permission of Add, Remove, Update, Delete Salary Setups',
+                'key'         => 'hrm.salary-setups',
+                'parent_key'  => 'hrm.settings',
+            ],
+            [
+                'title'       => 'Appraisal Policies',
+                'description' => 'Permission of Add, Remove, Update, Delete Appraisal Policies',
+                'key'         => 'hrm.settings.appraisal-policies',
+                'parent_key'  => 'hrm.settings',
             ],
             
 
@@ -1359,26 +1221,6 @@ class PermissionMasterTableSeeder extends Seeder
                 if ($parent == null) {
                     dd($value['parent_key']);
                 }
-                PermissionMaster::updateOrCreate(
-                    ['key' => $value['key']],
-                    [
-                        'title' => $value['title'],
-                        'description' => $value['description'],
-                        'key' => $value['key'],
-                        'parent_id' => $parent->id
-                    ]
-                );
-            } else {
-                PermissionMaster::updateOrCreate(
-                    ['key' => $value['key']],
-                    [
-                        'title' => $value['title'],
-                        'description' => $value['description'],
-                        'key' => $value['key'],
-                        'parent_id' => null
-                    ]
-                );
             }
         }
     }
-}

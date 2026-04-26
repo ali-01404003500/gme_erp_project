@@ -1,4 +1,3 @@
-
 @section('title', 'Attendance Policy List')
 @section('description', 'Attendance Policy List')
 @extends('layout.app')
@@ -16,8 +15,7 @@
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-12">
-                        <form action="{{ route('hrm.attendance-policies.index') }}" method="GET"
-                            class="d-flex gap-2">
+                        <form action="{{ route('hrm.attendance-policies.index') }}" method="GET" class="d-flex gap-2">
                             <div class="input-group">
                                 <span class="input-group-text attendance-policy border-end-0">
                                     <i class="fas fa-search text-muted"></i>
@@ -36,7 +34,27 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <style>
+                        .attendance-table-custom,
+                        .attendance-table-custom th,
+                        .attendance-table-custom td {
+                            border: 1px solid #dee2e6 !important;
+                            border-collapse: collapse !important;
+                        }
+
+                        .attendance-table-custom th,
+                        .attendance-table-custom td {
+                            padding: 12px;
+                            vertical-align: middle;
+                        }
+
+                        .attendance-table-custom thead th {
+                            background-color: #f8f9fa;
+                            border-bottom-width: 2px !important;
+                        }
+                    </style>
+
+                    <table class="table attendance-table-custom table-hover align-middle">
                         <thead class="attendance-policy">
                             <tr class="text-muted small uppercase">
                                 <th>Policy Name</th>
@@ -73,7 +91,7 @@
                                                 </a>
                                             @endif
 
-                                            @if (hasPermission('hrm.attendance-policies.destroy')) 
+                                            @if (hasPermission('hrm.attendance-policies.destroy'))
                                                 <form action="{{ route('hrm.attendance-policies.destroy', $policy->id) }}"
                                                     method="POST"
                                                     onsubmit="return confirm('Are you sure you want to delete this policy?')">

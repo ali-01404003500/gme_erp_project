@@ -40,8 +40,6 @@
                                 <div class="col-sm-12">
                                     <table class="table table-bordered">
                                         <tr>
-
-
                                             <td colspan="2">
                                                 <div class="input-daterange input-group">
                                                     <input type="text" class="form-control datePicker" name="from"
@@ -74,90 +72,63 @@
 
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $dailyVisitPlans])'
+                            <style>
+                                .visitplan-table-custom,
+                                .visitplan-table-custom th,
+                                .visitplan-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .visitplan-table-custom th,
+                                .visitplan-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+                                .visitplan-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                            </style>
+                            
+                            <table id="zero-config" class="table visitplan-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $dailyVisitPlans])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>SL</th>
-
-                                        <th>Visit Date
-                                        </th>
-                                        <th>
-                                            Company Name
-                                        </th>
-
-                                        <th>
-                                            Address
-                                        </th>
-                                        <th>
-                                            Phone
-                                        </th>
-                                        <th>
-                                            Contact Person
-                                        </th>
-                                        <th>
-                                            Requirement
-                                        </th>
-                                        <th>
-                                            Attachment/Images/Document
-                                        </th>
-                                        <th>
-                                            Status
-                                        </th>
-
-                                        <th class="no-content">
-                                            Actions
-                                        </th>
+                                        <th>Visit Date</th>
+                                        <th>Company Name</th>
+                                        <th>Address</th>
+                                        <th>Phone</th>
+                                        <th>Contact Person</th>
+                                        <th>Status</th>
+                                        <th class="no-content">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @dd($dailyVisitPlans) --}}
                                     @foreach ($dailyVisitPlans as $plan)
-                                        {{-- @dd($salesOrder->delivery) --}}
                                         <tr>
                                             <td class="text-center">{{ ($dailyVisitPlans->currentPage() - 1) * $dailyVisitPlans->perPage() + $loop->iteration  }}</td>
-
-                                            <td>
-                                                {{ $plan->date }}
-                                            </td>
-                                            <td>
+                                            <td>{{ $plan->date }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                 {{ $plan->company_name }}
                                             </td>
-                                            <td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                 {{ $plan->address ?? 'N/A' }}
                                             </td>
-                                            <td>
-                                                {{ $plan->phone_no ?? 'N/A' }}
-                                            </td>
-                                            <td>
-                                                {{ $plan->contact_person ?? 'N/A' }}
-                                            </td>
-                                            <td>
-                                                <span
-                                                    style="display: block;width: 500px !important; white-space: wrap; overflow: hidden;">
-                                                    {{ $plan->description ?? 'N/A' }}
-
-                                                </span>
-                                            </td>
-                                            <td>
-                                                {{-- @dd($plan->attachment) --}}
-                                               @php
-                                                    $documents = is_string($plan->attachment)
-                                                        ? json_decode($plan->attachment, true)
-                                                        : $plan->attachment;
-
-                                                    // Ensure it's an array and remove null/empty values
-                                                    $documents = is_array($documents) ? array_filter($documents) : [];
-                                                @endphp
-
-                                                @if (!empty($documents))
-                                                    @foreach ($documents as $doc)
-                                                        <a href="{{ $doc }}" target="_blank"><i class="fa fa-download" style="font-size: 24px;"></i></a>
-                                                    @endforeach
-                                                @endif
-
-                                            </td>
-
+                                            <td>{{ $plan->phone_no ?? 'N/A' }}</td>
+                                            <td>{{ $plan->contact_person ?? 'N/A' }}</td>
                                             <td>
                                                 @if ($plan->status == 'pending')
                                                     <span class="badge badge-round badge-warning">Pending</span>
@@ -167,7 +138,6 @@
                                                     <span class="badge badge-round badge-danger">Deny</span>
                                                 @endif
                                             </td>
-
 
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
@@ -186,7 +156,6 @@
                                                         @endif
 
                                                         @if (hasPermission('hrm.daily-visit-plans.deny'))
-
                                                             <a href="{{ route('hrm.daily-visit-plans.deny', $plan->id) }}"
                                                                 class="btn btn-xs btn-outline-danger reject-confirm-plan"
                                                                 data-action="{{ route('hrm.daily-visit-plans.deny', $plan->id) }}"
@@ -219,10 +188,7 @@
                                                                 class="far fa-eye"></i>
                                                         </a>
                                                     @endif
-
-
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @endforeach
@@ -306,4 +272,4 @@
             autoclose: true
         });
     </script>
-@endSection
+@endsection

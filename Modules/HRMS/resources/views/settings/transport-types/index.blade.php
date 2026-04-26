@@ -46,7 +46,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $transportTypes])'
+                                <table id="zero-config" class="table table-bordered grid-table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $transportTypes])'
                                     style="width:100%">
                                     <thead>
                                         <tr>
@@ -112,7 +112,34 @@
                     </div>
 
                 </div>
-
+            <style>
+                .nav-icon la la-cart-arrow-down{
+                    font-size: 26px;
+                }
+                /* Grid line styles for table */
+                .grid-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .grid-table th,
+                .grid-table td {
+                    border: 1px solid #dee2e6;
+                    padding: 12px;
+                    vertical-align: middle;
+                }
+                .grid-table thead th {
+                    background-color: #f8f9fa;
+                    border-bottom: 2px solid #dee2e6;
+                }
+                /* Card inner table border override */
+                .card .table-bordered {
+                    border-collapse: collapse;
+                }
+                .card .table-bordered td,
+                .card .table-bordered th {
+                    border: 1px solid #dee2e6;
+                }
+            </style>
                 <!-- Create Modal -->
                 <div class="modal fade inputForm-modal" id="createModal" tabindex="-1" role="dialog"
                     aria-labelledby="createModalLabel" aria-hidden="true">
@@ -237,6 +264,8 @@
         </div>
     </div>
     </div>
+
+
 @endsection
 <!-- CONTENT AREA -->
 @section('page_scripts')

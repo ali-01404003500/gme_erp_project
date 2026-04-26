@@ -104,11 +104,56 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <!-- Total Due Balance at Top -->
-                           
-
                             <div class="table-responsive">
-                                <table class="table table-hover table-bordered table-sm" id="customerMachineReportTable"
+                                <style>
+                                .condition-table-custom {
+                                    width: 100% !important;
+                                    margin-bottom: 0 !important;
+                                }
+
+                                .condition-table-custom th,
+                                .condition-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    padding: 10px 15px !important;
+                                    vertical-align: middle !important;
+                                    font-size: 0.875rem;
+                                    /* Better for laptop density */
+                                }
+
+                                .condition-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    white-space: nowrap;
+                                    font-weight: 700;
+                                }
+                                .text-wrap-column {
+                                    min-width: 150px;
+                                    max-width: 250px;
+                                    white-space: normal !important;
+                                    word-break: break-word;
+                                }
+                                .table-responsive::-webkit-scrollbar {
+                                    height: 8px;
+                                }
+
+                                .table-responsive::-webkit-scrollbar-thumb {
+                                    background: #ccc;
+                                    border-radius: 4px;
+                                }
+                                .table thead th {
+                                background-color: #35526e !important;
+                                color: #ffffff !important;
+                                font-weight: 600 !important;
+                                text-transform: uppercase;
+                                font-size: 0.85rem !important;
+                                letter-spacing: 0.08em;
+                                border-bottom: 2px solid #2a4054 !important;
+                                padding: 14px 16px !important;
+                                vertical-align: middle;
+                                text-align: center;
+                            }
+                            </style>
+
+                                <table class="table condition-table-custom dt-table-hover" id="customerMachineReportTable"
                                     style="font-size: 11px;">
                                     <thead class="bg-primary text-white">
                                         <tr>
@@ -141,7 +186,7 @@
                                                     </a>
                                                 </td>
                                                 <td>{{ $customer['phone'] ?? 'N/A' }}</td>
-                                                <td>{{ $customer['address'] ?? 'N/A' }}</td>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $customer['address'] ?? 'N/A' }}</td>
                                                 <td class="screen-only">
                                                     @if($customer['last_6_months_sales']->count() > 0)
                                                         <ul class="list-unstyled mb-0" style="font-size: 10px;">

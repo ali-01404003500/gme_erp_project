@@ -1,61 +1,61 @@
 @extends('layout.app')
 @section('content')
 
-<div class="container-fluid">
-    <div class="row">
-        
-        <div class="col-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Leave Adjustment List</li>
-                </ol>
-                <ul><br></ul>
-            </nav>
-            <div class="page-title-box">
-                <h4 class="page-title">Leave Adjustment List</h4>
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Leave Adjustment List</li>
+                    </ol>
+                    <ul><br></ul>
+                </nav>
+                <div class="page-title-box">
+                    <h4 class="page-title">Leave Adjustment List</h4>
+                </div>
             </div>
+
         </div>
-        
-    </div>
-    <ul><br></ul>
+        <ul><br></ul>
 
-    <!-- Filter Section -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row g-2 align-items-center">
-                        <div class="col-auto">
-                            <select class="form-select" style="min-width: 200px;">
-                                <option value="">Select Employee</option>
-                                <option value="1">John Doe</option>
-                                <option value="2">Jane Smith</option>
-                                <option value="3">Mike Johnson</option>
-                                <option value="4">Sarah Williams</option>
-                            </select>
-                        </div>
-                        <div class="col-auto">
-                            <input type="date" class="form-control" placeholder="From" style="min-width: 150px;">
-                        </div>
-                        <div class="col-auto">
-                            <input type="date" class="form-control" placeholder="To" style="min-width: 150px;">
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-primary">
-                                <i class="fas fa-search me-1"></i> Search
-                            </button>
-                        </div>
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-secondary">
-                                <i class="fas fa-sync-alt me-1"></i> Refresh
-                            </button>
-                        </div>
+        <!-- Filter Section -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <select class="form-select" style="min-width: 200px;">
+                                    <option value="">Select Employee</option>
+                                    <option value="1">John Doe</option>
+                                    <option value="2">Jane Smith</option>
+                                    <option value="3">Mike Johnson</option>
+                                    <option value="4">Sarah Williams</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <input type="date" class="form-control" placeholder="From" style="min-width: 150px;">
+                            </div>
+                            <div class="col-auto">
+                                <input type="date" class="form-control" placeholder="To" style="min-width: 150px;">
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fas fa-search me-1"></i> Search
+                                </button>
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-secondary">
+                                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                                </button>
+                            </div>
 
-                       <a href="{{ route('hrm.leaveAdjustment.create') }}" class="btn btn-success">
+                            <a href="{{ route('hrm.leaveAdjustment.create') }}" class="btn btn-success">
 
                                 <i class="fas fa-plus me-1"></i> Add New
-                        </a>
+                            </a>
 
                         </div>
                     </div>
@@ -127,34 +127,34 @@
                                             <a href="#" class="btn btn-outline-primary" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a href="#" class="btn btn-outline-danger" title="Delete" 
-                                               onclick="return confirm('Are you sure?')">
+                                            <a href="#" class="btn btn-outline-danger" title="Delete"
+                                                onclick="return confirm('Are you sure?')">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </div>
                                     </td>
                                 </tr>
-                              
-                               
-                             
+
+
+
                             </tbody>
                         </table>
-                        
+
                         <!-- No Data Available Row (hidden by default) -->
                         <!--
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <td colspan="12" class="text-center text-muted py-5">
-                                        <i class="fas fa-inbox fa-3x mb-3"></i>
-                                        <h5>No data available in table</h5>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="12" class="text-center text-muted py-5">
+                                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                                            <h5>No data available in table</h5>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            -->
                     </div>
-                    
+
                     <!-- Pagination -->
                     <div class="row mt-3">
                         <div class="col-md-6">
@@ -180,37 +180,41 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
-<!-- New Adjustment Modal -->
+    <!-- New Adjustment Modal -->
 
 
-@push('styles')
-<!-- Font Awesome -->
+    @push('styles')
+        <!-- Font Awesome -->
 
-<style>
-    .breadcrumb {
-        background-color: transparent;
-        padding: 0.75rem 0;
-    }
-    .page-title-box {
-        padding-bottom: 1rem;
-    }
-    .table > :not(caption) > * > * {
-        padding: 0.75rem;
-        vertical-align: middle;
-    }
-    .badge {
-        font-size: 0.85rem;
-        padding: 0.4rem 0.6rem;
-    }
-    .btn-group-sm > .btn {
-        padding: 0.25rem 0.5rem;
-    }
-    .modal-md {
-        max-width: 500px;
-    }
-</style>
-@endpush
+        <style>
+            .breadcrumb {
+                background-color: transparent;
+                padding: 0.75rem 0;
+            }
+
+            .page-title-box {
+                padding-bottom: 1rem;
+            }
+
+            .table> :not(caption)>*>* {
+                padding: 0.75rem;
+                vertical-align: middle;
+            }
+
+            .badge {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .btn-group-sm>.btn {
+                padding: 0.25rem 0.5rem;
+            }
+
+            .modal-md {
+                max-width: 500px;
+            }
+        </style>
+    @endpush
 @endsection
-

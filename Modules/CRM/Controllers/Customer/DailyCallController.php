@@ -1,13 +1,11 @@
 <?php
-
 namespace Modules\CRM\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
-
-use Illuminate\Http\Request;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Http\Request;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\CRM\Models\Customer\DailyCall;
 use Modules\CRM\Services\Customer\DailyCallService;
@@ -21,7 +19,8 @@ class DailyCallController extends Controller
      * @var DailyCallService
      */
     private $service;
-    function __construct(DailyCallService $service)
+
+    public function __construct(DailyCallService $service)
     {
         $this->service = $service;
         $this->middleware('permited');
@@ -30,21 +29,25 @@ class DailyCallController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index( Request $request)
+    public function index(Request $request)
     {
-        $data['customers'] = Customer::activeCustomers()->get();
-        $data['dailyCalls'] = $this->service->getAll();
+        // ← Optimized:  eager loading
+        $data['customers'] = Customer::activeCustomers()
+            ->select('id', 'company_name')
+            ->get();
+
+        // ← Service already has with() relationships
+        $data['dailyCalls']   = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
             $html = view('CRM::daily-call.indexView', $data)->render();
 
-            // Set Dompdf options
             $options = new Options();
             $options->setIsHtml5ParserEnabled(true);
             $options->setIsRemoteEnabled(true);
-            
+
             $dompdf = new Dompdf($options);
             $dompdf->loadHtml($html);
             $dompdf->setPaper('A4', 'portrait');
@@ -61,7 +64,13 @@ class DailyCallController extends Controller
      */
     public function create()
     {
-        $data['customers'] = Customer::where('status', 2)->get();
+        // ← Optimized
+        $data['customers'] = Customer::where('status', 2)
+            ->select('id', 'company_name') //
+            ->orderBy('company_name')
+            ->limit(500) // ← limit
+            ->get();
+
         return view('CRM::daily-call.create', $data);
     }
 
@@ -70,29 +79,26 @@ class DailyCallController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validate = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'call_type_id' => 'nullable',
-            'call_date' => 'required|date',
-            'is_account_complain' => 'nullable|boolean',
-            'complains_details' => 'nullable|string',
-            'is_service_complain' => 'nullable|boolean',
+            'customer_id'              => 'required|exists:customers,id',
+            'call_type_id'             => 'nullable',
+            'call_date'                => 'required|date',
+            'is_account_complain'      => 'nullable|boolean',
+            'complains_details'        => 'nullable|string',
+            'is_service_complain'      => 'nullable|boolean',
             'service_complain_details' => 'nullable|string',
-            'is_sales_complain' => 'nullable|boolean',
-            'sales_complain_details' => 'nullable|string',
-            'is_product_required' => 'nullable|boolean',
+            'is_sales_complain'        => 'nullable|boolean',
+            'sales_complain_details'   => 'nullable|string',
+            'is_product_required'      => 'nullable|boolean',
             'product_required_details' => 'nullable|string',
-            'remarks' => 'nullable|string',
+            'remarks'                  => 'nullable|string',
         ]);
- 
-        try {
-            // dd($validate);
-            $dailyCall = $this->service->store($validate);
 
-            return redirect()->route('crm.daily-calls.edit',$dailyCall->id)->with('success', 'Daily Call created successfully.');
-        }
-        catch (\Exception $e) {
+        try {
+            $dailyCall = $this->service->store($validate);
+            return redirect()->route('crm.daily-calls.edit', $dailyCall->id)
+                ->with('success', 'Daily Call created successfully.');
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -100,10 +106,10 @@ class DailyCallController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show($id)
     {
+        // ← Optimized: eager loading with relationships
         $data['dailyCall'] = $this->service->show($id);
-
         return view("CRM::daily-call.show", $data);
     }
 
@@ -112,8 +118,16 @@ class DailyCallController extends Controller
      */
     public function edit(DailyCall $dailyCall)
     {
-        $data['dailyCall'] = $dailyCall;
-        $data['customers'] = Customer::where('status', 2)->get();
+                                                             // ← Optimized: eager loading for the daily call
+        $data['dailyCall'] = $dailyCall->load(['customer']); // ← eager load customer
+
+        // ← Optimized: শুধু active customers, limit সহ
+        $data['customers'] = Customer::where('status', 2)
+            ->select('id', 'company_name')
+            ->orderBy('company_name')
+            ->limit(500)
+            ->get();
+
         return view("CRM::daily-call.edit", $data);
     }
 
@@ -123,23 +137,23 @@ class DailyCallController extends Controller
     public function update(Request $request, DailyCall $dailyCall)
     {
         $validate = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'call_type_id' => 'nullable',
-            'call_date' => 'required|date',
-            'is_account_complain' => 'nullable|boolean',
-            'complains_details' => 'nullable|string',
-            'is_service_complain' => 'nullable|boolean',
+            'customer_id'              => 'required|exists:customers,id',
+            'call_type_id'             => 'nullable',
+            'call_date'                => 'required|date',
+            'is_account_complain'      => 'nullable|boolean',
+            'complains_details'        => 'nullable|string',
+            'is_service_complain'      => 'nullable|boolean',
             'service_complain_details' => 'nullable|string',
-            'is_sales_complain' => 'nullable|boolean',
-            'sales_complain_details' => 'nullable|string',
-            'is_product_required' => 'nullable|boolean',
+            'is_sales_complain'        => 'nullable|boolean',
+            'sales_complain_details'   => 'nullable|string',
+            'is_product_required'      => 'nullable|boolean',
             'product_required_details' => 'nullable|string',
-            'remarks' => 'nullable|string',
+            'remarks'                  => 'nullable|string',
         ]);
+
         $dailyCall = $this->service->update($dailyCall, $validate);
-
-        return redirect()->route('crm.daily-calls.edit', $dailyCall->id)->with('success', 'DailyCall updated successfully.');
-
+        return redirect()->route('crm.daily-calls.edit', $dailyCall->id)
+            ->with('success', 'DailyCall updated successfully.');
     }
 
     /**
@@ -148,6 +162,7 @@ class DailyCallController extends Controller
     public function destroy(DailyCall $dailyCall)
     {
         $this->service->delete($dailyCall);
-        return redirect()->route('crm.daily-calls.index')->with('success', 'DailyCall deleted successfully.');
+        return redirect()->route('crm.daily-calls.index')
+            ->with('success', 'DailyCall deleted successfully.');
     }
 }

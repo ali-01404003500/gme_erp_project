@@ -48,9 +48,8 @@
                                 <div class="col-sm-12">
                                     <table class="table table-bordered">
                                         <tr>
-
-                                            <td >
-                                                <select name="company_name" id="company_name" class="tom-select  input-sm"
+                                            <td>
+                                                <select name="company_name" id="company_name" class="tom-select input-sm"
                                                     data-placeholder="Select Supplier">
                                                     <option value=""></option>
                                                     @foreach ($supplierSearch as $value)
@@ -61,15 +60,12 @@
                                                     @endforeach
                                                 </select>
                                             </td>
-
-                                            <td class="text-center">
+                                            <td class="text-left">
                                                 <input type="text" class="form-control" placeholder="Search Phone Number" name="phone" value="{{ request('phone') }}">
                                             </td>
-
-                                            <td class="text-center">
+                                            <td class="text-left">
                                                 <input type="text" class="form-control" placeholder="Search Address" name="address" value="{{ request('address') }}">
                                             </td>
-                                    
                                             <td colspan="5" class="text-right">
                                                 <div class="btn-group btn-corner">
                                                     <button class="btn btn-xs btn-primary"><i class="fa fa-search"></i>
@@ -87,47 +83,75 @@
                 </div>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $suppliers])' style="width:100%">
+                        <style>
+                            .supplier-table-custom,
+                            .supplier-table-custom th,
+                            .supplier-table-custom td {
+                                border: 1px solid #dee2e6 !important;
+                                border-collapse: collapse !important;
+                            }
+                            .supplier-table-custom th,
+                            .supplier-table-custom td {
+                                padding: 12px;
+                                vertical-align: middle;
+                            }
+                            .supplier-table-custom thead th {
+                                background-color: #f8f9fa;
+                                border-bottom-width: 2px !important;
+                            }
+                            .table thead th {
+                            background-color: #35526e !important;
+                            color: #ffffff !important;
+                            font-weight: 600 !important;
+                            text-transform: uppercase;
+                            font-size: 0.85rem !important;
+                            letter-spacing: 0.08em;
+                            border-bottom: 2px solid #2a4054 !important;
+                            padding: 14px 16px !important;
+                            vertical-align: middle;
+                            text-align: center;
+                        }
+                        </style>
+                        
+                        <table id="zero-config" class="table supplier-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $suppliers])' style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Suplier Name</th>
+                                    <th>Supplier Name</th>
                                     <th>Contact Phone</th>
                                     <th>Email</th>
                                     <th style="width: 150px!important;">Address</th>
                                     <th>Opening Balance</th>
-
                                     <th class="no-content">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                
                                 @foreach ($suppliers as $supplier)
                                     <tr>
-                                        <td class="text-center">{{ ($suppliers->currentPage() - 1) * $suppliers->perPage() + $loop->iteration  }}</td>
-                                        <td>
+                                        <td class="text-left">{{ ($suppliers->currentPage() - 1) * $suppliers->perPage() + $loop->iteration  }}</td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                             <a href="{{ route('purchase.suppliers.show', $supplier->id) }}">{{ $supplier->company_name }}</a>
                                         </td>
                                         <td>{{ $supplier->phone }}</td>
                                         <td>{{ $supplier->email }}</td>
-                                        <td style="Max-width: 150px!important; overflow: hidden">{{ $supplier->address }}</td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $supplier->address }}</td>
                                         <td>{{ $supplier->opening_balance }}</td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                                                    @if (hasPermission('purchase.suppliers.update'))
+                                                @if (hasPermission('purchase.suppliers.update'))
                                                     <a class="btn btn-outline-warning" href="{{ route('purchase.suppliers.edit', $supplier->id) }}"><i
                                                             class="far fa-edit"></i></a>
-                                                    @endif
-                                                        
-                                                    @if (hasPermission('purchase.suppliers.destroy'))
+                                                @endif
+                                                    
+                                                @if (hasPermission('purchase.suppliers.destroy'))
                                                     <button type="button" data-action="{{ route('purchase.suppliers.destroy', $supplier->id) }}"
                                                         class="btn btn-outline-danger delete-confirm"><i
                                                             class="far fa-trash-alt"></i></button>
-                                                    @endif
-                                                    
-                                                    @if (hasPermission('purchase.suppliers.show'))
+                                                @endif
+                                                
+                                                @if (hasPermission('purchase.suppliers.show'))
                                                     <a class="btn btn-outline-primary" href="{{ route('purchase.suppliers.show', $supplier->id) }}"><i class="fas fa-eye"></i></a>
-                                                    @endif
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -146,39 +170,37 @@
         </div>
     </div>
     <div class="modal fade inputForm-modal" id="importModal" tabindex="-1" role="dialog"
-    aria-labelledby="importModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header" id="importModalLabel">
-                <h5 class="modal-title">Import from CSV</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+        aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header" id="importModalLabel">
+                    <h5 class="modal-title">Import from CSV</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <form action="{{ route('purchase.suppliers-insert') }}" method="post" id="importFrom"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row mb-4">
+                            <label for="csv_file" class="col-sm-12 col-form-label">CSV File</label>
+                            <div class="col-sm-12">
+                                <input type="file" name="csv_file" id="csv_file" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-sm-12">
+                                <a href="{{ route('purchase.suppliers-download') }}" class="btn btn-info">Download Sample CSV</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
+                            data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary mt-2 mb-2 btn-no-effect">Import</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('purchase.suppliers-insert') }}" method="post" id="importFrom"
-                enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="row mb-4">
-                        <label for="csv_file" class="col-sm-12 col-form-label">CSV File</label>
-                        <div class="col-sm-12">
-                            <input type="file" name="csv_file" id="csv_file" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-sm-12">
-                            <a href="{{ route('purchase.suppliers-download') }}" class="btn btn-info">Download Sample CSV</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light-danger mt-2 mb-2 btn-no-effect"
-                        data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary mt-2 mb-2 btn-no-effect">Import</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 </div>
 @endsection

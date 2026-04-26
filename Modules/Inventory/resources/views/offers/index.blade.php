@@ -137,7 +137,39 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $offers])'
+                                                        <style>
+                                .offer-table-custom,
+                                .offer-table-custom th,
+                                .offer-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+
+                                .offer-table-custom th,
+                                .offer-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+
+                                .offer-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+
+                                .table thead th {
+                                    background-color: #35526e !important;
+                                    color: #ffffff !important;
+                                    font-weight: 600 !important;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem !important;
+                                    letter-spacing: 0.08em;
+                                    border-bottom: 2px solid #2a4054 !important;
+                                    padding: 14px 16px !important;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+                            </style>
+                            <table id="zero-config" class="table offer-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $offers])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -164,7 +196,7 @@
                                         <tr>
                                         <td class="text-center">{{ ($offers->currentPage() - 1) * $offers->perPage() + $loop->iteration  }}</td>
                                             {{-- <td class="text-center">{{ $offer->title }}</td> --}}
-                                            <td class="text-center">
+                                            <td class="text-left">
                                                 <a href="{{ route('inv.offers.show', $offer->id) }}">{{ $offer->title }}</a>
                                             </td>
                                             <td class="text-center">{{ $offer->applied_date }}</td>

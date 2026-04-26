@@ -408,7 +408,7 @@ class Employee extends BaseModel
         }
     }
 
-    public function designation()
+     public function designation()
     {
         return $this->belongsTo(Designation::class, 'designation_id');
     }
@@ -430,3 +430,6 @@ class Employee extends BaseModel
 
 
 }
+
+   
+

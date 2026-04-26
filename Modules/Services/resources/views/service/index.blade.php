@@ -91,7 +91,7 @@
                                                         @endforeach
                                                     </select>
                                                 </td>
-                                                <td class="text-center">
+                                                <td class="text-center w-25">
                                                     <select name="action" id="status" class="form-control tom-select"
                                                         data-placeholder="Search by status">
                                                         <option value=""></option>
@@ -117,11 +117,11 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $service])'
+                            <table id="zero-config"class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $service])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>SL</th>
+                                        <th class="text-center">SL</th>
                                         <th>
                                             Service ID
                                         </th>
@@ -131,7 +131,7 @@
                                         <th>
                                             Status
                                         </th>
-                                        <th>
+                                        <th class="text-center">
                                             Actions
                                         </th>
                                     </tr>
@@ -156,7 +156,7 @@
                                                     <span class="badge badge-round badge-danger text-capitalize">{{ $services->action }}</span>
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="text-center">
                                                 <div class="btn-group">
                                                     @if (hasPermission('services.service.update'))
                                                     <a class="btn btn-xs btn-outline-warning"

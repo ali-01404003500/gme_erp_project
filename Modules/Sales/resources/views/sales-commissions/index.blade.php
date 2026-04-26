@@ -1,5 +1,5 @@
-@section('title', ' Sales Commiossions List')
-@section('description', '   Sales Commiossions List')
+@section('title', 'Sales Commissions List')
+@section('description', 'Sales Commissions List')
 @extends('layout.app')
 @section('content')
     <div class="container-fluid">
@@ -11,7 +11,7 @@
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">{{ trans('   Sales Commiossions list') }}
+                                    <li class="breadcrumb-item active" aria-current="page">{{ trans('Sales Commissions list') }}
                                     </li>
                                 </ol>
                             </nav>
@@ -33,7 +33,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12" style="padding-bottom: 20px">
-                    <h4 class="text-capitalize breadcrumb-title">{{ trans(' Sales Commiossions list') }}</h4>
+                    <h4 class="text-capitalize breadcrumb-title">{{ trans('Sales Commissions list') }}</h4>
                 </div>
                 <div class="col-md-12">
                     <div class="col-md-12 my-4">
@@ -70,7 +70,7 @@
                                                     </div>
                                                 </td>
                                                 <td width="20%">
-                                                    <select name="type" id=" type" class="form-control tom-select">
+                                                    <select name="type" id="type" class="form-control tom-select">
                                                         <option value="">Choose Type</option>
                                                         <option value="invoice" {{ request('type') == 'invoice' ? 'selected' : '' }}>Invoice</option>
                                                         <option value="monthly" {{ request('type') == 'monthly' ? 'selected' : '' }}>Monthly</option>
@@ -98,21 +98,51 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
+                            <style>
+                                .commission-table-custom,
+                                .commission-table-custom th,
+                                .commission-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .commission-table-custom th,
+                                .commission-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+                                .commission-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                            </style>
+                            
                             <form method="POST" action="{{ route('sales.sales-commissions.verify') }}">
                                 @csrf
 
-                                <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salesCommissions])' style="width:100%">
+                                <table id="zero-config" class="table commission-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salesCommissions])' style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>SL</th>
                                             <th>Reference</th>
                                             <th>Customer</th>
                                             <th>Broker</th>
-                                            <th>Request By</th>
-                                            <th>Date</th>
+                                            {{-- <th>Request By</th> --}}
+                                            {{-- <th>Date</th> --}}
                                             <th>Invoice Amount</th>
                                             <th>Commission Amount</th>
-                                            <th>Type</th>
+                                            {{-- <th>Type</th> --}}
                                             <th>Status</th>
                                             <th class="no-content">
                                                 <input type="checkbox" class="check-all" id="check-all">
@@ -123,29 +153,29 @@
                                         @php $sl = 1; @endphp
                                         @foreach ($salesCommissions as $commission)
                                             <tr>
-                                            <td class="text-center">{{ ($salesCommissions->currentPage() - 1) * $salesCommissions->perPage() + $loop->iteration  }}</td>
+                                                <td class="text-center">{{ ($salesCommissions->currentPage() - 1) * $salesCommissions->perPage() + $loop->iteration  }}</td>
                                                 @if ($commission->sales_order_id)
-                                                    <td>
+                                                    <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                         <a href="{{ route('sales.sales-orders.show', [$commission->salesOrder->id, app()->getLocale()]) }}" >
                                                             {{ $commission->salesOrder->sales_order_id ?? '-' }}
                                                         </a>
-                                                    </td>
+                                                    </div>
                                                 @else
-                                                    <td>{{ ucfirst(str_replace('_', ' ', $commission->type)) }}</td>
+                                                    <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ ucfirst(str_replace('_', ' ', $commission->type)) }}</td>
                                                 @endif
-                                                <td>{{ @$commission->salesOrder->customer->company_name ?? '-' }}</td>
-                                                <td>{{ optional($commission->broker)->broker_name ?? '-' }}</td>
-                                                <td>{{ optional($commission->createdBy)->name ?? '-' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($commission->commission_date)->format('d-m-Y') }}</td>
-                                                <td>{{ numberFormat($commission->commissionable_amount) }}</td>
-                                                <td>{{ numberFormat($commission->amount) }}</td>
-                                                <td>{{ ucfirst(str_replace('_', ' ', $commission->type)) }}</td>
-                                                <td>{{ $commission->status }}</td>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ @$commission->salesOrder->customer->company_name ?? '-' }}</div>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($commission->broker)->broker_name ?? '-' }}</div>
+                                                {{-- <td>{{ optional($commission->createdBy)->name ?? '-' }}</div> --}}
+                                                {{-- <td>{{ \Carbon\Carbon::parse($commission->commission_date)->format('d-m-Y') }}</div> --}}
+                                                <td>{{ numberFormat($commission->commissionable_amount) }}</div>
+                                                <td>{{ numberFormat($commission->amount) }}</div>
+                                                {{-- <td>{{ ucfirst(str_replace('_', ' ', $commission->type)) }}</div>s --}}
+                                                <td>{{ $commission->status }}</div>
                                                 <td>
                                                     @if($commission->status == 'pending')
                                                         <input type="checkbox" name="ids[]" value="{{ $commission->id }}" class="row-check">
                                                     @endif
-                                                </td>
+                                                </div>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -161,7 +191,6 @@
                                     </div>
                                 @endif
                             </form>
-                           
                         </div>
                     </div>
                 </div>
@@ -192,5 +221,4 @@
         });
     });
 </script>
-
-@endSection
+@endsection

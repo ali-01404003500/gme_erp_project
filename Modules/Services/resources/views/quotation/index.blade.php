@@ -90,7 +90,7 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $quotations])'
+                            <table id="zero-config"class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $quotations])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -106,9 +106,9 @@
                                 <tbody>
                                     @foreach ($quotations as $quotation)
                                         <tr>
-<td class="text-center">{{ ($quotations->currentPage() - 1) * $quotations->perPage() + $loop->iteration  }}</td>                                            <td>{{ $quotation->quotation_no }}</td>
+                                            <td class="text-center">{{ ($quotations->currentPage() - 1) * $quotations->perPage() + $loop->iteration  }}</td>                                            <td>{{ $quotation->quotation_no }}</td>
                                             <td>{{ $quotation->created_at->format('Y-m-d') }}</td>
-                                            <td>{{ $quotation->customer->company_name }}</i></td>
+                                            <td class="text-wrap">{{ $quotation->customer->company_name }}</i></td>
                                             <td>{{ $quotation->user->name }}</td>
                                             <td>
                                                 @if ($quotation->status == 0)

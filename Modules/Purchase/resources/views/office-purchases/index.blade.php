@@ -44,7 +44,6 @@
                                 <div class="col-sm-12">
                                     <table class="table table-bordered">
                                         <tr>
-
                                             <td class="text-center">
                                                 <select name="invoice_no" id="invoice_no" class="tom-select  form-control"
                                                     data-placeholder="Select Invoice Number">
@@ -80,7 +79,7 @@
                                                     <a href="{{ request()->url() }}" class="btn btn-xs btn-warning"><i
                                                             class="fa fa-refresh"></i> Refresh</a>
                                                 </div>
-                                            </td>
+                                             </td>
                                         </tr>
                                     </table>
                                 </div>
@@ -90,7 +89,37 @@
                 </div>
                 <div class="card mb-4">
                     <div class="card-body">
-                        <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $officePurchases])' style="width:100%">
+                        <style>
+                            .table-bordered-custom,
+                            .table-bordered-custom th,
+                            .table-bordered-custom td {
+                                border: 1px solid #dee2e6 !important;
+                                border-collapse: collapse !important;
+                            }
+                            .table-bordered-custom th,
+                            .table-bordered-custom td {
+                                padding: 8px;
+                                vertical-align: middle;
+                            }
+                            .table-bordered-custom thead th {
+                                background-color: #f8f9fa;
+                                border-bottom-width: 2px;
+                            }
+                                                            .table thead th {
+                    background-color: #35526e !important;
+                    color: #ffffff !important;
+                    font-weight: 600 !important;
+                    text-transform: uppercase;
+                    font-size: 0.85rem !important;
+                    letter-spacing: 0.08em;
+                    border-bottom: 2px solid #2a4054 !important;
+                    padding: 14px 16px !important;
+                    vertical-align: middle;
+                    text-align: center;
+                }
+                        </style>
+                        
+                        <table id="zero-config" class="table table-bordered-custom dt-table-hover" data-page='@include("utils.table_paginate", ["data" => $officePurchases])' style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Sl</th>
@@ -107,13 +136,12 @@
                                 @foreach ($officePurchases as $value)
                                     <tr>
                                         <td class="text-center">{{ ($officePurchases->currentPage() - 1) * $officePurchases->perPage() + $loop->iteration  }}</td>
-                                        <td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                             
                                             <a @if (hasPermission('purchase.offices.show')) href="{{ route('purchase.offices.show', $value->id) }}" @endif>{{ $value->invoice_no}}</a>
-                                           
                                         </td>
                                         <td>{{ $value->date}}</td>
-                                        <td>{{ $value->vendor->company_name }}</td>
+                                        <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $value->vendor->company_name }}</td>
                                         <td>{{ $value->bill_amount }}</td>
                                         <td>
                                             @if ($value->status == 0)
@@ -145,8 +173,6 @@
                                                     <a class="btn btn-outline-primary" href="{{ route('purchase.offices.show', $value->id) }}"><i class="fas fa-eye"></i></a>
                                                 @endif
                                             </div>
-                                        </td>
-                                        
                                         </td>
                                     </tr>
                                 @endforeach

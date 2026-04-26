@@ -162,7 +162,28 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover table-bordered table-sm" id="shipmentExplorerTable"
+                                <style>
+                                    .shipment-explorer-table,
+                                    .shipment-explorer-table th,
+                                    .shipment-explorer-table td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+                                                                                                    .table thead th {
+                                    background-color: #35526e !important;
+                                    color: #ffffff !important;
+                                    font-weight: 600 !important;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem !important;
+                                    letter-spacing: 0.08em;
+                                    border-bottom: 2px solid #2a4054 !important;
+                                    padding: 14px 16px !important;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+                                </style>
+                                
+                                <table class="table shipment-explorer-table table-hover table-sm" id="shipmentExplorerTable"
                                     style="font-size: 11px;">
                                     <thead class="bg-primary text-white">
                                         <tr>
@@ -224,23 +245,23 @@
                                                 };
                                             @endphp
                                             <tr>
-                                                <td class="text-center">{{ $rowNumber }}</td>
-                                                <td>
+                                                <td class="text-center">{{ $rowNumber }}</div>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                     <a href="{{ route('sales.sales-orders.show', $item['sales_order']->id) }}" 
                                                        target="_blank" class="text-primary font-weight-bold">
                                                         {{ $item['invoice_id'] }}
                                                     </a>
-                                                </td>
+                                                 </div>
                                                 <td>
                                                     {{ $item['invoice_date'] }}<br>
                                                     <small class="text-muted">{{ $item['invoice_time'] }}</small>
-                                                </td>
-                                                <td>
+                                                 </div>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
                                                     <a href="{{ route('crm.customers.show', $item['customer_id']) }}" 
                                                        target="_blank" class="text-primary">
                                                         {{ $item['customer_name'] }}
                                                     </a>
-                                                </td>
+                                                 </div>
                                                 <td>
                                                     @if($item['courier_id'])
                                                         <a href="javascript:void(0);" 
@@ -253,26 +274,26 @@
                                                     @else
                                                         {{ $item['courier_name'] }}
                                                     @endif
-                                                </td>
+                                                 </div>
                                                 <td>
                                                     <span class="badge {{ $statusClass }} badge-round">{{ $item['status'] }}</span>
-                                                </td>
-                                                <td>{{ $item['shipment_type'] }}</td>
-                                                <td class="text-right">{{ number_format($item['invoice_amount']) }}</td>
-                                                <td class="text-right">{{ number_format($item['additional_cond_amt']) }}</td>
+                                                 </div>
+                                                <td>{{ $item['shipment_type'] }}</div>
+                                                <td class="text-right">{{ number_format($item['invoice_amount']) }}</div>
+                                                <td class="text-right">{{ number_format($item['additional_cond_amt']) }}</div>
                                                 <td class="text-right">
                                                     {{ $item['conditional_amount'] !== null ? number_format($item['conditional_amount']) : '' }}
-                                                </td>
-                                                <td>{{ $item['con_additional_remarks'] }}</td>
-                                                <td>{{ $item['carton_no'] }}</td>
-                                                <td>{{ $item['receipt_date'] }}</td>
-                                                <td>{{ $item['receipt_no'] }}</td>
-                                                <td class="text-right">{{ number_format($item['service_charge']) }}</td>
-                                                <td>{{ $item['service_type'] }}</td>
-                                                <td class="text-right">{{ number_format($item['delivery_charge']) }}</td>
-                                                <td>{{ $item['delivery_type'] }}</td>
-                                                <td class="text-right">{{ number_format($item['other_charge']) }}</td>
-                                                <td>{{ $item['other_type'] }}</td>
+                                                 </div>
+                                                <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ $item['con_additional_remarks'] }}</div>
+                                                <td>{{ $item['carton_no'] }}</div>
+                                                <td>{{ $item['receipt_date'] }}</div>
+                                                <td>{{ $item['receipt_no'] }}</div>
+                                                <td class="text-right">{{ number_format($item['service_charge']) }}</div>
+                                                <td>{{ $item['service_type'] }}</div>
+                                                <td class="text-right">{{ number_format($item['delivery_charge']) }}</div>
+                                                <td>{{ $item['delivery_type'] }}</div>
+                                                <td class="text-right">{{ number_format($item['other_charge']) }}</div>
+                                                <td>{{ $item['other_type'] }}</div>
                                                 <td class="text-center">
                                                     @if(!empty($item['attachment']))
                                                         @foreach($item['attachment'] as $file)
@@ -284,20 +305,20 @@
                                                     @else
                                                         <span class="text-muted">No Files</span>
                                                     @endif
-                                                </td>
-                                                <td>{{ $item['update_by'] }}</td>
-                                                <td>{{ $item['collection_by'] }}</td>
-                                                <td>{{ $item['approved_by'] }}</td>
-                                                <td>{{ $item['user'] }}</td>
-                                                <td>{{ $item['complete_date'] }}</td>
-                                                <td>{{ $item['challan_no'] }}</td>
+                                                 </div>
+                                                <td>{{ $item['update_by'] }}</div>
+                                                <td>{{ $item['collection_by'] }}</div>
+                                                <td>{{ $item['approved_by'] }}</div>
+                                                <td>{{ $item['user'] }}</div>
+                                                <td>{{ $item['complete_date'] }}</div>
+                                                <td>{{ $item['challan_no'] }}</div>
                                             </tr>
                                         @empty
                                             <tr>
                                                 <td colspan="27" class="text-center py-4">
                                                     <i class="las la-inbox" style="font-size: 48px; color: #ddd;"></i>
                                                     <p class="mb-0">No records found</p>
-                                                </td>
+                                                 </div>
                                             </tr>
                                         @endforelse
                                     </tbody>

@@ -13,4 +13,6 @@ class DocumentType extends BaseModel
     use AutoCreateUpdateAndHistory;
     use SoftDeletes;
     protected $guarded = [];
+
+    
 }

@@ -125,8 +125,14 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
         Route::resource('expense-types', ExpenseTypeController::class)->except(['show', 'edit', 'create']);
         Route::resource('transport-types', TransportTypeController::class)->except(['show', 'edit', 'create']);
         Route::resource('appraisal-policies', AppraisalPolicyController::class)->except(['show', 'edit', 'create']);
-        Route::resource('hotspots', HotspotController::class)->except(['show', 'edit', 'create']);
 
+            // Leave Adjustment route
+         Route::resource('leaveAdjustment', LeaveAdjustmentController::class);
+
+         //approver route
+         
+
+        Route::resource('hotspots', HotspotController::class)->except(['show', 'edit', 'create']);
     });
 
     Route::group(['prefix' => 'kpis', 'as' => 'kpis.'], function () {

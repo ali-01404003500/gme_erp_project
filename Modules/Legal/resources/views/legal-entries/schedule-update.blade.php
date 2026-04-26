@@ -87,15 +87,15 @@
                             <div class="card-body">
                                 <div class="col-sm-12">
                                     <div class="table-responsive">
-                                        <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                                        <table id="zero-config" class="table dt-table-hover table-bordered" style="width:100%; table-layout: fixed;">
                                             <thead>
                                                 <tr>
-                                                    <th class="text-center" style="width: 2%">Sl</th>
-                                                    <th class="text-center" style="width: 25%">Case info</th>
-                                                    <th class="text-center" style="width: 18%">Advocate Info</th>
-                                                    <th class="text-center" style="width: 15%">Remarks</th>
-                                                    <th class="text-center" style="width: 15%">Hajira Info</th>
-                                                    <th class="text-center" style="width: 10%">Document</th>
+                                                    <th class="text-center" style="width: 3%">Sl</th>
+                                                    <th class="text-left" style="width: 35%">Case info</th>
+                                                    <th class="text-left" style="width: 14%">Advocate Info</th>
+                                                    <th class="text-left" style="width: 13%">Remarks</th>
+                                                    <th class="text-left" style="width: 13%">Hajira Info</th>
+                                                    <th class="text-left" style="width: 7%">Document</th>
                                                     <th class="text-center no-content" style="width: 15%">Action</th>
                                                 </tr>
                                             </thead>
@@ -104,7 +104,7 @@
                                                     <tr>
                                                         <td class="text-center" style="vertical-align: top;">
                                                             {{ $key + 1 }}</td>
-                                                        <td style="vertical-align: top;">
+                                                        <td style="vertical-align: top; min-width: 200px;" class="text-wrap" >
                                                             <li>Case No : {{ $legal->case_no }}</li>
                                                             <li>Customer :
                                                                 @foreach ($legal->convicts as $convict)
@@ -128,7 +128,7 @@
                                                             </li>
 
                                                         </td>
-                                                        <td style="vertical-align: top;">
+                                                        <td style="vertical-align: top;" class="text-wrap">
                                                             <li>
                                                                 Name By : {{ $legal->advocate_name }} <br>
                                                             </li>
@@ -196,7 +196,7 @@
                                                             @endif
                                                         </td>
 
-                                                        <td>
+                                                        <td class="text-center">
                                                             @if ($legal->status == 'running')
                                                                 <a href="javascript:void(0);"
                                                                     class="btn btn-sm btn-outline-primary small-btn d-inline-block scheduleBtn"
@@ -365,9 +365,9 @@
                     listHtml = `<li class="list-group-item text-muted">No remarks available.</li>`;
                 } else {
                     data.forEach(item => {
-                        listHtml += `<li class="list-group-item">
-                                <strong>Date:</strong> ${item.date} <br>
-                                <strong>Note:</strong> ${item.description ?? 'N/A'}
+                            listHtml += `<li class="list-group-item text-wrap" style="word-break: break-word;">
+                            <strong>Date:</strong> ${item.date} <br>
+                            <strong>Note:</strong> <span class="d-block">${item.description ?? 'N/A'}</span>
                             </li>`;
                     });
                 }
@@ -414,7 +414,7 @@
 
                     let remarksHtml = '';
                     res.remarks.forEach(function(remark) {
-                        remarksHtml += `<li>Date: ${remark.date} :- ${remark.note}</li>`;
+                        remarksHtml += `<li class="text-wrap" style="word-break: break-word">Date: ${remark.date} :- ${remark.note}</li>`;
                     });
                     $('#previousRemarks').html(`<ul>${remarksHtml}</ul>`);
 

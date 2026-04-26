@@ -34,12 +34,6 @@
                 </div>
             </div>
 
-            <style>
-                .nav-icon la la-cart-arrow-down {
-                    font-size: 26px;
-                }
-            </style>
-
             <div class="row">
                 <div class="col-md-12">
                     <h4 class="text-capitalize breadcrumb-title">{{ trans('menu.leaves-list-menu-title') }}</h4>
@@ -94,7 +88,39 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $leaveApplications])'
+                            <style>
+                .nav-icon la la-cart-arrow-down {
+                    font-size: 26px;
+                }
+                .leave-table-custom,
+                .leave-table-custom th,
+                .leave-table-custom td {
+                    border: 1px solid #dee2e6 !important;
+                    border-collapse: collapse !important;
+                }
+                .leave-table-custom th,
+                .leave-table-custom td {
+                    padding: 12px;
+                    vertical-align: middle;
+                }
+                .leave-table-custom thead th {
+                    background-color: #f8f9fa;
+                    border-bottom-width: 2px !important;
+                }
+                .table thead th {
+                                background-color: #35526e !important;
+                                color: #ffffff !important;
+                                font-weight: 600 !important;
+                                text-transform: uppercase;
+                                font-size: 0.85rem !important;
+                                letter-spacing: 0.08em;
+                                border-bottom: 2px solid #2a4054 !important;
+                                padding: 14px 16px !important;
+                                vertical-align: middle;
+                                text-align: center;
+                            }
+            </style>
+                            <table id="zero-config" class="table leave-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $leaveApplications])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -104,8 +130,8 @@
                                         <th>To Date</th>
                                         <th>Leave Days</th>
                                         <th>Leave Type</th>
-                                        <th>Purpose</th>
-                                        <th>Documents</th>
+                                        {{-- <th>Purpose</th> --}}
+                                        {{-- <th>Documents</th> --}}
                                         <th>Status</th> 
                                         <th>Approval Layers</th> 
                                         <th class="no-content">Action</th>
@@ -123,9 +149,9 @@
                                             <td><span class="badge badge-round badge-warning">
                                                     {{ $value->leaveType?->leave_type_name }}
                                                 </span></td>
-                                            <td>{{ $value->remarks }}</td>
+                                            {{-- <td>{{ $value->remarks }}</td> --}}
 
-                                            <td>
+                                            {{-- <td>
                                                 @if(!empty($value->file_uploads))
                                                     @php
                                                         $files = is_array($value->file_uploads) ? $value->file_uploads : json_decode($value->file_uploads, true);
@@ -141,7 +167,7 @@
                                                 @else
                                                     <span class="text-muted">No files</span>
                                                 @endif
-                                            </td>
+                                            </td> --}}
 
                                             
                                             <td>
@@ -418,4 +444,4 @@
             });
         });
     </script>
-@endSection
+@endsection

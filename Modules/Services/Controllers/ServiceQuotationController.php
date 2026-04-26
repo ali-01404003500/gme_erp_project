@@ -71,8 +71,10 @@ class ServiceQuotationController extends Controller
     public function create(Request $request)
     {
         $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        $data['services'] = Service::all();
-        $data['customers'] = Customer::get();
+       $data['services'] = Service::with('serviceTokens.customer')->get();
+       $data['customers'] = Customer::with('serviceToken') 
+            ->select('id', 'company_name', 'phone') 
+            ->get();
         $data['selected_service_id'] = $request->service_id; // pass selected service id from query parameter
         $data['brands'] = Brand::all();
 

@@ -43,11 +43,10 @@
                                     <div class="col-sm-12">
                                         <table class="table table-bordered">
                                             <tr>
-
                                                 <td class="text-center">
-                                                    <select name="customer_id" id="customer_id" class="  input-sm"
+                                                    <select name="customer_id" id="customer_id" class="input-sm"
                                                         data-placeholder="Select Customer">
-                                                        <option value=""></option> 
+                                                        <option value=""></option>
                                                     </select>
                                                 </td>
 
@@ -57,29 +56,35 @@
                                                         value="{{ request('additional_phone') }}">
                                                 </td>
                                                 <td>
-                                                    <select name="sales_type" id="sales_type" class="tom-select  form-control" data-placeholder="Select Sales Type">
+                                                    <select name="sales_type" id="sales_type"
+                                                        class="tom-select form-control"
+                                                        data-placeholder="Select Sales Type">
                                                         <option value=""></option>
                                                         <option value="general_sales" @if (request('sales_type') == 'general_sales') selected @endif>
                                                             General Sales</option>
                                                         <option value="partial_sales" @if (request('sales_type') == 'partial_sales') selected @endif>
                                                             Partial Sales</option>
-                                                        <option value="free_sales" @if (request('sales_type') == 'free_sales') selected @endif>
+                                                        <option value="free_sales" @if (request('sales_type') == 'free_sales')
+                                                        selected @endif>
                                                             Free Sales</option>
-                                                        
                                                     </select>
-
                                                 </td>
 
                                                 <td>
-                                                    <select name="status" id="status" class="tom-select form-control" data-placeholder="Select Status">
+                                                    <select name="status" id="status" class="tom-select form-control"
+                                                        data-placeholder="Select Status">
                                                         <option value="">All Statuses</option>
-                                                        <option value="pending" @if (request('status') == 'pending') selected @endif>
+                                                        <option value="pending" @if (request('status') == 'pending') selected
+                                                        @endif>
                                                             Pending</option>
-                                                        <option value="approved" @if (request('status') == 'approved') selected @endif>
+                                                        <option value="approved" @if (request('status') == 'approved')
+                                                        selected @endif>
                                                             Approved</option>
-                                                        <option value="delivered" @if (request('status') == 'delivered') selected @endif>
+                                                        <option value="delivered" @if (request('status') == 'delivered')
+                                                        selected @endif>
                                                             Delivered</option>
-                                                        <option value="partial" @if (request('status') == 'partial') selected @endif>
+                                                        <option value="partial" @if (request('status') == 'partial') selected
+                                                        @endif>
                                                             Partial</option>
                                                     </select>
                                                 </td>
@@ -116,70 +121,70 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $salesOrders])'
-                                style="width:100%">
+                            <style>
+                                .salesorder-table-custom,
+                                .salesorder-table-custom th,
+                                .salesorder-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+
+                                .salesorder-table-custom th,
+                                .salesorder-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+
+                                .salesorder-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+
+                                .table thead th {
+                                    background-color: #35526e !important;
+                                    color: #ffffff !important;
+                                    font-weight: 600 !important;
+                                    text-transform: uppercase;
+                                    font-size: 0.85rem !important;
+                                    letter-spacing: 0.08em;
+                                    border-bottom: 2px solid #2a4054 !important;
+                                    padding: 14px 16px !important;
+                                    vertical-align: middle;
+                                    text-align: center;
+                                }
+                            </style>
+
+                            <table id="zero-config" class="table salesorder-table-custom dt-table-hover"
+                                data-page='@include('utils.table_paginate', ['data' => $salesOrders])' style="width:100%">
                                 <thead>
-                                    <tr>
+                                    <tr style="background-color: #35526e;">
                                         <th>SL</th>
-                                        <th>
-                                            Sales Order ID
-                                        </th>
-                                        <th>
-                                            Invoice Date
-                                        </th>
-                                        <th>Sales Type</th>
-                                        <th>
-                                            Customer Name
-                                        </th>
-                                        <th>
-                                            Amount
-                                        </th>
-                                        <th>
-                                            Payment Status
-                                        </th>
-                                        <th>
-                                            Status
-                                        </th>
-                                        <th>
-                                            Prepared By
-                                        </th>
-                                        <th>
-                                            Image/Documents
-                                        </th>
-                                        <th class="no-content">
-                                            Actions
-                                        </th>
+                                        <th>Sales Order ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Amount</th>
+                                        <th>Payment Status</th>
+                                        <th>Status</th>
+                                        {{-- <th>Prepared By</th> --}}
+                                        <th>Image/Documents</th>
+                                        <th class="no-content">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @dd($salesOrders) --}}
                                     @foreach ($salesOrders as $salesOrder)
-                                        {{-- @dd($salesOrder->delivery) --}}
                                         <tr>
-                                            <td>{{ ($salesOrders->currentPage() - 1) * $salesOrders->perPage() + $loop->iteration  }}</td>
-
-                                            <td>
-                                                {{ $salesOrder->sales_order_id }}
+                                            <td class="text-center">
+                                                {{ ($salesOrders->currentPage() - 1) * $salesOrders->perPage() + $loop->iteration  }}
                                             </td>
-                                            <td>
-                                                {{ $salesOrder->invoice_date }}
-                                            </td>
-                                            <td>
-                                                @if ($salesOrder->sales_type == 'free_sales')
-                                                    Free Sales
-                                                @else
-                                                    {{ $salesOrder->sales_type == 'partial_sales' ? 'Partial Sales' : 'General Sales' }}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a class="text-dark fw-500"
-                                                    href="{{ route('sales.sales-orders.show', $salesOrder->id) }}">
-                                                    {{ $salesOrder->customer->company_name }}</i>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                                {{ $salesOrder->sales_order_id }}</td>
+                                            <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">
+                                                <a class="fw-500 fw-bold text-primary""
+                                                            href=" {{ route('sales.sales-orders.show', $salesOrder->id) }}">
+                                                    {{ $salesOrder->customer->company_name }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                {{ number_format($salesOrder->net_amount) }}
-                                            </td>
+                                            <td class="text-right text-success fw-bold">
+                                                {{ number_format($salesOrder->net_amount) }}</td>
                                             <td>
                                                 @if ($salesOrder->paid_status == 'paid')
                                                     <span
@@ -195,13 +200,11 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                {{-- {{ number_format($salesOrder->saleOrderDeliveries->pluck('salesOrderDeliveryDetails')->flatten()->sum('quantity')) }} --}}
                                                 @if ($salesOrder->status == 'pending')
                                                     <span
                                                         class="badge badge-round badge-warning text-capitalize">{{ $salesOrder->status }}</span>
                                                 @elseif($salesOrder->status == 'approved')
-                                                    <span
-                                                        class="badge badge-round badge-success text-capitalize">Undeliver</span>
+                                                    <span class="badge badge-round badge-success text-capitalize">Undeliver</span>
                                                 @elseif($salesOrder->status == 'delivered')
                                                     <span
                                                         class="badge badge-round badge-info text-capitalize">{{ $salesOrder->status }}</span>
@@ -210,20 +213,18 @@
                                                         class="badge badge-round badge-warning text-capitalize">{{ $salesOrder->status }}</span>
                                                 @endif
                                             </td>
+                                            {{-- <td>{{ $salesOrder->createdBy->name }}</td> --}}
                                             <td>
-                                                {{ $salesOrder->createdBy->name }}
-                                            </td>
-                                            <td>
-                                                @foreach( $salesOrder->payments as $payment)
+                                                @foreach($salesOrder->payments as $payment)
                                                     @if($payment->attachments)
-                                                        <a href="{{ asset($payment->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                                                        <a href="{{ asset($payment->attachments) }}" target="_blank"
+                                                            class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
                                                     @endif
                                                 @endforeach
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
-
                                                     @if (hasPermission('sales.sales-orders.approve') && $salesOrder->status == 'pending')
                                                         <a class="btn btn-outline-success"
                                                             href="{{ route('sales.sales-orders.edit', $salesOrder->id) }}?approve=1"><i
@@ -231,8 +232,10 @@
                                                         </a>
                                                     @endif
 
-                                                    @if (hasPermission('sales.sales-orders.update') &&
-                                                            ($salesOrder->status == 'pending' || $salesOrder->status == 'approved'))
+                                                    @if (
+                                                            hasPermission('sales.sales-orders.update') &&
+                                                            ($salesOrder->status == 'pending' || $salesOrder->status == 'approved')
+                                                        )
                                                         <a class="btn btn-outline-warning"
                                                             href="{{ route('sales.sales-orders.edit', $salesOrder->id) }}"><i
                                                                 class="far fa-edit"></i>
@@ -254,24 +257,20 @@
                                                         </a>
                                                     @endif
 
-                                                    @if (hasPermission('sales.deliveries.create') && $salesOrder->status == 'approved' || $salesOrder->status == 'partial')
+                                                    @if (hasPermission('sales.deliveries.create') && ($salesOrder->status == 'approved' || $salesOrder->status == 'partial'))
                                                         <a class="btn btn-outline-info" title="Make Delivery"
                                                             href="{{ route('sales.deliveries.create', ['delivery_id' => optional($salesOrder->delivery)->id]) }}"><i
                                                                 class="fas fa-truck"></i>
                                                         </a>
                                                     @endif
 
-
-                                                    @if (hasPermission('sales.sales-orders.product-free-sales-invoice') && $salesOrder->offers->where('offer_type', 'clearance')->count() > 0&& ($salesOrder->status == 'approved' || $salesOrder->status == 'partial' ))
+                                                    @if (hasPermission('sales.sales-orders.product-free-sales-invoice') && $salesOrder->offers->where('offer_type', 'clearance')->count() > 0 && ($salesOrder->status == 'approved' || $salesOrder->status == 'partial'))
                                                         <a class="btn btn-outline-info" title="Free Sales Invoice"
                                                             href="{{ route('sales.sales-orders.product-free-sales-invoice', $salesOrder->id) }}"><i
                                                                 class="fas fa-gift"></i>
                                                         </a>
                                                     @endif
-
-
                                                 </div>
-
                                             </td>
                                         </tr>
                                     @endforeach
@@ -297,30 +296,27 @@
             autoclose: true
         });
 
-
         $(document).ready(function () {
             const companySelect = new TomSelect("#customer_id", {
                 valueField: "id",
                 labelField: "text",
-                searchField: [], 
-                load: function(query, callback) {
-
+                searchField: [],
+                load: function (query, callback) {
                     if (!query.length || query.length < 2) return callback();
-
                     $.ajax({
                         url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
                         type: "GET",
                         data: { search: query },
-                        success: function(res) {
+                        success: function (res) {
                             companySelect.clearOptions();
                             callback(res.map(item => ({ id: item.id, text: item.label })));
                         },
-                        error: function() {
+                        error: function () {
                             callback();
                         }
                     });
                 }
-            }); 
+            });
 
             @if(request('customer_id'))
                 companySelect.addOption({
@@ -329,6 +325,6 @@
                 });
                 companySelect.setValue("{{ request('customer_id') }}");
             @endif
-        }); 
+            }); 
     </script>
-@endSection
+@endsection

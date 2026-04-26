@@ -60,7 +60,7 @@
 <div class="container-fluid mb-5">
     <div class="row">
         <div class="col-lg-12">
-            <div class="breadcrumb-main d-flex justify-content-between align-items-center py-4">
+            <div class="breadcrumb-main d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-start gap-3">
                     {{-- <h4 class="vertical-title mt-4">
                         {{ trans('Edit Document') }}
@@ -84,7 +84,7 @@
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-xxl-8 col-xl-10">
+        <div class="col-xxl-12 col-xl-12">
             <div class="card form-card">
                 <div class="card-body p-40">
                     <form action="{{ route('cms.document-entries.update', $documentEntry->id ) }}" method="POST" enctype="multipart/form-data">

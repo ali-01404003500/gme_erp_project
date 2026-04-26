@@ -13,7 +13,7 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="#"><i class="las la-home"></i>Home</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">
-                                        {{ trans('menu.hrm-leave-types-menu-title') }}
+                                        {{ trans('Leave Type') }}
                                     </li>
                                 </ol>
                             </nav>
@@ -35,26 +35,62 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                                <style>
+                                    .nav-icon la la-cart-arrow-down {
+                                        font-size: 26px;
+                                    }
+
+                                    .leave-table-custom,
+                                    .leave-table-custom th,
+                                    .leave-table-custom td {
+                                        border: 1px solid #dee2e6 !important;
+                                        border-collapse: collapse !important;
+                                    }
+
+                                    .leave-table-custom th,
+                                    .leave-table-custom td {
+                                        padding: 12px;
+                                        vertical-align: middle;
+                                    }
+
+                                    .leave-table-custom thead th {
+                                        background-color: #f8f9fa;
+                                        border-bottom-width: 2px !important;
+                                    }
+
+                                    .table thead th {
+                                        background-color: #35526e !important;
+                                        color: #ffffff !important;
+                                        font-weight: 600 !important;
+                                        text-transform: uppercase;
+                                        font-size: 0.85rem !important;
+                                        letter-spacing: 0.08em;
+                                        border-bottom: 2px solid #2a4054 !important;
+                                        padding: 14px 16px !important;
+                                        vertical-align: middle;
+                                        text-align: center;
+                                    }
+                                </style>
+                                <table id="zero-config" class="table leave-table-custom dt-table-hover" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Sl</th>
-                                            <th class="text-center">Leave Type Name</th>
-                                            <th class="text-center">Flag</th>
-                                            <th class="text-center">Total Days</th>
-                                            <th class="text-center">Count Type</th>
-                                            <th class="text-center">Action</th>
+                                            <th class="text-left">Sl</th>
+                                            <th class="text-left">Leave Type Name</th>
+                                            <th class="text-left">Flag</th>
+                                            <th class="text-left">Total Days</th>
+                                            <th class="text-left">Count Type</th>
+                                            <th class="text-left">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($leaveTypes as $leaveType)
                                             <tr>
-                                                <td class="text-center">{{ $loop->iteration }}</td>
-                                                <td class="text-center">{{ $leaveType->leave_type_name }}</td>
-                                                <td class="text-center"><span class="">{{ $leaveType->flag }}</span></td>
-                                                <td class="text-center">{{ $leaveType->total_day ?? 0 }}</td>
-                                                <td class="text-center">{{ ucfirst($leaveType->leave_count_type) }}</td>
-                                                <td class="text-center">
+                                                <td class="text-left">{{ $loop->iteration }}</td>
+                                                <td class="text-left">{{ $leaveType->leave_type_name }}</td>
+                                                <td class="text-left"><span class="">{{ $leaveType->flag }}</span></td>
+                                                <td class="text-left">{{ $leaveType->total_day ?? 0 }}</td>
+                                                <td class="text-left">{{ ucfirst($leaveType->leave_count_type) }}</td>
+                                                <td class="text-left">
                                                     <div class="btn-group btn-group-sm">
                                                         @if (hasPermission('hrm.leave-types.update'))
                                                             <button type="button"
@@ -95,7 +131,7 @@
             @method('DELETE')
         </form>
     </div>
-    
+
 
     {{-- Create Modal --}}
     <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-hidden="true">

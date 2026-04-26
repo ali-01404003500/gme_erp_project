@@ -46,7 +46,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover"
+                            <table id="zero-config" class="table table-bordered dt-table-hover"
                                 data-page='@include('utils.table_paginate', ['data' => $holidays])' style="width:100%">
                                 <thead>
                                     <tr>

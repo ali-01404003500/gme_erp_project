@@ -69,7 +69,7 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $reports])'
+                            <table id="zero-config" class="table dt-table-hover table-bordered " data-page='@include('utils.table_paginate', ['data' => $reports])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
@@ -100,7 +100,7 @@
                                                 {{ $value->sms }}
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td class="vertical-align: top;">
                                                 @if($value->status == 'Send') <span class="badge badge-round badge-success">SMS Send</span> @endif
                                             </td>                           
                                             <td>{{ $value->dongles->dongle_id }}</td>

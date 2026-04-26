@@ -1,4 +1,3 @@
-
 @section('title', 'Leave Year')
 @section('description', 'Leave Year')
 @extends('layout.app')
@@ -36,8 +35,22 @@
                         <h5 class="mb-0 fw-bold">Running Leave Year</h5>
                     </div>
                     <div class="card-body p-0">
+                        <style>
+                            .leaveyear-table-custom,
+                            .leaveyear-table-custom th,
+                            .leaveyear-table-custom td {
+                                border: 1px solid #dee2e6 !important;
+                                border-collapse: collapse !important;
+                            }
+                            .leaveyear-table-custom th,
+                            .leaveyear-table-custom td {
+                                padding: 12px;
+                                vertical-align: middle;
+                            }
+                        </style>
+                        
                         @if($runningYear)
-                            <table class="table mb-0">
+                            <table class="table leaveyear-table-custom mb-0">
                                 <tbody>
                                     <tr>
                                         <td class="ps-4 py-3 text-secondary">Open year</td>
@@ -87,7 +100,25 @@
             <h5 class="fw-bold mb-3">Already closed leave years</h5>
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
+                    <style>
+                        .closedyear-table-custom,
+                        .closedyear-table-custom th,
+                        .closedyear-table-custom td {
+                            border: 1px solid #dee2e6 !important;
+                            border-collapse: collapse !important;
+                        }
+                        .closedyear-table-custom th,
+                        .closedyear-table-custom td {
+                            padding: 12px;
+                            vertical-align: middle;
+                        }
+                        .closedyear-table-custom thead th {
+                            background-color: #f8f9fa;
+                            border-bottom-width: 2px !important;
+                        }
+                    </style>
+                    
+                    <table class="table closedyear-table-custom table-hover mb-0">
                         <thead>
                             <tr>
                                 <th class="ps-4 py-3">SL</th>

@@ -172,9 +172,9 @@
                                         <th>Requisition Date</th>
                                         <th>Suplier</th>
                                         <th>Customer</th>
-                                        <th>Invoice To</th>
+                                        {{-- <th>Invoice To</th> --}}
                                         <th>Status</th>
-                                        <th>Created By</th>
+                                        {{-- <th>Created By</th> --}}
                                         <th class="no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -200,7 +200,7 @@
                                                     <span class="badge badge-round badge-danger">Rejected</span>
                                                 @endif
                                             </td>
-                                            <td>{{ optional($value->createdBy)->name }}</td>
+                                            {{-- <td style="word-wrap: break-word; white-space: normal; min-width: 200px;">{{ optional($value->createdBy)->name }}</td> --}}
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">

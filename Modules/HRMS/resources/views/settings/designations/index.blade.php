@@ -44,23 +44,53 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $designations])' style="width:100%">
+                            <style>
+                                .designation-table-custom,
+                                .designation-table-custom th,
+                                .designation-table-custom td {
+                                    border: 1px solid #dee2e6 !important;
+                                    border-collapse: collapse !important;
+                                }
+                                .designation-table-custom th,
+                                .designation-table-custom td {
+                                    padding: 12px;
+                                    vertical-align: middle;
+                                }
+                                .designation-table-custom thead th {
+                                    background-color: #f8f9fa;
+                                    border-bottom-width: 2px !important;
+                                }
+                                .table thead th {
+                                background-color: #35526e !important;
+                                color: #ffffff !important;
+                                font-weight: 600 !important;
+                                text-transform: uppercase;
+                                font-size: 0.85rem !important;
+                                letter-spacing: 0.08em;
+                                border-bottom: 2px solid #2a4054 !important;
+                                padding: 14px 16px !important;
+                                vertical-align: middle;
+                                text-align: center;
+                            }
+                            </style>
+                            
+                            <table id="zero-config" class="table designation-table-custom dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $designations])' style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Code</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center no-content">Action</th>
+                                        <th class="text-left" style="width: 8%">Sl</th>
+                                        <th class="text-left">Code</th>
+                                        <th class="text-left">Name</th>
+                                        <th class="text-left no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @csrf
                                     @foreach ($designations as $key => $item)
                                         <tr>
-                                        <td class="text-center">{{ ($designations->currentPage() - 1) * $designations->perPage() + $loop->iteration  }}</td>
-                                            <td class="text-center">{{ $item->code }}</td>
-                                            <td class="text-center">{{ $item->name }}</td>
-                                            <td class="text-center">
+                                        <td class="text-left">{{ ($designations->currentPage() - 1) * $designations->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-left">{{ $item->code }}</td>
+                                            <td class="text-left">{{ $item->name }}</td>
+                                            <td class="text-left">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 

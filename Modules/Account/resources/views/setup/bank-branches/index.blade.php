@@ -46,26 +46,25 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                                      <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $bankBranches])'
-                                style="width:100%">
+                                      <table id="zero-config" class="table dt-table-hover table-bordered" data-page='@include('utils.table_paginate', ['data' => $bankBranches])'
+                                style="width:100%; table-layout: fixed;">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 8%">Sl</th>
+                                        <th class="text-center " style="width: 8%">Sl</th>
                                         
-                                        <th class="text-center">Bank Name</th>
-                                        <th class="text-center">Name</th>
-                                        <th class="text-center no-content">Action</th>
+                                        <th class="text-left text-wrap">Bank Name</th>
+                                        <th class="text-left text-wrap">Name</th>
+                                        <th class="text-left no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @csrf
                                     @foreach ($bankBranches as $key => $bankBranch)
                                         <tr>
-<td class="text-center">{{ ($bankBranches->currentPage() - 1) * $bankBranches->perPage() + $loop->iteration  }}</td>
-
-                                            <td class="text-center">{{ $bankBranch->bank?->name }}</td>
-                                            <td class="text-center">{{ $bankBranch->name }}</td>
-                                            <td class="text-center">
+                                            <td class="text-center">{{ ($bankBranches->currentPage() - 1) * $bankBranches->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-left text-wrap">{{ $bankBranch->bank?->name }}</td>
+                                            <td class="text-left text-wrap">{{ $bankBranch->name }}</td>
+                                            <td class="text-left">
                                                 <div class="btn-group btn-group-sm" role="group"
                                                     aria-label="Small button group">
 
@@ -123,10 +122,10 @@
                                 @csrf
                                 <div class="modal-body">
                                     <div class="row mb-4">
-                                        <label for="bank_id" class="col-sm-12 col-form-label">Bank</label>
+                                        <label for="bank_id" class="col-sm-12 col-form-label">Bank<span class="text-danger">*</span></label>
                                         <div class="col-sm-12">
                                             <select name="bank_id" id="bank_id" class="form-select tom-select" required>
-                                                <option value="">Select Bank</option>
+                                                <option value="">Select Bank <span class="text-danger">*</span></option>
                                                 @foreach ($banks as $bank)
                                                     <option value="{{ $bank->id }}">{{ $bank->name }}</option>
                                                 @endforeach
@@ -135,7 +134,7 @@
                                     </div>
 
                                     <div class="row mb-4">
-                                        <label class="col-sm-12 col-form-label">Name</label>
+                                        <label class="col-sm-12 col-form-label">Name<span class="text-danger">*</span></label>
                                         <div class="col-sm-12">
                                             <input type="text" name="name" class="form-control" placeholder=" Name *"
                                                 required>
@@ -175,7 +174,7 @@
                     <div class="modal-body">
 
                         <div class="row mb-4">
-                            <label for="bank_id" class="col-sm-12 col-form-label">Bank</label>
+                            <label for="bank_id" class="col-sm-12 col-form-label">Bank <span class="text-danger">*</span></label>
                             <div class="col-sm-12">
                                 <select name="bank_id" id="bank_id" class="form-select tom-select" required>
                                     <option value="">Select Bank</option>
@@ -188,7 +187,7 @@
 
                         <div class="row mb-4">
 
-                            <label for="name" class="col-sm-12 col-form-label">Name</label>
+                            <label for="name" class="col-sm-12 col-form-label">Name <span class="text-danger">*</span></label>
                             <div class="col-sm-12">
                                 <input type="text" name="name" id="name" class="form-control"
                                     placeholder=" Name *" required>
