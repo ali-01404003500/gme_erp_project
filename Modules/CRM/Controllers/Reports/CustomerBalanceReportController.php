@@ -130,7 +130,7 @@ class CustomerBalanceReportController extends Controller
         // data type, chunked so we never exceed DB parameter limits.
         // ------------------------------------------------------------------
         $aggregated = $this->fetchAggregatedData($customerIds, $start, $end, $beforeStartDate);
-
+dd($aggregated );
         // ------------------------------------------------------------------
         // OPTIMISATION 4 – Build result rows in a single PHP loop; no
         // further DB calls happen here.
@@ -157,7 +157,7 @@ class CustomerBalanceReportController extends Controller
                 'waiver'           => $aggregated['period_waivers'][$customerId] ?? 0,
             ];
 
-dd($aggregated['account_ids'][$customerId]);
+
 
             // Get transactions
             $transaction = Transaction::query()
