@@ -157,6 +157,7 @@ class CustomerBalanceReportController extends Controller
                 'waiver'           => $aggregated['period_waivers'][$customerId] ?? 0,
             ];
 
+dd($aggregated['account_ids'][$customerId]);
 
             // Get transactions
             $transaction = Transaction::query()
