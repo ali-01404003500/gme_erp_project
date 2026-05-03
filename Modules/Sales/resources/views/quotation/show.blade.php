@@ -259,7 +259,6 @@
 <body>
     <!-- সকল পেজে প্রদর্শিত হবে এমন ওয়াটারমার্ক -->
     <div class="watermark">QUOTATION</div>
-
     <header>
         @include('partials._for_quotation_header', ['company_info' => $company_info])
     </header>

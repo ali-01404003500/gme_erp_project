@@ -33,14 +33,11 @@
             <td style="background:#2f5597;  vertical-align:middle; border:none;padding-left:0.4in;"  > </td>
 
             {{-- LOGO --}}   
+ 
 
-              @php
-                $default_company_logo = 'assets/img/gme-logo.png';
-            @endphp
-
-            <td class="logo-box" style="width:15%; background:#ffffff;  vertical-align:middle; border:none;">
-                <img src="{{ s3FileToBase64($company_info->company_logo) ?? $default_company_logo }}"
-                    alt="GME">
+            <td class="logo-box" style="width:15%; background:#ffffff;  vertical-align:middle; border:none;">  
+                <img src="{{ imageFileToBase64($company_info->company_logo) }}" alt="GME"
+                    style="width:60px; height:auto;">
             </td>
 
             {{-- TEXT --}}

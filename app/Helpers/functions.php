@@ -493,6 +493,41 @@ function locationsOfBangladesh()
 //     return $base64Image;
 // }
 
+ 
+
+
+function imageFileToBase64($url)
+{
+    if (!$url) return null;
+
+    try {
+        // force fetch (S3/URL issue avoid)
+        $context = stream_context_create([
+            "http" => [
+                "timeout" => 10,
+                "ignore_errors" => true
+            ]
+        ]);
+
+        $imageData = @file_get_contents($url, false, $context);
+
+        if (!$imageData) return 'null';
+
+        // proper mime detect
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->buffer($imageData);
+
+        if (!$mimeType) {
+            $mimeType = 'image/png';
+        }
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
+
+    } catch (\Exception $e) {
+       return $e->getMessage();
+    }
+}
+
 
 function s3FileToBase64($filename)
 {
