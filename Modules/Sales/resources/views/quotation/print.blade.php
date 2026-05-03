@@ -345,7 +345,7 @@
                                                     </td>
                                                     <td
                                                         style="border: 1px solid black; text-align: right; vertical-align: top;">
-                                                        {{ numberFormat($quotationDetail->amount-$quotationDetail->unit_discount) }}
+                                                        {{ numberFormat($quotationDetail->amount) }}
                                                     </td>
                                                 </tr>
                                             @endforeach

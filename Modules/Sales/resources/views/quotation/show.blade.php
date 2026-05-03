@@ -16,7 +16,7 @@
         }
 
         @page {
-            margin-top: 50px;
+            margin-top: 50px; 
             margin-bottom: 70px;
             margin-left: 40px;
             margin-right: 40px;
@@ -48,6 +48,12 @@
             text-align: center;
             line-height: 1.4;
             z-index: 1000;
+        }
+
+        .header {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
         footer {
@@ -92,14 +98,8 @@
             print-color-adjust: exact;
         }
 
-        .header {
-            width: 100%;
-            margin-bottom: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-       
+      
+ 
 
         table {
             width: 100%;
@@ -114,8 +114,14 @@
         .contact-info,
         .terms,
         .signature {
-            margin: 20px 0;
+            margin: 2px 0;
         }
+
+        .contact-info,
+        .terms{
+            margin-top: -20px;
+        }
+
 
         .office-details {
             display: flex;
@@ -139,7 +145,7 @@
 
         th,
         td {
-            padding: 10px;
+            padding: 10px; 
             text-align: left;
         }
  
@@ -161,9 +167,6 @@
             vertical-align: top;
         }
 
-        .terms h3 {
-            margin: 20px 0 10px;
-        }
 
         .terms p {
             margin: 10px 0 20px;
@@ -247,7 +250,9 @@
             page-break-before: always;
         }
 
-        
+        body {
+            margin-top: 50px; 
+        }
     </style>
 </head>
 
@@ -321,7 +326,7 @@
                 </div>
             </div>
 
-            <table class="mt-20" style="border: 1px solid black; page-break-inside: avoid; width: 100%; padding-top:50px;">
+            <table class="mt-20" style="border: 1px solid black; page-break-inside: avoid; width: 100%;  ">
                 <thead>
                     <tr style="border: 1px solid black;">
                         <th class="text-center" style="border: 1px solid black;" width="1%">SN</th>
@@ -342,50 +347,7 @@
 
                     @endphp
                  
-                    @foreach ($quotation->quotationDetails as $key => $quotationDetail)
-                        {{-- @php
-                            $paginator = new Modules\Sales\Services\HtmlPaginatorService($contentHightRem); // 1000px height per page
-                            $description =
-                                '<div style="font-weight: bold;">' .
-                                $quotationDetail->product->name .
-                                '</div>
-                                    <div>
-                                        <div style="max-width: 272px;overflow: hidden;">Features: ' .
-                                            $paginator->removeStyleAttributesRegex($quotationDetail->product?->description??"") .
-                                '</div>
-                                        <div>Model: ' .
-                                $quotationDetail->product->model .
-                                '</div>
-                                        <div>Brand: ' .
-                                optional($quotationDetail->product->brand)->name .
-                                '</div>
-                                        <div>Manufacturer: ' .
-                                optional(optional($quotationDetail->product->brand)->supplier)->company_name .
-                                '</div>
-                                    </div>';
-                            // 2. Initialize Paginator 
-
-                            // 3. Split Content
-                            $result =  $paginator->paginate($description);
-                                // dd($result);
-                                $pages = $result['pages'];
-                                $remainingHeight = $result['remainingHeight']; // Available height 
-                                if($remainingHeight > 50){
-                                    $contentHightRem = $remainingHeight;
-                                }else{
-                                    $contentHightRem = 625;
-                                }
-
-                            $dd[] = $result;
-                            // dd($pages );
-                            // 4. Loop through pages
-                            $parted = [];
-                            foreach ($pages as $page) {
-                                $parted[] = $page;
-                            }
-                        @endphp --}}
-
-                       
+                    @foreach ($quotation->quotationDetails as $key => $quotationDetail) 
 
                         <tr style="border: 1px solid black; page-break-inside: avoid; width: 100%;s" >
                             <td style="border: 1px solid black; text-align: center;">{{ $key + 1 }}</td>
@@ -440,7 +402,7 @@
                                 {{ number_format($quotationDetail->unit_discount,2) }}
                             </td>
                             <td style="border: 1px solid black; text-align: right;">
-                                {{ number_format($quotationDetail->amount-$quotationDetail->unit_discount,2) }}
+                                {{ number_format($quotationDetail->amount,2) }}
                             </td>
                         </tr>
                      
