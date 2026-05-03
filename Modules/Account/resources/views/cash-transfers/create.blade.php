@@ -65,7 +65,7 @@
                                 </div>
 
                                 <div class="col-md-6 form-group">
-                                    <label for="to_employee_id">To Employee (Receiver)</label>
+                                    <label for="to_employee_id">To Employee (Receiver) <span class="text-danger">*</span></label>
                                     <select name="to_employee_id" id="to_employee_id" class="form-control tom-select" required>
                                         <option value="">Select Receiver</option>
                                         @foreach($employees as $employee)
@@ -81,7 +81,7 @@
                                 </div>
 
                                 <div class="col-md-6 form-group">
-                                    <label for="amount">Amount</label>
+                                    <label for="amount">Amount <span class="text-danger">*</span></label>
                                     <input type="number" name="amount" id="amount" class="form-control" step="0.01" min="0.01" value="{{ old('amount') }}" required>
                                     @error('amount')
                                         <span class="text-danger">{{ $message }}</span>
@@ -97,7 +97,7 @@
                                 </div>
 
                                 <div class="col-md-12 form-group">
-                                    <label for="remarks">Remarks</label>
+                                    <label for="remarks">Remarks <span class="text-danger">*</span></label>
                                     <textarea name="remarks" id="remarks" class="form-control" rows="3">{{ old('remarks') }}</textarea>
                                     @error('remarks')
                                         <span class="text-danger">{{ $message }}</span>
@@ -144,7 +144,7 @@
 
             // Trigger on load if value exists
             var initial_id = $('#from_employee_id').val();
-            if (initial_id) {
+            if (initial_id) { 
                 fetchBalance(initial_id);
             }
         });

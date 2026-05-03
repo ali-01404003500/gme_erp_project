@@ -8,7 +8,7 @@ use Modules\HRMS\Controllers\Api\EmployeeController;
 use Modules\HRMS\Controllers\Api\LeaveApplicationController;
 use Modules\HRMS\Controllers\Api\NoticeBoardController;
 use Modules\HRMS\Controllers\Api\SalaryGenerateController;
-
+use Modules\HRMS\Controllers\CareerController;
 use Modules\HRMS\Http\Controllers\LeaveEncashmentController;
 
 Route::group(['middleware' => ['auth:api'], 'prefix' => 'hrm', 'as' => 'hrm.'], function () {
@@ -39,5 +39,10 @@ Route::group(['middleware' => ['auth:api'], 'prefix' => 'hrm', 'as' => 'hrm.'], 
 
     Route::post('employees/calculate-earned-leave/{employeeId}', [LeaveEncashmentController::class, 'calculate']);
     Route::apiResource('daily-visit-plans', DailyVisitPlanController::class);
+
+    Route::get('/career', [CareerController::class, 'index'])->name('index'); 
+    Route::get('/careerDetails/{slug}', [CareerController::class, 'index'])->name('details'); 
+    Route::get('/career/departments', [CareerController::class, 'index'])->name('getDepartments'); 
+    Route::get('/career/locations', [CareerController::class, 'index'])->name('getLocations');  
 
 });

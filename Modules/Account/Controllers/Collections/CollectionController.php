@@ -27,7 +27,7 @@ class CollectionController extends Controller
     function __construct(CollectionService $service)
     {
         $this->service = $service;
-        $this->middleware('permited')->except(['customerAutocomplete']);
+        $this->middleware('permited')->except(['customerAutocomplete','getBallance']);
     }
 
     /**

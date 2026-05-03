@@ -12,9 +12,8 @@ use Modules\Sales\Models\SalesOrder;
 use Modules\Sales\Models\SalesOrderDetails;
 use App\Services\Notifications\GeneralNotificationService;
 use Modules\Sales\Services\QuotationService;
-use Illuminate\Http\Request;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use Illuminate\Http\Request; 
+use Barryvdh\DomPDF\Facade\Pdf; 
 use Illuminate\Support\Facades\DB;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\CRM\Models\Customer\CustomerSetting;
@@ -22,6 +21,9 @@ use Modules\CRM\Models\Customer\Settings\CustomerType;
 use Modules\LocationManager\Models\Area;
 use Modules\Sales\Models\SalesRequisition;
 use Modules\Sales\Services\SalesOrderService;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf\Dompdf;
 
 class QuotationController extends Controller
 {
@@ -65,16 +67,8 @@ class QuotationController extends Controller
             set_time_limit(1000);
             $html = view('Sales::quotation.indexView', $data)->render();
 
-            // Set Dompdf options
-            $options = new Options();
-            $options->setIsHtml5ParserEnabled(true);
-            $options->setIsRemoteEnabled(true);
-
-            $dompdf = new Dompdf($options);
-            $dompdf->loadHtml($html);
-            $dompdf->setPaper('A4', 'portrait');
-            $dompdf->render();
-
+            // Set Dompdf options  
+            $dompdf = Pdf::loadView('your-view-name', $data); 
             return $dompdf->stream('quotation_list_' . date('Y-m-d') . '.pdf', ['Attachment' => false]);
         }
 
@@ -407,50 +401,83 @@ class QuotationController extends Controller
 
 
 
- // app/Http/Controllers/YourController.php
+    // app/Http/Controllers/YourController.php
+    public function PDF(Request $request)
+    {
+        $quotation = $this->service->show($request->quotation_id);
+        $company_info = CompanyInfo::first();
 
-public function PDF(Request $request)
-{
-    $quotation = $this->service->show($request->quotation_id);
-    $company_info = CompanyInfo::first();
+        $withoutImage = $request->input('without_image') == '1';
 
-    $withoutImage = $request->input('without_image') == '1';
+        // Customer info handling
+        $content = $request->input('edited_content');
 
-    // Get edited customer info from contenteditable field
-    $editedCustomerInfo = $request->input('edited_content');
+        $pattern = '/(E-mail|Cell|ATTN):\s*(<br\s*\/?>|&nbsp;|\s)*(?=<br\s*\/?>|<\/p>|\r\n|\r|\n|$)/i';
+        $cleanContent = preg_replace($pattern, '', $content);
+        $cleanContent = preg_replace('/(<br\s*\/?>\s*){2,}/i', '<br>', $cleanContent);
 
-    if (empty($editedCustomerInfo)) {
-        // Fallback to original data if nothing was edited
-        $editedCustomerInfo = $quotation->quotationTerms->quotation_to . "<br>" .
-                              $quotation->customer_name . "<br>" .
-                              $quotation->area . ', ' . $quotation->address . "<br>" .
-                              "E-mail:<br>Cell:<br>ATTN:<br>Cell:";
+        $editedCustomerInfo = preg_replace('/^<br\s*\/?>/', '', trim($cleanContent));
+
+        if (empty($editedCustomerInfo)) {
+            $editedCustomerInfo = $quotation->quotationTerms->quotation_to . "<br>" .
+                $quotation->customer_name . "<br>" .
+                $quotation->area . ', ' . $quotation->address . "<br>" .
+                "E-mail:<br>Cell:<br>ATTN:<br>Cell:";
+
+            if (!empty($quotation->email)) {
+                $editedCustomerInfo .= "E-mail: " . $quotation->email . "<br>";
+            }
+
+            if (!empty($quotation->attn_person)) {
+                $editedCustomerInfo .= "ATTN: " . $quotation->attn_person . "<br>";
+            }
+
+            if (!empty($quotation->cell_no)) {
+                $editedCustomerInfo .= "Cell: " . $quotation->cell_no . "<br>";
+            }
+        }
+
+        //  FIXED QR GENERATION (IMPORTANT)
+        $quotation->quotationDetails = $quotation->quotationDetails->map(function ($item) {
+
+            $productUrl = ProductCatalog::where('id', $item->product_id)->value('product_catalog_web_link');
+
+            if (!$productUrl) {
+                $item->qr = null;
+                return $item;
+            }
+            
+            $result = Builder::create()
+                ->writer(new PngWriter())
+                ->data($productUrl)
+                ->size(120)
+                ->margin(2)
+                ->build();
+
+            $item->qr = base64_encode($result->getString());
+
+            return $item;
+        });
+
+        //dd($quotation->quotationDetails);
+
+        set_time_limit(300);
+
+        $pdf = Pdf::setOptions([
+            'isRemoteEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'defaultFont' => 'DejaVu Sans',
+        ])->loadView('Sales::quotation.show', [
+            'quotation' => $quotation,
+            'company_info' => $company_info,
+            'withoutImage' => $withoutImage,
+            'editedCustomerInfo' => $editedCustomerInfo,
+        ]);
+
+        $filename = 'Quotation_' . $quotation->reference_no . '_' .
+            ($withoutImage ? 'without_image' : 'with_image') . '_' .
+            now()->format('Y-m-d_H-i-s') . '.pdf';
+
+        return $pdf->stream($filename);
     }
-
-    // Render the PDF-specific template
-    $html = view('Sales::quotation.show', compact(
-        'quotation',
-        'company_info',
-        'withoutImage',
-        'editedCustomerInfo'
-    ))->render();
-
-    // Dompdf setup
-    set_time_limit(300);
-
-    $options = new Options();
-    $options->set('isRemoteEnabled', true);
-    $options->set('isHtml5ParserEnabled', true);
-    $options->set('defaultFont', 'DejaVu Sans'); // Supports Unicode/Bangla if needed
-    $dompdf = new Dompdf($options);
-    $dompdf->loadHtml($html);
-    $dompdf->setPaper('A4', 'portrait');
-    $dompdf->render();
-
-    $filename = 'Quotation_' . $quotation->reference_no . '_' . 
-                ($withoutImage ? 'without_image' : 'with_image') . '_' .
-                now()->format('Y-m-d_H-i-s') . '.pdf';
-
-    return $dompdf->stream($filename, ['Attachment' => false]);
-}
 }

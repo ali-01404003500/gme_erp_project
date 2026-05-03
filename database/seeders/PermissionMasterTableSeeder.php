@@ -680,43 +680,43 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'sales_target',
             ],
 
-            //inventory
+            //inv
             [
                 'title' => 'Inventory',
                 'description' => 'Permission of Add, Remove, Update, Delete Inventory',
-                'key' => 'inventory',
+                'key' => 'inv',
             ],
 
             //product-catalogs
             [
                 'title' => 'Product Inventory',
                 'description' => 'Permission of Add, Remove, Update, Delete Product Catalogs',
-                'key' => 'inventory.product-catalogs',
-                'parent_key' => 'inventory',
+                'key' => 'inv.product-catalogs',
+                'parent_key' => 'inv',
             ],
 
             //product-transfer-requests
             [
                 'title' => 'Product Transfers Requests',
                 'description' => 'Permission of Add, Remove, Update, Delete Product Transfers Requests',
-                'key' => 'inventory.product-transfer-requests',
-                'parent_key' => 'inventory',
+                'key' => 'inv.product-transfer-requests',
+                'parent_key' => 'inv',
             ],
 
             //product-transfers
             [
                 'title' => 'Product Transfers',
                 'description' => 'Permission of Add, Remove, Update, Delete Product Transfers',
-                'key' => 'inventory.product-transfers',
-                'parent_key' => 'inventory',
+                'key' => 'inv.product-transfers',
+                'parent_key' => 'inv',
             ],
 
             //approvers
             [
                 'title' => 'Approvers',
                 'description' => 'Permission of Add, Remove, Update, Delete Approvers',
-                'key' => 'inventory.approvers',
-                'parent_key' => 'inventory',
+                'key' => 'inv.approvers',
+                'parent_key' => 'inv',
             ],
 
 
@@ -725,16 +725,16 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Product Transfer Receive',
                 'description' => 'Permission of Add, Remove, Update, Delete Product Transfer Receive',
-                'key' => 'inventory.product-transfers-receives',
-                'parent_key' => 'inventory',
+                'key' => 'inv.product-transfers-receives',
+                'parent_key' => 'inv',
             ],
 
              //gift/offers
             [
                 'title' => 'Gift/Offers',
                 'description' => 'Permission of Add, Remove, Update, Delete Offers Requests',
-                'key' => 'inventory.offers',
-                'parent_key' => 'inventory',
+                'key' => 'inv.offers',
+                'parent_key' => 'inv',
             ],
            
 
@@ -742,8 +742,8 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Products Price',
                 'description' => 'Permission of Add, Remove, Update, Delete Products',
-                'key' => 'inventory.products',
-                'parent_key' => 'inventory',
+                'key' => 'inv.products',
+                'parent_key' => 'inv',
             ],
 
             
@@ -752,17 +752,17 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Stocks',
                 'description' => 'Permission of Add, Remove, Update, Delete Stocks',
-                'key' => 'inventory.stocks',
-                'parent_key' => 'inventory',
+                'key' => 'inv.stocks',
+                'parent_key' => 'inv',
             ],
 
 
-            //inventory settings
+            //inv settings
             [
                 'title' => 'Inventory Settings',
                 'description' => 'Permission of Add, Remove, Update, Delete Inventory Settings',
-                'key' => 'inventory.settings',
-                'parent_key' => 'inventory',
+                'key' => 'inv.settings',
+                'parent_key' => 'inv',
             ],
 
 
@@ -770,8 +770,8 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Product Units',
                 'description' => 'Permission of Add, Remove, Update, Delete Product Units',
-                'key' => 'inventory.settings.units',
-                'parent_key' => 'inventory',
+                'key' => 'inv.settings.units',
+                'parent_key' => 'inv',
             ],
 
             
@@ -779,8 +779,8 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Product Types',
                 'description' => 'Permission of Add, Remove, Update, Delete Product Types',
-                'key' => 'inventory.settings.product-types',
-                'parent_key' => 'inventory',
+                'key' => 'inv.settings.product-types',
+                'parent_key' => 'inv',
             ],
             
                       
@@ -788,23 +788,23 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Tags',
                 'description' => 'Permission of Add, Remove, Update, Delete Tags',
-                'key' => 'inventory.settings.tags',
-                'parent_key' => 'inventory',
+                'key' => 'inv.settings.tags',
+                'parent_key' => 'inv',
             ],
             //brands
             [
                 'title' => 'Brands',
                 'description' => 'Permission of Add, Remove, Update, Delete Brands',
-                'key' => 'inventory.settings.brands',
-                'parent_key' => 'inventory',
+                'key' => 'inv.settings.brands',
+                'parent_key' => 'inv',
             ],
 
             //Reports
             [
                 'title' => 'Reports',
                 'description' => 'Permission of Add, Remove, Update, Delete Reports',
-                'key' => 'inventory.reports',
-                'parent_key' => 'inventory',
+                'key' => 'inv.reports',
+                'parent_key' => 'inv',
             ],
             
              

@@ -51,13 +51,13 @@
                                 </div>
 
                                 <div class="col-md-6 form-group">
-                                    <label>To Employee (Receiver)</label>
+                                    <label>To Employee (Receiver) <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control"
                                         value="{{ $cashTransfer->toEmployee->full_name ?? '' }}" readonly disabled>
                                 </div>
 
                                 <div class="col-md-6 form-group">
-                                    <label for="amount">Amount</label>
+                                    <label for="amount">Amount <span class="text-danger">*</span></label>
                                     <input type="number" name="amount" id="amount" class="form-control" step="0.01"
                                         min="0.01" value="{{ old('amount', $cashTransfer->amount) }}" required>
                                     @error('amount')
@@ -75,7 +75,7 @@
                                 </div>
 
                                 <div class="col-md-12 form-group">
-                                    <label for="remarks">Remarks</label>
+                                    <label for="remarks">Remarks <span class="text-danger">*</span></label>
                                     <textarea name="remarks" id="remarks" class="form-control"
                                         rows="3">{{ old('remarks', $cashTransfer->remarks) }}</textarea>
                                     @error('remarks')

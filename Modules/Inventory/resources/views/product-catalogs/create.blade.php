@@ -204,6 +204,18 @@
                                                                             </select>
                                                                         </div>
                                                                     </div>
+
+                                                                    <div class="col-md-4">
+                                                                        <div class="form-group mb-3">
+                                                                            <label for="product_catalog_web_link"
+                                                                                class="col-form-label">Catalog Web Link</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="product_catalog_web_link" name="product_catalog_web_link"
+                                                                                value="{{ old('product_catalog_web_link') }}"
+                                                                                placeholder="Product Catalog Web Link">
+                                                                        </div>
+                                                                    </div>
+                                                                    
                                                                     <div class="col-md-4">
                                                                         <div class="form-group mb-3">
                                                                             <label class="col-form-label">Status</label>
