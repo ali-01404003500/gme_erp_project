@@ -1,8 +1,7 @@
 <?php
 
 namespace Modules\Account\Services;
-
-use DB;
+use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\CashTransfer;
 
 class CashTransferService

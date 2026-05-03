@@ -110,9 +110,7 @@
                                     {{ t_('menu.account-setup-bank-accounts-menu-title') }}
                                 </a>
                             </li>
-                        @endif
-
-
+                        @endif 
 
                     </ul>
                 </li>
@@ -807,6 +805,18 @@
                                     title="Account Payable">
                                     <i class="nav-icon fa fa-building"></i>
                                     Acc. Payable
+                                </a>
+                            </li>
+                        @endif
+
+
+                        @if (hasPermission('account.report.employee-cash-handling'))
+                            <li>
+                                <a href="{{ route('account.report.employee-cash-handling') }}"
+                                    class="{{ request()->routeIs('account.report.employee-cash-handling') ? 'active' : '' }}"
+                                    title="Employee Cash Handling Report">
+                                    <i class="nav-icon fa fa-building"></i>
+                                    Employee Cash Handling Report
                                 </a>
                             </li>
                         @endif

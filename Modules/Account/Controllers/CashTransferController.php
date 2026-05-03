@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Modules\Account\Models\CashTransfer;
 use Modules\Account\Services\CashTransferService;
 use Illuminate\Http\Request;
+use Modules\HRMS\Models\Employee;
 
 class CashTransferController extends Controller
 {
@@ -27,7 +28,7 @@ class CashTransferController extends Controller
     public function index()
     {
         $data['cashTransfers'] = $this->service->getAll();
-        $data['currentEmployee'] = \Modules\HRMS\Models\Employee::where('user_id', auth()->id())->first();
+        $data['currentEmployee'] = Employee::where('user_id', auth()->id())->first();
 
         return view("Account::cash-transfers.index", $data);
     }
@@ -37,8 +38,8 @@ class CashTransferController extends Controller
      */
     public function create()
     {
-        $data['employees'] = \Modules\HRMS\Models\Employee::all();
-        $data['currentEmployee'] = \Modules\HRMS\Models\Employee::where('user_id', auth()->id())->first();
+        $data['employees'] = Employee::where('status',1)->get();
+        $data['currentEmployee'] = Employee::where('user_id', auth()->id())->first();
         return view('Account::cash-transfers.create', $data);
     }
 
@@ -52,7 +53,7 @@ class CashTransferController extends Controller
             'to_employee_id' => 'required|exists:employees,id|different:from_employee_id',
             'amount' => 'required|numeric|min:0.01',
             'transfer_date' => 'required|date',
-            'remarks' => 'nullable|string',
+            'remarks' => 'required|string',
         ]);
         try {
             $this->service->store($validate);
@@ -77,7 +78,7 @@ class CashTransferController extends Controller
     public function edit(CashTransfer $cashTransfer)
     {
         $data['cashTransfer'] = $cashTransfer;
-        $data['employees'] = \Modules\HRMS\Models\Employee::all();
+        $data['employees'] = Employee::all();
         return view("Account::cash-transfers.edit", $data);
     }
 
@@ -89,7 +90,7 @@ class CashTransferController extends Controller
         $validate = $request->validate([
             'amount' => 'required|numeric|min:0.01',
             'transfer_date' => 'required|date',
-            'remarks' => 'nullable|string',
+            'remarks' => 'required|string',
             'status' => 'nullable|string',
         ]);
         try {
@@ -125,4 +126,6 @@ class CashTransferController extends Controller
         $this->service->delete($cashTransfer);
         return redirect()->route('account.cash-transfers.index')->with('success', 'CashTransfer deleted successfully.');
     }
+
+
 }

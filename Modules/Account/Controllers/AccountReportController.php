@@ -23,6 +23,7 @@ use Modules\Account\Services\TransactionLedgerReportService;
 use Modules\Account\Services\VoucherReportService;
 use Modules\CMS\Models\ApplicationEntry;
 use Modules\CRM\Models\Customer\Customer;
+use Modules\HRMS\Models\Employee;
 use Modules\Inventory\Services\ExportService;
 use Modules\Legal\Models\LegalBillEntry;
 use Modules\Purchase\Models\Supplier;
@@ -574,6 +575,21 @@ public function vendorLedgerReport(Request $request)
 
 
 
+    public function employeeCashHandlingReport()
+    { 
+        $employees = Employee::where('status', '1')->get();
+
+        $data = $employees->map(function ($employee) {
+            $account = $employee->getAccount(); 
+
+            return [
+                'name' => $employee->full_name,
+                'balance' => $account ? $account->balance : 0,
+            ];
+        })->toArray();
+
+        return view('Account::reports.employee-cash-handling.index', ['data' => $data]);
+    }
 
 
 

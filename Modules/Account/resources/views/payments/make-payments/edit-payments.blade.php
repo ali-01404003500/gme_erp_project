@@ -63,6 +63,10 @@
                                             <option value="vendor" {{ (old('payment_to_type', $payment_type ?? '') == 'vendor') ? 'selected' : '' }}>{{ trans('Vendor Payment') }}</option>
                                             <option value="broker" {{ (old('payment_to_type', $payment_type ?? '') == 'broker') ? 'selected' : '' }}>{{ trans('Broker') }}</option>
                                             <option value="petty_cash_expense" {{ (old('payment_to_type', $payment_type ?? '') == 'petty_cash_expense') ? 'selected' : '' }}>{{ trans('Petty Cash Expense') }}</option>
+                                            <option value="withdrawal" {{ (old('payment_to_type', $payment_type ?? '') == 'withdrawal') ? 'selected' : '' }}>{{ trans('Withdrawal [Equity]') }}</option>
+                                            <option value="equipment" {{ (old('payment_to_type', $payment_type ?? '') == 'equipment') ? 'selected' : '' }}>{{ trans('Equipment [Fixed Asset]') }}</option>
+                                            <option value="loan_payment" {{ (old('payment_to_type', $payment_type ?? '') == 'loan_payment') ? 'selected' : '' }}>{{ trans('Loan Payment [Liabilites]') }}</option>
+ 
                                         </select>
                                     </div>
                                 </div>

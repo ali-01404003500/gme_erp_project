@@ -1,4 +1,5 @@
 <!-- views/sales/quotation/pdf.blade.php (PDF Blade) -->
+
 <!DOCTYPE html>
 <html>
 
@@ -15,8 +16,8 @@
         }
 
         @page {
-            margin-top: 110px;
-            margin-bottom: 80px;
+            margin-top: 50px;
+            margin-bottom: 70px;
             margin-left: 40px;
             margin-right: 40px;
             /* ওয়াটারমার্ক ব্যাকগ্রাউন্ড হিসেবে যোগ করুন */
@@ -31,14 +32,18 @@
             .watermark {
                 display: block !important;
             }
+            .left-sidebar {
+                background-color: #2f5597 !important;
+                -webkit-print-color-adjust: exact !important;
+            }
         }
 
         header {
             position: fixed;
-            top: -110px;
+            top: -50px;
             left: -40px;
             right: -40px;
-            height: 110px;
+            height: 50px;
             background-color: #fff;
             text-align: center;
             line-height: 1.4;
@@ -47,13 +52,12 @@
 
         footer {
             position: fixed;
-            bottom: -80px;
+            bottom: -80px; 
             left: -40px;
             right: -40px;
-            height: 80px;
+            height: 80px; 
             background-color: #fff;
-            text-align: center;
-            line-height: 1.3;
+            text-align: center; 
             border-top: 1px solid #ccc;
             z-index: 1000;
         }
@@ -95,39 +99,7 @@
             overflow: hidden;
         }
 
-        .header-skew {
-            width: 100%;
-            transform: skewX(35deg);
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -99;
-        }
-
-        .header-skew {
-            position: absolute;
-            top: 5px;
-            left: 0;
-            transform: skewX(33deg);
-        }
-
-        .blue-left {
-            width: 17%;
-            height: 55px;
-            border-left: 1px solid white !important;
-            border-bottom: 1px solid white !important;
-            border-right: 4px solid rgb(0, 0, 179);
-            border-top: 4px solid rgb(0, 0, 179);
-        }
-
-        .blue-bottom {
-            width: 83%;
-            height: 55px;
-            border-right: 1px solid white !important;
-            border-top: 1px solid white !important;
-            border-left: 4px solid rgb(0, 0, 179);
-            border-bottom: 4px solid rgb(0, 0, 179);
-        }
+       
 
         table {
             width: 100%;
@@ -170,17 +142,23 @@
             padding: 10px;
             text-align: left;
         }
+ 
+
 
         .terms-table {
             width: 100%;
-            margin: 20px 0;
+            margin: 5px 0;
             border: none;
+            border-collapse: collapse;
+            border-spacing: 0;
         }
 
         .terms-table th,
         .terms-table td {
-            padding: 10px 0;
             border: none;
+            padding: 5px !important;
+            margin: 0;
+            vertical-align: top;
         }
 
         .terms h3 {
@@ -256,6 +234,20 @@
             color: #666;
             margin-top: 5px;
         }
+        .sidebar {
+            position: fixed;
+            top: 110px;
+            bottom: 80px;
+            left: -40px;
+            width: 120px;
+            background: #fff;
+        }
+
+        .terms {
+            page-break-before: always;
+        }
+
+        
     </style>
 </head>
 
@@ -264,13 +256,19 @@
     <div class="watermark">QUOTATION</div>
 
     <header>
-        @include('partials._for_pdf_header', ['company_info' => $company_info])
+        @include('partials._for_quotation_header', ['company_info' => $company_info])
     </header>
     <footer>
-        @include('partials._for_pdf_footer')
+        @include('partials._for_quotation_footer')
     </footer>
 
-    <div class="content">
+    {{-- SIDEBAR --}}
+    <aside class="sidebar">
+        @include('partials._for_quotation_sidebar')
+    </aside>
+
+
+    <div class="content" style="padding-left:15px;">
         <div class="catalog-container">
             <div style="height: 800px;">
                 <div class="contact-info">
@@ -297,7 +295,11 @@
                     <p>Once again, I appreciate your valuable time considering our offer. I am looking forward
                         to your positive response. Please do not hesitate to raise any queries regarding our
                         proposal.</p>
+                    
+                    <br><br><br>
                     <p>Best Regards,</p>
+
+                   
 
                     @if (@$quotation->signature->signature)
                         <img src="{{ @$quotation->signature->signature }}" alt="Receiver Signature"
@@ -319,27 +321,29 @@
                 </div>
             </div>
 
-            <table class="mt-20" style="border: 1px solid black; page-break-inside: avoid; width: 100%;">
+            <table class="mt-20" style="border: 1px solid black; page-break-inside: avoid; width: 100%; padding-top:50px;">
                 <thead>
                     <tr style="border: 1px solid black;">
-                        <th style="border: 1px solid black;" width="1%">SN</th>
-                        <th style="border: 1px solid black;" width="45%">Product Description</th>
+                        <th class="text-center" style="border: 1px solid black;" width="1%">SN</th>
+                        <th class="text-center" style="border: 1px solid black;" width="45%">Description of Goods</th>
                         @if (!$withoutImage)
-                            <th style="border: 1px solid black;" width="5%">Photo</th>
+                            <th class="text-center" style="border: 1px solid black;" width="24%">Photo</th>
                         @endif
-                        <th style="border: 1px solid black;" width="5%">Quantity</th>
-                        <th style="border: 1px solid black;" width="5%">Price</th>
-                        <th style="border: 1px solid black;" width="5%">Unit Discount</th>
-                        <th style="border: 1px solid black;" width="5%">Amount</th>
+                        <th class="text-center" style="border: 1px solid black;" width="5%">Quantity</th>
+                        <th class="text-center" style="border: 1px solid black;" width="9%">Price</th>
+                        <th class="text-center" style="border: 1px solid black;" width="7%">Unit Discount</th>
+                        <th class="text-center" style="border: 1px solid black;" width="9%">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php
                         $contentHightRem = 625;
                         $dd = [];
+
                     @endphp
+                 
                     @foreach ($quotation->quotationDetails as $key => $quotationDetail)
-                        @php
+                        {{-- @php
                             $paginator = new Modules\Sales\Services\HtmlPaginatorService($contentHightRem); // 1000px height per page
                             $description =
                                 '<div style="font-weight: bold;">' .
@@ -359,35 +363,60 @@
                                 optional(optional($quotationDetail->product->brand)->supplier)->company_name .
                                 '</div>
                                     </div>';
-                            // 2. Initialize Paginator
-                       
+                            // 2. Initialize Paginator 
 
-                             
+                            // 3. Split Content
+                            $result =  $paginator->paginate($description);
+                                // dd($result);
+                                $pages = $result['pages'];
+                                $remainingHeight = $result['remainingHeight']; // Available height 
+                                if($remainingHeight > 50){
+                                    $contentHightRem = $remainingHeight;
+                                }else{
+                                    $contentHightRem = 625;
+                                }
 
-
-                        // 3. Split Content
-                       $result =  $paginator->paginate($description);
-// dd($result);
-                        $pages = $result['pages'];
-                        $remainingHeight = $result['remainingHeight']; // Available height 
-                        if($remainingHeight > 50){
-                            $contentHightRem = $remainingHeight;
-                        }else{
-                            $contentHightRem = 625;
-                        }
-
-                        $dd[] = $result;
-                        // dd($pages );
-                        // 4. Loop through pages
-                        $parted = [];
-                        foreach ($pages as $page) {
-                            $parted[] = $page;
+                            $dd[] = $result;
+                            // dd($pages );
+                            // 4. Loop through pages
+                            $parted = [];
+                            foreach ($pages as $page) {
+                                $parted[] = $page;
                             }
-                            @endphp
+                        @endphp --}}
+
+                       
 
                         <tr style="border: 1px solid black; page-break-inside: avoid; width: 100%;s" >
                             <td style="border: 1px solid black; text-align: center;">{{ $key + 1 }}</td>
-                            <td style="border: 1px solid black;">{!!$pages[0]!!}</td>
+
+                            <td style="border: 1px solid black;">
+                                <div style="font-weight: bold;font-size:11px;">
+                                    {{-- {{ $quotationDetail->product->name   }}  --}}
+                                    {{  $quotationDetail->product->withoutModelSuffix()->name }}
+                                </div><br>
+                                <div style="font-size:9px;"> 
+                                    Model: {{ $quotationDetail->product->model}} 
+                                </div>
+                                <div style="font-size:9px;"> 
+                                    Brand:{{ optional($quotationDetail->product->brand)->name  }} 
+                                </div>
+                                {{-- <div style="font-size:9px;"> 
+                                    Manufacturer:{{ optional(optional($quotationDetail->product->brand)->supplier)->company_name }}
+                                </div> --}}
+                                <div style="font-size:9px;"> 
+                                    Manufacturer:{{ $quotationDetail->product->product_origin }}
+                                </div>
+
+                                <div style="font-size:9px;">   
+                                    @if(!empty($quotationDetail->qr))
+                                        <img src="data:image/png;base64,{{ rtrim($quotationDetail->qr) }}" style="width:60px; height:60px;">
+                                    @endif
+                                </div>
+                           
+
+                                
+                            </td>
                             @if(!$withoutImage)
                                 <td style="border: 1px solid black; text-align: center;">
                                     @if ($quotationDetail->product->profile_image_upload)
@@ -400,35 +429,21 @@
                             @endif
 
                             <td style="border: 1px solid black; text-align: center;">
-                                {{ numberFormat($quotationDetail->quantity) }}
+                                {{ number_format($quotationDetail->quantity) }}
                                 {{ $quotationDetail->product->unit->name }}
                             </td>
 
                             <td style="border: 1px solid black; text-align: right;">
-                                {{ numberFormat($quotationDetail->price) }}
+                                {{ number_format($quotationDetail->price,2) }}
                             </td>
                             <td style="border: 1px solid black; text-align: right;">
-                                {{ numberFormat($quotationDetail->unit_discount) }}
+                                {{ number_format($quotationDetail->unit_discount,2) }}
                             </td>
                             <td style="border: 1px solid black; text-align: right;">
-                                {{ numberFormat($quotationDetail->amount) }}
+                                {{ number_format($quotationDetail->amount-$quotationDetail->unit_discount,2) }}
                             </td>
                         </tr>
-                        @if (count($parted) > 1)
-                            @for ($i = 1; $i < count($parted); $i++)
-                                <tr >
-                                    <td style="border: 1px solid black; text-align: center;"></td>
-                                    <td style="border: 1px solid black ;">{!! $parted[$i] !!}</td>
-                                    @if (!$withoutImage)
-                                        <td style="border: 1px solid black; text-align: center;"></td>
-                                    @endif
-                                    <td style="border: 1px solid black;"></td>
-                                    <td style="border: 1px solid black; text-align: right;"></td>
-                                    <td style="border: 1px solid black; text-align: right;"></td>
-                                    <td style="border: 1px solid black; text-align: right;"></td>
-                                </tr>
-                            @endfor
-                        @endif
+                     
                     @endforeach
                     {{-- @dd($dd) --}}
                 </tbody>
@@ -440,13 +455,13 @@
             </table>
 
             <div style="text-align: right" class="mt-20">
-                <p>Total Amount: <strong>{{ numberFormat($quotation->total_amount) }}</strong></p>
-                <p>Discount: <strong>{{ numberFormat($quotation->discount) }}</strong></p>
-                <p><strong>Net Amount: {{ numberFormat($quotation->total) }}</strong></p>
+                <p>Total Amount: <strong>{{ number_format($quotation->total_amount,2) }}</strong></p>
+                <p>Discount: <strong>{{ number_format($quotation->discount,2) }}</strong></p>
+                <p><strong>Net Amount: {{ number_format($quotation->total,2) }}</strong></p>
             </div>
 
             <div class="terms ">
-                <table class="terms-table">
+                <table class="terms-table" style="font-size:11px;">
                     <tr>
                         <td colspan="3"><h3>TERMS & CONDITIONS</h3></td>
                     </tr>
@@ -481,7 +496,7 @@
                         <td>{!! $quotation->quotationTerms->warranty !!}</td>
                     </tr>
                     <tr>
-                        <td width="15%"><strong>Buyer's responsibility</strong></td>
+                        <td width="15%"><strong>Buyer's Responsibility</strong></td>
                         <td width="5%">:</td>
                         <td>{!! $quotation->quotationTerms->buyers_responsibility !!}</td>
                     </tr>
@@ -500,10 +515,16 @@
 
             <div class="signature mt-20">
                 <p>Thanks & Regards,</p>
-                <p>Authorized<br>
-                    Mohammad Ali<br>
-                    Administrative Manager(Admin)<br>
-                    Cell: 01404003500</p>
+                @if ($quotation->status == 1)
+                    {{ @$quotation->approvedBy->name }}<br>
+                    {{ @$quotation->approvedBy->employee->employementDetail->designation->name }}<br>
+                    Cell: {{ @$quotation->approvedBy->employee->office_phone }}
+                @else
+                    {{ @$quotation->createdBy->name }}<br>
+                    {{ @$quotation->createdBy->employee->employementDetail->designation->name }}<br>
+                    Cell: {{ @$quotation->createdBy->employee->office_phone }}
+                @endif
+
             </div>
         </div>
     </div>

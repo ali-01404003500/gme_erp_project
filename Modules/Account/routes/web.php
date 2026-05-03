@@ -200,7 +200,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
 
         Route::get('account-receivable', [AccountReportController::class, 'accountReceivableReport'])->name('report.account-receivable');
         Route::get('account-payable', [AccountReportController::class, 'accountPayableReport'])->name('report.account-payable');
+        Route::get('employee-cash-handling', [AccountReportController::class, 'employeeCashHandlingReport'])->name('report.employee-cash-handling');
 
+       
 
         Route::get('revenue-analysis', [AccountReportController::class, 'revenueAnalysisReport'])->name('report.revenue-analysis');
         Route::get('expense-analysis', [AccountReportController::class, 'expenseAnalysisReport'])->name('report.expense-analysis');

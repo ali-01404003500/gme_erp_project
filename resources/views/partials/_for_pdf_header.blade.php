@@ -177,10 +177,10 @@
             </tr>
         </table>
     </div>
-    <table class="content-table" style="border: none;">
+    <table class="content-table" style="border: none;"> 
         <tr>
             @php
-                $default_company_logo = 'data:image/png;base64,' . base64_encode(file_get_contents(public_path('default_logo.png')));
+                $default_company_logo = 'assets/img/gme-logo.png';
             @endphp
             <td class="com-logo" style="border: none;">
                 <img src="{{ s3FileToBase64($company_info->company_logo) ?? $default_company_logo }}"
@@ -189,7 +189,7 @@
             <td class="com-info" style="border: none;">
                 <div class="com">
                     <h1 style="color: rgb(13, 13, 92);">{{ $company_info->company_name }}</h1>
-                    <p style="color: rgb(226, 35, 35); font-size: 11px!important;">{{ $company_info->company_bio }}</p>
+                    <p style="color: rgb(226, 150, 35); font-size: 11px!important;">{{ $company_info->company_bio }}</p>
                 </div>
             </td>
         </tr>

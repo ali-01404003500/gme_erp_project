@@ -11,8 +11,7 @@ use Modules\Inventory\Models\Settings\Tag;
 use Modules\Inventory\Models\Settings\Unit;
 use Modules\Inventory\Services\ProductCatalogService;
 use Illuminate\Http\Request;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use Barryvdh\DomPDF\Facade\Pdf; 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 class ProductCatalogController extends Controller
@@ -45,14 +44,8 @@ class ProductCatalogController extends Controller
         if ($request->export == "pdf") {
             set_time_limit(1000);
             $html = view('Inventory::product-catalogs.indexView', $data)->render();
-
-            // Set Dompdf options
-            $options = new Options();
-            $options->setIsHtml5ParserEnabled(true);
-            $options->setIsRemoteEnabled(true);
-            
-            $dompdf = new Dompdf($options);
-            $dompdf->loadHtml($html);
+ 
+            $dompdf = Pdf::loadView( $html);  
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
 
@@ -93,6 +86,7 @@ class ProductCatalogController extends Controller
             'unit_type_id' => 'required|exists:units,id',
             'product_tag_id' => 'nullable|exists:tags,id',
             'product_origin' => 'nullable|string|max:255',
+            'product_catalog_web_link' => 'nullable|string|max:255', 
             'status' => 'nullable|string|max:255',
             'is_serial' => 'nullable|string|max:255',
             'is_expire_date' => 'nullable|string|max:255',
@@ -126,13 +120,7 @@ class ProductCatalogController extends Controller
             set_time_limit(1000);
             $html = view('Inventory::product-catalogs.view', $data)->render();
 
-            // Set Dompdf options
-            $options = new Options();
-            $options->setIsHtml5ParserEnabled(true);
-            $options->setIsRemoteEnabled(true);
-            
-            $dompdf = new Dompdf($options);
-            $dompdf->loadHtml($html);
+            $dompdf = Pdf::loadView( $html);  
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
 
@@ -172,6 +160,7 @@ class ProductCatalogController extends Controller
             'unit_type_id' => 'required|exists:units,id',
             'product_tag_id' => 'nullable|exists:tags,id',
             'product_origin' => 'nullable|string|max:255',
+            'product_catalog_web_link' => 'nullable|string|max:255', 
             'status' => 'nullable|string|max:255',
             'is_serial' => 'nullable|string|max:255',
             'is_expire_date' => 'nullable|string|max:255',
@@ -307,6 +296,7 @@ class ProductCatalogController extends Controller
                     'unit_type_id' => $unit->id,
                     'product_tag_id' => $tag ? $tag->id : null,
                     'product_origin' => $data['product_origin'] ?? null,
+                    'product_catalog_web_link' => $data['product_catalog_web_link'] ?? null, 
                     'status' => $data['status'] ?? null,
                     'is_serial' => $data['is_serial'] ?? null,
                     'is_expire_date' => $data['is_expire_date'] ?? null,
@@ -328,6 +318,7 @@ class ProductCatalogController extends Controller
                     'unit_type_id' => 'required|exists:units,id',
                     'product_tag_id' => 'nullable|exists:tags,id',
                     'product_origin' => 'nullable|string|max:255',
+                    'product_catalog_web_link' => 'nullable|string|max:255', 
                     'status' => 'nullable|string|max:255',
                     'is_serial' => 'nullable|string|max:255',
                     'is_expire_date' => 'nullable|string|max:255',

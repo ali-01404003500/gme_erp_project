@@ -22,5 +22,6 @@ class QuotationDetail extends BaseModel
     {
         return $this->belongsTo(ProductCatalog::class, 'product_id');
     }
+    
 
 }

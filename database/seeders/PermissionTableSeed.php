@@ -2541,125 +2541,125 @@ class PermissionTableSeed extends Seeder
             //product-catalogs
             [
                 'name' => 'Create Product Catalog',
-                'slug' => 'inventory.product-catalogs.create',
+                'slug' => 'inv.product-catalogs.create',
                 'description' => 'Product Catalog create permission',
-                'key' => 'inventory.product-catalogs'
+                'key' => 'inv.product-catalogs'
             ],
 
             [
                 'name' => 'Product Catalog List',
-                'slug' => 'inventory.product-catalogs.index',
+                'slug' => 'inv.product-catalogs.index',
                 'description' => 'Product Catalog list permission',
-                'key' => 'inventory.product-catalogs'
+                'key' => 'inv.product-catalogs'
             ],
 
             [
                 'name' => 'Product Catalog Update',
-                'slug' => 'inventory.product-catalogs.update',
+                'slug' => 'inv.product-catalogs.update',
                 'description' => 'Product Catalog update permission',
-                'key' => 'inventory.product-catalogs'
+                'key' => 'inv.product-catalogs'
             ],
 
             [
                 'name' => 'Product Catalog View',
-                'slug' => 'inventory.product-catalogs.show',
+                'slug' => 'inv.product-catalogs.show',
                 'description' => 'Product Catalog show permission',
-                'key' => 'inventory.product-catalogs'
+                'key' => 'inv.product-catalogs'
             ],
 
             [
                 'name' => 'Product Catalog Delete',
-                'slug' => 'inventory.product-catalogs.destroy',
+                'slug' => 'inv.product-catalogs.destroy',
                 'description' => 'Product Catalog delete permission',
-                'key' => 'inventory.product-catalogs'
+                'key' => 'inv.product-catalogs'
             ],
             [
                 'name' => 'Product Catalog Settings',
-                'slug' => 'inventory.product-catalogs.settings',
+                'slug' => 'inv.product-catalogs.settings',
                 'description' => 'Product Catalog settings permission',
-                'key' => 'inventory.product-catalogs'
+                'key' => 'inv.product-catalogs'
             ],
 
 
             // product-transfer-requests
             [
                 'name' => 'Create Product Transfer',
-                'slug' => 'inventory.product-transfer-requests.create',
+                'slug' => 'inv.product-transfer-requests.create',
                 'description' => 'Product Transfer create permission',
-                'key' => 'inventory.product-transfer-requests'
+                'key' => 'inv.product-transfer-requests'
             ],
 
             [
                 'name' => 'Product Transfer List',
-                'slug' => 'inventory.product-transfer-requests.index',
+                'slug' => 'inv.product-transfer-requests.index',
                 'description' => 'Product Transfer list permission',
-                'key' => 'inventory.product-transfer-requests'
+                'key' => 'inv.product-transfer-requests'
             ],
 
             [
                 'name' => 'Product Transfer Update',
-                'slug' => 'inventory.product-transfer-requests.update',
+                'slug' => 'inv.product-transfer-requests.update',
                 'description' => 'Product Transfer update permission',
-                'key' => 'inventory.product-transfer-requests'
+                'key' => 'inv.product-transfer-requests'
             ],
 
             [
                 'name' => 'Product Transfer View',
-                'slug' => 'inventory.product-transfer-requests.show',
+                'slug' => 'inv.product-transfer-requests.show',
                 'description' => 'Product Transfer show permission',
-                'key' => 'inventory.product-transfer-requests'
+                'key' => 'inv.product-transfer-requests'
             ],
 
             [
                 'name' => 'Product Transfer Delete',
-                'slug' => 'inventory.product-transfer-requests.destroy',
+                'slug' => 'inv.product-transfer-requests.destroy',
                 'description' => 'Product Transfer delete permission',
-                'key' => 'inventory.product-transfer-requests'
+                'key' => 'inv.product-transfer-requests'
             ],
 
 
             [
                 'name' => 'Product Transfer Approve',
-                'slug' => 'inventory.product-transfer-requests.approve',
+                'slug' => 'inv.product-transfer-requests.approve',
                 'description' => 'Product Transfer approve permission',
-                'key' => 'inventory.product-transfer-requests'
+                'key' => 'inv.product-transfer-requests'
             ],
 
             
             // product-transfers
             [
                 'name' => 'Create Product Transfer',
-                'slug' => 'inventory.product-transfers.create',
+                'slug' => 'inv.product-transfers.create',
                 'description' => 'Product Transfer create permission',
-                'key' => 'inventory.product-transfers'
+                'key' => 'inv.product-transfers'
             ],
 
             [
                 'name' => 'Product Transfer List',
-                'slug' => 'inventory.product-transfers.index',
+                'slug' => 'inv.product-transfers.index',
                 'description' => 'Product Transfer list permission',
-                'key' => 'inventory.product-transfers'
+                'key' => 'inv.product-transfers'
             ],
 
             [
                 'name' => 'Product Transfer Update',
-                'slug' => 'inventory.product-transfers.update',
+                'slug' => 'inv.product-transfers.update',
                 'description' => 'Product Transfer update permission',
-                'key' => 'inventory.product-transfers'
+                'key' => 'inv.product-transfers'
             ],
 
             [
                 'name' => 'Product Transfer View',
-                'slug' => 'inventory.product-transfers.show',
+                'slug' => 'inv.product-transfers.show',
                 'description' => 'Product Transfer show permission',
-                'key' => 'inventory.product-transfers'
+                'key' => 'inv.product-transfers'
             ],
 
             [
                 'name' => 'Product Transfer Delete',
-                'slug' => 'inventory.product-transfers.destroy',
+                'slug' => 'inv.product-transfers.destroy',
                 'description' => 'Product Transfer delete permission',
-                'key' => 'inventory.product-transfers'
+                'key' => 'inv.product-transfers'
             ],
 
             
@@ -2668,37 +2668,37 @@ class PermissionTableSeed extends Seeder
             // product-transfers receive
             [
                 'name' => 'Create Product Transfer Receive',
-                'slug' => 'inventory.product-transfers-receives.create',
+                'slug' => 'inv.product-transfers-receives.create',
                 'description' => 'Product Transfer receive create permission',
-                'key' => 'inventory.product-transfers-receives'
+                'key' => 'inv.product-transfers-receives'
             ],
 
             [
                 'name' => 'Product Transfer Receive List',
-                'slug' => 'inventory.product-transfers-receives.index',
+                'slug' => 'inv.product-transfers-receives.index',
                 'description' => 'Product Transfer receive list permission',
-                'key' => 'inventory.product-transfers-receives'
+                'key' => 'inv.product-transfers-receives'
             ],
 
             [
                 'name' => 'Product Transfer Receive Update',
-                'slug' => 'inventory.product-transfers-receives.update',
+                'slug' => 'inv.product-transfers-receives.update',
                 'description' => 'Product Transfer receive update permission',
-                'key' => 'inventory.product-transfers-receives'
+                'key' => 'inv.product-transfers-receives'
             ],
 
             [
                 'name' => 'Product Transfer Receive View',
-                'slug' => 'inventory.product-transfers-receives.show',
+                'slug' => 'inv.product-transfers-receives.show',
                 'description' => 'Product Transfer receive show permission',
-                'key' => 'inventory.product-transfers-receives'
+                'key' => 'inv.product-transfers-receives'
             ],
 
             [
                 'name' => 'Product Transfer Receive Delete',
-                'slug' => 'inventory.product-transfers-receives.destroy',
+                'slug' => 'inv.product-transfers-receives.destroy',
                 'description' => 'Product Transfer receive delete permission',
-                'key' => 'inventory.product-transfers-receives'
+                'key' => 'inv.product-transfers-receives'
             ],
 
             
@@ -2706,205 +2706,205 @@ class PermissionTableSeed extends Seeder
             // product-offers
             [
                 'name' => 'Create Offers',
-                'slug' => 'inventory.offers.create',
+                'slug' => 'inv.offers.create',
                 'description' => 'Offers create permission',
-                'key' => 'inventory.offers'
+                'key' => 'inv.offers'
             ],
 
             [
                 'name' => 'Offers List',
-                'slug' => 'inventory.offers.index',
+                'slug' => 'inv.offers.index',
                 'description' => 'Offers list permission',
-                'key' => 'inventory.offers'
+                'key' => 'inv.offers'
             ],
 
             [
                 'name' => 'Offers Update',
-                'slug' => 'inventory.offers.update',
+                'slug' => 'inv.offers.update',
                 'description' => 'Offers update permission',
-                'key' => 'inventory.offers'
+                'key' => 'inv.offers'
             ],
 
             [
                 'name' => 'Offers View',
-                'slug' => 'inventory.offers.show',
+                'slug' => 'inv.offers.show',
                 'description' => 'Offers show permission',
-                'key' => 'inventory.offers'
+                'key' => 'inv.offers'
             ],
 
             [
                 'name' => 'Offers Delete',
-                'slug' => 'inventory.offers.destroy',
+                'slug' => 'inv.offers.destroy',
                 'description' => 'Offers delete permission',
-                'key' => 'inventory.offers'
+                'key' => 'inv.offers'
             ],
 
             //products price list
             [
                 'name' => 'Product Price List',
-                'slug' => 'inventory.products.price-list',
+                'slug' => 'inv.products.price-list',
                 'description' => 'Product price list permission',
-                'key' => 'inventory.products'
+                'key' => 'inv.products'
             ],
             //stock list
             [
                 'name' => 'Stocks List',
-                'slug' => 'inventory.stocks.index',
+                'slug' => 'inv.stocks.index',
                 'description' => 'Stocks list permission',
-                'key' => 'inventory.stocks'
+                'key' => 'inv.stocks'
             ],
 
 
              //units
             [
                 'name' => 'Create Unit',
-                'slug' => 'inventory.settings.units.create',
+                'slug' => 'inv.settings.units.create',
                 'description' => 'Unit create permission',
-                'key' => 'inventory.settings.units'
+                'key' => 'inv.settings.units'
             ],
 
             [
                 'name' => 'Units List',
-                'slug' => 'inventory.settings.units.index',
+                'slug' => 'inv.settings.units.index',
                 'description' => 'Units list permission',
-                'key' => 'inventory.settings.units'
+                'key' => 'inv.settings.units'
             ],
 
             [
                 'name' => 'Units Update',
-                'slug' => 'inventory.settings.units.update',
+                'slug' => 'inv.settings.units.update',
                 'description' => 'Units update permission',
-                'key' => 'inventory.settings.units'
+                'key' => 'inv.settings.units'
             ],
 
 
             [
                 'name' => 'Units Delete',
-                'slug' => 'inventory.settings.units.destroy',
+                'slug' => 'inv.settings.units.destroy',
                 'description' => 'Units delete permission',
-                'key' => 'inventory.settings.units'
+                'key' => 'inv.settings.units'
             ],
 
             //product-types
             [
                 'name' => 'Create Product Type',
-                'slug' => 'inventory.settings.product-types.create',
+                'slug' => 'inv.settings.product-types.create',
                 'description' => 'Product Type create permission',
-                'key' => 'inventory.settings.product-types'
+                'key' => 'inv.settings.product-types'
             ],
 
             [
                 'name' => 'Product Type List',
-                'slug' => 'inventory.settings.product-types.index',
+                'slug' => 'inv.settings.product-types.index',
                 'description' => 'Product Type list permission',
-                'key' => 'inventory.settings.product-types'
+                'key' => 'inv.settings.product-types'
             ],
 
             [
                 'name' => 'Product Type Update',
-                'slug' => 'inventory.settings.product-types.update',
+                'slug' => 'inv.settings.product-types.update',
                 'description' => 'Product Type update permission',
-                'key' => 'inventory.settings.product-types'
+                'key' => 'inv.settings.product-types'
             ],
 
          
             [
                 'name' => 'Product Type Delete',
-                'slug' => 'inventory.settings.product-types.destroy',
+                'slug' => 'inv.settings.product-types.destroy',
                 'description' => 'Product Type delete permission',
-                'key' => 'inventory.settings.product-types'
+                'key' => 'inv.settings.product-types'
             ],
 
             //tags
             [
                 'name' => 'Create Tag',
-                'slug' => 'inventory.settings.tags.create',
+                'slug' => 'inv.settings.tags.create',
                 'description' => 'Tag create permission',
-                'key' => 'inventory.settings.tags'
+                'key' => 'inv.settings.tags'
             ],
 
             [
 
                 'name' => 'Tag List',
-                'slug' => 'inventory.settings.tags.index',
+                'slug' => 'inv.settings.tags.index',
                 'description' => 'Tag list permission',
-                'key' => 'inventory.settings.tags'
+                'key' => 'inv.settings.tags'
             ],
 
             [
                 'name' => 'Tag Update',
-                'slug' => 'inventory.settings.tags.update',
+                'slug' => 'inv.settings.tags.update',
                 'description' => 'Tag update permission',
-                'key' => 'inventory.settings.tags'
+                'key' => 'inv.settings.tags'
             ], 
 
             [
                 'name' => 'Tag Delete',
-                'slug' => 'inventory.settings.tags.destroy',
+                'slug' => 'inv.settings.tags.destroy',
                 'description' => 'Tag delete permission',
-                'key' => 'inventory.settings.tags'
+                'key' => 'inv.settings.tags'
             ],
             
 
             //brands
             [
                 'name' => 'Create Brand',
-                'slug' => 'inventory.brands.create',
+                'slug' => 'inv.brands.create',
                 'description' => 'Brand create permission',
-                'key' => 'inventory.settings.brands'
+                'key' => 'inv.settings.brands'
             ],
 
             [
                 'name' => 'Brand List',
-                'slug' => 'inventory.brands.index',
+                'slug' => 'inv.brands.index',
                 'description' => 'Brand list permission',
-                'key' => 'inventory.settings.brands'
+                'key' => 'inv.settings.brands'
             ],
 
             [
                 'name' => 'Brand Update',
-                'slug' => 'inventory.brands.update',
+                'slug' => 'inv.brands.update',
                 'description' => 'Brand update permission',
-                'key' => 'inventory.settings.brands'
+                'key' => 'inv.settings.brands'
             ], 
 
             [
                 'name' => 'Brand Delete',
-                'slug' => 'inventory.brands.destroy',
+                'slug' => 'inv.brands.destroy',
                 'description' => 'Brand delete permission',
-                'key' => 'inventory.settings.brands'
+                'key' => 'inv.settings.brands'
             ],
 
             // Inventory Reports
             [
                 'name' => 'Product Wise Stock Report',
                 'description' => 'Permission to view product stock report',
-                'slug' => 'inventory.reports.product-stock',
-                'key' => 'inventory.reports',
+                'slug' => 'inv.reports.product-stock',
+                'key' => 'inv.reports',
             ],
             [
                 'name' => 'Product Transfer Report',
                 'description' => 'Permission to view product transfer report',
-                'slug' => 'inventory.reports.product-transfer',
-                'key' => 'inventory.reports',
+                'slug' => 'inv.reports.product-transfer',
+                'key' => 'inv.reports',
             ],
             [
                 'name' => 'Catalogue Report',
                 'description' => 'Permission to view catalogue report',
-                'slug' => 'inventory.reports.catalogue-report',
-                'key' => 'inventory.reports',
+                'slug' => 'inv.reports.catalogue-report',
+                'key' => 'inv.reports',
             ],
             [
                 'name' => 'Stock Balance Report',
                 'description' => 'Permission to view stock balance report',
-                'slug' => 'inventory.reports.stock-balance',
-                'key' => 'inventory.reports',
+                'slug' => 'inv.reports.stock-balance',
+                'key' => 'inv.reports',
             ],
             [
                 'name' => 'Center Stock Report',
                 'description' => 'Permission to view center-wise stock report',
-                'slug' => 'inventory.reports.center-stock',
-                'key' => 'inventory.reports',
+                'slug' => 'inv.reports.center-stock',
+                'key' => 'inv.reports',
             ],
 
 
@@ -4974,11 +4974,14 @@ class PermissionTableSeed extends Seeder
             ],
 
 
-           
-
+            [
+                'name' => 'Employee Cash Handling Report',
+                'slug' => 'account.report.employee-cash-handling',
+                'description' => 'Permission for employee cash handling report',
+                'key' => 'account.report'
+            ],
+ 
             
-            
-
 
 
 

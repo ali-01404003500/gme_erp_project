@@ -234,10 +234,10 @@
                                                 style="display: inline-block; min-width: 300px; outline: none;">
                                                 {{ $quotation->quotationTerms->quotation_to }}<br>
                                                 {{ $quotation->customer_name }}<br>
-                                                {{ $quotation->area }}, {{ $quotation->address }}<br>
-                                                E-mail: {{ $quotation->quotationTerms->email }}<br>
+                                                {{ $quotation->area }}, {{ $quotation->address }}<br> 
                                                 <p>ATTN: {{ $quotation->quotationTerms->attn  }}<br>
-                                                Cell: {{ $quotation->quotationTerms->attn_cell }}</p>
+                                                Cell: {{ $quotation->quotationTerms->attn_cell }}<br>
+                                                E-mail: {{ $quotation->quotationTerms->email }}</p>
 
                                             </div>
                                             </p>
@@ -319,6 +319,7 @@
                                                             Manufacturer:
                                                             {{ optional(optional($quotationDetail->product->brand)->supplier)->company_name }}<br>
                                                         </div>
+                                                        
                                                     </td>
                                                     <td
                                                         style="border: 1px solid black; text-align: center; vertical-align: top;">
@@ -344,7 +345,7 @@
                                                     </td>
                                                     <td
                                                         style="border: 1px solid black; text-align: right; vertical-align: top;">
-                                                        {{ numberFormat($quotationDetail->amount) }}
+                                                        {{ numberFormat($quotationDetail->amount-$quotationDetail->unit_discount) }}
                                                     </td>
                                                 </tr>
                                             @endforeach
