@@ -173,7 +173,7 @@
             @php
                 $default_company_logo = 'assets/img/gme-logo.png';
             @endphp
-            <td style="background:#2f5597;  vertical-align:middle; border:none;padding-left:0.37in;"  > </td>
+            <td style="background:#2f5597;  vertical-align:middle; border:none;padding-left:0.38in;"  > </td>
             <td class="com-logo" style="border: none;">
                 <img src="{{ s3FileToBase64($company_info->company_logo) ?? url($default_company_logo) }}"
                     alt="{{ $company_info->company_logo }}">
