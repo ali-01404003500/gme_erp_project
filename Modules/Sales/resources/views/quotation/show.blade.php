@@ -63,13 +63,12 @@
             right: -40px;
             height: 80px; 
             background-color: #fff;
-            text-align: center; 
-            border-top: 1px solid #ccc;
+            text-align: center;  
             z-index: 1000;
         }
 
         .content {
-            margin-top: 10px;
+            margin-top: -50px;
             margin-bottom: 20px;
             line-height: 1.5;
             position: relative;
@@ -116,12 +115,6 @@
         .signature {
             margin: 2px 0;
         }
-
-        .contact-info,
-        .terms{
-            margin-top: -20px;
-        }
-
 
         .office-details {
             display: flex;
@@ -248,11 +241,9 @@
 
         .terms {
             page-break-before: always;
-        }
+        } 
 
-        body {
-            margin-top: 50px; 
-        }
+      
     </style>
 </head>
 
@@ -260,7 +251,7 @@
     <!-- সকল পেজে প্রদর্শিত হবে এমন ওয়াটারমার্ক -->
     <div class="watermark">QUOTATION</div>
     <header>
-        @include('partials._for_quotation_header', ['company_info' => $company_info])
+        @include('partials._for_pdf_header', ['company_info' => $company_info])
     </header>
     <footer>
         @include('partials._for_quotation_footer')
@@ -274,7 +265,7 @@
 
     <div class="content" style="padding-left:15px;">
         <div class="catalog-container">
-            <div style="height: 800px;">
+            <div style="height: 800px;margin-top: -60px; ">
                 <div class="contact-info">
                     <p>Ref: GMEL/Equip/Quotation/{{ date('Y') }}-{{ str_pad(date('m'), 2, '0', STR_PAD_LEFT) }}</p>
                     <p>Date: {{ \Carbon\Carbon::parse($quotation->date)->format('d F, Y') }}</p>
@@ -404,25 +395,80 @@
                                 {{ number_format($quotationDetail->amount,2) }}
                             </td>
                         </tr>
+
+                        {{-- every 7 rows page break --}}
+                        @if(($key + 1) % 7 == 0)
+                            </tbody>
+                            </table>
+
+                            <div style="page-break-after: always;"></div>
+
+                        <table   style="border: 1px solid black; page-break-inside: avoid; width: 100%;  ">
+                                    <thead>
+                                        <tr style="border: 1px solid black;">
+                                            <th class="text-center" style="border: 1px solid black;" width="1%">SN</th>
+                                            <th class="text-center" style="border: 1px solid black;" width="45%">Description of Goods</th>
+                                            @if (!$withoutImage)
+                                                <th class="text-center" style="border: 1px solid black;" width="24%">Photo</th>
+                                            @endif
+                                            <th class="text-center" style="border: 1px solid black;" width="5%">Quantity</th>
+                                            <th class="text-center" style="border: 1px solid black;" width="9%">Price</th>
+                                            <th class="text-center" style="border: 1px solid black;" width="7%">Unit Discount</th>
+                                            <th class="text-center" style="border: 1px solid black;" width="9%">Amount</th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                        @endif
+    
                      
                     @endforeach
                     {{-- @dd($dd) --}}
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="{{ $withoutImage ? 6 : 7 }}" class="bold">Note: {{ $quotation->remarks }}</td>
+                <tfoot style="border:none;"> 
+                    <tr style="border:none;">
+                        <td colspan="{{ $withoutImage ? 5 : 6 }}" 
+                            class="bold text-right" 
+                            style="border:none; padding:0; margin:0;">
+                            Total Amount :
+                        </td>
+                        <td class="bold text-right" style="border:none; padding:0; margin:0;">
+                            {{ number_format($quotation->total_amount,2) }}
+                        </td>
                     </tr>
+
+                    <tr style="border:none;">
+                        <td colspan="{{ $withoutImage ? 5 : 6 }}" 
+                            class="bold text-right" 
+                            style="border:none; padding:0; margin:0;">
+                            Discount :
+                        </td>
+                        <td class="bold text-right" style="border:none; padding:0; margin:0;">
+                            {{ number_format($quotation->discount,2) }}
+                        </td>
+                    </tr>
+
+                    <tr style="border:none;">
+                        <td colspan="{{ $withoutImage ? 5 : 6 }}" 
+                            class="bold text-right" 
+                            style="border:none; padding:0; margin:0;">
+                            Net Amount :
+                        </td>
+                        <td class="bold text-right" style="border:none; padding:0; margin:0;">
+                            {{ number_format($quotation->total,2) }}
+                        </td>
+                    </tr>
+                    
                 </tfoot>
             </table>
 
-            <div style="text-align: right" class="mt-20">
-                <p>Total Amount: <strong>{{ number_format($quotation->total_amount,2) }}</strong></p>
-                <p>Discount: <strong>{{ number_format($quotation->discount,2) }}</strong></p>
-                <p><strong>Net Amount: {{ number_format($quotation->total,2) }}</strong></p>
+            <div style="text-align: left" class="mt-20">
+                @if(!empty($quotation->remarks))
+                    <p>Note: {{ $quotation->remarks }}</p>
+                @endif
             </div>
 
             <div class="terms ">
-                <table class="terms-table" style="font-size:11px;">
+                <table class="terms-table" style="font-size:11px;margin-top: -60px; ">
                     <tr>
                         <td colspan="3"><h3>TERMS & CONDITIONS</h3></td>
                     </tr>

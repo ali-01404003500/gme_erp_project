@@ -1,13 +1,7 @@
 <style>
-    body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                font-size: 12px;
-            }
+             
             @page {
-                margin-top: 110px;
-                margin-bottom: 80px;
+                margin-top: 110px; 
                 margin-left: 40px;
                 margin-right: 40px;
             }
@@ -15,23 +9,12 @@
                 position: fixed;
                 top: -110px;
                 left: -40px;
-                right: -40px;
-                height: 110px;
+                right: -40px; 
                 background-color: #fff;
                 text-align: center;
                 line-height: 1.4;
             }
-            footer {
-                position: fixed;
-                bottom: -80px;
-                left: -40px;
-                right: -40px;
-                height: 80px;
-                background-color: #fff;
-                text-align: center;
-                line-height: 1.3;
-                border-top: 1px solid #ccc;
-            }
+         
             .content {
                 margin-top: 10px; /* Adjust based on header height */
                 margin-bottom: 20px; /* Adjust based on footer height */
@@ -42,7 +25,7 @@
 <style>
     .header {
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             position: relative;
             overflow: hidden;
         }
@@ -59,25 +42,25 @@
             position: absolute;
             top: 5px;
             left: 0;
-            transform: skewX(33deg);
+            transform: skewX(23deg);
         }
 
         .blue-left {
-            width: 17%;
-            height: 55px;
+            width: 20%;
+            height: 45px;
             border-left: 1px solid white !important;
             border-bottom: 1px solid white !important;
-            border-right: 4px solid rgb(0, 0, 179);
-            border-top: 4px solid rgb(0, 0, 179);
+            border-right: 2px solid rgb(21, 51, 133);
+            border-top: 2px solid rgb(21, 51, 133);
         }
 
         .blue-bottom {
-            width: 83%;
-            height: 55px;
+            width: 80%;
+            height: 45px;
             border-right: 1px solid white !important;
             border-top: 1px solid white !important;
-            border-left: 4px solid rgb(0, 0, 179);
-            border-bottom: 4px solid rgb(0, 0, 179);
+            border-left: 2px solid rgb(21, 51, 133);
+            border-bottom: 2px solid rgb(21, 51, 133);
         }
 
         .com-logo img {
@@ -165,6 +148,10 @@
     .page-number:after {
         content: "Page " counter(page);
     }
+
+     
+
+
 </style>
 
 
@@ -178,18 +165,28 @@
         </table>
     </div>
     <table class="content-table" style="border: none;"> 
+        
         <tr>
             @php
                 $default_company_logo = 'assets/img/gme-logo.png';
             @endphp
+            <td style="background:#2f5597;  vertical-align:middle; border:none;padding-left:0.37in;"  > </td>
             <td class="com-logo" style="border: none;">
-                <img src="{{ s3FileToBase64($company_info->company_logo) ?? $default_company_logo }}"
+                <img src="{{ s3FileToBase64($company_info->company_logo) ?? url($default_company_logo) }}"
                     alt="{{ $company_info->company_logo }}">
             </td>
             <td class="com-info" style="border: none;">
                 <div class="com">
-                    <h1 style="color: rgb(13, 13, 92);">{{ $company_info->company_name }}</h1>
-                    <p style="color: rgb(226, 150, 35); font-size: 11px!important;">{{ $company_info->company_bio }}</p>
+                 
+                    <h1 class="pdf-title" style="margin:0; font-weight:bold; color: rgb(13, 13, 92);font-size:34px;  line-height: 1.2;  font-family: 'Times New Roman', serif;" >
+                        Global Medical Engineering (BD) Ltd.
+                    </h1>
+
+                    <p class="pdf-subtitle" style="margin:3px 0 0 0;color: rgb(226, 150, 35); font-size: 13px!important; line-height: 1.2;  font-family: 'Times New Roman', serif;">
+                        Provider of Medical Equipment and Solutions for Hospitals, Diagnostics, Clinics and Healthcare Institutes.
+                    </p>
+
+                    
                 </div>
             </td>
         </tr>

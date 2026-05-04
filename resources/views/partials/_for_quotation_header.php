@@ -35,9 +35,8 @@
             {{-- LOGO --}}   
  
 
-            <td class="logo-box" style="width:15%; background:#ffffff;  vertical-align:middle; border:none;">  
-                <img src="{{ imageFileToBase64($company_info->company_logo) }}" alt="GME"
-                    style="width:60px; height:auto;">
+            <td class="logo-box" style="width:15%; background:#ffffff;  vertical-align:middle; border:none;">   
+                    <img src="{{ url( 'assets/img/gme-logo.png') }}"  alt="GME"  style="width:60px; height:auto;">
             </td>
 
             {{-- TEXT --}}

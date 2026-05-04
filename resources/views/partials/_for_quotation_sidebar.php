@@ -1,8 +1,8 @@
 <style>
 .left-sidebar {
     position: fixed;
-    top: -110px;
-    bottom: -80px;
+    top: -10px;
+    bottom: -20px;
     left: -40px;
     width: 0.5in;
     background: #2f5597;

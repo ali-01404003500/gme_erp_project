@@ -13,18 +13,18 @@
                         </th>
                     </tr>
                     <tr>
-                        <td style="border:0; padding:0; margin:0;">
+                        <td style="border:0; padding:0; margin:0;font-size:11px">
                             House # 17/2, Topkhana Road (2nd Floor), Dhaka-1000, Bangladesh
                         </td>
                     </tr>
                     <tr>
                         <td style="border:0; padding:0; margin:0;">
-                            Hotline: +8809678 020555, +8801404 003500, Order: +8801404 003501
+                            Hotline : +88 09678 020555, +88 01404 003500, Order : +88 01404 003501
                         </td>
                     </tr>
                     <tr>
-                        <td style="border:0; padding:0; margin:0;">
-                            Service: +8801404 003535, Email: info@gmebd.com, Web: www.gmebd.com
+                        <td style="border:0; padding:0; margin:0;font-size:9.5px">
+                            Service : +88 01404 003535, Email : info@gmebd.com, Web : www.gmebd.com
                         </td>
                     </tr>
                 </table>
