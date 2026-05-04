@@ -66,7 +66,10 @@
         .com-logo img {
             max-width: 80px;
             max-height: 80px;
-            margin: 15px; 
+            margin-left: 15px; 
+            margin-right: 15px; 
+            margin-top: 15px; 
+            margin-bottom: 20px; 
         }
 
         .com-info {
