@@ -397,7 +397,7 @@
                         </tr>
 
                         {{-- every 7 rows page break --}}
-                        @if(($key + 1) % 7 == 0)
+                        {{-- @if(($key + 1) % 7 == 0)
                             </tbody>
                             </table>
 
@@ -418,7 +418,7 @@
                                         </tr>
                                     </thead>
                                 <tbody>
-                        @endif
+                        @endif --}}
     
                      
                     @endforeach
