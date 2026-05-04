@@ -67,6 +67,7 @@
             max-width: 80px;
             max-height: 80px;
             margin-left: 10px;
+            margin-left: 10px;
         }
 
         .com-info {
