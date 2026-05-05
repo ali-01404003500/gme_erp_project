@@ -154,7 +154,7 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    <div class="col-md-4">
+                                                                    <div class="col-md-3">
                                                                         <label
                                                                                 class="col-form-label">Company Logo</label>
                                                                         {{-- <div class="form-group mb-3">
@@ -165,7 +165,18 @@
                                                                         </div> --}}
                                                                         <x-file-uploader id="company_logo" name="company_logo" value="{{$setting->company_logo}}" />
                                                                     </div>
-                                                                    <div class="col-md-4"><label 
+                                                                    <div class="col-md-3"><label
+                                                                                class="col-form-label">Company Seal</label>
+                                                                        {{-- <div class="form-group mb-3">
+                                                                            
+                                                                            <input type="file"
+                                                                                class="file-control form-control"
+                                                                                id="company_seal" name="company_seal" value="{{ old('company_seal', $setting->company_seal) }}">
+                                                                        </div> --}}
+                                                                        <x-file-uploader id="company_seal" name="company_seal" value="{{$setting->company_seal}}" />
+                                                                    </div>
+
+                                                                    <div class="col-md-3"><label 
                                                                                 class="col-form-label">Fav Icon</label>
                                                                         {{-- <div class="form-group mb-3">
                                                                             
@@ -175,7 +186,7 @@
                                                                         </div> --}}
                                                                         <x-file-uploader id="company_fav" name="company_fav" value="{{$setting->company_fav}}" />
                                                                     </div>
-                                                                    <div class="col-md-4"><label
+                                                                    <div class="col-md-3"><label
                                                                                 class="col-form-label">Report Logo</label>
                                                                         {{-- <div class="form-group mb-3">
                                                                             
@@ -185,6 +196,7 @@
                                                                         </div> --}}
                                                                         <x-file-uploader id="report_logo" name="report_logo" value="{{$setting->report_logo}}" />
                                                                     </div>
+                                                                
                                                                 </div>
                                                             </div>
 

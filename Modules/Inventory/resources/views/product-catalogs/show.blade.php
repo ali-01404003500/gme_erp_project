@@ -259,7 +259,7 @@ od@section('title', 'Product Catalog Information')
                                     style="font-size: 16px;">{{ $productCatalog->product_origin }}</span>
                             </p>
                             <p style="font-size: 14px; margin-bottom: 5px;">Warranty Period: <span
-                                    style="font-size: 16px;">{{$productCatalog->warranty_period_input}} {{ $productCatalog->warranty_period }}</span>
+                                style="font-size: 16px;">{{$productCatalog->warranty_period_input}} {{ $productCatalog->warranty_period }}</span>
                             </p>
                         </div>
                     </div>

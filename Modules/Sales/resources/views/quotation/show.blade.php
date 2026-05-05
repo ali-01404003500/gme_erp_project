@@ -198,8 +198,8 @@
         }
 
         .product-image {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             object-fit: contain;
             display: block;
             margin: 0 auto;
@@ -331,11 +331,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $contentHightRem = 625;
-                        $dd = [];
-
-                    @endphp
+                  
                  
                     @foreach ($quotation->quotationDetails as $key => $quotationDetail) 
 
@@ -343,55 +339,66 @@
                             <td style="border: 1px solid black; text-align: center;">{{ $key + 1 }}</td>
 
                             <td style="border: 1px solid black;">
+                                 <div style="width:100%;">
                                 <div style="font-weight: bold;font-size:11px;">
                                     {{-- {{ $quotationDetail->product->name   }}  --}}
                                     {{  $quotationDetail->product->withoutModelSuffix()->name }}
-                                </div><br>
-                                <div style="font-size:9px;"> 
-                                    Model: {{ $quotationDetail->product->model}} 
-                                </div>
-                                <div style="font-size:9px;"> 
-                                    Brand:{{ optional($quotationDetail->product->brand)->name  }} 
-                                </div>
-                                {{-- <div style="font-size:9px;"> 
-                                    Manufacturer:{{ optional(optional($quotationDetail->product->brand)->supplier)->company_name }}
-                                </div> --}}
-                                <div style="font-size:9px;"> 
-                                    Manufacturer:{{ $quotationDetail->product->product_origin }}
-                                </div>
+                                </div></div> 
 
-                                <div style="font-size:9px;">   
-                                    @if(!empty($quotationDetail->qr))
-                                        <img src="data:image/png;base64,{{ rtrim($quotationDetail->qr) }}" style="width:60px; height:60px;">
-                                    @endif
+                                <div style="width:100%;padding-top:30px">
+                                    <div style="width:75%; display:inline-block; ">
+                                         <div style="font-size:9px;"> 
+                                            Model: {{ $quotationDetail->product->model}} 
+                                        </div>
+                                        <div style="font-size:9px;"> 
+                                            Brand:{{ optional($quotationDetail->product->brand)->name  }} 
+                                        </div>
+                                        {{-- <div style="font-size:9px;"> 
+                                            Manufacturer:{{ optional(optional($quotationDetail->product->brand)->supplier)->company_name }}
+                                        </div> --}}
+                                        <div style="font-size:9px;"> 
+                                            Manufacturer:{{ $quotationDetail->product->product_origin }}
+                                        </div>
+                                    </div> 
+
+                                    <div style="width:23%; display:inline-block; vertical-align: bottom;">
+                                        <div>
+                                            @if(!empty($quotationDetail->qr))
+                                                <img src="data:image/png;base64,{{ rtrim($quotationDetail->qr) }}" style="width:60px; height:60px;">
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
+                               
+
+                               
                            
 
                                 
                             </td>
                             @if(!$withoutImage)
-                                <td style="border: 1px solid black; text-align: center;">
+                                <td style="border: 1px solid black; text-align: center;font-size:10px; ">
                                     @if ($quotationDetail->product->profile_image_upload)
                                         <img src="{{ s3FileToBase64($quotationDetail->product->profile_image_upload) }}"
                                             alt="Product Image" class="product-image">
                                     @else
-                                        N/A
+                                        <span  class="product-image">N/A</span>
                                     @endif
                                 </td>
                             @endif
 
-                            <td style="border: 1px solid black; text-align: center;">
+                            <td style="border: 1px solid black; text-align: center;vertical-align: middle; font-size:10px;">
                                 {{ number_format($quotationDetail->quantity) }}
                                 {{ $quotationDetail->product->unit->name }}
                             </td>
 
-                            <td style="border: 1px solid black; text-align: right;">
+                            <td style="border: 1px solid black; text-align: right;vertical-align: middle; font-size:10px;">
                                 {{ number_format($quotationDetail->price,2) }}
                             </td>
-                            <td style="border: 1px solid black; text-align: right;">
+                            <td style="border: 1px solid black; text-align: right;vertical-align: middle; font-size:10px;">
                                 {{ number_format($quotationDetail->unit_discount,2) }}
                             </td>
-                            <td style="border: 1px solid black; text-align: right;">
+                            <td style="border: 1px solid black; text-align: right;vertical-align: middle; font-size:10px;">  
                                 {{ number_format($quotationDetail->amount,2) }}
                             </td>
                         </tr>

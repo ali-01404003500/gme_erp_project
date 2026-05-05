@@ -461,18 +461,6 @@ class QuotationController extends Controller
 
         //dd($quotation->quotationDetails);
 
-        $path = url($company_info->company_logo);
-
-        $logoBase64 = null;
-
-        if (file_exists($path)) {
-            $type = pathinfo($path, PATHINFO_EXTENSION);
-            $data = file_get_contents($path);
-            $logoBase64 = 'data:image/'.$type.';base64,'.base64_encode($data);
-        }
-
-
-
         set_time_limit(300);
 
         $pdf = Pdf::setOptions([
@@ -484,7 +472,6 @@ class QuotationController extends Controller
             'company_info' => $company_info,
             'withoutImage' => $withoutImage,
             'editedCustomerInfo' => $editedCustomerInfo,
-            'logoBase64' => $logoBase64,
         ]);
 
         $filename = 'Quotation_' . $quotation->reference_no . '_' .

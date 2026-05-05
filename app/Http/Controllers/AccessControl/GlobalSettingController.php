@@ -72,6 +72,7 @@ class GlobalSettingController extends Controller
             'company_address'   => 'required|string',
             'website'   => 'nullable|string|max:255',
             'company_logo'       => 'nullable|string',
+            'company_seal'       => 'nullable|string', 
             'company_fav'       => 'nullable|string',
             'report_logo'       => 'nullable|string',
             'company_bio'       => 'nullable|string',

@@ -37,6 +37,7 @@ class GlobalSettingService
             'website'           => $request->website,
             'company_bio'       => $request->company_bio,
             'company_logo'      => $request->company_logo ?? null,
+            'company_seal'      => $request->company_seal ?? null,
             'company_fav'       => $request->company_fav ?? null,
             'report_logo'       => $request->report_logo ?? null,
         ]);
