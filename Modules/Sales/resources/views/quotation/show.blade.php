@@ -361,7 +361,7 @@
                                         </div>
                                     </div> 
 
-                                    <div style="width:23%; display:inline-block; vertical-align: bottom;">
+                                    <div style="width:23%; display:inline-block; vertical-align: bottom; text-align:center;">
                                         <div>
                                             @if(!empty($quotationDetail->qr))
                                                 <img src="data:image/png;base64,{{ rtrim($quotationDetail->qr) }}" style="width:60px; height:60px;">
