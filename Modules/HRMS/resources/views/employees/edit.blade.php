@@ -126,7 +126,7 @@
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link " id="employeement_experience-tab" data-bs-toggle="tab"
-                                                    href="#employeement_experience" role="tab" aria-selected="false">Employeement</a>
+                                                    href="#employeement_experience" role="tab" aria-selected="false">Employment</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link " id="family_contact-tab" data-bs-toggle="tab"
@@ -763,7 +763,7 @@
                                                             <div class="form-group">
                                                                 <label for="date_of_termination"
                                                                     class="color-dark fs-14 fw-500 align-center">Date of
-                                                                    Employeement Close </label>
+                                                                    Employment Close </label>
                                                                 <input type="text"
                                                                     class="form-control flatdate ip-gray radius-xs b-light px-15"
                                                                     id="date_of_termination" name="date_of_termination"
@@ -1114,7 +1114,7 @@
                                                     
                                                     <button type="button"
                                                         class="btn btn-sm btn-primary add-employeement-experience-details mt-2">
-                                                        + Add Employeement
+                                                        + Add Employment
                                                     </button>
                                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start" style="padding: 40px;">
                                                         <button type="submit" class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">Submit</button>

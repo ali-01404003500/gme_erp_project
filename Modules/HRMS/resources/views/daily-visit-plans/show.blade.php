@@ -38,13 +38,8 @@
                                     class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm">
                                     <i class="fa fa-list"></i> List
                                 </a>
-                            @endif
-                            @if (hasPermission('hrm.daily-visit-plans.edit'))
-                                <a href="{{ route('hrm.daily-visit-plans.edit', $dailyVisitPlan->id) }}"
-                                    class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-sm">
-                                    <i class="fa fa-edit"></i> Edit
-                                </a>
-                            @endif
+                            @endif 
+                            
                         </div>
                     </div>
                 </div>

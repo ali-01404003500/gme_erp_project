@@ -38,15 +38,17 @@
                                     <table class="table table-bordered">
                                         <tbody>
                                             <tr>
-                                                <th scope="row">Customer Name</th>
-                                                <td>
-                                                    {{ optional($dailyCall->customer)->company_name }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">Date</th>
+                                                <th scope="row">Call Date</th>
                                                 <td>{{ date('Y-m-d', strtotime($dailyCall->call_date)) }}</td>
                                             </tr>
+                                            <tr>
+                                                <th scope="row">Customer Name</th>
+                                                <td>
+                                                    {{ optional($dailyCall->customer)->company_name }}<br>
+                                                    <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $dailyCall->customer->area?->area }}</small> <br>
+                                                </td>
+                                            </tr>
+                                      
                                             <tr>
                                                 <th scope="row">Call Type</th>
                                                 <td>
@@ -55,13 +57,13 @@
                                             </tr>
                                             <tr>
                                                 <th scope="row">Account Complain</th>
-                                                <td>
+                                                <td >
                                                     @if($dailyCall->is_account_complain == 1) Yes @else No @endif
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Account Complain Details</th>
-                                                <td>{{ $dailyCall->complains_details }}</td>
+                                                <td  class="text-wrap">{{ $dailyCall->complains_details }}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Service Complain</th>
@@ -69,7 +71,7 @@
                                             </tr>
                                             <tr>
                                                 <th scope="row">Service Complain Details</th>
-                                                <td>{{ $dailyCall->service_complain_details }}</td>
+                                                <td  class="text-wrap">{{ $dailyCall->service_complain_details }}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Sales Complain</th>
@@ -77,21 +79,21 @@
                                             </tr>
                                             <tr>
                                                 <th scope="row">Sales Complain Details</th>
-                                                <td>{{ $dailyCall->sales_complain_details }}</td>
+                                                <td  class="text-wrap">{{ $dailyCall->sales_complain_details }}</td>
                                             </tr>
                                             <tr>
                                                 <th scope="row">Requirement of Product</th>
-                                                <td>
+                                                <td >
                                                     {{ $dailyCall->is_product_required == 1 ? 'Yes' : 'No' }}
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr >
                                                 <th scope="row">Requirement of Product Details</th>
-                                                <td>{{ $dailyCall->product_required_details }}</td>
+                                                <td   class="text-wrap">{{ $dailyCall->product_required_details }}</td>
                                             </tr>
-                                            <tr>
+                                            <tr >
                                                 <th scope="row">About Of Company/Remarks</th>
-                                                <td>{{ $dailyCall->remarks }}</td>
+                                                <td  class="text-wrap">{{ $dailyCall->remarks }}</td>
                                             </tr>
 
                                         </tbody>

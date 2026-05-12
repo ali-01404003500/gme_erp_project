@@ -119,7 +119,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover"
+                                <table id="zero-config" class="table table-bordered dt-table-hover"
                                     data-page='@include('utils.table_paginate', ['data' => $shipmentVerifies])'
                                     style="width:100%">
                                     <thead>
@@ -152,12 +152,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($shipmentVerifies as $key => $shipmentVerify)
-                                            <tr>
+                                        @foreach ($shipmentVerifies as $key => $shipmentVerify) 
+                                        
+                                            <tr class="{{ ($shipmentVerify->source->source->paid_status ?? '') == 'condition' ? 'bg-info' : '' }}">
                                                 {{-- @dd($shipmentVerifies) --}}
-                                                <td class="text-center"><input type="checkbox" class="form-check-input row-checkbox"
-                                                        value="{{ $shipmentVerify->id }}" /></td>
-                                                <td class="text-center">{{ $key + 1 }}</td>
+                                                <td class="text-center"><input type="checkbox" class="form-check-input row-checkbox" value="{{ $shipmentVerify->id }}" /></td> 
+                                                <td class="text-center">{{ ($shipmentVerifies->currentPage() - 1) * $shipmentVerifies->perPage() + $loop->iteration  }}</td>
                                                 {{-- <td>{{ $shipmentVerify->shipment_id }}</td> --}}
                                                 <td>
                                                     {{ $shipmentVerify->customer->company_name }}
@@ -171,7 +171,9 @@
                                                 {{-- @dd( ) --}}
                                                 <td>  {{ numberFormat($shipmentVerify->source?->source?->net_amount ?? 0) }} </td>
                                                 <td> {{ numberFormat(($shipmentVerify->source?->source?->shipment?->additional_amount ?? 0) + ($shipmentVerify->source?->source->due_amount ?? 0)) }}  </td>
-                                                <td>{{$shipmentVerify->receipt_no}}</td>
+                                                <td>
+                                                    {{$shipmentVerify->receipt_no}}
+                                                </td>
                                                 <td>{{ numberFormat($shipmentVerify->service_charge ?? 0, 2) }} (S) | {{ numberFormat($shipmentVerify->delivery_charge ?? 0, 2) }} (D) | {{ $shipmentVerify->other_charge !== null && $shipmentVerify->other_charge !== '' ? numberFormat($shipmentVerify->other_charge, 2) : '-' }} (O)</td>
                                                 {{-- <td>{{ $shipmentVerify->source }}</td> --}}
                                                 {{-- <td>{{ $shipmentVerify->service_charge }}</td>
@@ -190,7 +192,7 @@
                                                     <span class="badge badge-success badge-round">Entered</span>
                                                     @endif
                                                 </td> --}}
-                                                <td>{{ $shipmentVerify->status }}</td>
+                                                <td>{{ ucfirst($shipmentVerify->status) }}</td>
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-sm" role="group"
                                                         aria-label="Small button group">
@@ -316,22 +318,24 @@
                 </div>
                 <form action="" method="post" id="editFrom" enctype="multipart/form-data">
                     @csrf
-                    @method('put')
+                    @method('put') 
+
+                    <input type="hidden" name="redirect_url" value="{{ request()->fullUrl() }}">
                     <div class="modal-body">
                         <div class="mb-3 row">
-                            <label class="col-sm-3 col-form-label">Invoice ID:</label>
+                            <label class="col-sm-3 col-form-label">Invoice ID</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" name="invoice_id" value="" readonly>
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label class="col-sm-3 col-form-label">Shipment ID:</label>
+                            <label class="col-sm-3 col-form-label">Shipment ID</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" name="shipment_id" value="" readonly>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Remarks:</label>
+                            <label class="form-label">Remarks</label>
                             <div class="row g-3 align-items-center">
                                 <div class="col-sm-4">
                                     <div class="input-group">
@@ -459,7 +463,7 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-12 col-form-label">Attachments:</label>
+                            <label class="col-sm-12 col-form-label">Attachments *</label>
                             <div class="col-sm-12">
                                 <input type="file" name="files[]" class="form-control file-control" id="fileInput" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx">
                             </div>
@@ -467,7 +471,7 @@
 
                         <!-- Image Preview Container -->
                         <div class="row mb-3">
-                            <label class="col-sm-12 col-form-label">Current Attachments:</label>
+                            <label class="col-sm-12 col-form-label">Current Attachments</label>
                             <div class="col-sm-12">
                                 <div id="imagePreviewContainer" class="preview-container">
                                     <!-- Existing images will be loaded here -->

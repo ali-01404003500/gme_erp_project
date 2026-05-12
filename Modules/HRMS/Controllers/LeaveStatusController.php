@@ -82,6 +82,8 @@ class LeaveStatusController extends Controller
             'join_date'      => 'required_if:type,employee_wise|date|before:effective_date',
         ]); 
 
+        
+
         $leaveBalanceDetails = $request->validate([
             'leave_type.*' => 'required',
             'groupwise_balance.*' => 'required', 

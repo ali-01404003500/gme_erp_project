@@ -64,9 +64,7 @@ class SalesRequisitionController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        $data['customers'] = Customer::activeCustomers()->get();
+    { 
         $data['couriers'] = Courier::get();
         $data['areas'] = Area::get();
         $data['banks'] = Bank::all();

@@ -33,8 +33,7 @@ class SupplierController extends Controller
      */
     public function index(Request $request)
     {
-        $data['suppliers'] = $this->service->getAll();
-        $data['company_info'] = CompanyInfo::first();
+        $data['suppliers'] = $this->service->getAll(); 
         $data['supplierSearch'] = Supplier::get();
 
         if ($request->export == 'pdf') {
@@ -61,9 +60,8 @@ class SupplierController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $data['customers'] = Customer::where('status', 2)->get();
-        return view('Purchase::supplier.create', $data);
+    { 
+        return view('Purchase::supplier.create');
     }
 
     /**
@@ -221,8 +219,7 @@ class SupplierController extends Controller
      */
     public function edit(Supplier $supplier)
     {
-        $data['supplier'] = $supplier;
-        $data['customers'] = Customer::where('status', 2)->get();
+        $data['supplier'] = $supplier; 
         return view('Purchase::supplier.edit', $data);
     }
 

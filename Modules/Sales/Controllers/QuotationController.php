@@ -184,6 +184,17 @@ class QuotationController extends Controller
         return view("Sales::quotation.print", $data);
     }
 
+
+    public function print2($id)
+    {
+        $data['quotation'] = $this->service->show($id);
+        $data['company_info'] = CompanyInfo::first();
+
+        return view("Sales::quotation.print2", $data);
+    }
+
+
+    
     /**
      * Show the form for editing the specified resource.
      */
@@ -474,7 +485,7 @@ class QuotationController extends Controller
             'editedCustomerInfo' => $editedCustomerInfo,
         ]);
 
-        $filename = 'Quotation_' . $quotation->reference_no . '_' .
+        $filename = 'Quotation_' . $quotation->customer_name . '_' .
             ($withoutImage ? 'without_image' : 'with_image') . '_' .
             now()->format('Y-m-d_H-i-s') . '.pdf';
 

@@ -8,6 +8,7 @@ use Modules\Inventory\Models\Product\Settings\Brand;
 use Modules\Sales\Controllers\BackupChallanController;
 use Modules\Sales\Controllers\BackupChallanDeliveryController;
 use Modules\Sales\Controllers\BrokerCommissionReportController;
+use Modules\Sales\Controllers\ConditionAmountCollectController;
 use Modules\Sales\Controllers\CourierController;
 use Modules\Sales\Controllers\DeliveryController;
 use Modules\Sales\Controllers\FakeInvoiceController;
@@ -101,6 +102,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::put('quotations/{id}/approve', [QuotationController::class, 'approveStore'])->name('quotations.approveStore');
     Route::get('quotations/sales-order/{id}', [QuotationController::class, 'salesOrder'])->name('quotations.sales.order');
     Route::get('quotations/print/{id}', [QuotationController::class, 'print'])->name('quotations.print');
+    Route::get('quotations/print2/{id}', [QuotationController::class, 'print2'])->name('quotations.print2');
 
     Route::post('quotations/pdf', [QuotationController::class, 'PDF'])->name('quotations.pdf');
     Route::resource('couriers', CourierController::class);
@@ -119,15 +121,15 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::put('approve/{id}', [SalesReturnController::class, 'approveStore'])->name('sales-returns.approve.store');
     Route::get('{product_id}/{sales_order_id}/{sales_return_id}/select-stock', [SalesReturnController::class, 'selectStock'])->name('sales-returns.select-stock');
 
-    Route::resource('condition-amount-collects', \Modules\Sales\Controllers\ConditionAmountCollectController::class);
-    Route::get('condition-amount-collects-received-details', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'getReceivedDetails'])->name('condition-amount-collects.received-details');
+    Route::resource('condition-amount-collects', ConditionAmountCollectController::class);
+    Route::get('condition-amount-collects-received-details', [ConditionAmountCollectController::class, 'getReceivedDetails'])->name('condition-amount-collects.received-details');
     // POST for action
-    Route::post('condition-amount-collects-received-back', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'receivedBack'])->name('condition-amount-collects.received-back');
-    Route::get('condition-amount-collects-approved-list', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'approvedList'])->name('condition-amount-collects.approved-list');
-    Route::post('condition-amount-collects-approve', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'approve'])->name('condition-amount-collects.approve');
-    Route::get('condition-amount-collects/{id}/claim-pdf', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'claimPdf'])->name('condition-amount-collects.claim-pdf');
-    Route::post('condition-amount-collects/send-bulk-message', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'sendBulkMessage'])->name('condition-amount-collects.send-bulk-message');
-    Route::post('condition-amount-collects/bulk-receive', [\Modules\Sales\Controllers\ConditionAmountCollectController::class, 'bulkReceive'])->name('condition-amount-collects.bulk-receive');
+    Route::post('condition-amount-collects-received-back', [ConditionAmountCollectController::class, 'receivedBack'])->name('condition-amount-collects.received-back');
+    Route::get('condition-amount-collects-approved-list', [ConditionAmountCollectController::class, 'approvedList'])->name('condition-amount-collects.approved-list');
+    Route::post('condition-amount-collects-approve', [ConditionAmountCollectController::class, 'approve'])->name('condition-amount-collects.approve');
+    Route::get('condition-amount-collects/{id}/claim-pdf', [ConditionAmountCollectController::class, 'claimPdf'])->name('condition-amount-collects.claim-pdf');
+    Route::post('condition-amount-collects/send-bulk-message', [ConditionAmountCollectController::class, 'sendBulkMessage'])->name('condition-amount-collects.send-bulk-message');
+    Route::post('condition-amount-collects/bulk-receive', [ConditionAmountCollectController::class, 'bulkReceive'])->name('condition-amount-collects.bulk-receive');
 
  
 

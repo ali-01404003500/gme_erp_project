@@ -100,8 +100,7 @@
                                         <th>Sl</th>
                                         <th>Invoice Date</th>
                                         <th>Invoice Id</th>
-                                        <th>Customer</th>
-                                        <th>Customer Address</th>
+                                        <th>Customer</th> 
                                         <th>Type</th>
                                         <th>Total Amount</th>
                                         <th>Status</th>
@@ -117,10 +116,11 @@
                                             <td>{{ $value->invoice_date }}</td>
                                             <td>
                                                 <a
-                                                    href="{{ route('sales.backup-challans.show', $value->id) }}">{{ $value->invoice_id }}</a>
+                                                    href="{{ route('sales.backup-challans.show', $value->id) }}">{{ $value->invoice_id }}
+                                                </a><br>
+                                                <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ @$deliverie->source->customer->address }}</small> 
                                             </td>
-                                            <td>{{ $value->customer->company_name }}</td>
-                                            <td>{{ $value->customer->address }}</td>
+                                            <td>{{ $value->customer->company_name }}</td> 
                                             <td>{{ $value->type }}</td>
                                             <td>{{ $value->total_amount }}</td>
                                             <td>
@@ -158,19 +158,21 @@
                                                                 title="Approve"><i class="fas fa-check"></i></a>
                                                         @endif
                                                     @endif
-                                                    @if(hasPermission('sales.backup-challans.save-to-sales-order') && $value->type == "Challan" && $value->status == "approved")
+                                                    @if(hasPermission('sales.backup-challans.save-to-sales-order') && ($value->type == "Challan" || $value->type == "Backup") && $value->status == "approved")
                                                         <a class="btn btn-outline-info" title="Save to Sales Order"
                                                             href="{{ route('sales.backup-challans.save-to-sales-order', $value->id) }}"><i
                                                                 class="fas fa-file"></i>
                                                         </a>
-                                                    @endif
+                                                    @endif 
+                                                   
+
                                                     @if(hasPermission('sales.backup-challans.send-to-delivery') && $value->type == "Backup" && $value->status == "approved")
                                                         <a class="btn btn-outline-primary" title="Send to Delivery"
                                                             href="{{ route('sales.backup-challans.send-to-delivery', $value->id) }}"><i
                                                                 class="fas fa-truck"></i>
                                                         </a>
                                                     @endif
-                                                    @if ($value->status == "delivered" && $value->type == "Challan")
+                                                    @if ($value->status == "delivered" && ($value->type == "Challan" || $value->type == "Backup"))
                                                         @if (hasPermission('sales.backup-challan.sales.order'))
                                                                 <a class="btn btn-outline-secondary"
                                                                     href="{{ route('sales.backup-challan.sales.order', $value->id) }}"><i

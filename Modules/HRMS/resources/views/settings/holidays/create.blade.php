@@ -30,7 +30,7 @@
                 <div class="col-md-12">
                     <div class="card mb-50">
                         <div class="card-header">
-                            <h4 class="text-capitalize breadcrumb-title text-center">{{ trans('menu.create-leaves-menu-title') }}</h4>
+                            <h4 class="text-capitalize breadcrumb-title text-center">Holiday Create</h4>
                         </div>
                         <div class="card-body">
                             <x-error-alart />

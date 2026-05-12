@@ -114,8 +114,7 @@
                                         <tr>
                                             <th class="text-center">SL</th>
                                             <th>Customer Name</th>
-                                            <th>Phone No</th>
-                                            <th>Address</th>
+                                            <th>Phone No</th> 
                                             <th class="screen-only">Last 6 Months Sales</th>
                                             <th class="screen-only">Last Payment Info</th>
                                             <th class="text-right">Due Balance ( ৳{{ number_format($totalDueBalance) }})</th>
@@ -139,9 +138,10 @@
                                                         data-customer-id="{{ $customer['customer_id'] }}">
                                                         {{ $customer['customer_name'] }}
                                                     </a>
+                                                    <br>
+                                                    <small class="text-muted"><i class="las la-map-marker me-1"></i> {!! wordwrap($customer['address'], 40, '<br>', true) !!}</small> 
                                                 </td>
                                                 <td>{{ $customer['phone'] ?? 'N/A' }}</td>
-                                                <td>{{ $customer['address'] ?? 'N/A' }}</td>
                                                 <td class="screen-only">
                                                     @if($customer['last_6_months_sales']->count() > 0)
                                                         <ul class="list-unstyled mb-0" style="font-size: 10px;">
@@ -190,7 +190,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center py-4">
+                                                <td colspan="6" class="text-center py-4">
                                                     <i class="las la-inbox" style="font-size: 48px; color: #ddd;"></i>
                                                     <p class="mb-0">No records found</p>
                                                 </td>
@@ -200,13 +200,13 @@
                                     @if($reportData->count() > 0)
                                         <tfoot>
                                             <tr class="font-weight-bold" style="font-size: 14px">
-                                                <td colspan="6" class="text-right"><strong>Due Balance:</strong></td>
+                                                <td colspan="5" class="text-right"><strong>Due Balance:</strong></td>
                                                 <td class="text-right">
                                                     <strong class="text-danger">৳{{ number_format($totalDue) }}</strong>
                                                 </td>
                                             </tr>
                                             <tr class="font-weight-bold" style="font-size: 18px">
-                                                <td colspan="6" class="text-right"><strong>Total Due Balance:</strong></td>
+                                                <td colspan="5" class="text-right"><strong>Total Due Balance:</strong></td>
                                                 <td class="text-right">
                                                     <strong class="text-danger">৳{{ number_format($totalDueBalance) }}</strong>
                                                 </td>

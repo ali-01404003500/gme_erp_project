@@ -5,90 +5,7 @@
 
 @section('content')
 <style>
-    /* Modern Mesh Gradient Background */
-    body {
-        background: radial-gradient(at 0% 0%, rgba(95, 99, 242, 0.12) 0px, transparent 50%),
-                    radial-gradient(at 100% 0%, rgba(121, 40, 202, 0.1) 0px, transparent 50%),
-                    radial-gradient(at 100% 100%, rgba(0, 212, 255, 0.12) 0px, transparent 50%),
-                    radial-gradient(at 0% 100%, rgba(95, 99, 242, 0.08) 0px, transparent 50%),
-                    #f8fafc !important;
-        min-height: 100vh;
-    }
-
-    /* Glassmorphism Card Style */
-    .card {
-        border: 1px solid rgba(255, 255, 255, 0.7) !important;
-        background: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
-        border-radius: 16px !important;
-    }
-
-    /* UPDATED: Table Header - Medium Big & Bold */
-    .table thead th {
-        background-color: rgba(95, 99, 242, 0.08) !important;
-        color: #0f172a !important; /* Deep dark for contrast */
-        font-weight: 800 !important; /* Extra Bold */
-        text-transform: uppercase;
-        font-size: 0.95rem !important; /* Medium-Big size */
-        letter-spacing: 0.05em;
-        border-bottom: 3px solid #5f63f2 !important; /* Stronger accent border */
-        padding: 20px 15px !important; /* More vertical space */
-        vertical-align: middle;
-    }
-
-    /* Modern Tabs */
-    .nav-tabs.vertical-tabs {
-        border-bottom: 2px solid rgba(95, 99, 242, 0.1);
-        gap: 10px;
-    }
-
-    .nav-tabs.vertical-tabs .nav-item .nav-link {
-        border: none;
-        background: transparent;
-        font-weight: 700;
-        color: #64748b;
-        padding: 12px 25px;
-        border-radius: 10px 10px 0 0;
-        transition: all 0.3s;
-    }
-
-    .nav-tabs.vertical-tabs .nav-item .nav-link.active {
-        background-color: #5f63f2;
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(95, 99, 242, 0.2);
-    }
-
-    /* Form Styling */
-    .form-control, .tom-select {
-        border-radius: 10px !important;
-        border: 1px solid #e2e8f0 !important;
-        padding: 10px 15px !important;
-    }
-
-    .table tbody td {
-        padding: 15px !important;
-        vertical-align: middle !important;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
-        color: #334155;
-    }
-
-    .btn-submit {
-        background: linear-gradient(90deg, #5f63f2, #7928ca);
-        border: none;
-        padding: 12px 30px;
-        font-weight: 700;
-        border-radius: 10px;
-        transition: transform 0.2s;
-        color: white;
-    }
-
-    .btn-submit:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(95, 99, 242, 0.3);
-        color: white;
-    }
+    
 </style>
 
 <div class="container-fluid">
@@ -140,25 +57,26 @@
                             <input type="hidden" name="form_type" value="deed_noc">
                             <div class="row g-4">
                                 <div class="col-md-6">
-                                    <label class="form-label fw-700 text-dark">Date <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control flatdate shadow-sm" name="date" value="{{ old('date', date('Y-m-d')) }}">
+                                    <label class="form-label fw-700 text-dark">Customer <span class="text-danger">*</span></label>
+                                    <select class="form-control" id="customer_id" name="customer_id" required  >
+                                        <option value="">Select a Customer</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-6">
+
+                              
+                                <div class="col-md-3">
                                     <label class="form-label fw-700 text-dark">Application Type <span class="text-danger">*</span></label>
                                     <select class="form-control tom-select" name="type">
                                         <option value="Deed Document" @if (old('type') == 'Deed Document') selected @endif>Deed Document</option>
                                         <option value="NOC" @if (old('type') == 'NOC') selected @endif>NOC</option>
                                     </select>
                                 </div>
-                                <div class="col-md-12">
-                                    <label class="form-label fw-700 text-dark">Customer <span class="text-danger">*</span></label>
-                                    <select class="form-control tom-select" name="customer_id" required>
-                                        <option value="">Select a Customer</option>
-                                        @foreach ($customers as $item)
-                                            <option value="{{ $item->id }}" {{ old('customer_id') == $item->id ? 'selected' : '' }}>{{ $item->company_name }}</option>
-                                        @endforeach
-                                    </select>
+
+                                <div class="col-md-3">
+                                    <label class="form-label fw-700 text-dark">Date <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control flatdate shadow-sm" name="date" value="{{ old('date', date('Y-m-d')) }}">
                                 </div>
+                               
                                 <div class="col-md-12">
                                     <label class="form-label fw-700 text-dark">Description <span class="text-danger">*</span></label>
                                     <textarea name="description" class="form-control shadow-sm" rows="4">{{ old('description') }}</textarea>
@@ -177,11 +95,8 @@
                         <div class="search-form mb-4 shadow-sm">
                             <form method="GET" action="{{ route('cms.application-entries.create', app()->getLocale()) }}" class="row g-3 align-items-center">
                                 <div class="col-md-4">
-                                    <select class="form-control tom-select" name="customer_id">
-                                        <option value="">Select Customer</option>
-                                        @foreach ($customerSearch as $customer)
-                                            <option value="{{ $customer->id }}" {{ request('customer_id') == $customer->id ? 'selected' : '' }}>{{ $customer->company_name }}</option>
-                                        @endforeach
+                                    <select class="form-control"  id="customer_id2" name="customer_id"  >
+                                        <option value="">Select Customer</option> 
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -192,7 +107,10 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2 d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary w-100 radius-md shadow-sm"><i class="fa fa-search"></i></button>
+                                   <button type="submit" class="btn btn-primary w-100 radius-xl shadow-sm"
+                                            style="height: 30px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                     <a href="{{ route('cms.application-entries.create', app()->getLocale()) }}?tab=cheque" class="btn btn-light border w-100 radius-md">Reset</a>
                                 </div>
                             </form>
@@ -205,7 +123,7 @@
                             <input type="hidden" name="date" value="{{ date('Y-m-d') }}">
 
                             <div class="mb-4">
-                                <label class="form-label fw-700 text-dark">Batch Description <span class="text-danger">*</span></label>
+                                <label class="form-label fw-700 text-dark">Description <span class="text-danger">*</span></label>
                                 <textarea name="descriptions" class="form-control shadow-sm" rows="3">{{ old('description') }}</textarea>
                             </div>
 
@@ -227,19 +145,19 @@
                                         @forelse ($entries as $entry)
                                             @foreach ($entry->details as $detail)
                                                 <tr>
-                                                    <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
+                                                    <td class="text-center  text-muted">{{ $loop->iteration }}</td>
                                                     <td>
-                                                        <div class="fw-bold text-dark">{{ $entry->customer->company_name }}</div>
+                                                        <div class=" text-dark">{{ $entry->customer->company_name }}</div>
                                                     </td>
                                                     <td>
-                                                        <div class="small fw-bold text-dark">{{ $detail->bank->name ?? '-' }}</div>
+                                                        <div class="small  text-dark">{{ $detail->bank->name ?? '-' }}</div>
                                                         <div class="text-muted small">{{ $detail->branch->name ?? '-' }}</div>
                                                     </td>
                                                     <td>
-                                                        <span class="badge bg-light text-dark border me-1">#{{ $detail->cheque_no ?? '-' }}</span>
-                                                        <span class="text-primary fw-bold">{{ number_format($detail->amount) }}</span>
+                                                        <span class="badge  text-dark border me-1">#{{ $detail->cheque_no ?? '-' }}</span>
+                                                        <span class="text-primary ">{{ number_format($detail->amount) }}</span>
                                                     </td>
-                                                    <td><div class="fw-bold">{{ $entry->createdBy->name }}</div><div class="text-muted small">{{ $entry->created_at->format('d M, Y') }}</div></td>
+                                                    <td><div class="">{{ $entry->createdBy->name }}</div><div class="text-muted small">{{ $entry->created_at->format('d M, Y') }}</div></td>
                                                     <td class="text-center">
                                                         <input type="checkbox" class="form-check-input checkbox" name="advance_cheque_entry_detail_id[]" value="{{ $detail->id }}">
                                                         <input type="hidden" name="customer_id[{{ $detail->id }}]" value="{{ $entry->customer->id }}">
@@ -254,8 +172,8 @@
                             </div>
 
                             @if (count($entries) > 0)
-                                <div class="d-flex justify-content-end mt-4">
-                                    <button type="submit" class="btn btn-submit shadow-lg">Submit Selected Cheques</button>
+                               <div class="d-flex justify-content-end mt-4">
+                                    <button type="submit" class="btn btn-submit btn-primary">Submit Entry</button>
                                 </div>
                             @endif
                         </form>
@@ -287,5 +205,61 @@
             autoclose: true,
             todayHighlight: true
         });
+
+        $(document).ready(function () {
+     
+
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label   })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            const companySelect2 = new TomSelect("#customer_id2", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect2.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label   })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+     
+     
+  
+            
+        });
+
+
     </script>
 @endsection

@@ -25,21 +25,18 @@
                         <form action="{{ route('sales.condition-amount-collects.approve') }}" method="POST"
                             id="approvalForm">
                             @csrf
-                            <div class="table-responsive">
-                                <table id="zero-config" class="table dt-table-hover" style="width:100%">
+                            <div class="table-responsive ">
+                                <table id="zero-config" class="table table-bordered dt-table-hover" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th class="no-content" style="width: 3%; text-align: center;">
                                                 <input type="checkbox" id="selectAll" class="form-check-input" />
                                             </th>
                                             <th class="text-center" style="width: 5%">SL</th>
-                                            <th>Customer Name</th>
-                                            <th>Address</th>
+                                            <th>Customer Name</th> 
                                             <th>Courier</th>
-                                            <th>Inv Amt</th>
-                                            <th>Rcpt No</th>
                                             <th>Rcpt Date</th>
-                                            <th>Additional Amt</th>
+                                            <th>Rcpt No</th>
                                             <th>Total Cond Amt</th>
                                         </tr>
                                     </thead>
@@ -54,14 +51,14 @@
                                                     <input type="checkbox" name="ids[]" value="{{ $item->id }}"
                                                         class="form-check-input row-checkbox" />
                                                 </td>
-                                                <td class="text-center">{{ $key + 1 }}</td>
+                                                <td class="text-center">{{ ($conditionAmountCollects->currentPage() - 1) * $conditionAmountCollects->perPage() + $loop->iteration  }}</td>
                                                 <td>
                                                     <a href="{{ route('sales.sales-orders.show', $item->sales_order_id) }}"
                                                         target="_blank">
                                                         {{ $item->customer->company_name }}
-                                                    </a>
-                                                </td>
-                                                <td>{{ $item->customer->address }}</td>
+                                                    </a><br>
+                                                    <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $item->customer->area->area }}</small> 
+                                                </td> 
                                                 <td>
                                                     <a href="#" class="courier-info-link" data-id="{{ $item->id }}"
                                                         data-courier="{{ $item->courier->courier_name }}"
@@ -83,26 +80,15 @@
                                                         {{ $item->courier->courier_name }}
                                                     </a>
                                                 </td>
-                                                <td>{{ number_format($item->invoice_amount) }}</td>
-                                                <td>{{ $item->shipmentVerify->receipt_no ?? '' }}</td>
                                                 <td>{{ $item->shipmentVerify->receive_date ?? '' }}</td>
-                                                <td>
-                                                    <span data-bs-toggle="tooltip"
-                                                        title="Remarks: {{ $item->salesOrder->shipment->condition_remarks ?? 'N/A' }}">
-                                                        {{ number_format($additionalAmount) }}
-                                                    </span>
-                                                </td>
+                                                <td>{{ $item->shipmentVerify->receipt_no ?? '' }}</td>
                                                 <td>{{ number_format($item->condition_amount) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr class="fw-bold" style="background-color: #f8f9fa;">
-                                            <td colspan="5" class="text-end">Grand Total:</td>
-                                            <td>{{ number_format($grandTotalInvAmt ?? 0) }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td>{{ number_format($grandTotalAdditionalAmt ?? 0) }}</td>
+                                            <td colspan="6" class="text-end">Grand Total:</td>
                                             <td>{{ number_format($grandTotalCondAmt ?? 0) }}</td>
                                         </tr>
                                     </tfoot>
@@ -117,7 +103,8 @@
                                     <div class="col-md-6">
                                         <div class="d-flex align-items-center">
                                             <span class="fw-bold me-2">Total Selected Amount:</span>
-                                            <span class="badge badge-primary fs-16" id="totalSelected">0.00</span>
+                                            <span class="badge badge-primary fs-16"  id="totalS">0.00</span>
+                                            <input type="hidden" id="totalSelected" >
                                         </div>
                                     </div>
                                     <div class="col-md-6 text-end">
@@ -305,7 +292,8 @@
                     const amount = parseFloat(row.find('td:last').text().replace(/,/g, ''));
                     total += amount;
                 });
-                $('#totalSelected').text(total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                $('#totalS').text(total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                $('#totalSelected').val(total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
             }
 
             // Approve button with SweetAlert
@@ -321,7 +309,8 @@
                     return;
                 }
 
-                const total = $('#totalSelected').text();
+                const total = $('#totalSelected').val();
+                $('#totalS').text(total);
 
                 Swal.fire({
                     title: 'Are you sure?',

@@ -120,7 +120,7 @@
                         <div class="modal-content">
 
                             <div class="modal-header" id="createModalLabel">
-                                <h5 class="modal-title">{{ trans('menu.inventory-settings-tag-menu-title') }}</h5>
+                                <h5 class="modal-title">Transport Type Create</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-hidden="true"></button>
                             </div>

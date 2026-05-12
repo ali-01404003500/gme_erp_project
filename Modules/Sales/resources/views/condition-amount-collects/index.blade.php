@@ -48,7 +48,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="zero-config" class="table dt-table-hover" style="width:100%" data-page='@include('utils.table_paginate', ['data' => $conditionAmountCollects])'>
+                            <table id="zero-config" class="table table-bordered dt-table-hover" style="width:100%" data-page='@include('utils.table_paginate', ['data' => $conditionAmountCollects])'>
                                 <thead>
                                     <tr>
                                         <th class="text-center no-content" style="width: 3%">
@@ -58,13 +58,12 @@
                                             </div>
                                         </th>
                                         <th class="text-center" style="width: 5%">SL</th>
-                                        <th>Customer Name</th>
-                                        <th>Address</th>
+                                        <th>Customer Name</th> 
                                         <th>Courier</th>
-                                        <th>Inv Date</th>
+                                        <th class="d-none">Inv Date</th>
                                         <th>Inv Amt</th>
                                         <th>Cond Amt</th>
-                                        <th>Courier Info (Service, Delivery, Other, Carton No)</th>
+                                        <th class="d-none">Courier Info (Service, Delivery, Other, Carton No)</th>
                                         <th>Rcpt No</th>
                                         <th>Rcpt Date</th>
                                         <th>Image</th>
@@ -79,20 +78,20 @@
                                                     <input type="checkbox" class="form-check-input row-checkbox" name="selected_items[]" value="{{ $item->id }}" id="checkbox_{{ $item->id }}">
                                                     <label class="form-check-label" for="checkbox_{{ $item->id }}"></label>
                                                 </div>
-                                            </td>
-                                            <td class="text-center">{{ $key + 1 }}</td>
+                                            </td> 
+                                            <td class="text-center">{{ ($conditionAmountCollects->currentPage() - 1) * $conditionAmountCollects->perPage() + $loop->iteration  }}</td>
                                             <td>
                                                 <a href="{{ route('sales.sales-orders.show', $item->sales_order_id) }}"
                                                     target="_blank">
                                                     {{ $item->customer->company_name }}
-                                                </a>
-                                            </td>
-                                            <td>{{ $item->customer->address }}</td>
+                                                </a><br>
+                                                <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $item->customer->area->area }}</small> 
+                                            </td> 
                                             <td>{{ $item->courier->courier_name }}</td>
-                                            <td>{{ $item->salesOrder->invoice_date ?? '' }}</td>
-                                            <td>{{ number_format($item->invoice_amount) }}</td>
-                                            <td>{{ number_format($item->condition_amount) }}</td>
-                                            <td>
+                                            <td class="d-none">{{ $item->salesOrder->invoice_date ?? '' }}</td>
+                                            <td class="text-end">{{ number_format($item->invoice_amount) }}</td>
+                                            <td class="text-end">{{ number_format($item->condition_amount) }}</td>
+                                            <td class="d-none">
                                                 <!-- Logic to display Service/Delivery/Other charges and Carton No from Shipment Verify -->
                                                 @php
                                                     $sv = $item->shipmentVerify;
@@ -108,7 +107,17 @@
                                                 @endphp
                                                 {!! implode('<br>', $info_parts) !!}
                                             </td>
-                                            <td>{{ $item->shipmentVerify->receipt_no ?? '' }}</td>
+                                            <td> 
+                                                @if(!empty($item->courier->web_link))
+                                                    <a  href="{{ $item->courier->web_link  ?? '#' }}" target="_blank">
+                                                        {{ $item->shipmentVerify->receipt_no ?? '' }}
+                                                    </a> 
+                                                @else
+                                                    {{ $item->shipmentVerify->receipt_no ?? '' }}
+                                                @endif
+
+                                            </td>
+
                                             <td>{{ $item->shipmentVerify->receive_date ?? '' }}</td>
                                             <td>
                                                 @if($item->shipmentVerify && $item->shipmentVerify->files)
@@ -136,7 +145,7 @@
                                     @endforeach
                                     <tfoot>
                                         <tr class="fw-bold" style="background-color: #f8f9fa;">
-                                            <td colspan="6" class="text-end">Grand Total:</td>
+                                            <td colspan="4" class="text-end">Grand Total:</td>
                                             <td>{{ number_format($grandTotalInvAmt ?? 0) }}</td>
                                             <td>{{ number_format($grandTotalCondAmt ?? 0) }}</td>
                                             <td colspan="5"></td>

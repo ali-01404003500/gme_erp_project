@@ -20,7 +20,7 @@
                         </div>
                         {{-- <div class="breadcrumb-main__wrapper">
                             <div class="action-btn mt-sm-0 mt-15">
-                                @if (hasPermission('hrm.salary-generates.create'))
+                                @if (hasPermission('hrm.salary-generate.create'))
                                     <button class="btn btn-xs btn-primary me-1" data-bs-toggle="modal"
                                         data-bs-target="#createModal">
                                         Add New
@@ -215,6 +215,7 @@
                                                     <td class="text-center">{{ ucwords(str_replace('_', ' ', $item->status)) }} - {{ $item->current_approval_level }}</td>
 
                                                     <form action="{{ route('hrm.salary-generates.update', request()->payroll_id)}}" method="POST" enctype="multipart/form-data">
+                                                        
                                                         <td class="text-center">
                                                             <input type="text" name="remarks" class="form-control form-control-sm" placeholder="Note" value="{{ $item->remarks }}">
                                                         </td>
@@ -251,16 +252,16 @@
                                                     {{-- <td class="text-center">
                                                         @if ($item->status == 'UnPaid')
                                                             <div class="btn-group btn-group-xs text-center">
-                                                                @if (hasPermission('hrm.salary-generates.show'))
+                                                                @if (hasPermission('hrm.salary-generate.show'))
                                                                     <a href={{ $item->id }} data-amount="{{ $item->net_earning - $item->total_deductions ?? 0 }}"
-                                                                        data-action="{{ route('hrm.salary-generates.paid', $item->id) }}"
+                                                                        data-action="{{ route('hrm.salary-generate.paid', $item->id) }}"
                                                                         data-toggle="tooltip" data-placement="top"
                                                                         data-bs-toggle="modal" data-bs-target="#paidModal" class="btn btn-paid btn-xs btn-outline-primary" title="Paid">
                                                                         Paid
                                                                     </a>
                                                                     <a href={{ $item->id }} class="btn btn-edit btn-xs btn-outline-warning"
                                                                         data-paymentable_amount="{{ $item->net_earning- $item->total_deductions - $item->salaryGeneratePayments->sum('amount') ?? 0 }}"
-                                                                        data-action="{{ route('hrm.salary-generates.partially-paid', $item->id) }}"
+                                                                        data-action="{{ route('hrm.salary-generate.partially-paid', $item->id) }}"
                                                                         data-toggle="tooltip" data-placement="top" title="Edit"
                                                                         data-bs-toggle="modal" data-bs-target="#editModal">
                                                                         Partial Paid
@@ -275,7 +276,7 @@
 
                                                             <a href={{ $item->id }} class="btn btn-edit btn-xs btn-outline-warning"
                                                                 data-paymentable_amount="{{ $item->net_earning - $item->salaryGeneratePayments->sum('amount')??0 }}"
-                                                                data-action="{{ route('hrm.salary-generates.partially-paid', $item->id) }}"
+                                                                data-action="{{ route('hrm.salary-generate.partially-paid', $item->id) }}"
                                                                 data-toggle="tooltip" data-placement="top" title="Edit"
                                                                 data-bs-toggle="modal" data-bs-target="#editModal">
                                                                 Partial Paid
@@ -360,14 +361,14 @@
                                 {{-- <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                     <button type="submit" id="paidAll" name="status" value="Paid"
                                         class="btn btn-primary btn-sm paid-all" data-bs-toggle="modal" data-bs-target="#paidAllModal"
-                                        formaction="{{ route('hrm.salary-generates.paid-all') }}">Paid All</button>
+                                        formaction="{{ route('hrm.salary-generate.paid-all') }}">Paid All</button>
                                     <button type="submit" id="partiallyPaidAll" name="status" value="Partially Paid"
                                         class="btn btn-warning btn-sm partially-paid" data-bs-toggle="modal" data-bs-target="#partiallyPaidModal"
-                                        formaction="{{ route('hrm.salary-generates.partially-paid-all') }}">Partially Paid
+                                        formaction="{{ route('hrm.salary-generate.partially-paid-all') }}">Partially Paid
                                         All</button>
                                 </div> --}} 
                                 
-                                {{-- @if ($item->status == "Create" && hasPermission('hrm.salary-generates.check-by-department-head'))
+                                {{-- @if ($item->status == "Create" && hasPermission('hrm.salary-generate.check-by-department-head'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="department_head_checked" onclick="$('#status').val(this.dataset.status)">
@@ -379,7 +380,7 @@
                                             <i class="fas fa-times-circle"></i> Department Head Deny
                                         </button>
                                     </div> 
-                                @elseif ($item->status == "department_head_checked" && hasPermission('hrm.salary-generates.check-by-hr-head'))
+                                @elseif ($item->status == "department_head_checked" && hasPermission('hrm.salary-generate.check-by-hr-head'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="hr_head_checked" onclick="$('#status').val(this.dataset.status)">
@@ -391,7 +392,7 @@
                                             <i class="fas fa-times-circle"></i> HR Deny
                                         </button>
                                     </div> 
-                                @elseif ($item->status == "hr_head_checked" && hasPermission('hrm.salary-generates.check-by-admin-head'))
+                                @elseif ($item->status == "hr_head_checked" && hasPermission('hrm.salary-generate.check-by-admin-head'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="admin_head_checked" onclick="$('#status').val(this.dataset.status)">
@@ -403,7 +404,7 @@
                                             <i class="fas fa-times-circle"></i> Admin Deny
                                         </button>
                                     </div>
-                                @elseif ($item->status == "admin_head_checked" && hasPermission('hrm.salary-generates.check-by-account-head'))
+                                @elseif ($item->status == "admin_head_checked" && hasPermission('hrm.salary-generate.check-by-account-head'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="account_head_checked" onclick="$('#status').val(this.dataset.status)">
@@ -415,7 +416,7 @@
                                             <i class="fas fa-times-circle"></i> A/C Deny
                                         </button>
                                     </div>
-                                @elseif ($item->status == "account_head_checked" && hasPermission('hrm.salary-generates.check-by-ceo'))
+                                @elseif ($item->status == "account_head_checked" && hasPermission('hrm.salary-generate.check-by-ceo'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="ceo_checked" onclick="$('#status').val(this.dataset.status)">
@@ -427,7 +428,7 @@
                                             <i class="fas fa-times-circle"></i> CEO Deny
                                         </button>
                                     </div>
-                                @elseif ($item->status == "ceo_checked" && hasPermission('hrm.salary-generates.check-by-md'))
+                                @elseif ($item->status == "ceo_checked" && hasPermission('hrm.salary-generate.check-by-md'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="md_checked" onclick="$('#status').val(this.dataset.status)">
@@ -439,7 +440,7 @@
                                             <i class="fas fa-times-circle"></i> Managing Director Deny
                                         </button>
                                     </div>
-                                @elseif ($item->status == "md_checked" && hasPermission('hrm.salary-generates.check-by-chairman'))
+                                @elseif ($item->status == "md_checked" && hasPermission('hrm.salary-generate.check-by-chairman'))
                                     <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
                                         <button type="submit" class="btn btn-sm btn-primary status-btn" 
                                             data-status="chairman_checked" onclick="$('#status').val(this.dataset.status)">

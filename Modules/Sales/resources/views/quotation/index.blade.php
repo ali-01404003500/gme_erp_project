@@ -199,6 +199,13 @@
                                                         <a class="btn btn-outline-primary"
                                                             href="{{ route('sales.quotations.print', $quotation->id) }}"
                                                             title="Print Quotation"><i class="fas fa-print"></i></a>
+
+                                                    @endif
+                                                    @if (hasPermission('sales.quotations.print2'))
+
+                                                        <a class="btn btn-outline-primary"
+                                                            href="{{ route('sales.quotations.print2', $quotation->id) }}"
+                                                            title="Print Quotation"><i class="fas fa-print"></i></a>
                                                     @endif
 
                                                 </div>

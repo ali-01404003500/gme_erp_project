@@ -56,6 +56,7 @@ class CourierController extends Controller
             'contact_person_phone' => 'nullable',
             'contact_person_address' => 'nullable',
             'contact_person_designation' => 'nullable',
+            'web_link' => 'nullable', 
             'status' => 'required',
 
         ]);
@@ -97,6 +98,7 @@ class CourierController extends Controller
             'contact_person_phone' => 'nullable',
             'contact_person_address' => 'nullable',
             'contact_person_designation' => 'nullable',
+            'web_link' => 'nullable', 
             'status' => 'required',
         ]);
         $courier = $this->service->update($courier, $validate);

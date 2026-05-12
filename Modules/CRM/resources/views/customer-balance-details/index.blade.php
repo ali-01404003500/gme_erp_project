@@ -124,7 +124,7 @@
 
                                     <div class="col-md-3 mb-3">
                                         <label>Division</label>
-                                        <select name="division_id" class="tom-select" data-placeholder="Select Division">
+                                        <select name="division_id" class="form-control tom-select" data-placeholder="Select Division">
                                             <option value=""></option>
                                             @foreach ($divisions as $division)
                                                 <option value="{{ $division->id }}"
@@ -137,7 +137,7 @@
 
                                     <div class="col-md-3 mb-3">
                                         <label>District</label>
-                                        <select name="district_id" class="tom-select" data-placeholder="Select District">
+                                        <select name="district_id" class="form-control  tom-select" data-placeholder="Select District">
                                             <option value=""></option>
                                             @foreach ($districts as $district)
                                                 <option value="{{ $district->id }}"
@@ -179,34 +179,34 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table dt-table-hover" id="zero-config"
+                                <table class="table table-hover table-bordered table-sm dt-table-hover" id="zero-config"
                                     style="font-size: 12px;">
                                     <thead>
                                         <tr>
                                             <th class="text-center" style="width: 5%;">SL</th>
                                             <th style="width: 20%;">Customer</th>
-                                            <th class="text-right" style="width: 10%;">Opening Balance
+                                            <th class="text-end" style="width: 10%;">Opening Balance
                                                 <br>৳{{ number_format($totals['total_opening_balance']) }}
                                             </th>
-                                            <th class="text-right" style="width: 10%;">Sales <br>
+                                            <th class="text-end" style="width: 10%;">Sales <br>
                                                 ৳{{ number_format($totals['total_sales']) }}</td>
                                             </th>
-                                            <th class="text-right" style="width: 10%;">Sales Return <br>
+                                            <th class="text-end" style="width: 10%;">Sales Return <br>
                                                 ৳{{ number_format($totals['total_sales_return']) }}</td>
                                             </th>
-                                            <th class="text-right" style="width: 10%;">Collection <br>
+                                            <th class="text-end" style="width: 10%;">Collection <br>
                                                 ৳{{ number_format($totals['total_collection'] - $totals['total_sales_return']-$totals['total_waiver']) }}</td>
                                             </th>
-                                            <th class="text-right" style="width: 10%;">Charge <br>
+                                            <th class="text-end" style="width: 10%;">Charge <br>
                                                 ৳{{ number_format($totals['total_charge']) }}</td>
                                             </th> 
-                                            <th class="text-right" style="width: 10%;">Waiver <br>
+                                            <th class="text-end" style="width: 10%;">Waiver <br>
                                                 ৳{{ number_format($totals['total_waiver']) }}</td>
                                             </th> 
-                                            <th class="text-right" style="width: 10%;">Due <br>
+                                            <th class="text-end" style="width: 10%;">Due <br>
                                                 ৳{{ number_format($totals['total_due']) }}</td>
                                             </th>
-                                            <th class="text-right" style="width: 10%;">Closing Balance <br>
+                                            <th class="text-end" style="width: 10%;">Closing Balance <br>
                                                 <strong>৳{{ number_format($totals['total_closing_balance']) }}</strong>
                                             </th>
                                             <th class="text-center" style="width: 10%;">Recovery %</th>
@@ -236,20 +236,20 @@
                                                     @endif
                                                   
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     ৳{{ number_format($customer['opening_balance']) }}</td>
-                                                <td class="text-right">৳{{ number_format($customer['sales']) }}</td>
-                                                <td class="text-right">৳{{ number_format($customer['sales_return']) }} </td>
-                                                <td class="text-right">৳{{ number_format($customer['collection']-$customer['sales_return']-$customer['waiver']) }}</td>
-                                                <td class="text-right">৳{{ number_format($customer['charge']) }}</td>
-                                                <td class="text-right">৳{{ number_format($customer['waiver']) }}</td>
-                                                <td class="text-right">
+                                                <td class="text-end">৳{{ number_format($customer['sales']) }}</td>
+                                                <td class="text-end">৳{{ number_format($customer['sales_return']) }} </td>
+                                                <td class="text-end">৳{{ number_format($customer['collection']-$customer['sales_return']-$customer['waiver']) }}</td>
+                                                <td class="text-end">৳{{ number_format($customer['charge']) }}</td>
+                                                <td class="text-end">৳{{ number_format($customer['waiver']) }}</td>
+                                                <td class="text-end">
                                                     <span
                                                         class="{{ $customer['due'] >= 0 ? 'text-danger' : 'text-success' }}">
                                                         ৳{{ number_format($customer['due']) }}
                                                     </span>
                                                 </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     <strong
                                                         class="{{ $customer['closing_balance'] >= 0 ? 'text-danger' : 'text-success' }}">
                                                         ৳{{ number_format($customer['closing_balance']) }}
@@ -274,22 +274,22 @@
                                     @if ($reportData->count() > 0)
                                         <tfoot>
                                             <tr style="font-weight: bold; font-size: 14px;">
-                                                <td colspan="2" class="text-right"><strong>GRAND TOTAL:</strong></td>
-                                                <td class="text-right text-primary">
+                                                <td colspan="2" class="text-end"><strong>GRAND TOTAL:</strong></td>
+                                                <td class="text-end text-primary">
                                                     ৳{{ number_format($totals['total_opening_balance']) }}</td>
-                                                <td class="text-right text-success">
+                                                <td class="text-end text-success">
                                                     ৳{{ number_format($totals['total_sales']) }}</td>
-                                                <td class="text-right text-warning">
+                                                <td class="text-end text-warning">
                                                     ৳{{ number_format($totals['total_sales_return']) }}</td>
-                                                <td class="text-right text-info">
+                                                <td class="text-end text-info">
                                                     ৳{{ number_format($totals['total_collection']-$totals['total_sales_return']-$totals['total_waiver']) }}</td>
-                                                <td class="text-right text-info">
+                                                <td class="text-end text-info">
                                                     ৳{{ number_format($totals['total_charge']) }}</td>
-                                                <td class="text-right text-info">
+                                                <td class="text-end text-info">
                                                     ৳{{ number_format($totals['total_waiver']) }}</td>
-                                                <td class="text-right text-danger">
+                                                <td class="text-end text-danger">
                                                     ৳{{ number_format($totals['total_due']) }}</td>
-                                                <td class="text-right text-danger">
+                                                <td class="text-end text-danger">
                                                     <strong>৳{{ number_format($totals['total_closing_balance']) }}</strong>
                                                 </td>
                                                 <td class="text-center">-</td>

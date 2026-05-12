@@ -62,8 +62,9 @@
                     <th style="width: 5%;">SL</th>
                     <th style="width: 15%;">Task Type</th>  
                     <th style="width: 15%;">Status</th> 
-                    <th style="width: 25%;">Assign By</th>
-                    <th style="width: 25%;">Assign Date</th>
+                    <th style="width: 20%;">Assign To</th>
+                    <th style="width: 20%;">Assign By</th>
+                    <th style="width: 10%;">Assign Date</th>
                 </tr>
             </thead>
             <tbody>  
@@ -73,6 +74,9 @@
                             <td>{{ $index + 1 }}</td>
                             <td>{{  ucwords(str_replace('_', ' ', $entry->task_type)) ?? '-' }}</td>   
                             <td>{{ $entry->status  ?? '-' }}</td>
+                            <td>
+                                {{  $entry->employee->full_name ?? '-' }} 
+                            </td> 
                             <td>
                                 {{  $entry->createdBy->name  ?? '-' }} 
                             </td> 

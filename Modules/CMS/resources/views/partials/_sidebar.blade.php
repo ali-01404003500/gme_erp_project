@@ -24,6 +24,15 @@
                             {{ t_('Application create') }}
                         </a>
                     </li>
+                @endif 
+                @if (hasPermission('cms.document-entries.document-reports'))
+                    <li class="{{ request()->routeIs('cms.document-reports.*') ? 'active' : '' }}">
+                        <a href="{{ route('cms.document-entries.document-reports') }}" 
+                        class="d-flex align-items-center">
+                            <i class="fas fa-file-invoice" style="width: 20px; margin-right: 15px;"></i>
+                            <span>{{ t_('Document Report') }}</span>
+                        </a>
+                    </li>
                 @endif
                 @if (hasPermission('cms.document-types.*') || hasPermission('cms.document-heads.*'))
                     <li
@@ -52,7 +61,7 @@
                                 {{ t_('Document heads') }}
                             </a>
                         </li>
-                    @endif
+                    @endif 
                     
                 </ul>
             </li>

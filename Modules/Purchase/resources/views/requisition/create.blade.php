@@ -39,13 +39,8 @@
                                   
                                         <div class="col-md-4">
                                             <label for="supplier_id">Supplier Name</label>
-                                            <select name="supplier_id" id="supplier_id" class="form-control tom-select">
-                                                <option value="">Choose Supplier Name</option>
-                                                @foreach ($suppliers as $supplier)
-                                                    <option value="{{ $supplier->id }}"
-                                                        {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
-                                                        {{ $supplier->company_name }}</option>
-                                                @endforeach
+                                            <select name="supplier_id" id="supplier_id" class="form-control">
+                                                <option value="">Choose Supplier Name</option> 
                                             </select>
                                         </div>
                                         <div class="col-md-4">
@@ -61,13 +56,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <label for="customer_id">Purchase For</label>
-                                            <select name="customer_id" id="customer_id" class="form-control tom-select">
-                                                <option value="">Choose Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}"
-                                                        {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}@if ($customer->area != null) ({{ $customer->area->area }}) @endif</option>
-                                                @endforeach
+                                            <select name="customer_id" id="customer_id" class="form-control ">
+                                                <option value="">Choose Customer</option> 
                                             </select>
                                         </div>
                                     
@@ -124,12 +114,8 @@
                                                             @foreach (old('product_ids') as $key => $product_id)
                                                                 <tr>
                                                                     <td>
-                                                                        <select name="product_ids[]" class="form-control product_ids tom-select">
-                                                                            <option value="">Choose Product</option>
-                                                                            @foreach ($products as $product)
-                                                                                <option value="{{ $product->id }}" {{ $product_id == $product->id ? 'selected' : '' }}>
-                                                                                    {{ $product->name }}</option>
-                                                                            @endforeach
+                                                                        <select name="product_ids[]" class="form-control product_ids"> 
+                                                                            <option value="{{ $product->id }}" selected>{{ $product->name }}</option>
     
                                                                         </select>                                                                    
                                                                     </td>
@@ -155,12 +141,8 @@
                                                         <tr>
                                                             <td>
                                                                 {{-- <input type="text" name="product_ids[]" id="product_id" class="form-control product_ids" placeholder="Product Name"> --}}
-                                                                <select name="product_ids[]" class="form-control product_ids tom-select">
-                                                                    <option value="">Choose Product</option>
-                                                                    @foreach ($products as $product)
-                                                                        <option value="{{ $product->id }}">
-                                                                            {{ $product->name }}</option>
-                                                                    @endforeach
+                                                                <select name="product_ids[]" class="form-control product_ids  ">
+                                                                    <option value="">Choose Product</option> 
 
                                                                 </select>
                                                             </td>
@@ -246,9 +228,106 @@
             new TomSelect(this, {});
         });
         $("#product_info_table tbody").append(newRow);
+        prouctAutocompleteLoad(newRow);
     });
 
     $(document).ready(function() {
+
+        const supplierSelect = new TomSelect("#supplier_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('purchase.purchase-autocomplete.suppliers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        supplierSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('supplier_id'))
+            supplierSelect.addOption({
+                id: "{{ request('supplier_id') }}",
+                text: "{{ request('supplier_id') }}"
+            });
+            supplierSelect.setValue("{{ request('supplier_id') }}");
+        @endif
+
+
+        const companySelect = new TomSelect("#customer_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('purchase.purchase-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        companySelect.clearOptions(); 
+                        callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('customer_id'))
+            companySelect.addOption({
+                id: "{{ request('customer_id') }}",
+                text: "{{ request('customer_id') }}"
+            });
+            companySelect.setValue("{{ request('customer_id') }}");
+        @endif
+
+
+        const productSelect = new TomSelect(".product_ids", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('purchase.purchase-autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('product_ids'))
+            productSelect.addOption({
+                id: "{{ request('product_ids') }}",
+                text: "{{ request('product_ids') }}"
+            });
+            productSelect.setValue("{{ request('product_ids') }}");
+        @endif
+ 
  
     // Event delegation for dynamic elements
     $("#product_info_table tbody").on("keyup change" , "#quantity, #price, .product_ids", function() {
@@ -391,10 +470,25 @@
 
     // Event delegation for product selection change
     $(document).on('change', '.product_ids', async function() {
+
+        const product_id = $(this).val();
+        if (product_id == "") {
+            return false;
+        }
+        if (product_id != "" && $(".product_ids [value='" + product_id + "']:selected").length > 1) {
+            clearRow($(this).closest('tr'));
+            toastr.warning('This Product is already selected');
+            return false;
+        }
+        else
+        {
+            $("#add_row").click(); 
+        }
+        
         await getProductPrice(this);
         calculateTotalPrice($(this).closest('tr'));
         calculateTotalAmount();
-        calculateNetAmount();
+        calculateNetAmount(); 
     });
 
     // Event delegation for discount change
@@ -403,6 +497,40 @@
     });
 
 });
+
+    function prouctAutocompleteLoad(row){
+        const p = $(row).find(".product_ids");
+        const productSelect = new TomSelect(p[0], {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('product_ids'))
+            productSelect.addOption({
+                id: "{{ request('product_ids') }}",
+                text: "{{ request('product_ids') }}"
+            });
+            productSelect.setValue("{{ request('product_ids') }}");
+        @endif
+    }
 
 </script>
 @stack('script')

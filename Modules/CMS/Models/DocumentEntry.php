@@ -21,4 +21,5 @@ class DocumentEntry extends BaseModel
     public function documentHead(){
         return $this->belongsTo(DocumentHead::class);
     }
+    
 }

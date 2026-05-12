@@ -51,9 +51,10 @@ class LeaveApplicationService
         /* Leave approval entry leave application wise */
         $workflow = ApprovalFlow::where('name','Leave Approval')->firstOrFail();
 
-        $steps = ApproverStep::where('workflow_id',$workflow->id)
-                    ->orderBy('hierarchy_level')
-                    ->get();
+        $steps = ApproverStep::where('workflow_id', $workflow->id)
+            ->where('employee_id', $data['employee_id'])
+            ->orderBy('hierarchy_level')
+            ->get();
 
         foreach ($steps as $step) {
 

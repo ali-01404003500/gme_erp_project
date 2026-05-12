@@ -15,7 +15,20 @@ class DocumentEntryService
     public function getAll(int $limit = 20) {
         return DocumentEntry::query()
         ->searchByFields(['document_type_id'])
+        ->orderBy('document_type_id', 'asc')
+        ->orderBy('document_head_id', 'asc')
         ->paginate($limit);
+    }
+    public function getAllDocuments($request, int $limit = 20)
+    {
+           return DocumentEntry::query()
+            ->with('documentType')
+            ->when($request->document_type_id, function ($q) use ($request) {
+                $q->where('document_type_id', $request->document_type_id);
+            })
+            ->select('document_type_id')
+            ->groupBy('document_type_id')
+            ->paginate($limit);
     }
     
     public function store(array $data)

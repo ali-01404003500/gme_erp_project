@@ -74,6 +74,37 @@ class BillsAndAllowanceService
                 continue;
             }
 
+            // RECEIPTS UPLOAD
+            $receiptsPath = null; 
+             
+            if ($request->hasFile("receipts_invoices.$i")) {
+
+                $file = $request->file("receipts_invoices.$i");
+
+                $fileName = time().'_receipt_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $receiptsPath = $file->storeAs(
+                    '/files/commons',
+                    $fileName,
+                    'public'
+                );
+            }
+
+            // SUPPORTING UPLOAD
+            $supportingPath = null; 
+            if ($request->hasFile("supporting_documents.$i")) {
+
+                $file = $request->file("supporting_documents.$i");
+
+                $fileName = time().'_support_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $supportingPath = $file->storeAs(
+                    'general/supporting',
+                    $fileName,
+                    'public'
+                );
+            }
+
 
             if ($date || $from || $to || $amount) {
                 $data = Validator::make($request->all(), [
@@ -81,7 +112,7 @@ class BillsAndAllowanceService
                     "from_location.$i" => 'required|string',
                     "to_location.$i" => 'required|string',
                     "transport_by.$i" => 'required|string',
-                    "distance.$i" => 'required|integer',
+                    "distance.$i" => 'nullable|integer',
                     "expense_description.$i" => 'required|string',
                     "transport_amount.$i" => 'required|numeric|min:1', 
                     "receipts_invoices_$i" => 'nullable|string',
@@ -97,8 +128,8 @@ class BillsAndAllowanceService
                     'distance' => $request->input("distance.$i"),
                     'expense_description' => $request->input("expense_description.$i"),
                     'amount' => $request->input("transport_amount.$i"), 
-                    'receipts_invoices' => $request->input("receipts_invoices_$i"),
-                    'supporting_documents' => $request->input("supporting_documents_$i"),
+                    'receipts_invoices' => $receiptsPath, 
+                    'supporting_documents' => $supportingPath,
                 ]);
             }
         }
@@ -110,6 +141,37 @@ class BillsAndAllowanceService
             $type = $request->input("expense_type.$i");
             $amount = $request->input("general_amount.$i");
     
+            // RECEIPTS UPLOAD
+            $receiptsPath = null; 
+            if ($request->hasFile("general_receipts_invoices.$i")) {
+
+                $file = $request->file("general_receipts_invoices.$i");
+
+                $fileName = time().'_general_receipt_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $receiptsPath = $file->storeAs(
+                    '/files/commons',
+                    $fileName,
+                    'public'
+                );
+            }
+
+            // SUPPORTING UPLOAD
+            $supportingPath = null; 
+            if ($request->hasFile("general_supporting_documents.$i")) {
+
+                $file = $request->file("general_supporting_documents.$i");
+
+                $fileName = time().'_general_support_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $supportingPath = $file->storeAs(
+                    'general/supporting',
+                    $fileName,
+                    'public'
+                );
+            }
+
+
             if ($date || $type || $amount) {
                 $data = Validator::make($request->all(), [
                     "expense_date.$i" => 'required|date',
@@ -126,12 +188,12 @@ class BillsAndAllowanceService
                     'expense_type' => $request->input("expense_type.$i"),
                     'expense_description' => $request->input("general_expense_description.$i"),
                     'amount' => $request->input("general_amount.$i"), 
-                    'receipts_invoices' => $request->input("general_receipts_invoices_$i"),
-                    'supporting_documents' => $request->input("general_supporting_documents_$i"),
+                    'receipts_invoices' => $receiptsPath,
+                    'supporting_documents' => $supportingPath,
                 ]);
             }
         }
-
+ 
         DB::commit();
     
         return $result;
@@ -179,13 +241,50 @@ class BillsAndAllowanceService
             $to = $request->input("to_location.$i");
             $amount = $request->input("transport_amount.$i");
     
+            // RECEIPTS UPLOAD
+            $receiptsPath = $request->input("old_receipts_invoices.$i") ?? null;
+
+
+            if ($request->hasFile("receipts_invoices.$i")) {
+
+                $file = $request->file("receipts_invoices.$i");
+
+                $fileName = time().'_receipt_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $receiptsPath = $file->storeAs(
+                    '/files/commons',
+                    $fileName,
+                    'public'
+                ); 
+            }
+
+            
+
+            // SUPPORTING UPLOAD  
+            $supportingPath = $request->input("old_supporting_documents.$i") ?? null;
+
+            if ($request->hasFile("supporting_documents.$i")) {
+
+                $file = $request->file("supporting_documents.$i");
+
+                $fileName = time().'_support_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $supportingPath = $file->storeAs(
+                    'general/supporting',
+                    $fileName,
+                    'public'
+                );
+            }
+         
+
+
             if ($date || $from || $to || $amount) {
                 $data = Validator::make($request->all(), [
                     "date_of_expense.$i" => 'required|date',
                     "from_location.$i" => 'required|string',
                     "to_location.$i" => 'required|string',
                     "transport_by.$i" => 'required|string',
-                    "distance.$i" => 'required|integer',
+                    "distance.$i" => 'nullable|integer',
                     "expense_description.$i" => 'required|string',
                     "transport_amount.$i" => 'required|numeric|min:1',
                     "receipts_invoices_$i" => 'nullable|string',
@@ -201,8 +300,8 @@ class BillsAndAllowanceService
                     'distance' => $request->input("distance.$i"),
                     'expense_description' => $request->input("expense_description.$i"),
                     'amount' => $request->input("transport_amount.$i"), 
-                    'receipts_invoices' => $request->input("receipts_invoices_$i"),
-                    'supporting_documents' => $request->input("supporting_documents_$i"),
+                    'receipts_invoices' => $receiptsPath,
+                    'supporting_documents' => $supportingPath,
                 ]);
             }
         }
@@ -214,6 +313,39 @@ class BillsAndAllowanceService
             $type = $request->input("expense_type.$i");
             $amount = $request->input("general_amount.$i");
     
+             // RECEIPTS UPLOAD
+            $receiptsPath = $request->old_general_receipts_invoices[$i] ?? null;
+            if ($request->hasFile("general_receipts_invoices.$i")) {
+
+                $file = $request->file("general_receipts_invoices.$i");
+
+                $fileName = time().'_general_receipt_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $receiptsPath = $file->storeAs(
+                    '/files/commons',
+                    $fileName,
+                    'public'
+                );
+            }
+
+
+            
+            // SUPPORTING UPLOAD
+            $supportingPath = $request->old_general_supporting_documents[$i] ?? null;
+            if ($request->hasFile("general_supporting_documents.$i")) {
+
+                $file = $request->file("general_supporting_documents.$i");
+
+                $fileName = time().'_general_support_'.$i.'.'.$file->getClientOriginalExtension();
+
+                $supportingPath = $file->storeAs(
+                    'general/supporting',
+                    $fileName,
+                    'public'
+                );
+            }
+
+
             if ($date || $type || $amount) {
                 $data = Validator::make($request->all(), [
                     "expense_date.$i" => 'required|date',
@@ -230,8 +362,8 @@ class BillsAndAllowanceService
                     'expense_type' => $request->input("expense_type.$i"),
                     'expense_description' => $request->input("general_expense_description.$i"),
                     'amount' => $request->input("general_amount.$i"),
-                    'receipts_invoices' => $request->input("general_receipts_invoices_$i"),
-                    'supporting_documents' => $request->input("general_supporting_documents_$i"),
+                    'receipts_invoices' => $receiptsPath,
+                    'supporting_documents' => $supportingPath,
                 ]);
             }
         }

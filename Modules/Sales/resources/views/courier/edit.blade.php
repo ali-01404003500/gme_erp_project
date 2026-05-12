@@ -123,6 +123,19 @@
                                     </div>
 
                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="web_link">Courier Tracking Address</label>
+                                            <input type="text" class="form-control" name="web_link" id="web_link"
+                                                placeholder="Courier Tracking Address" value="{{ old('web_link', $courier->web_link) }}">
+                                                @if ($errors->has('web_link'))
+                                                    <span class="text-danger">{{ $errors->first('web_link') }}</span>
+                                                @endif
+                                        </div>
+                                    </div>
+
+                                    
+
+                                    <div class="col-md-4">
                                         <label for="inputError" class="col-sm-3 control-label bolder">
                                             Status</label>
 

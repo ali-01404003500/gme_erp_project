@@ -73,12 +73,16 @@ class DocumentEntryController extends Controller
             'document_type_id' => 'required|exists:document_types,id',
             'document_head_id' => 'required|exists:document_heads,id',
             'date'=>'required|date',
+            'title'=>'required',
+            'start_date'=>'nullable|date',
+            'expiry_date'=>'nullable|date',
             'remarks'=> 'nullable',
             'attachment'=>'required',
 
-        ]);
-        $this->service->store($validate);
-        return redirect()->route('cms.document-entries.index')->with('success', 'DocumentEntry created successfully.');
+        ]); 
+        $result = $this->service->store($validate);
+        
+        return redirect()->route('cms.document-entries.edit', $result->id)->with('success', 'DocumentEntry created successfully.');
     }
 
     /**
@@ -89,6 +93,15 @@ class DocumentEntryController extends Controller
         $data['documentEntry'] = $this->service->show($id);
 
         return view("documentEntrys.show", $data);
+    }
+
+    public function getDocumentreports(Request $request)
+    {
+        $data['documentEntries'] = $this->service->getAllDocuments($request);
+        //dd($data['documentEntries']);
+        $data['documentTypes'] = DocumentType::all();
+
+        return view("CMS::document-entries.document-reports", $data);
     }
 
     /**
@@ -111,6 +124,9 @@ class DocumentEntryController extends Controller
           'document_type_id' => 'required|exists:document_types,id',
             'document_head_id' => 'required|exists:document_heads,id',
             'date'=>'required|date',
+            'title'=>'required',
+            'start_date'=>'nullable|date',
+            'expiry_date'=>'nullable|date',
             'remarks'=> 'nullable',
             'attachment'=>'nullable',
         ]);
@@ -127,4 +143,32 @@ class DocumentEntryController extends Controller
         $this->service->delete($documentEntry);
         return redirect()->route('cms.document-entries.index')->with('success', 'DocumentEntry deleted successfully.');
     }
+
+
+    public function showTypeHeads($type_id)
+    {
+        $data['type'] = DocumentType::findOrFail($type_id);
+
+        $data['documentHeads'] = DocumentEntry::where('document_type_id', $type_id)
+            ->with('documentHead')
+            ->get()
+            ->unique('document_head_id');
+
+        return view("CMS::document-entries.type_heads", $data);
+    }
+
+    public function showHeadFiles($head_id)
+    {
+
+        $data['head'] = DocumentHead::findOrFail($head_id);
+
+
+        $data['documentEntries'] = DocumentEntry::where('document_head_id', $head_id)
+            ->with(['documentType', 'documentHead'])
+            ->latest()
+            ->paginate(12);
+
+        return view("CMS::document-entries.head_files", $data);
+    }
+
 }

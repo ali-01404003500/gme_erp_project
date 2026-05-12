@@ -47,14 +47,10 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td class="text-center">
-                                                <select name="broker_name" id="broker_name" class="form-control tom-select"
+                                                <select name="broker_name" id="broker_name" class="form-control  "
                                                     data-placeholder="Select Broker">
                                                     <option value=""></option>
-                                                    @foreach ($brokers as $key => $value)
-                                                        <option {{ request('broker_name') == $value->broker_name ? 'selected' : '' }}
-                                                            value="{{ $value->broker_name }}">
-                                                            {{ $value->broker_name }}</option>
-                                                    @endforeach
+                                          
                                                 </select>
                                             </td>
                                             <td class="text-center">
@@ -63,14 +59,10 @@
                                                     placeholder="Search by Phone">
                                             </td>
                                             <td class="text-center">
-                                                    <select name="customer_id" id="customer_id" class="form-control tom-select"
+                                                    <select name="customer_id" id="customer_id" class="form-control  "
                                                         data-placeholder="Select Customer">
                                                         <option value=""></option>
-                                                        @foreach ($customers as $key => $value)
-                                                            <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                                value="{{ $value->id }}">
-                                                                {{ $value->company_name }}</option>
-                                                        @endforeach
+                                                  
                                                     </select>
                                                 </td>
                                             </td>
@@ -96,14 +88,12 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Broker Name</th>
-                                    <th>Address</th>
+                                    <th>Broker Name</th> 
                                     <th>Phone No</th>
-                                    <th>Email</th>
                                     <th>Customer Name</th>
                                     <th>
-                                            Status
-                                        </th>
+                                        Status
+                                    </th>
                                     <th class="no-content">Action</th>
                                 </tr>
                             </thead>
@@ -112,14 +102,14 @@
                                     <tr>
                                         <td>{{ ($brokers->currentPage() - 1) * $brokers->perPage() + $loop->iteration  }}</td>
                                         <td>
-                                            <a href="{{ route('crm.brokers.show', $broker->id) }}">{{ $broker->broker_name }}</i></a>
-                                        </td>
-                                        <td>{{ $broker->present_address }}</td>
-                                        <td>{{ $broker->mobile }}</td>
-                                        <td>{{ $broker->email }}</td>
+                                            <a href="{{ route('crm.brokers.show', $broker->id) }}">{{ $broker->broker_name }}</i></a><br>
+                                            <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $broker->present_address }}</small> 
+                                        </td> 
+                                        <td>{{ $broker->mobile }}</td> 
                                         <td>
                                             @foreach ($broker->customerAttached ?? [] as $customerAttached)
                                             {{ optional($customerAttached->customer)->company_name }} <br>
+                                            <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $customerAttached->customer->area?->area }}</small> <br>
                                             @endforeach
                                         </td>
                                          <td>
@@ -282,6 +272,72 @@ function rejectConfirm(e) {
 $(document).ready(function () {
     $(".approval-confirm-broker").on("click", approvalConfirm);
     $(".reject-confirm-broker").on("click", rejectConfirm);
+
+
+    const brokerSelect = new TomSelect("#broker_name", {
+        valueField: "id",
+        labelField: "text",
+        searchField: [], 
+        load: function(query, callback) {
+
+            if (!query.length || query.length < 2) return callback();
+
+            $.ajax({
+                url: "{{ route('crm.autocomplete.brokers') }}",
+                type: "GET",
+                data: { search: query },
+                success: function(res) {
+                    brokerSelect.clearOptions();
+                    callback(res.map(item => ({ id: item.label, text: item.label })));
+                },
+                error: function() {
+                    callback();
+                }
+            });
+        }
+    }); 
+    @if(request('broker_name'))
+        brokerSelect.addOption({
+            id: "{{ request('broker_name') }}",
+            text: "{{ request('broker_name') }}"
+        });
+        brokerSelect.setValue("{{ request('broker_name') }}");
+    @endif
+
+
+    const companySelect = new TomSelect("#customer_id", {
+        valueField: "id",
+        labelField: "text",
+        searchField: [], 
+        load: function(query, callback) {
+
+            if (!query.length || query.length < 2) return callback();
+
+            $.ajax({
+                url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                type: "GET",
+                data: { search: query },
+                success: function(res) {
+                    companySelect.clearOptions(); 
+                    callback(res.map(item => ({ id: item.id, text: item.label   })));
+                },
+                error: function() {
+                    callback();
+                }
+            });
+        }
+    }); 
+
+    @if(request('customer_id'))
+        companySelect.addOption({
+            id: "{{ request('customer_id') }}",
+            text: "{{ $customer }}"
+        });
+        companySelect.setValue("{{ request('customer_id') }}");
+    @endif
+
+
+     
 });
 
 </script>

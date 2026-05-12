@@ -45,13 +45,10 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td class="text-center">
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select"
+                                                <select name="customer_id" id="customer_id" class="form-control "
                                                     data-placeholder="Select Customer">
                                                     <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }} value="{{ $value->id }}">
-                                                            {{ $value->company_name }}</option>
-                                                    @endforeach
+                                                  
                                                 </select>
                                             </td>
                                             <td colspan="2">
@@ -90,14 +87,10 @@
                                     <th>Sl</th>
                                     <th>Customer Name</th>
                                     <th>Date</th>
-                                    <th>Account Complain</th>
-                                    <th>Account Complain Details</th>
-                                    <th>Service Complain</th>
-                                    <th>Service Complain Details</th>
-                                    <th>Sales Complain</th>
-                                    <th>Sales Complain Details</th>
-                                    <th>Requirement of Product</th>
-                                    <th>Requirement of Product Details</th>
+                                    <th>Account Complain</th> 
+                                    <th>Service Complain</th> 
+                                    <th>Sales Complain</th> 
+                                    <th>Requirement of Product</th> 
                                     <th class="no-content">Action</th>
                                 </tr>
                             </thead>
@@ -110,24 +103,52 @@
                                             <a class="text-dark fw-500"
                                                 href="{{ route('crm.daily-calls.show', $value->id) }}">
                                                 {{ optional($value->customer)->company_name }}</i>
-                                            </a>
+                                            </a><br>
+                                            <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $value->customer->area?->area }}</small> <br>
                                         </td>
                                         {{-- <td>{{ optional($value->customer)->company_name }}</td> --}}
-                                        <td>{{ date('m/d/Y', strtotime($value->call_date)) }}</td>
-                                        <td>
+                                        <td>{{ date('Y-m-d', strtotime($value->call_date)) }}</td>
+                                        <td class="text-wrap">
                                             @if ($value->is_account_complain == 1)
-                                                Yes
+                                                Yes <br>
+                                                Note: {{ $value->complains_details }}
                                             @elseif ($value->is_account_complain == 0)
                                                 No
                                             @endif
-                                        </td>
-                                        <td>{{ $value->complains_details }}</td>
-                                        <td>{{ $value->is_service_complain == 1 ? 'Yes' : 'No' }}</td>
-                                        <td>{{ $value->service_complain_details }}</td>
-                                        <td>{{ $value->is_sales_complain == 1 ? 'Yes' : 'No' }}</td> 
-                                        <td>{{ $value->sales_complain_details }}</td>
-                                        <td>{{ $value->is_product_required == 1 ? 'Yes' : 'No' }}</td>
-                                        <td>{{ $value->product_required_details }}</td>
+
+                                        </td> 
+                                        <td class="text-wrap">
+                                            @if ($value->is_service_complain == 1)
+                                                Yes <br>
+                                                Note: {{ $value->service_complain_details }}
+                                            @elseif ($value->is_service_complain == 0)
+                                                No
+                                            @endif
+
+                                        </td> 
+
+                                        <td class="text-wrap">
+                                            @if ($value->is_sales_complain == 1)
+                                                Yes <br>
+                                                Note: {{ $value->sales_complain_details }}
+                                            @elseif ($value->is_sales_complain == 0)
+                                                No
+                                            @endif
+
+                                        </td> 
+
+                                        <td class="text-wrap">
+                                            @if ($value->is_product_required == 1)
+                                                Yes <br>
+                                                Note: {{ $value->product_required_details }}
+                                            @elseif ($value->is_product_required == 0)
+                                                No
+                                            @endif
+
+                                        </td> 
+                          
+                                       
+                                      
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                                     @if (hasPermission('crm.daily-calls.update'))
@@ -170,5 +191,41 @@
             format: 'dd-mm-yyyy',
             autoclose: true
         });
+
+        
+        $(document).ready(function () {
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('crm.autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ $customer }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+
+        }); 
     </script>
 @endSection

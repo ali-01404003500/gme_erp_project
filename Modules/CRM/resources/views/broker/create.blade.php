@@ -473,7 +473,7 @@
                                                     <tbody> 
                                                         <tr>
                                                             <td>
-                                                                <select name="fixed_type[]" class="form-control" onchange="getFixed(this)">
+                                                                <select name="fixed_type[]" class="form-control " onchange="getFixed(this)">
                                                                     <option value="">Select Type</option> 
                                                                     <option value="1">Invoice Wise</option>
                                                                     <option value="2">Monthly</option>
@@ -500,8 +500,8 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <select name="fixed_type[]" class="form-control product_ids" onchange="getFixed(this)">
-                                                                    <option value="">Select Type</option> 
+                                                                <select name="fixed_type[]" class="form-control input-sm product_ids" onchange="getFixed(this)">
+                                                                    <option value="">Select Product</option> 
                                                                 </select>
                                                             </td>
                                                             <td>
@@ -528,12 +528,12 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tab-v-3" role="tabpanel" aria-labelledby="tab-v-3-tab">
-                                    <div class="row">
+                                      <div class="row col-sm-8 offset-2">
                                         <table class="table table-bordered customer-attached-table">
                                             <thead>
-                                                <th>Customer</th>
-                                                <th>Status</th>
-                                                <th>
+                                                <th  width="70%">Customer</th>
+                                                <th  width="20%">Status</th>
+                                                <th  width="10%">
                                                     <div class="btn-group btn-corner">
                                                         <button class="btn btn-success btn-xs add-row"
                                                             onclick="addCustomerAttachedRow()" type="button">
@@ -546,21 +546,14 @@
                                                 @if (old('customer_id'))
                                                     @foreach (old('customer_id') as $key => $value)
                                                         <tr class="customer-attached-item">
-                                                            <td>
+                                                            <td  width="70%">
                                                                 <select name="customer_id[]"
-                                                                    class="form-control to-select">
+                                                                    class="form-control input-sm customer_id ">
                                                                     <option value="">Select Customer</option>
-                                                                    @foreach ($customers as $item)
-                                                                        <option value="{{ $item->id }}"
-                                                                            {{ old('customer_id')[$key] == $item->id ? 'selected' : '' }}>
-                                                                            {{ $item->company_name }} @if ($item->area != null)
-                                                                                ({{ $item->area->area }})
-                                                                            @endif
-                                                                        </option>
-                                                                    @endforeach
+                                                                    
                                                                 </select>
                                                             </td>
-                                                            <td>
+                                                            <td  width="20%">
                                                                 <select name="status[]"
                                                                     class="form-control ">
                                                                     <option value="">Select Status</option>
@@ -569,7 +562,7 @@
                                                                 </select>
                                                             </td>
 
-                                                            <td>
+                                                            <td  width="10%">
                                                                 <div class="btn-group btn-corner">
                                                                     <button class="btn btn-danger btn-xs"
                                                                         onclick="deleteCustomerAttachedRow(this)"
@@ -582,21 +575,14 @@
                                                     @endforeach
                                                 @else
                                                 <tr>
-                                                    <td>
-                                                        <select name="customer_id[]" class="form-control to-select">
+                                                    <td  width="70%">
+                                                        <select name="customer_id[]" class="form-control customer_id">
                                                             <option value="">Select Customer</option>
-                                                            @foreach ($customers as $item)
-                                                                <option value="{{ $item->id }}"
-                                                                    {{ old('customer_ref_id') == $item->id ? 'selected' : '' }}>
-                                                                    {{ $item->company_name }} @if ($item->area != null)
-                                                                        ({{ $item->area->area }})
-                                                                    @endif
-                                                                </option>
-                                                            @endforeach
+                                                           
 
                                                         </select>
                                                     </td>
-                                                    <td>
+                                                    <td  width="20%">
                                                         <select name="status[]" class="form-control ">
                                                             <option value="">Select Status</option>
                                                             <option value="1" selected>Active</option>
@@ -604,7 +590,7 @@
                                                         </select>
                                                     </td>
 
-                                                    <td>
+                                                    <td  width="10%">
                                                         <div class="btn-group btn-corner">
                                                             <button class="btn btn-danger btn-xs"
                                                                 onclick="deleteCustomerAttachedRow(this)" type="button">
@@ -1038,8 +1024,62 @@
         @endif
 
 
+        const customerSelect = new TomSelect(".customer_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('crm.autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        customerSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+
       });
 
+      
+    
+        function customerAutocompleteLoad(row)
+        {
+            const p = $(row).find(".customer_id");
+            const customerSelect = new TomSelect(p[0], {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('crm.autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            customerSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+    
+        }
+        
         function prouctAutocompleteLoad(row){
             const p = $(row).find(".product_ids");
             const productSelect = new TomSelect(p[0], {
@@ -1077,27 +1117,31 @@
 
 
   
-      // Adds a new row with a cleared Customer select (so it shows no preselected data).
-      function addCustomerAttachedRow() {
-          var clone = originalCustomerAttachedRow.clone(true);
-          // Clear input and textarea values.
-          clone.find('input, textarea').val('');
-          // Clear all select values and remove any previous selection data.
-          clone.find('select').each(function() {
-            //   $(this).val('');
-              $(this).removeAttr("data-old-value");
-              if (this.tomselect) {
-                  this.tomselect.clear();
-              }
-          });
-          $(".customer-attached-table tbody").append(clone);
-  
-          // Initialize TomSelect on the new row.
-          clone.find('.to-select').each(function() {
-              new TomSelect(this, { autoclose: true });
-          });
-      }
-  
+        // Adds a new row with a cleared Customer select (so it shows no preselected data).
+        function addCustomerAttachedRow() {
+            var table = $(".customer-attached-table tbody tr:last");
+            var newRow = table.clone();
+
+            // Reset inputs
+            newRow.find("input").val("").prop("disabled", false);
+
+            // Reset selects
+            newRow.find("select").val("");
+
+            // Enable buttons
+            newRow.find("button").prop("disabled", false);
+
+            // Remove old TomSelect wrapper
+            newRow.find(".ts-wrapper").remove();
+            newRow.find("select").removeClass("tomselected ts-hidden-accessible");
+
+            // Append row
+            newRow.insertAfter(table);
+
+            // Reinitialize TomSelect
+            customerAutocompleteLoad(newRow);
+        } 
+        
       // Deletes a customer row and removes its selected customer from the global tracking array.
       function deleteCustomerAttachedRow(object) {
           var row = $(object).closest('tr');

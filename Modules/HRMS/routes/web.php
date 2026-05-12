@@ -22,6 +22,7 @@ use Modules\HRMS\Controllers\Kpi\ResponsibilityEntryController;
 use Modules\HRMS\Controllers\Kpi\ScoreWiseSuggestionController;
 use Modules\HRMS\Controllers\LeaveAdjustmentController;
 use Modules\HRMS\Controllers\LeaveApplicationController;
+use Modules\HRMS\Controllers\LeaveApplicationEmployeeController;
 use Modules\HRMS\Controllers\LeaveApproverController;
 use Modules\HRMS\Controllers\LeaveEligibleEmployeeController;
 use Modules\HRMS\Controllers\LeaveGroupController;
@@ -63,16 +64,30 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::get('loans-deny/{id}', [LoanController::class, 'deny'])->name('loans.deny');
     Route::get('loans/ajax-details/{id}', [LoanController::class, 'ajaxDetails'])->name('loans.ajax-details');
 
+    //======== salary Routes ========
+    Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
+    Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class); 
+    Route::resource('salary-setups', SalarySetupController::class);
+    //Route::get('salary-generates', [SalaryGenerateController::class, 'payrolls'])->name('salary-generates'); 
+
     Route::resource('salary-generates', SalaryGenerateController::class);
 
     Route::post('salary-generates/paid/{id}', [SalaryGenerateController::class, 'paid'])->name('salary-generates.paid'); 
     Route::get('salary-generates/salary-sheet/{id}', [SalaryGenerateController::class,'salarySheet'])->name('salary-generates.salary-sheet');
+    Route::get('salary-generates/payroll/{payroll_id}', [SalaryGenerateController::class,'payrolls'])->name('salary-generates.payroll');
+ 
 
     Route::post('salary-generates/partially-paid/{id}', [SalaryGenerateController::class, 'partiallyPaid'])->name('salary-generates.partially-paid');
     Route::post('salary-generates/paid-all', [SalaryGenerateController::class, 'paidAll'])->name('salary-generates.paid-all');
     Route::post('salary-generates/partially-paid-all', [SalaryGenerateController::class, 'partiallyPaidAll'])->name('salary-generates.partially-paid-all');
 
+    
+
+
+
     Route::resource('leaves', LeaveApplicationController::class);
+    Route::resource('leave-application-employees', LeaveApplicationEmployeeController::class);
+
 
     Route::resource('noticeboards', NoticeBoardController::class);
 
@@ -108,12 +123,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'hrm', 'as' => 'hrm.'], functi
     Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class)->except(['show', 'edit', 'create']);
     Route::resource('leave-eligible-employees', LeaveEligibleEmployeeController::class)->except(['destroy']);
 
-    Route::resource('leaveAdjustment', LeaveAdjustmentController::class); 
-    //======== salary Routes ========
-    Route::resource('salary-generation-policies', SalaryGenerationPolicyController::class);
-    Route::resource('salary-deduction-policies', LeaveSalaryDeductionPolicyController::class);
-    Route::get('payrolls', [SalaryGenerateController::class, 'payrolls'])->name('payrolls'); 
-    Route::resource('salary-setups', SalarySetupController::class);
+    Route::resource('leave-adjustments', LeaveAdjustmentController::class); 
 
     //======== salary Signatory Routes ========
     Route::resource('salary-signatories', SalarySignatoryController::class);

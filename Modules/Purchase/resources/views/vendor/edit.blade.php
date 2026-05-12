@@ -101,7 +101,7 @@
                                                         class="color-dark fs-14 fw-500 align-center">Company
                                                         Name <span class="text-danger">*</span></label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="company_name" value="{{ old('company_name', $vendor->company_name) }}"
                                                         id="company_name" placeholder="Company Name" required>
                                                     @if ($errors->has('company_name'))
@@ -116,7 +116,7 @@
                                                         class="color-dark fs-14 fw-500 align-center">Contact
                                                         Number <span class="text-danger">*</span></label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="phone" value="{{ old('phone', $vendor->phone) }}" id="phone"
                                                         placeholder="Phone" required>
                                                     @if ($errors->has('phone'))
@@ -130,7 +130,7 @@
                                                         Email
                                                     </label>
                                                     <input type="email"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="email" id="email" value="{{ old('email', $vendor->email) }}"
                                                         placeholder="Email Address">
                                                     @if ($errors->has('email'))
@@ -141,9 +141,8 @@
                                                     <label for="company_type_id"
                                                         class="color-dark fs-14 fw-500 align-center">Company Type
                                                         <span class="text-danger">*</span></label>
-                                                    <select
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15 tom-select"
-                                                        name="company_type_id" id="company_type_id">
+                                                        
+                                                    <select name="company_type_id" id="company_type_id" class="form-control to-select">
                                                         <option value="">Select Company Type</option>
                                                         <option value="1" @if($vendor->company_type_id == 1) selected @endif>Private Limited</option>
                                                         <option value="2" @if($vendor->company_type_id == 2) selected @endif>Proprietorship</option>
@@ -163,9 +162,9 @@
                                                         class="color-dark fs-14 fw-500 align-center">
                                                         Account Head
                                                     </label>
-                                                    <select
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15 tom-select"
-                                                        name="account_head_id" id="account_head_id">
+                                         
+
+                                                    <select name="account_head_id" id="account_head_id" class="form-control to-select">
                                                         <option value="">Select Account Head</option>
                                                         <option value="1" @if($vendor->account_head_id == 1) selected @endif> Cash</option>
                                                         <option value="2" @if($vendor->account_head_id == 2) selected @endif> Bank</option>
@@ -182,7 +181,7 @@
                                                         Balance
                                                     </label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="opening_balance" id="opening_balance"
                                                         value="{{ old('opening_balance', $vendor->opening_balance) }}"
                                                         placeholder="Opening Balance">
@@ -195,7 +194,7 @@
                                                 <div class="form-group  mb-25">
                                                     <label for="address"
                                                         class="color-dark fs-14 fw-500 align-center">Address<span class="text-danger">*</span></label>
-                                                    <textarea class="form-control ih-medium ip-gray radius-xs b-light" name="address" style="height: 140px;"
+                                                    <textarea class="form-control   ip-gray radius-xs b-light" name="address" style="height: 140px;"
                                                         id="address" placeholder="Address">{{ old('address', $vendor->address) }}</textarea>
                                                 </div>
                                             </div>
@@ -210,7 +209,7 @@
                                                         class="color-dark fs-14 fw-500 align-center">Owner
                                                         Name</label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="owner_name" id="owner_name"
                                                         value="{{ old('owner_name', $vendor->owner_name) }}" placeholder="Owner Name">
                                                     @if ($errors->has('owner_name'))
@@ -224,7 +223,7 @@
                                                         class="color-dark fs-14 fw-500 align-center">Owner
                                                         Mobile</label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="owner_mobile" id="owner_mobile"
                                                         value="{{ old('owner_mobile', $vendor->owner_mobile) }}" placeholder="Owner Mobile">
                                                     @if ($errors->has('owner_mobile'))
@@ -238,7 +237,7 @@
                                                         class="color-dark fs-14 fw-500 align-center">Owner
                                                         Email</label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="owner_email" id="owner_email"
                                                         value="{{ old('owner_email', $vendor->owner_email) }}" placeholder="Owner Email">
                                                     @if ($errors->has('owner_email'))
@@ -250,8 +249,9 @@
                                                     <label for="owner_designation"
                                                         class="color-dark fs-14 fw-500 align-center">Owner
                                                         Designation</label>
-                                                    <select name="owner_designation" id="owner_designation"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15 tom-select">
+                                             
+
+                                                    <select name="owner_designation" id="owner_designation" class="form-control to-select">
                                                         <option value="">Choose Owner Designation</option>
                                                         <option value="Director" @if($vendor->owner_designation == 'Director') selected @endif> Director</option>
                                                         <option value="Managing Director" @if($vendor->owner_designation == 'Managing Director') selected @endif>Managing Director
@@ -259,13 +259,14 @@
                                                         <option value="Deputy Managing Director" @if($vendor->owner_designation == 'Deputy Managing Director') selected @endif>Deputy Managing
                                                             Director</option>
                                                     </select>
+
                                                 </div>
                                                 <div class="form-group col-md-4 mb-25">
                                                     <label for="owner_dob"
                                                         class="color-dark fs-14 fw-500 align-center">Date of
                                                         Birth</label>
                                                     <input type="text"
-                                                        class="form-control form-control-default ih-medium ip-gray radius-xs b-light px-15 datePicker"
+                                                        class="form-control form-control-default   ip-gray radius-xs b-light px-15 datePicker"
                                                         value="{{ date('d-m-Y', strtotime($vendor->owner_dob)) }}" name="owner_dob"
                                                         id="owner_dob" placeholder="Date of Birth">
                                                     @if ($errors->has('owner_dob'))
@@ -278,7 +279,7 @@
                                                         class="color-dark fs-14 fw-500 align-center">Owner
                                                         Address</label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="owner_address" id="owner_address"
                                                         value="{{ old('owner_address', $vendor->owner_address) }}"
                                                         placeholder="Owner Address">
@@ -299,14 +300,14 @@
                                                         class="color-dark fs-14 fw-500 align-center">National Id
                                                         no.</label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control   ip-gray radius-xs b-light px-15"
                                                         name="nid" id="nid" value="{{ old('nid', $vendor->nid) }}"
                                                         placeholder="Identity Number" >
                                                     @if ($errors->has('nid'))
                                                         <p class="text-danger">{{ $errors->first('nid') }}</p>
                                                     @endif
                                                 </div>
-                                                <div class="row">
+                                                <div class="form-group col-md-4 ">
                                                     <label for="front_image"
                                                         class="color-dark fs-14 fw-500 align-center">Nid Front
                                                         Image</label>
@@ -320,7 +321,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
+                                                <div class="form-group col-md-4 ">
                                                     <label for="back_image"
                                                         class="color-dark fs-14 fw-500 align-center"> Nid Back
                                                         Image</label>
@@ -334,7 +335,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="row">
+                                                <div class="form-group col-md-4 ">
                                                     <label for="visiting_card_front"
                                                         class="color-dark fs-14 fw-500 align-center">Visiting
                                                         Card</label>
@@ -348,7 +349,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
+                                                <div class="form-group col-md-4 ">
                                                     <label for="trade_license"
                                                         class="color-dark fs-14 fw-500 align-center">Trade
                                                         License</label>
@@ -361,7 +362,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
+                                                <div class="form-group col-md-4 ">
                                                     <label for="signature"
                                                         class="color-dark fs-14 fw-500 align-center">Signature</label>
                                                     <div class="account-profile d-flex align-items-center mb-4 ">

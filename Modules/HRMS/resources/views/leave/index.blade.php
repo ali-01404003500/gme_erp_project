@@ -95,7 +95,7 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $leaveApplications])'
-                                style="width:100%">
+                                style="width:100%; table-layout: fixed;">
                                 <thead>
                                     <tr>
                                         <th>Sl</th>
@@ -178,8 +178,7 @@
                                                             title="Edit"><i class="far fa-edit"></i></a>
                                                     @endif
                                                     @foreach($value->approvals as $approval)
-                                                       
-                                                        @if($value->current_level == $approval->level && $approval->status == 'pending' && $approval->approver_id == auth()->user()->employee->id) 
+                                                        @if($value->current_level == $approval->level && $approval->status == 'pending' &&   $approval->approver_id == auth()->user()->employee?->id) 
                                                             <!-- Approve / Reject buttons -->
                                                             <button type="button"
                                                                 data-action="{{ route('hrm.leaves.recommended', $approval->id) }}"

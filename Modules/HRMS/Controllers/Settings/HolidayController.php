@@ -50,7 +50,7 @@ class HolidayController extends Controller
         // dd($request->all());
         $validate = $request->validate([
             'name' => 'required',
-            'department' => 'nullable|string',
+            'department_id' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'every_year' => 'nullable|boolean',
@@ -89,7 +89,7 @@ class HolidayController extends Controller
     {
         $validate = $request->validate([
             'name' => 'required',
-            'department' => 'nullable|string',
+            'department_id' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'every_year' => 'nullable|boolean',

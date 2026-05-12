@@ -177,7 +177,13 @@
         let total = 0;
         $('.amount-value').each(function () {
             let val = parseFloat($(this).text());
-            if (!isNaN(val)) total += val;
+
+            /*total value without emi amount*/
+            let payMode = row.find('[name="payments_pay_mode[]"]').val();  
+            if (payMode != 'EMI') { 
+                if (!isNaN(val)) total += val;
+            }
+ 
         });
         $('#total-display span').text(total.toFixed());
         $('input[name="payments_total_amount"]').val(total.toFixed());

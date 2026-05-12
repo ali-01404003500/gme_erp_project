@@ -33,6 +33,11 @@ Route::group(['middleware'=>'auth', 'prefix' => 'crm', 'as' => 'crm.'],function 
     Route::get('get-customers', [CustomerController::class, 'getCustomers'])->name('get-customers');    
     Route::get('autocomplete-customers', [CustomerController::class, 'customerAutocomplete']) ->name('autocomplete.customers');
     Route::get('autocomplete-products', [BrokerController::class, 'productAutocomplete']) ->name('autocomplete.products');
+    Route::get('autocomplete-brokers', [BrokerController::class, 'brokerAutocomplete']) ->name('autocomplete.brokers');
+ 
+    Route::get('autocomplete-brokers', [CustomerController::class, 'brokerAutocomplete']) ->name('autocomplete.brokers');
+    Route::get('autocomplete-invoice', [CustomerController::class, 'areaAutocomplete']) ->name('autocomplete.area'); 
+
 
 
     /* Customer Type */

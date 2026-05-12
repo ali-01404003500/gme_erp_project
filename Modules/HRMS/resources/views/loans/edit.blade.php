@@ -52,13 +52,11 @@
                                             </label>
                                             <select name="employee_id" id="employee_id"
                                                 class="form-control tom-select" required>
-                                                <option value="">Select Employee</option>
-                                                @foreach($employees as $employee)
-                                                    <option value="{{ $employee->id }}"
-                                                        {{ old('employee_id', $loan->employee_id) == $employee->id ? 'selected' : '' }}>
-                                                        {{ $employee->full_name }}
-                                                    </option>
-                                                @endforeach
+                                                <option value="{{ $employee->id }}"
+                                                    {{ old('employee_id', $loan->employee_id) == $employee->id ? 'selected' : '' }}>
+                                                    {{ $employee->full_name }}
+                                                </option>
+                                    
                                             </select>
                                             @error('employee_id')
                                                 <p class="text-danger">{{ $message }}</p>

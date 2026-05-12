@@ -268,54 +268,62 @@
 
 @section('page_scripts')
 <script>
-   $(document).ready(function() {
-    function calculateTotalPercentage() {
-        // Get the input values
-        let basic = parseFloat($('#basic').val()) || 0;
-        let houseRent = parseFloat($('#house_rent').val()) || 0;
-        let conveyance = parseFloat($('#conveyance').val()) || 0;
-        let medical = parseFloat($('#medical').val()) || 0;
-        let entertainment = parseFloat($('#entertainment').val()) || 0;
-        let leave_fare = parseFloat($('#leave_fare').val()) || 0;
-        let utility = parseFloat($('#utility').val()) || 0;
-        let unkeep = parseFloat($('#unkeep').val()) || 0; 
-        let others = parseFloat($('#others').val()) || 0;
+    $(document).ready(function() {
 
-        total =  basic + houseRent + conveyance + medical + entertainment + leave_fare + utility + unkeep + others;
-        return total;
-    }
+        $('.checkbox').on('change', function () { 
+            $('.checkbox').prop('checked', this.checked); 
+        });
+        
+        function calculateTotalPercentage() {
+            // Get the input values
+            let basic = parseFloat($('#basic').val()) || 0;
+            let houseRent = parseFloat($('#house_rent').val()) || 0;
+            let conveyance = parseFloat($('#conveyance').val()) || 0;
+            let medical = parseFloat($('#medical').val()) || 0;
+            let entertainment = parseFloat($('#entertainment').val()) || 0;
+            let leave_fare = parseFloat($('#leave_fare').val()) || 0;
+            let utility = parseFloat($('#utility').val()) || 0;
+            let unkeep = parseFloat($('#unkeep').val()) || 0; 
+            let others = parseFloat($('#others').val()) || 0;
 
-    function validateTotalPercentage() {
-        let basic = parseFloat($('#basic').val()) || 0;
-
-        let total = calculateTotalPercentage();
-        if (total <= 100) {
-            toastr.error('The total percentage must equal 100.');
-            return false;
+            total =  basic + houseRent + conveyance + medical + entertainment + leave_fare + utility + unkeep + others;
+            return total;
         }
-        else if (total > 100 && (total - basic) < 100) {
-            toastr.error('The total percentage excluding basic must be at least 100.');
-            return false;
-        }
-        return true;
-    }
+    
+        function validateTotalPercentage() {
+            let basic = parseFloat($('#basic').val()) || 0;
 
-    // Recalculate total percentage on input change
-    $('input[type="text"], input[type="checkbox"]').on('change', function() {
+            let total = calculateTotalPercentage();
+            if (total < 100) {
+                toastr.error('The total percentage must equal 100.');
+                return false;
+            }
+            else if (total > 100 && (total - basic) < 100) {
+                toastr.error('The total percentage excluding basic must be at least 100.');
+                return false;
+            }
+            return true;
+        }
+
+        // Recalculate total percentage on input change
+        $('input[type="text"], input[type="checkbox"]').on('change', function() {
+            validateTotalPercentage();
+        });
+
+        // Handle form submission
+        $('form').on('submit', function(e) {
+            // Prevent form submission if validation fails
+            if (!validateTotalPercentage()) {
+                e.preventDefault();
+            }
+        });
+
+        // Initial validation on page load
         validateTotalPercentage();
-    });
 
-    // Handle form submission
-    $('form').on('submit', function(e) {
-        // Prevent form submission if validation fails
-        if (!validateTotalPercentage()) {
-            e.preventDefault();
-        }
-    });
 
-    // Initial validation on page load
-    validateTotalPercentage();
-});
+         
+    });
 
 </script>
 

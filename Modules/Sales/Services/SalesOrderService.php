@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Account\Controllers\Collections\CollectionController;
 use Modules\Account\Models\Account;
+use Modules\Account\Models\EMIEntry;
 use Modules\Account\Services\AccountTransactionService;
 use Modules\Account\Services\Collections\CollectionService;
 use Modules\Sales\Models\SalesPayment;
@@ -221,8 +222,19 @@ class SalesOrderService
                     $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;  
                     $paymentDate = $payments['payments_date'][$key] ?? null;
                 } 
+                /*update sales order id in emi*/ 
+                if ($payMode == 'EMI') {
+                    EMIEntry::where('id', $payments['payments_emi_id'][$key])
+                    ->update([
+                        'sales_order_id' => $result['salesOrder']->id,   // link sales id
+                    ]);
+                }
             }
         }
+
+   
+
+
         // Process payments
         /**  uncomment later
         foreach ($payments['payment_mode'] as $index => $mode){
@@ -276,19 +288,23 @@ class SalesOrderService
             $time = Carbon::parse(now()); 
             $newTime = $time->addMinutes($triggerName->after_send_time);
 
-            SmsInfo::updateOrCreate(
-                [
-                    'sms_reference' => $result['salesOrder']->id,
-                    'sms_mem_id' => $result['salesOrder']->customer_id,
-                    'sms_status' => 'pending', // condition
-                    'trigger_name' => 'T08', 
-                ],
-                [
-                    'sms_send_time' => $newTime,
-                    'sms_to' => $phone,
-                    'sms_text' => $smsTemplate, 
-                ]
-            );
+           if (!empty($phone)) {
+                SmsInfo::updateOrCreate(
+                    [
+                        'sms_reference' => $result['salesOrder']->id,
+                        'sms_mem_id' => $result['salesOrder']->customer_id,
+                        'sms_status' => 'pending', // condition
+                        'trigger_name' => 'T08', 
+                    ],
+                    [
+                        'sms_send_time' => $newTime,
+                        'sms_to' => $phone,
+                        'sms_text' => $smsTemplate, 
+                    ]
+                );
+            }
+
+            
             
             
     
@@ -326,20 +342,22 @@ class SalesOrderService
                 $time = Carbon::parse(now()); 
                 $newTime = $time->addMinutes($triggerName->after_send_time);
 
-                SmsInfo::updateOrCreate(
-                    [
-                        'sms_reference' => $result['salesOrder']->id,
-                        'sms_mem_id' => $result['salesOrder']->customer_id,
-                        'sms_status' => 'pending', // condition
-                        'trigger_name' => 'T03', 
-                          
-                    ],
-                    [
-                        'sms_send_time' => $newTime,
-                        'sms_to' => $phone,
-                        'sms_text' => $smsTemplate, 
-                    ]
-                );
+                if (!empty($phone)) {
+                    SmsInfo::updateOrCreate(
+                        [
+                            'sms_reference' => $result['salesOrder']->id,
+                            'sms_mem_id' => $result['salesOrder']->customer_id,
+                            'sms_status' => 'pending', // condition
+                            'trigger_name' => 'T03', 
+                            
+                        ],
+                        [
+                            'sms_send_time' => $newTime,
+                            'sms_to' => $phone,
+                            'sms_text' => $smsTemplate, 
+                        ]
+                    );
+                }
 
                 
                 // dd($smsTemplate);  
@@ -1399,6 +1417,14 @@ class SalesOrderService
                     $cashCollectionAmount = $payments['payments_amount'][$key] ?? 0;  
                     $paymentDate = $payments['payments_date'][$key] ?? null;
                 }
+                /*update sales order id in emi*/ 
+                if ($payMode == 'EMI') { 
+                    EMIEntry::where('id', $payments['payments_emi_id'][$key])
+                    ->update([
+                        'sales_order_id' => $result['salesOrder']->id,   // link sales id
+                    ]);
+                  
+                }
             }
         }
 
@@ -1442,20 +1468,21 @@ class SalesOrderService
 
             $time = Carbon::parse(now()); 
             $newTime = $time->addMinutes($triggerName->after_send_time);
-
-            SmsInfo::updateOrCreate(
-                [
-                    'sms_reference' => $salesOrder->id,
-                    'sms_mem_id' => $salesOrder->customer_id,
-                    'sms_status' => 'pending', // condition
-                    'trigger_name' => 'T08', 
-                ],
-                [
-                    'sms_send_time' => $newTime,
-                    'sms_to' => $phone,
-                    'sms_text' => $smsTemplate, 
-                ]
-            );
+            if (!empty($phone)) {       
+                SmsInfo::updateOrCreate(
+                    [
+                        'sms_reference' => $salesOrder->id,
+                        'sms_mem_id' => $salesOrder->customer_id,
+                        'sms_status' => 'pending', // condition
+                        'trigger_name' => 'T08', 
+                    ],
+                    [
+                        'sms_send_time' => $newTime,
+                        'sms_to' => $phone,
+                        'sms_text' => $smsTemplate, 
+                    ]
+                );
+            }
 
                 
             /*Update:: send sms for cash collection */
@@ -1489,20 +1516,21 @@ class SalesOrderService
 
                 $time = Carbon::parse(now()); 
                 $newTime = $time->addMinutes($triggerName->after_send_time);
-
-                SmsInfo::updateOrCreate(
-                    [
-                        'sms_reference' => $salesOrder->id,
-                        'sms_mem_id' => $salesOrder->customer_id,
-                        'sms_status' => 'pending', // condition
-                        'trigger_name' => 'T03', 
-                    ],
-                    [
-                        'sms_send_time' => $newTime,
-                        'sms_to' => $phone,
-                        'sms_text' => $smsTemplate, 
-                    ]
-                );
+                if (!empty($phone)) {
+                    SmsInfo::updateOrCreate(
+                        [
+                            'sms_reference' => $salesOrder->id,
+                            'sms_mem_id' => $salesOrder->customer_id,
+                            'sms_status' => 'pending', // condition
+                            'trigger_name' => 'T03', 
+                        ],
+                        [
+                            'sms_send_time' => $newTime,
+                            'sms_to' => $phone,
+                            'sms_text' => $smsTemplate, 
+                        ]
+                    );
+                }
             }
         }
 

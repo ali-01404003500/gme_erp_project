@@ -42,9 +42,7 @@
                                                     @foreach ($employees as $employee)
                                                         <option value="{{ $employee->id }}"
                                                             {{ request('employee_id') == $employee->id ? 'selected' : '' }}>
-                                                            {{ @$employee->employementDetail->card_no }}:
-                                                            {{ $employee->full_name }}
-                                                            ({{ @$employee->employementDetail->designation->name }})
+                                                             {{ $employee->full_name }}
                                                         </option>
                                                     @endforeach
                                                 </select>

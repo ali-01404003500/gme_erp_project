@@ -41,7 +41,7 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="invoice_date">Requisition Date</label>
-                                            <input type="date" name="invoice_date" class="form-control" id="invoice_date"
+                                            <input type="date" name="invoice_date" class="form-control flatdate" id="invoice_date"
                                                 placeholder="Invoice Date" value="{{ old('invoice_date', date('Y-m-d')) }}"
                                                 readonly>
                                         </div>
@@ -68,14 +68,14 @@
                                         <div class="form-group">
                                             <label for="customer_id">Company Address</label>
                                             <input type="text" name="address" class="form-control" id="address1"
-                                                placeholder="Shipping Address" disabled>
+                                                placeholder="Company Address" disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="contact_person_phone">Company Phone</label>
                                             <input type="text" name="contact_person_phone" class="form-control"
-                                                id="contact_person_phone1" placeholder="Contact Person Phone" disabled>
+                                                id="contact_person_phone1" placeholder="Company Phone" disabled>
                                         </div>
                                     </div>
                                 </div> <!-- Added closing div for row mb-4 -->
@@ -852,7 +852,7 @@
                         data: { search: query },
                         success: function(res) {
                             companySelect.clearOptions();
-                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address  })));
                         },
                         error: function() {
                             callback();
@@ -869,6 +869,17 @@
                 companySelect.setValue("{{ request('customer_id') }}");
             @endif
 
+            companySelect.on('change', function(value) {
+                const selected = companySelect.options[value];
+                if (selected) {  
+                    $('#address1').val(selected.address || '');
+                    $('#contact_person_phone1').val(selected.phone || '');
+                } else {
+                    $('#address1').val('');
+                    $('#contact_person_phone1').val('');
+                }
+            });
+            
 
             const productSelect = new TomSelect(".product_ids", {
                 valueField: "id",

@@ -149,7 +149,7 @@
                                                 <input type="text"
                                                     class="form-control ip-gray radius-xs b-light px-15"
                                                     name="phone" value="{{ old('phone') }}" id="phone"
-                                                    placeholder="Phone">
+                                                    placeholder="Phone" onkeyup="$('#contact_for_sms').val(this.value)">
                                                 @if ($errors->has('phone'))
                                                     <p class="text-danger">{{ $errors->first('phone') }}</p>
                                                 @endif
@@ -170,14 +170,8 @@
                                                 <label for="company_place_id"
                                                     class="color-dark fs-14 fw-500 align-center">Company Place<span
                                                         class="text-danger">*</span></label>
-                                                <select class="form-control tom-select" name="company_place_id">
+                                                <select class="form-control" name="company_place_id" id="company_place_id">
                                                     <option value="">Choose Company Place</option>
-                                                    @foreach ($areas as $key => $item)
-                                                        <option value="{{ $item->id }}"
-                                                            {{ old('company_place_id') == $item->id ? 'selected' : '' }}>
-                                                            {{ $item->area }}
-                                                        </option>
-                                                    @endforeach
                                                 </select>
                                                 @if ($errors->has('company_place_id'))
                                                     <p class="text-danger">{{ $errors->first('company_place_id') }}</p>
@@ -186,7 +180,7 @@
                                             </div>
                                             <div class="form-group col-md-4 mb-25">
                                                 <label for="profession"
-                                                    class="color-dark fs-14 fw-500 align-center">Contact Number (SMS)</label>
+                                                    class="color-dark fs-14 fw-500 align-center">Contact Number (SMS)<span class="text-danger">*</span></label>
                                                 <input type="text"
                                                     class="form-control ip-gray radius-xs b-light px-15"
                                                     name="contact_for_sms" id="contact_for_sms"
@@ -240,16 +234,9 @@
                                                 <label for="customer_ref_id"
                                                     class="color-dark fs-14 fw-500 align-center">Customer Reference</label>
                                                 <select name="customer_ref_id" id="customer_ref_id"
-                                                    class="form-control ip-gray radius-xs b-light px-15 tom-select">
+                                                    class="form-control ip-gray radius-xs b-light px-15 ">
                                                     <option value="">Choose Customer Reference</option>
-                                                    @foreach ($customers as $item)
-                                                        <option value="{{ $item->id }}"
-                                                            {{ old('customer_ref_id') == $item->id ? 'selected' : '' }}>
-                                                            {{ $item->company_name }} @if ($item->area != null)
-                                                                ({{ $item->area->area }})
-                                                            @endif
-                                                        </option>
-                                                    @endforeach
+                                                   
                                                 </select>
                                                 @if ($errors->has('customer_ref_id'))
                                                     <p class="text-danger">{{ $errors->first('customer_ref_id') }}</p>
@@ -258,7 +245,7 @@
                                             </div>
 
                                           
-                                            <div class="form-group  mb-25">
+                                            <div class="form-group  col-md-8 mb-25">
                                                 <label for="address"
                                                     class="color-dark fs-14 fw-500 align-center">Address <span
                                                         class="text-danger">*</span></label>
@@ -267,7 +254,7 @@
                                             </div>  
                                             <div class="form-group col-md-4 mb-25">
                                                 <label for="logo"
-                                                    class="color-dark fs-14 fw-500 align-center">LOGO</label>
+                                                    class="color-dark fs-14 fw-500 align-center">Logo</label>
                                                     <x-file-uploader  name="logo"/>
 
                                                 {{-- <input type="file" class="file-control form-control" id="logo"
@@ -335,7 +322,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control form-control-default ip-gray radius-xs b-light px-15 datePicker"
+                                                                    <input type="text" class="form-control form-control-default ip-gray radius-xs b-light px-15 flatdate "
                                                                         value="" name="owner_dob[]" value="{{$owner_dobs[$index]}}" placeholder="Date of Birth" autocomplete="off">
                                                                     @if ($errors->has('owner_dob'))
                                                                         <p class="text-danger">{{ $errors->first('owner_dob') }}</p>
@@ -382,7 +369,7 @@
                                                                     @endif
                                                                 </td>
                                                                 <td>
-                                                                    <input type="text" class="form-control form-control-default ip-gray radius-xs b-light px-15 datePicker"
+                                                                    <input type="text" class="form-control form-control-default ip-gray radius-xs b-light px-15 flatdate "
                                                                         value="" name="owner_dob[]"  placeholder="Date of Birth" autocomplete="off">
                                                                     @if ($errors->has('owner_dob'))
                                                                         <p class="text-danger">{{ $errors->first('owner_dob') }}</p>
@@ -432,7 +419,7 @@
                                             </div>
                                         </div>
                                             <div class="row">
-                                                <div class="row">
+                                                <div class=" col-md-2">
                                                     <label for="front_image"
                                                         class="color-dark fs-14 fw-500 align-center">NID Front
                                                         Image</label>
@@ -446,7 +433,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row">
+                                                <div class=" col-md-2">
                                                     <label for="back_image"
                                                         class="color-dark fs-14 fw-500 align-center">NID Back
                                                         Image</label>
@@ -461,7 +448,7 @@
                                                     </div>
                                                 </div>
                                             
-                                                <div class="row">
+                                                <div class="col-md-2">
                                                     <label for="visiting_card_front"
                                                         class="color-dark fs-14 fw-500 align-center">Visiting Card
                                                         (Front)</label>
@@ -477,7 +464,7 @@
                                                     </div>
                                                 </div>
                                            
-                                                <div class="row">
+                                                <div class="col-md-2">
                                                     <label for="visiting_card_back"
                                                         class="color-dark fs-14 fw-500 align-center">Visiting Card
                                                         (Back)</label>
@@ -493,7 +480,7 @@
                                                     </div>
                                                 </div>
                                             
-                                                <div class="row">
+                                                <div class="col-md-2">
                                                     <label for="trade_license"
                                                         class="color-dark fs-14 fw-500 align-center">Trade License</label>
                                                     <div class="account-profile d-flex align-items-center mb-4 ">
@@ -507,7 +494,7 @@
                                                     </div>
                                                 </div>
                                            
-                                                <div class="row">
+                                                <div class="col-md-2">
                                                     <label for="signature"
                                                         class="color-dark fs-14 fw-500 align-center">Signature</label>
                                                     <div class="account-profile d-flex align-items-center mb-4 ">
@@ -719,21 +706,21 @@
         function addRow() {
         var original = $("tr.shipping-item").first();
         var clone = $(`<tr class="shipping-item">
-                                                            <td>
-                                                                <input type="text" class="form-control ip-gray radius-xs b-light px-15" name="ship_to[]" id="ship_to" placeholder="Ship to">
-                                                            </td>
-                                                            <td>
-                                                                <input type="test" class="form-control ip-gray radius-xs b-light px-15" name="shipping_phone[]" id="shipping_phone" placeholder="Mobile number">
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" class="form-control ip-gray radius-xs b-light px-15" name="shipping_address[]" id="shipping_address1" placeholder="Shipping Address 1">
-                                                            </td>
-                                                            <td>
-                                                                <button class="btn btn-danger btn-xs" onclick="deleteRow(this)" type="button">
-                                                                    <i class="fa fa-trash"></i>
-                                                                </button>
-                                                            </td>
-                                                        </tr>`)
+                        <td>
+                            <input type="text" class="form-control ip-gray radius-xs b-light px-15" name="ship_to[]" id="ship_to" placeholder="Ship to">
+                        </td>
+                        <td>
+                            <input type="test" class="form-control ip-gray radius-xs b-light px-15" name="shipping_phone[]" id="shipping_phone" placeholder="Mobile number">
+                        </td>
+                        <td>
+                            <input type="text" class="form-control ip-gray radius-xs b-light px-15" name="shipping_address[]" id="shipping_address1" placeholder="Shipping Address 1">
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-xs" onclick="deleteRow(this)" type="button">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>`)
         clone.find('input, textarea').val(''); // Clear values in the cloned inputs and textareas
         // original.parent().append(clone);
         $('#shipping_info_table tbody').append(clone);
@@ -850,6 +837,74 @@
     function deleteOwnerRow(button) {
         button.closest('tr').remove();
     }
+
+    
+    
+    $(document).ready(function () {
+    
+        const companySelect = new TomSelect("#customer_ref_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        companySelect.clearOptions(); 
+                        callback(res.map(item => ({ id: item.id, text: item.label   })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('customer_ref_id'))
+            companySelect.addOption({
+                id: "{{ request('customer_ref_id') }}",
+                text: "{{ request('customer_ref_id') }}"
+            });
+            companySelect.setValue("{{ request('customer_ref_id') }}");
+        @endif
+
+
+         const areaIdSelect = new TomSelect("#company_place_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('crm.autocomplete.area') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        areaIdSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label, number: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            },
+            onChange: function(value) { 
+                if (!value) return; 
+                let selected = this.options[value]; 
+                $('#company_place_id').val(selected.text);
+            }
+        }); 
+ 
+    });
+
+
 </script>
 
 @endSection

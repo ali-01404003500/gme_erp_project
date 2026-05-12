@@ -89,7 +89,7 @@
                                             </td> 
                                             <td width="16%">
                                                 <select name="status" id="status" class="form-control tom-select">
-                                                    <option value="" {{ request('status') == 0 ? 'selected' : '' }}></option> 
+                                                    <option value="" {{ request('status') == 0 ? 'selected' : '' }}>All</option> 
                                                     <option value="1" {{ request('status') == 1 ? 'selected' : '' }}>Active</option>
                                                     <option value="0" {{ request('status') == 0 ? 'selected' : '' }}>Inactive</option>
                                                     
@@ -117,9 +117,7 @@
                                 <tr>
                                     <th>Sl</th>
                                     <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Designation</th>
+                                    <th>Name</th> 
                                     <th>Date of Birth</th>
                                     <th>Joining Date</th>
                                     <th>Email</th>
@@ -139,20 +137,38 @@
                                         <td>{{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration  }}</td>
                                         <td>{{ $employee->employementDetail?->card_no }}</td>
                                         <td>
-                                            <a class="text-dark fw-500" href="{{ route('hrm.employees.show', $employee->id) }}">
-                                                {{ $employee->full_name }}
-                                            </a>
-                                        </td>
-                                        {{-- <td>{{ $employee->full_name }}</td> --}}
-                                        <td>{{ $employee->employementDetail->department->name ?? 'N/A' }}</td>
-                                        <td>{{ $employee->employementDetail->designation->name ?? 'N/A' }}</td>
+
+                                            <div style="display:flex; align-items:flex-start; gap:10px;">
+
+                                                <div>
+                                                    <img 
+                                                        src="{{ asset($employee->photograph ?? 'assets/img/author-nav.jpg') }}" 
+                                                         
+                                                        style="
+                                                            width:60px;
+                                                            height:60px;
+                                                            border-radius:50%;
+                                                            object-fit:cover;
+                                                            border:1px solid #ddd;
+                                                        "
+                                                    >
+                                                </div> 
+                                                <div> 
+                                                    <a class="text-dark fw-500" href="{{ route('hrm.employees.show', $employee->id) }}">
+                                                        {{ $employee->full_name }}
+                                                    </a><br>
+                                                    <small class="text-muted">{{ $employee->employementDetail->designation->name ?? 'N/A' }}</small><br>
+                                                    <small class="text-muted">{{ $employee->employementDetail->department->name ?? 'N/A' }}</small><br>
+                                                    <small class="text-muted">{{ $employee->employementDetail->branch->name ?? 'N/A' }}</small> 
+                                                </div>
+                                            </div>
+                                        </td> 
                                         <td>{{ $employee->date_of_birth }}</td>
                                         <td>{{ $employee->employementDetail?->date_of_joining }}</td>
                                         <td>{{ $employee->email_address }}</td>
                                         <td>{{ $employee->personal_mobile }}</td>
                                         <td>{{ $employee->status == 1 ? 'Active' : 'Inactive' }}</td>
- 
-
+  
 
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">

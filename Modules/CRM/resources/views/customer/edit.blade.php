@@ -171,7 +171,7 @@
                                                     class="color-dark fs-14 fw-500 align-center">Company
                                                     Name <span class="text-danger">*</span></label>
                                                 <input type="text"
-                                                    class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                    class="form-control  ip-gray radius-xs b-light px-15"
                                                     name="company_name"
                                                     value="{{ old('company_name', $customer->company_name) }}"
                                                     id="company_name" placeholder="Company Name">
@@ -183,9 +183,9 @@
                                                 <label for="phone" class="color-dark fs-14 fw-500 align-center">Contact
                                                     Number <span class="text-danger">*</span></label>
                                                 <input type="text"
-                                                    class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                    class="form-control  ip-gray radius-xs b-light px-15"
                                                     name="phone" value="{{ old('phone', $customer->phone) }}"
-                                                    id="phone" placeholder="Phone">
+                                                    id="phone" placeholder="Phone" >
                                                 @if ($errors->has('phone'))
                                                     <p class="text-danger">{{ $errors->first('phone') }}</p>
                                                 @endif
@@ -195,7 +195,7 @@
                                                     Address
                                                 </label>
                                                 <input type="email"
-                                                    class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                    class="form-control  ip-gray radius-xs b-light px-15"
                                                     name="email" id="email"
                                                     value="{{ old('email', $customer->email) }}"
                                                     placeholder="Email Address">
@@ -207,14 +207,9 @@
                                                 <label for="company_place_id"
                                                     class="color-dark fs-14 fw-500 align-center">Company Place <span
                                                         class="text-danger">*</span></label>
-                                                <select class="form-control tom-select" name="company_place_id">
+                                                <select class="form-control" name="company_place_id" id="company_place_id">
                                                     <option value="">Choose Company Place</option>
-                                                    @foreach ($areas as $key => $item)
-                                                        <option value="{{ $item->id }}"
-                                                            {{ old('company_place_id', $customer->company_place_id) == $item->id ? 'selected' : '' }}>
-                                                            {{ $item->area }}
-                                                        </option>
-                                                    @endforeach
+                                                   
                                                 </select>
                                                 @if ($errors->has('company_place'))
                                                     <p class="text-danger">{{ $errors->first('company_place') }}</p>
@@ -223,9 +218,9 @@
                                             </div>
                                             <div class="form-group col-md-4 mb-25">
                                                 <label for="profession"
-                                                    class="color-dark fs-14 fw-500 align-center">Contact Number (SMS)</label>
+                                                    class="color-dark fs-14 fw-500 align-center">Contact Number (SMS)<span class="text-danger">*</span></label>
                                                 <input type="text"
-                                                    class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                    class="form-control  ip-gray radius-xs b-light px-15"
                                                     name="contact_for_sms" id="contact_for_sms"
                                                     value="{{ old('contact_for_sms', $customer->contact_for_sms) }}"
                                                     placeholder="Contact For SMS">
@@ -237,7 +232,7 @@
                                                 <label for="user_ref_id" class="color-dark fs-14 fw-500 align-center">User
                                                     Reference <samp class="text-danger">*</samp></label>
                                                 <select
-                                                    class="form-control ih-medium ip-gray radius-xs b-light px-15 tom-select"
+                                                    class="form-control  ip-gray radius-xs b-light px-15 tom-select"
                                                     name="user_ref_id" id="user_ref_id">
                                                     <option value="">Choose User Reference</option>
                                                     @foreach ($employees as $key => $item)
@@ -259,7 +254,7 @@
                                                     class="color-dark fs-14 fw-500 align-center">Customer Type <span
                                                         class="text-danger">*</span></label>
                                                 <select
-                                                    class="form-control ih-medium ip-gray radius-xs b-light px-15 tom-select"
+                                                    class="form-control  ip-gray radius-xs b-light px-15 tom-select"
                                                     name="customer_type" id="customer_type">
                                                     <option value="">Choose Customer Type</option>
                                                     @foreach ($customerTypes as $key => $item)
@@ -278,16 +273,8 @@
                                                 <label for="customer_ref_id"
                                                     class="color-dark fs-14 fw-500 align-center">Customer Reference</label>
                                                 <select name="customer_ref_id" id="customer_ref_id"
-                                                    class="form-control ih-medium ip-gray radius-xs b-light px-15 tom-select">
+                                                    class="form-control  ip-gray radius-xs b-light px-15">
                                                     <option value="">Choose Customer Reference</option>
-                                                    @foreach ($customers as $item)
-                                                        <option value="{{ $item->id }}"
-                                                            {{ old('customer_ref_id', $customer->customer_ref_id) == $item->id ? 'selected' : '' }}>
-                                                            {{ $item->company_name }} @if ($item->area != null)
-                                                                ({{ $item->area->area }})
-                                                            @endif
-                                                        </option>
-                                                    @endforeach
                                                 </select>
 
                                                 @if ($errors->has('customer_ref_id'))
@@ -295,21 +282,24 @@
                                                 @endif
 
                                             </div>
+                                            <div class="form-group  col-md-8 mb-25">
+                                                <label for="address"
+                                                    class="color-dark fs-14 fw-500 align-center">Address <span
+                                                        class="text-danger">*</span></label>
+                                                <textarea class="form-control  ip-gray radius-xs b-light px-15" name="address" id="address"
+                                                    placeholder="Address">{{ old('address', $customer->address) }}</textarea>
+                                            </div>
+
+
 
                                             <div class="form-group col-md-4 mb-25">
                                                 <label for="logo"
-                                                    class="color-dark fs-14 fw-500 align-center">LOGO</label>
+                                                    class="color-dark fs-14 fw-500 align-center">Logo</label>
                                                     <x-file-uploader :value="$customer->logo ?? old('logo')" name="logo"/>
                                                         {{-- <input type="file" class="file-control form-control" id="logo"
                                                     name="logo" data-value="{{ $customer->logo }}"> --}}
                                             </div>
-                                            <div class="form-group  mb-25">
-                                                <label for="address"
-                                                    class="color-dark fs-14 fw-500 align-center">Address <span
-                                                        class="text-danger">*</span></label>
-                                                <textarea class="form-control ih-medium ip-gray radius-xs b-light px-15" name="address" id="address"
-                                                    placeholder="Address">{{ old('address', $customer->address) }}</textarea>
-                                            </div>
+                                          
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="tab-v-2" role="tabpanel"
@@ -363,22 +353,22 @@
                                                                     </td>
                                                                     <td>
                                                                         <input type="text"
-                                                                            class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                                            class="form-control  ip-gray radius-xs b-light px-15"
                                                                             name="owner_mobile[]" id="owner_mobile"
                                                                             value="{{ $value->owner_mobile }}"
                                                                             placeholder="Owner Mobile">
                                                                     </td>
                                                                     <td>
                                                                         <input type="text"
-                                                                            class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                                            class="form-control  ip-gray radius-xs b-light px-15"
                                                                             name="owner_email[]" id="owner_email"
                                                                             value="{{ $value->owner_email }}"
                                                                             placeholder="Owner Email">
                                                                     </td>
                                                                     <td>
                                                                         <input type="text"
-                                                                            class="form-control form-control-default ih-medium ip-gray radius-xs b-light px-15 datePicker"
-                                                                            value="{{ date('m/d/Y', strtotime($value->owner_dob)) }}"
+                                                                            class="form-control form-control-default  ip-gray radius-xs b-light px-15 flatdate "
+                                                                            value="{{ date('Y-m-d', strtotime($value->owner_dob)) }}"
                                                                             name="owner_dob[]"
                                                                             placeholder="Date of Birth">
                                                                     </td>
@@ -420,7 +410,7 @@
                                                         class="color-dark fs-14 fw-500 align-center">National Id
                                                         no.</label>
                                                     <input type="text"
-                                                        class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                                        class="form-control  ip-gray radius-xs b-light px-15"
                                                         name="nid" id="nid"
                                                         value="{{ old('nid', $customer->nid) }}"
                                                         placeholder="Identity Number">
@@ -432,7 +422,7 @@
                                         </div>
                                         <div class="row">
 
-                                            <div class="row">
+                                            <div class="  col-md-2">
                                                 <label for="front_image" class="color-dark fs-14 fw-500 align-center">NID
                                                     Front
                                                     Image</label>
@@ -446,7 +436,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="  col-md-2">
                                                 <label for="back_image" class="color-dark fs-14 fw-500 align-center">NID
                                                     Back
                                                     Image</label>
@@ -461,7 +451,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="  col-md-2">
                                                 <label for="visiting_card_front"
                                                     class="color-dark fs-14 fw-500 align-center">Visiting Card
                                                     (Front)</label>
@@ -476,7 +466,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="  col-md-2">
                                                 <label for="visiting_card_back"
                                                     class="color-dark fs-14 fw-500 align-center">Visiting Card
                                                     (Back)</label>
@@ -491,7 +481,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="  col-md-2">
                                                 <label for="trade_license"
                                                     class="color-dark fs-14 fw-500 align-center">Trade
                                                     License</label>
@@ -506,7 +496,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="  col-md-2">
                                                 <label for="signature"
                                                     class="color-dark fs-14 fw-500 align-center">Signature</label>
                                                 <div class="account-profile d-flex align-items-center mb-4 ">
@@ -545,13 +535,13 @@
                                                         @foreach ($customer->customerShippingAddress as $key => $value)
                                                         <tr class="shipping-item">
                                                             <td>
-                                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" name="ship_to[]" id="ship_to" value="{{ $value->ship_to }}" placeholder="Ship to">
+                                                                <input type="text" class="form-control  ip-gray radius-xs b-light px-15" name="ship_to[]" id="ship_to" value="{{ $value->ship_to }}" placeholder="Ship to">
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" name="shipping_phone[]" id="shipping_phone" value="{{ $value->shipping_phone }}" placeholder="Mobile number">
+                                                                <input type="text" class="form-control  ip-gray radius-xs b-light px-15" name="shipping_phone[]" id="shipping_phone" value="{{ $value->shipping_phone }}" placeholder="Mobile number">
                                                             </td>
                                                             <td>
-                                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" name="shipping_address[]" id="shipping_address1" value="{{ $value->shipping_address }}" placeholder="Shipping Address 1">
+                                                                <input type="text" class="form-control  ip-gray radius-xs b-light px-15" name="shipping_address[]" id="shipping_address1" value="{{ $value->shipping_address }}" placeholder="Shipping Address 1">
                                                             </td>
                                                             <td>
                                                                 <button class="btn btn-danger btn-xs disabled" disabled onclick="deleteRow(this)" type="button">
@@ -594,7 +584,7 @@
 
 @section('page_scripts')
     <script>
-        $('.datePicker').datepicker({
+        $('.flatdate').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true
         });
@@ -640,7 +630,7 @@
                     autoclose: true
                 })
             });
-            $('.owner-row .datePicker').each(function() {
+            $('.owner-row .flatdate ').each(function() {
                 $(this).datepicker({
                     format: 'yyyy-mm-dd',
                     autoclose: true
@@ -658,7 +648,7 @@
                     autoclose: true
                 })
             });
-            clone.find('.datePicker').each(function() {
+            clone.find('.flatdate').each(function() {
                 $(this).datepicker({
                     format: 'yyyy-mm-dd',
                     autoclose: true
@@ -682,7 +672,7 @@
                     autoclose: true
                 })
             });
-            $('.owner-row .datePicker').each(function() {
+            $('.owner-row .flatdate').each(function() {
                 $(this).datepicker({
                     format: 'yyyy-mm-dd',
                     autoclose: true
@@ -700,7 +690,7 @@
                     autoclose: true
                 })
             });
-            clone.find('.datePicker').each(function() {
+            clone.find('.flatdate').each(function() {
                 $(this).datepicker({
                     format: 'yyyy-mm-dd',
                     autoclose: true
@@ -751,7 +741,7 @@
                 @endif
             </td>
             <td>
-                <input type="text" class="form-control form-control-default ip-gray radius-xs b-light px-15 datePicker"
+                <input type="text" class="form-control form-control-default ip-gray radius-xs b-light px-15 flatdate "
                     value="" name="owner_dob[]" placeholder="Date of Birth" autocomplete="off">
                 @if ($errors->has('owner_dob'))
                     <p class="text-danger">{{ $errors->first('owner_dob') }}</p>
@@ -764,7 +754,7 @@
             </td>
         </tr>`;
         table.append(row);
-        table.find("tr:last").find('.datePicker').each(function() {
+        table.find("tr:last").find('.flatdate ').each(function() {
                 $(this).datepicker({
                     format: 'yyyy-mm-dd',
                     autoclose: true
@@ -776,6 +766,74 @@
     function deleteOwnerRow(button) {
         button.closest('tr').remove();
     }
+
+
+    
+    $(document).ready(function () {
+    
+        const companySelect = new TomSelect("#customer_ref_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        companySelect.clearOptions(); 
+                        callback(res.map(item => ({ id: item.id, text: item.label    })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('customer_ref_id'))
+            companySelect.addOption({
+                id: "{{ request('customer_ref_id') }}",
+                text: "{{ request('customer_ref_id') }}"
+            });
+            companySelect.setValue("{{ request('customer_ref_id') }}");
+        @endif
+
+
+        const areaIdSelect = new TomSelect("#company_place_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('crm.autocomplete.area') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        areaIdSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label, number: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            },
+            onChange: function(value) { 
+                if (!value) return; 
+                let selected = this.options[value]; 
+                $('#company_place_id').val(selected.text);
+            }
+        }); 
+
+         
+    });
+
 </script>
 
 @endSection

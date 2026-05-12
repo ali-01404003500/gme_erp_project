@@ -330,9 +330,9 @@
                                 
                                         
                                 </section>
-                                <section class="payment-info"
+                                <section class="payment-info d-none"
                                     style="width: 100%; display: flex; ">
-                                    <table style="border: 1px solid black!important; padding: 5px; width: 30%;">
+                                    <table style="border: 1px solid black!important; padding: 5px; width: 30%;" >
                                         <tr style="border: 1px solid black!important; width: 100%; padding: 5px;">
                                             <th
                                                 style="width: 50%; border: 1px solid black!important; border-right: 1px solid rgb(255, 255, 255)!important; padding: 5px; text-align: left;">

@@ -36,20 +36,15 @@
                                     <!-- Search Field -->
                                     <div class="col-md-3 mb-3">
                                         <label>Search Customer</label>
-                                        <select name="search" id="company_name" class="form-control tom-select"
+                                        <select name="search" id="company_name" class="form-control"
                                             data-placeholder="Select Customer">
-                                            <option value=""></option>
-                                            @foreach ($customersearch as $key => $value)
-                                                <option {{ request('search') == $value->id ? 'selected' : '' }}
-                                                    value="{{ $value->id }}">
-                                                    {{ $value->company_name }} ({{ $value->area?->area }})</option>
-                                            @endforeach
+                                            <option value=""></option> 
                                         </select>
                                     </div> 
                                     <div class="col-md-3 mb-3">
                                         <label>Division</label>
-                                        <select name="division_id" class="tom-select" data-placeholder="Select Division">
-                                            <option value=""></option>
+                                        <select name="division_id" class="form-control tom-select" data-placeholder="Select Division">
+                                            <option value="">Select Division</option>
                                             @foreach ($divisions as $division)
                                                 <option value="{{ $division->id }}"
                                                     {{ request('division_id') == $division->id ? 'selected' : '' }}>
@@ -61,8 +56,8 @@
 
                                     <div class="col-md-3 mb-3">
                                         <label>District</label>
-                                        <select name="district_id" class="tom-select" data-placeholder="Select District">
-                                            <option value=""></option>
+                                        <select name="district_id" class="form-control tom-select" data-placeholder="Select District">
+                                            <option value="">Select District</option>
                                             @foreach ($districts as $district)
                                                 <option value="{{ $district->id }}"
                                                     {{ request('district_id') == $district->id ? 'selected' : '' }}>
@@ -99,25 +94,27 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table dt-table-hover" id="zero-config"
-                                    style="font-size: 12px;"> 
+                                <table class="table table-hover table-bordered table-sm" id="zero-config"
+                                    style="font-size: 12px;" width="100%"> 
                                     <thead>
                                         <tr>
                                             <th class="text-center" style="width: 5%;">SL</th>
                                             <th style="width: 20%;">Customer</th>
                                             <th style="width: 10%;">Phone</th>
-                                            <th style="width: 20%;">Address</th>
                                             <th style="width: 20%;">Reference</th>
-                                            <th class="text-right" style="width: 10%;">Opening Balance
+                                            <th class="text-end" style="width: 10%;">Balance
                                                 <br>৳{{ number_format($totals['total_opening_balance']) }}
                                             </th>
-                                            <th style="width: 20%;">Action</th>
+                                            <th class="text-center" style="width: 20%;">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody> 
                                         @forelse($reportData as $index => $customer)
+                                        @php
+                                            $rowNumber = ($reportData->currentPage() - 1) * $reportData->perPage() + $loop->iteration;  
+                                        @endphp
                                             <tr>
-                                                <td class="text-center">{{ $index + 1 }}</td>
+                                                <td class="text-center">{{ $rowNumber }}</td>
                                                 <td>
                                                     <a target="_blank" 
                                                         href="{{ route('account.report.customer-ledger', [
@@ -126,12 +123,12 @@
                                                         'to' => date('Y-m-d'),
                                                         ]) }}">
                                                         {{ $customer['customer_name'] }}
-                                                    </a> 
+                                                    </a> <br>
+                                                     <small class="text-muted"><i class="las la-map-marker me-1"></i> {!! wordwrap($customer['address'], 40, '<br>', true) !!}</small> 
                                                 </td>
-                                                <td class="text-left">{{ $customer['phone'] ?? 'N/A' }}  </td> 
-                                                <td class="text-left">{!! wordwrap($customer['address'], 40, '<br>', true) !!}</td>
+                                                <td class="text-left">{{ $customer['phone'] ?? 'N/A' }}  </td>  
                                                 <td class="text-left">{{ $customer['user_reference'] ?? 'N/A' }}  </td>
-                                                <td class="text-right">
+                                                <td class="text-end">
                                                     ৳{{ number_format($customer['opening_balance']) }}
                                                 </td>   
                                                
@@ -179,17 +176,31 @@
                                             </tr>
                                         @endforelse
                                     </tbody>
-                                    @if ($reportData->count() > 0)
+                  
+
+                                    @if($reportData->count() > 0)
                                         <tfoot>
-                                            <tr style="font-weight: bold; font-size: 14px;">
-                                                <td colspan="5" class="text-right"><strong>GRAND TOTAL:</strong></td>
-                                                <td class="text-right text-primary">
-                                                    ৳{{ number_format($totals['total_opening_balance']) }}</td> 
+                                            <tr class="font-weight-bold" style="font-size: 14px">
+                                                <td colspan="4" class="text-right"><strong>Due Balance:</strong></td>
+                                                <td class="text-end">
+                                                    <strong class="text-danger">৳{{ number_format($totals['total_opening_balance']) }}</strong>
+                                                </td>
                                                 <td class="text-center">-</td>
                                             </tr>
+                                           
                                         </tfoot>
                                     @endif
                                 </table>
+                                <!-- Pagination -->
+                                <div class="mt-3 d-flex justify-content-between align-items-center">
+                                    <div class="text-muted">
+                                        Showing {{ $reportData->firstItem() ?? 0 }} to {{ $reportData->lastItem() ?? 0 }} of
+                                        {{ $reportData->total() }} entries
+                                    </div>
+                                    <div>
+                                        {{ $reportData->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -287,6 +298,49 @@
             });
 
              
+        });
+
+         $(document).ready(function () {
+
+            const companySelect = new TomSelect("#company_name", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [],
+
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('crm.autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+
+                        success: function(res) {
+                            callback(res.map(item => ({
+                                id: item.id,
+                                text: item.label
+                            })));
+                        },
+
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            });
+
+            @if(request('search') && $selectedCustomer)
+
+                companySelect.addOption({
+                    id: "{{ $selectedCustomer->id }}",
+                    text: "{{ $selectedCustomer->company_name }}"
+                });
+
+                companySelect.setValue("{{ $selectedCustomer->id }}");
+
+            @endif
+
         });
     </script>
 

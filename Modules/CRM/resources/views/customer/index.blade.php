@@ -25,7 +25,7 @@
                                 class="btn btn-danger btn-sm mr-5" style="margin-left: 5px;">
                                 <i class="las la-file-pdf fs-16"></i> PDF
                             </a>
-                            <button type="button" class="btn btn-xs btn-success btn-sm me-2 ml-5" data-bs-toggle="modal" style="margin-left: 5px;"
+                            <button type="button" class="btn btn-xs btn-success btn-sm me-2 ml-5 d-none" data-bs-toggle="modal" style="margin-left: 5px;"
                             data-bs-target="#importModal">
                             <i class="las la-file-import fs-16"></i> Import CSV
                         </button>
@@ -58,9 +58,14 @@
                                                         placeholder="Search by Phone">
                                                 </td>
                                                 <td class="text-center" width="20%">
-                                                    <input type="text" class="form-control" name="email"
-                                                        value="{{ request('email') }}" autocomplete="off"
-                                                        placeholder="Search by Email">
+                                                   <select  class="form-control ip-gray radius-xs b-light px-15 tom-select" name="customer_type" id="customer_type">
+                                                    <option value="">Customer Type</option>
+                                                    @foreach ($customerTypes as $key => $item)
+                                                        <option value="{{ $item->id }}"  {{ old('customer_type') ==  $item->id ? 'selected' : '' }}>
+                                                            {{ $item->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                                 </td>
 
                                                 <td colspan="5" class="text-right" width="30%">
@@ -86,17 +91,8 @@
                                     <tr>
                                         <th>SL</th>
                                         <th>
-                                            Customer ID
-                                        </th>
-                                        <th>
                                             Customer Name
-                                        </th>
-                                        <th>
-                                            Address
-                                        </th>
-                                        <th>
-                                            Company Place
-                                        </th>
+                                        </th> 
                                         <th>
                                             Phone Number
                                         </th>
@@ -118,24 +114,15 @@
                                             <td>
                                                 {{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration  }}
                                             </td>
-                                            <th>
-                                                <a href="{{ route('crm.customers.show', $customer->id) }}">
-                                                    {{ $customer->customer_id }}
-                                                </a>
-                                            </th>
                                             <td>
                                                 <a class="text-dark fw-500"
                                                     href="{{ route('crm.customers.show', $customer->id) }}">
                                                     {{ $customer->company_name }}</i>
-                                                </a>
+                                                </a><br>
+                                                <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $customer->area?->area }}</small> 
 
                                             </td>
-                                            <td>
-                                                {{ $customer->address }}
-                                            </td>
-                                            <td>
-                                                {{ $customer->area?->area }}
-                                            </td>
+                                         
                                             <td>
                                                 {{ $customer->phone }}
                                             </td>

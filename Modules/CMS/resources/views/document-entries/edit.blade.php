@@ -4,63 +4,13 @@
 
 @section('content')
 <style>
-    .form-card {
-        border: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-        border-radius: 16px;
-        background: #fff;
-    }
-    .vertical-title {
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        white-space: nowrap;
-        font-weight: 800;
-        color: #1e293b;
-        border-left: 3px solid #5f63f2;
-        padding-right: 12px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-size: 1.1rem;
-    }
-    .form-label {
-        font-weight: 600;
-        color: #475569;
-        margin-bottom: 8px;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .input-styled {
-        border-radius: 10px !important;
-        padding: 12px 15px !important;
-        border: 1px solid #e2e8f0 !important;
-        background-color: #f8fafc;
-        transition: all 0.3s ease;
-    }
-    .input-styled:focus {
-        background-color: #fff;
-        border-color: #5f63f2 !important;
-        box-shadow: 0 0 0 4px rgba(95, 99, 242, 0.1) !important;
-    }
-    .btn-update {
-        padding: 12px 40px;
-        font-weight: 700;
-        border-radius: 10px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        box-shadow: 0 4px 15px rgba(95, 99, 242, 0.3);
-        transition: all 0.3s ease;
-    }
-    .btn-update:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(95, 99, 242, 0.4);
-    }
+    
 </style>
 
 <div class="container-fluid mb-5">
     <div class="row">
         <div class="col-lg-12">
-            <div class="breadcrumb-main d-flex justify-content-between align-items-center py-4">
+            <div class="breadcrumb-main d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-start gap-3">
                     {{-- <h4 class="vertical-title mt-4">
                         {{ trans('Edit Document') }}
@@ -84,7 +34,7 @@
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-xxl-8 col-xl-10">
+        <div class="col-xxl-12 col-xl-12">
             <div class="card form-card">
                 <div class="card-body p-40">
                     <form action="{{ route('cms.document-entries.update', $documentEntry->id ) }}" method="POST" enctype="multipart/form-data">
@@ -93,7 +43,7 @@
                         
                         <div class="row g-4">
                             {{-- Document Type --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="document_type_id" class="form-label">Document Type <span class="text-danger">*</span></label>
                                     <select class="form-control tom-select input-styled" name="document_type_id" id="document_type_id" required>
@@ -104,11 +54,12 @@
                                             </option>
                                         @endforeach
                                     </select>
+                                    
                                 </div>
                             </div>
 
                             {{-- Document Head --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="document_head_id" class="form-label">Document Head <span class="text-danger">*</span></label>
                                     <select class="form-control tom-select input-styled" name="document_head_id" id="document_head_id" required>
@@ -123,32 +74,64 @@
                             </div>
 
                             {{-- Date --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
-                                    <div class="position-relative">
+                                  
                                         <input type="text" class="form-control flatdate input-styled" name="date" id="date"
                                             value="{{ old('date', $documentEntry->date) }}" required>
-                                    </div>
+                                 
+                                </div>
+                            </div>
+
+                            {{-- Title --}}
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control input-styled shadow-sm" name="title" id="title" 
+                                        value="{{ old('title', $documentEntry->title) }}" required>
+                                </div>
+                            </div>
+                         
+
+                             {{-- Start Date --}}
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="start_date" class="form-label">Start Date  </label>
+                                    <input type="text" class="form-control flatdate input-styled shadow-sm" name="start_date" id="start_date" 
+                                        value="{{ old('start_date', $documentEntry->start_date) }}"  >
+                                </div>
+                            </div>
+
+                             {{-- Expiry Date --}}
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="expiry_date" class="form-label">Expiry Date  </label>
+                                    <input type="text" class="form-control flatdate input-styled shadow-sm" name="expiry_date" id="expiry_date" 
+                                        value="{{ old('expiry_date', $documentEntry->expiry_date) }}"  >
+                                </div>
+                            </div>
+
+
+
+                             {{-- Remarks --}}
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="remarks" class="form-label">Remarks / Notes</label>
+                                    <textarea name="remarks" id="remarks" class="form-control input-styled" rows="6" 
+                                        placeholder="Enter additional details regarding this document...">{{ old('remarks', $documentEntry->remarks) }}</textarea>
                                 </div>
                             </div>
 
                             {{-- File Attachment --}}
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="attachment" class="form-label">Attachment <span class="text-danger">*</span></label>
                                     <x-file-uploader name="attachment" :value="$documentEntry->attachment" />
                                 </div>
                             </div>
 
-                            {{-- Remarks --}}
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="remarks" class="form-label">Remarks / Notes</label>
-                                    <textarea name="remarks" id="remarks" class="form-control input-styled" rows="4" 
-                                        placeholder="Enter additional details regarding this document...">{{ old('remarks', $documentEntry->remarks) }}</textarea>
-                                </div>
-                            </div>
+                           
                         </div>
 
                         <div class="d-flex justify-content-end mt-40">

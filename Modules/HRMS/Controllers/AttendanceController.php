@@ -9,6 +9,7 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Modules\HRMS\Models\Attendance;
+use Modules\HRMS\Models\AttendancePolicy;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\Settings\Department;
 use Modules\HRMS\Models\Settings\Holiday;
@@ -85,14 +86,37 @@ class AttendanceController extends Controller
                 ->exportData($data, 'HRMS::attendance.export.', $filename);
         }
 
-        // Weekend check
-        $data['isWeekend'] = Holiday::where('day_type', 2)
-            ->get()
-            ->contains(function ($holiday) {
-                $dayNames = explode(',', $holiday->day_name);
-                return in_array(Carbon::now()->format('l'), $dayNames);
-            });
+        // Holidyay check 
+ 
+        $holidays = Holiday::where(function ($q) use ($from, $to) {
+            $q->whereDate('start_date', '<=', $to)
+            ->whereDate('end_date', '>=', $from);
+        })->get();
+   
+        $holidayDates = [];
 
+        foreach ($holidays as $holiday) {
+
+            $from = Carbon::parse($holiday->from_date);
+            $to   = Carbon::parse($holiday->to_date);
+
+            for ($date = $from->copy(); $date->lte($to); $date->addDay()) {
+                $holidayDates[] = $date->format('Y-m-d');
+            }
+        }
+        $data['holidayDates'] = $holidayDates;
+
+
+        // Weekend check
+        $policy = AttendancePolicy::select('day_wise_settings')->first();
+        $weekends = [];  
+        foreach ($policy->day_wise_settings as $day => $value) {
+            if (($value['working_type'] ?? null) === 'Weekend') {
+                $weekends[] = $day;
+            }
+        }
+        $data['weekends'] = $weekends;
+         
         return view("HRMS::attendance.index", $data);
     }
 

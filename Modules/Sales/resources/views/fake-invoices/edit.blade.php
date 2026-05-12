@@ -107,7 +107,7 @@
                                                                         {{-- <input type="text" name="product_ids[]" id="product_id" class="form-control product_ids" placeholder="Product Name"> --}}
                                                                         <select name="product_ids[]"
                                                                             class="form-control product_ids to-select"> 
-                                                                            <option value="{{ $detail->id }}" selected>
+                                                                            <option value="{{ $detail->product_id }}" selected>
                                                                                 {{ $detail->product->name }}
                                                                             </option>
 

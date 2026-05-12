@@ -17,6 +17,7 @@ use App\Services\UserService;
 use Illuminate\Http\Request;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Modules\HRMS\Models\EmployementDetail;
 
 class EmployeeController extends Controller
 {
@@ -81,11 +82,24 @@ class EmployeeController extends Controller
      */
     public function create()
     {
+        
+        $lastCard = EmployementDetail::orderBy('id', 'desc') ->value('card_no');
+        
+        // Extract number part
+        $number = (int) str_replace('GME', '', $lastCard);
+
+        // Increment
+        $nextNumber = $number + 1;
+
+        // New card
+        $nextCardNo = 'GME' . $nextNumber;
+
         $data['branches'] = Branch::all();
         $data['employees'] = Employee::all();
         $data['designations'] = Designation::where('status', 1)->get();
         $data['departments'] = Department::where('status', 1)->get();
-
+        $data['nextCardNo'] = $nextCardNo;
+ 
         return view('HRMS::employees.create', $data);
     }
 

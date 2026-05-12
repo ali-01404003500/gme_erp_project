@@ -12,7 +12,11 @@ Route::group(['middleware'=>'auth', 'prefix' => 'cms', 'as' => 'cms.'],function 
      /* Document Entry */
       Route::resource('document-entries', DocumentEntryController::class);
       // In routes/web.php or routes/api.php (if you're using API)
-        Route::get('get-document-heads', [DocumentEntryController::class, 'getDocumentHeads'])->name('document-heads.list');
+    Route::get('get-document-heads', [DocumentEntryController::class, 'getDocumentHeads'])->name('document-heads.list');
+    Route::get('get-document-reports', [DocumentEntryController::class, 'getDocumentreports'])->name('document-entries.document-reports');
+    Route::get('get-document-heads', [DocumentEntryController::class, 'getDocumentHeads'])->name('document-heads.list'); 
+    Route::get('document-entries/type/{type_id}', [DocumentEntryController::class, 'showTypeHeads'])->name('document-entries.type-heads');
+    Route::get('document-entries/head/{head_id}', [DocumentEntryController::class, 'showHeadFiles'])->name('document-entries.head-files');
 
       /* Document Type */
       Route::resource('document-types', DocumentTypeController::class);

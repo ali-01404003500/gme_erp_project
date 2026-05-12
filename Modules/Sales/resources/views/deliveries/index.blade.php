@@ -73,20 +73,15 @@
                     </div>
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config"class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
+                            <table id="zero-config"class="table table-bordered  dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $deliveries])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>SL</th>
-                                        <th>Invoice Id</th>
+                                        <th>SL</th> 
                                         <th>Invoice Date</th>
                                         <th>Customer</th>
-                                        <th>Invoice Type</th>
-                                        <th>Address</th>
-                                        <th>Total Quantity</th>
-                                        {{-- <th>Order Qty</th> --}}
-                                        <th>Prepared By</th>
-                                        <th>Delivered Qty</th>
+                                        <th>Invoice Type</th>  
+                                        <th>Prepared By</th> 
                                         <th class="no-content">Actions</th>
                                     </tr>
                                 </thead>
@@ -94,16 +89,7 @@
                                     @foreach ($deliveries as $deliverie)
                                         <tr>
                                             <td class="text-center">{{ ($deliveries->currentPage() - 1) * $deliveries->perPage() + $loop->iteration  }}</td>
-
-                                            <td>
-                                                @if ($deliverie->source->sales_order_id??null)
-                                                    <a href="{{ route('sales.sales-orders.show',$deliverie->source->id) }}">
-                                                        {{ $deliverie->source->sales_order_id }}
-                                                    </a>
-                                                @else
-                                                    {{ $deliverie->source->invoice_id ??$deliverie->source->id }}
-                                                @endif
-                                            </td>
+ 
 
                                             <td>
                                                 {{ $deliverie->delivery_date}}  
@@ -113,6 +99,8 @@
                                                 @if (@$deliverie->source->customer??null)
                                                      <a href="{{ route('crm.customers.show', $deliverie->source->customer->id) }}">{{ @$deliverie->source->customer->company_name }} </a>
                                                 @endif
+                                                <br>
+                                                <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ @$deliverie->source->customer->address }}</small> 
                                             </td>
 
                                             <td>
@@ -123,19 +111,10 @@
                                                 @else
                                                     {{ class_basename($deliverie->source_type) }}
                                                 @endif
-                                            </td>
-                                            <td>
-                                                {{ @$deliverie->source->customer->address }}
-                                            </td>
-                                            <td>
-                                                {{ $deliverie->source->details->sum('quantity') }}
-                                            </td>
+                                            </td>  
                                             <td>
                                                 {{ @$deliverie->source->createdBy->name }}
-                                            </td>
-                                            <td>
-                                                {{ $deliverie->deliveryDetails->sum('quantity')  }}
-                                            </td>
+                                            </td> 
 
                                             <td>
                                                 <div class="btn-group btn-group-sm" role="group"
@@ -164,10 +143,19 @@
                                                     @endif --}}
 
                                                     @if(hasPermission('sales.deliveries.show'))
-                                                        <a class="btn btn-outline-primary"
+                                                        <a class="btn btn-outline-primary"  title="Courier Challan" 
                                                             href="{{ route('sales.deliveries.show', $deliverie->id) }}"><i class="fas fa-eye"></i>
                                                         </a>
                                                     @endif
+
+                                                  
+ 
+                                                    @if ($deliverie->source->sales_order_id??null)
+                                                        <a class="btn btn-outline-primary" href="{{ route('sales.sales-orders.show',$deliverie->source->id) }}" title="Invoice" >
+                                                              <i class="fas fa-file-invoice"></i>
+                                                        </a>  
+                                                    @endif
+                                       
 
                                                     {{-- @if(hasPermission('sales.sales-order-deliveries.create'))
                                                         <a class="btn btn-outline-info"

@@ -44,14 +44,8 @@
                                     <div class="col-md-12">
                                         <div class="form-group mb-25">
                                             <label for="customer_id" class="text-capitalize">Customer Name<span class="text-danger">*</span></label>
-                                            <select name="customer_id" id="customer_id" class="form-control tom-select">
+                                            <select name="customer_id" id="customer_id" class="form-control">
                                                 <option value="">Select Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}} 
-                                                        @if ($customer->area != null) ({{ $customer->area->area }}) @endif
-                                                    </option>
-                                                @endforeach
                                             </select>
                                             @if ($errors->has('customer_id'))
                                                 <p class="text-danger">{{ $errors->first('customer_id') }}</p>
@@ -232,6 +226,31 @@
         $("#is_product_required").change(function () {
             toggleField("#is_product_required", "#product_required_details_wrapper");
         });
+
+
+        const customerSelect = new TomSelect("#customer_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('crm.autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        customerSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
     });
 </script>
 @endsection

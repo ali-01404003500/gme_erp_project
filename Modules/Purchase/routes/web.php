@@ -36,6 +36,13 @@ Route::group(['middleware'=>'auth', 'prefix' => 'purchase', 'as' => 'purchase.']
         Route::get('purchase/requisitions/{requisition_id}/serials', [RequisitionReceiveController::class, 'getSerials'])->name('requisitions.serials');
         Route::get('purchase/requisitions/{requisition_id}/batches', [RequisitionReceiveController::class, 'batches'])->name('requisitions.batches');
 
+
+
+        Route::get('purchase-autocomplete-suppliers', [RequisitionController::class, 'supplierAutocomplete']) ->name('purchase-autocomplete.suppliers');
+        Route::get('purchase-autocomplete-customers', [RequisitionController::class, 'customerAutocomplete']) ->name('purchase-autocomplete.customers');
+        Route::get('purchase-autocomplete-products', [RequisitionController::class, 'productAutocomplete']) ->name('purchase-autocomplete.products');
+
+
         Route::resource('orders', PurchaseOrderController::class);
         Route::resource('offices', OfficePurchaseController::class);
         Route::resource('offices', OfficePurchaseController::class);

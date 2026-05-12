@@ -337,8 +337,8 @@ class SalaryGenerateService
 
             // Get working days, holidays, weekend
   
-            $policy = SalaryGenerationPolicy::first(); 
-            $result = DB::select("CALL GetMonthSummary('$month')"); 
+            $policy = SalaryGenerationPolicy::first();  
+            $result = DB::select('CALL GetMonthSummary(?)', [$month]);
             $data = $result[0];
   
             if($policy->calculation_type == "fixed_days") {

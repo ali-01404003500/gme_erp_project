@@ -14,6 +14,7 @@ use Modules\Account\Services\Payments\PettyCashPaymentService;
 use Illuminate\Http\Request;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -69,9 +70,10 @@ class BillsAndAllowanceController extends Controller
     }
     public function create()
     {
-        $data['employees'] = Employee::all();
+        $employeeId = Auth::user()->employee->id; 
+        $data['employee'] = Employee::where('id', $employeeId)->first(); 
         $data['transport_types'] = TransportType::all();
-        $data['expense_types'] = ExpenseType::all();
+        $data['expense_types'] = ExpenseType::all(); 
         return view('HRMS::bills.create', $data);
     }
 

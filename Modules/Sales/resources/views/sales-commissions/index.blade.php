@@ -1,5 +1,5 @@
-@section('title', ' Sales Commiossions List')
-@section('description', '   Sales Commiossions List')
+@section('title', ' Sales Commissions List')
+@section('description', '   Sales Commissions List')
 @extends('layout.app')
 @section('content')
     <div class="container-fluid">
@@ -105,14 +105,14 @@
                                     <thead>
                                         <tr>
                                             <th>SL</th>
-                                            <th>Reference</th>
-                                            <th>Customer</th>
                                             <th>Broker</th>
-                                            <th>Request By</th>
-                                            <th>Date</th>
+                                            <th>Customer</th> 
                                             <th>Invoice Amount</th>
                                             <th>Commission Amount</th>
                                             <th>Type</th>
+                                            <th>Invoice</th>
+                                            <th>Request By</th>
+                                            <th>Date</th>
                                             <th>Status</th>
                                             <th class="no-content">
                                                 <input type="checkbox" class="check-all" id="check-all">
@@ -123,24 +123,29 @@
                                         @php $sl = 1; @endphp
                                         @foreach ($salesCommissions as $commission)
                                             <tr>
-                                            <td class="text-center">{{ ($salesCommissions->currentPage() - 1) * $salesCommissions->perPage() + $loop->iteration  }}</td>
-                                                @if ($commission->sales_order_id)
-                                                    <td>
-                                                        <a href="{{ route('sales.sales-orders.show', [$commission->salesOrder->id, app()->getLocale()]) }}" >
-                                                            {{ $commission->salesOrder->sales_order_id ?? '-' }}
-                                                        </a>
-                                                    </td>
-                                                @else
-                                                    <td>{{ ucfirst(str_replace('_', ' ', $commission->type)) }}</td>
-                                                @endif
-                                                <td>{{ @$commission->salesOrder->customer->company_name ?? '-' }}</td>
+                                            <td class="text-center">{{ ($salesCommissions->currentPage() - 1) * $salesCommissions->perPage() + $loop->iteration  }}</td> 
                                                 <td>{{ optional($commission->broker)->broker_name ?? '-' }}</td>
+                                                <td>
+                                                    {{ @$commission->salesOrder->customer->company_name ?? '-' }}<br>
+                                                    <small class="text-muted">{{ @$commission->salesOrder->customer->area->area }}</small> 
+                                                </td>
+                                                
+                                              
+                                                <td class="text-end">{{ numberFormat($commission->commissionable_amount) }}</td>
+                                                <td class="text-end" >{{ numberFormat($commission->amount) }}</td>
+                                                <td>{{ ucfirst(str_replace('_', ' ', $commission->type)) }}</td> 
+                                            
+                                                <td>
+                                                    @if ($commission->sales_order_id)
+                                                        <a href="{{ route('sales.sales-orders.show', [$commission->salesOrder->id, app()->getLocale()]) }}" >
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    @endif
+                                                </td> 
                                                 <td>{{ optional($commission->createdBy)->name ?? '-' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($commission->commission_date)->format('d-m-Y') }}</td>
-                                                <td>{{ numberFormat($commission->commissionable_amount) }}</td>
-                                                <td>{{ numberFormat($commission->amount) }}</td>
-                                                <td>{{ ucfirst(str_replace('_', ' ', $commission->type)) }}</td>
-                                                <td>{{ $commission->status }}</td>
+                                               
+                                                <td>{{ ucfirst($commission->status) }}</td>
                                                 <td>
                                                     @if($commission->status == 'pending')
                                                         <input type="checkbox" name="ids[]" value="{{ $commission->id }}" class="row-check">

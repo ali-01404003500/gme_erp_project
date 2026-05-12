@@ -133,7 +133,7 @@
 
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <label for="employee_id" class="form-label">Employee Name:</label>
+                                            <label for="employee_id" class="form-label">Employee Name</label>
                                             <select name="employee_id" id="employee_id" class="form-control tom-select">
                                                 <option value="">Select Employee</option>
                                                 @foreach ($employees as $employee)
@@ -147,7 +147,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <label for="date_of_bill_claim" class="form-label">Date of Bill Claim:</label>
+                                            <label for="date_of_bill_claim" class="form-label">Date of Bill Claim</label>
                                             <input type="text" class="form-control flatdate" id="date_of_bill_claim"
                                                 name="date_of_bill_claim"
                                                 value="{{ old('date_of_bill_claim', $billsAndAllowance->date_of_bill_claim) }}">
@@ -206,26 +206,30 @@
                                                             </div>
                                                             <div class="col-md-2 mb-2">
                                                                 <label>Distance (KM)</label>
-                                                                <input type="number"  id="distance" name="distance[]" class="form-control clearInputField" value="">
+                                                                <input type="number"  id="distance" name="distance[]" class="form-control text-end clearInputField" value="0">
                                                             </div>
                                                             <div class="col-md-2 mb-2">
                                                                 <label>Amount</label>
-                                                                <input type="number"  id="transport_amount" name="transport_amount[]" class="form-control ta_amt clearInputField" value="">
+                                                                <input type="number"  id="transport_amount" name="transport_amount[]" class="form-control ta_amt text-end clearInputField" value="0">
                                                             </div>
                                                             
                                                             <div class="col-md-12 mb-2">
                                                                 <label>Description</label>
                                                                 <input type="text"  id="expense_description" name="expense_description[]" class="form-control clearInputField" value="">
                                                             </div>
-                                                            <div class="col-md-6 mb-2">
+                                                            <div class="col-md-6 mb-2 d-none">
                                                                 <label>Receipts/Invoices</label>
-                                                                <x-file-uploader loadLater name="receipts_invoices_0" id="receipts_invoices" />
-                                                                {{-- <input type="file" name="receipts_invoices[]" class="form-control"> --}}
+                                                                {{-- <x-file-uploader loadLater name="receipts_invoices_0" id="receipts_invoices" /> --}}
+                                                                <input type="file" id="receipts_invoices" name="receipts_invoices[]" class="form-control">
+                                                                <input type="hidden" name="old_receipts_invoices[]"  value=""> 
                                                             </div>
-                                                            <div class="col-md-6 mb-2">
+                                                            <div class="col-md-6 mb-2 d-none">
                                                                 <label>Supporting Documents</label>
-                                                                <x-file-uploader loadLater name="supporting_documents_0" id="supporting_documents" />
-                                                                {{-- <input type="file" name="supporting_documents[]" class="form-control" multiple> --}}
+                                                                {{-- <x-file-uploader loadLater name="supporting_documents_0" id="supporting_documents" /> --}}
+                                                                <input type="file" id="supporting_documents" name="supporting_documents[]" class="form-control" multiple>
+                                                                
+                                                                <input type="hidden" name="old_supporting_documents[]"  value=""> 
+                                                                
                                                             </div>
                                                             
                                                         </div>
@@ -264,16 +268,35 @@
                                                             <input type="text" name="to_location[]" class="form-control col-sm-2" value="{{ $transportExpense->to_location }}">
                                                             <input type="text" name="transport_by_label[]" class="form-control col-sm-1" value="{{ $transportExpense->transportType->name  }}">
                                                             <input type="hidden" name="transport_by[]" class="form-control col-sm-1" value="{{ $transportExpense->transport_by }}"> 
-                                                            <input type="text" name="distance[]" class="form-control col-sm-1" value="{{ $transportExpense->distance }}">
-                                                            <input type="text" name="transport_amount[]" class="form-control col-sm-2" value="{{ $transportExpense->amount }}">
+                                                            <input type="text" name="distance[]" class="form-control col-sm-1 text-end" value="{{ $transportExpense->distance }}">
+                                                            <input type="text" name="transport_amount[]" class="form-control ta_amt  col-sm-2 text-end" value="{{ $transportExpense->amount }}">
                                                             <div class="col-sm-1 d-flex gap-1 justify-content-start">
+                                                           
+                                                                <input type="hidden" name="old_receipts_invoices[]"  value="{{ $transportExpense->receipts_invoices }}"> 
+                                                                <input type="hidden" name="old_supporting_documents[]"  value="{{ $transportExpense->supporting_documents }}"> 
+                                                                
+                                                              
+                                                                @if(empty($transportExpense->receipts_invoices))
+                                                                    <input type="file" name="receipts_invoices[]" class="form-control">
+                                                                @else
+                                                                    <input type="file" name="receipts_invoices[]" value="" class="d-none">
+                                                                @endif
+
+
+                                                                @if(empty($transportExpense->supporting_documents))
+                                                                    <input type="file" name="supporting_documents[]" class="form-control" multiple>
+                                                                @else
+                                                                    <input type="file" name="supporting_documents[]" value="" class="d-none">
+                                                                @endif
+
+
                                                                 @if(!empty($transportExpense->receipts_invoices))
                                                                 <a href="{{ $transportExpense->receipts_invoices }}" target="_blank"
                                                                     class="btn btn-outline-primary"
                                                                     data-bs-toggle="tooltip" 
                                                                     title="View Attachment">
                                                                     <i class="las la-eye"></i>
-                                                                </a>
+                                                                </a> 
                                                                 @endif
                                                                 @if(!empty($transportExpense->supporting_documents))
                                                                 <a href="{{ $transportExpense->supporting_documents }}" target="_blank"
@@ -282,6 +305,7 @@
                                                                     title="View Attachment">
                                                                     <i class="las la-eye"></i>
                                                                 </a>
+                                                                
                                                                 @endif
                                                             </div>
                                                             <input type="text" name="expense_description[]" class="form-control col-sm-11" value="{{ $transportExpense->expense_description }}"> 
@@ -293,7 +317,7 @@
                                                 <div class="col-sm-11 px-0 justify-content-sm-center"> 
                                                     <div class="row col-sm-12 justify-content-sm-end"> 
                                                         <label class="col-sm-2 col-form-label col-form-label-sm">Total Amount</label>                   
-                                                        <input type="text" class="form-control form-control-sm clr_field col-sm-2 text-right " readonly id="ta_total" name="ta_total" value="{{$totalTransportAmount}}"> 
+                                                        <input type="text" class="form-control form-control-sm clr_field col-sm-2 text-end " readonly id="ta_total" name="ta_total" value="{{$totalTransportAmount}}"> 
                                                     </div>
                                                 </div>   
                                     
@@ -332,16 +356,19 @@
                                                                 <label>Description</label>
                                                                 <input type="text" id="general_expense_description" name="general_expense_description[]" class="form-control clearInputField" value="">
                                                             </div>
-                                                            <div class="col-md-6 mb-2">
+                                                            <div class="col-md-6 mb-2 d-none">
                                                                 <label>Receipts/Invoices</label>
-                                                                <x-file-uploader loadLater name="general_receipts_invoices_0" id="general_receipts_invoices" />
-                                                                {{-- <input type="file" name="receipts_invoices[]" class="form-control"> --}}
-                                                                {{-- <input type="file" name="receipts_invoices[]" class="form-control"> --}}
+                                                                {{-- <x-file-uploader loadLater name="general_receipts_invoices_0" id="general_receipts_invoices" /> --}}
+                                                                <input type="file" id="general_receipts_invoices" name="general_receipts_invoices[]" class="form-control"> 
+                                                                <input type="hidden" name="old_general_receipts_invoices[]"  value=""> 
                                                             </div>
-                                                            <div class="col-md-6 mb-2">
+                                                            <div class="col-md-6 mb-2 d-none">
                                                                 <label>Supporting Documents</label>
-                                                                <x-file-uploader loadLater name="general_supporting_documents_0" id="general_supporting_documents" />
-                                                                {{-- <input type="file" name="supporting_documents[]" class="form-control" multiple> --}}
+                                                                {{-- <x-file-uploader loadLater name="general_supporting_documents_0" id="general_supporting_documents" /> --}}
+                                                                <input type="file" id="general_supporting_documents" name="general_supporting_documents[]" class="form-control" multiple>
+                                                             
+                                                                <input type="hidden" name="old_general_supporting_documents[]"  value=""> 
+                                                                
                                                             </div>
                                                         </div>
                                                     </div>
@@ -379,8 +406,27 @@
                                                             <input type="text" name="expense_type_label[]" class="form-control col-sm-1" value="{{ $generalExpense->expenseType->name  }}">
                                                             <input type="hidden" name="expense_type[]" class="form-control col-sm-1" value="{{ $generalExpense->expense_type }}">  
                                                             <input type="text" name="general_expense_description[]" class="form-control col-sm-3" value="{{ $generalExpense->expense_description }}">
-                                                            <input type="text" name="general_amount[]" class="form-control col-sm-2" value="{{ $generalExpense->amount }}"> 
+                                                            <input type="text" name="general_amount[]" class="form-control da_amt col-sm-2 text-end" value="{{ $generalExpense->amount }}"> 
+                                                            
+                                                            
                                                             <div class="col-sm-2 d-flex gap-1 justify-content-start">
+                                                                <input type="hidden" name="old_general_receipts_invoices[]"  value="{{ $generalExpense->receipts_invoices }}"> 
+                                                                <input type="hidden" name="old_general_supporting_documents[]"  value="{{ $generalExpense->supporting_documents }}"> 
+                                                        
+                                                                  
+                                                                @if(empty($generalExpense->receipts_invoices))
+                                                                    <input type="file" name="general_receipts_invoices[]" class="form-control">
+                                                                @else
+                                                                    <input type="file" name="general_receipts_invoices[]" value="" class="d-none">
+                                                                @endif
+
+
+                                                                @if(empty($generalExpense->supporting_documents))
+                                                                    <input type="file" name="general_supporting_documents[]" class="form-control" multiple>
+                                                                @else
+                                                                    <input type="file" name="general_supporting_documents[]" value="" class="d-none">
+                                                                @endif
+
                                                                 @if(!empty($generalExpense->receipts_invoices))
                                                                 <a href="{{ $generalExpense->receipts_invoices }}" target="_blank"
                                                                     class="btn btn-outline-primary"
@@ -388,6 +434,7 @@
                                                                     title="View Attachment">
                                                                     <i class="las la-eye"></i>
                                                                 </a>
+                                                               
                                                                 @endif
                                                                 @if(!empty($generalExpense->supporting_documents))
                                                                 <a href="{{ $generalExpense->supporting_documents }}" target="_blank"
@@ -396,6 +443,7 @@
                                                                     title="View Attachment">
                                                                     <i class="las la-eye"></i>
                                                                 </a>
+                                                                
                                                                 @endif
                                                             </div>
                                                         </div>
@@ -405,7 +453,7 @@
                                                 <div class="col-sm-10 px-0 justify-content-sm-center"> 
                                                     <div class="row col-sm-12 justify-content-sm-end"> 
                                                         <label class="col-sm-2 col-form-label col-form-label-sm">Total Amount</label>                   
-                                                        <input type="text" class="form-control form-control-sm clr_field col-sm-2 text-right " readonly id="da_total" name="da_total" value="{{$totalGeneralAmount}}"> 
+                                                        <input type="text" class="form-control form-control-sm clr_field col-sm-2 text-end " readonly id="da_total" name="da_total" value="{{$totalGeneralAmount}}"> 
                                                     </div>
                                                 </div> 
                                             </div>
@@ -460,102 +508,7 @@
     const transportFormGroup = $('#transport-container .form-group').first().clone().prop('outerHTML');
     const generalFormGroup = $('#general-container .form-group-2').first().clone().prop('outerHTML');
 
-   
-    /*@foreach ($billsAndAllowance->transportExpenses as $key => $transportExpense)
-        initializeFileUploader_receipts_invoices_{{ $key }}_receipts_invoices_{{ $key }}();
-        initializeFileUploader_supporting_documents_{{ $key }}_supporting_documents_{{ $key }}();
-        transportCounter++;
-    @endforeach
     
-    @if ($billsAndAllowance->transportExpenses->isEmpty())
-        initializeFileUploader_receipts_invoices_0_receipts_invoices_0();
-        initializeFileUploader_supporting_documents_0_supporting_documents_0();
-    @endif
-    
-    @foreach ($billsAndAllowance->generalExpenses as $key => $generalExpense)
-        initializeFileUploader_general_receipts_invoices_{{ $key }}_general_receipts_invoices_{{ $key }}();
-        initializeFileUploader_general_supporting_documents_{{ $key }}_general_supporting_documents_{{ $key }}();
-        generalCounter++
-    @endforeach
-    
-    @if ($billsAndAllowance->generalExpenses->isEmpty())
-        initializeFileUploader_general_receipts_invoices_0_general_receipts_invoices_0();
-        initializeFileUploader_general_supporting_documents_0_general_supporting_documents_0();
-    @endif*/
-
-    // Add/Remove logic
-    function handleClone(btnId, containerId) {
-        $('#' + btnId).on('click', function() {
-                const $clone = containerId === 'transport-container' ? $(transportFormGroup) : $(generalFormGroup);
-                const $container = $('#' + containerId);
-                let counter = 0;
-
-                // Reset values
-                $clone.find('input, textarea, select').each(function() {
-                    $(this).val($(this).attr('type') === 'file' ? '' : '');
-                });
-
-                $container.append($clone);
-
-                // Determine which counter to use
-                if (containerId === 'transport-container') {
-                    counter = transportCounter;
-                    transportCounter++;
-                } else {
-                    counter = generalCounter;
-                    generalCounter++;
-                }
-
-                // Handle file uploaders based on tab
-                if (containerId === 'transport-container') {
-                    // Transport tab elements
-                    const receiptClass = `receipts_invoices_${counter}`;
-                    $clone.find("#receipts_invoices_0")
-                        .addClass(receiptClass);
-                    $clone.find("#hidden-input-receipts_invoices_0")
-                        .attr('name', `receipts_invoices_${counter}`);
-
-                    initializeFileUploader_receipts_invoices_0_receipts_invoices_0(receiptClass);
-
-                    const supportingClass = `supporting_documents_${counter}`;
-                    $clone.find("#supporting_documents_0")
-                        .addClass(supportingClass);
-                    $clone.find("#hidden-input-supporting_documents_0")
-                        .attr('name', `supporting_documents_${counter}`);
-                    initializeFileUploader_supporting_documents_0_supporting_documents_0(supportingClass);
-                } else {
-                    // General tab elements
-                    const generalReceiptClass = `general_receipts_invoices_${counter}`;
-                    $clone.find("#general_receipts_invoices_0")
-                        .addClass(generalReceiptClass);
-                    $clone.find("#hidden-input-general_receipts_invoices_0")
-                        .attr('name', `general_receipts_invoices_${counter}`);
-                    initializeFileUploader_general_receipts_invoices_0_general_receipts_invoices_0(generalReceiptClass);
-
-                    const generalSupportingClass = `general_supporting_documents_${counter}`;
-                    $clone.find("#general_supporting_documents_0")
-                        .addClass(generalSupportingClass);
-                    $clone.find("[name='general_supporting_documents_0']")
-                        .attr('name', `general_supporting_documents_${counter}`);
-                    initializeFileUploader_general_supporting_documents_0_general_supporting_documents_0(generalSupportingClass);
-                }
-
-                $clone.find('.flatdate').each(function() {
-                    flatpickr(this, {
-                        altInput: true,
-                        altFormat: "Y-m-d",
-                        dateFormat: "Y-m-d",
-                    });
-                });
-
-                // Update remove button text
-                $clone.find('.remove-form-group, .remove-form-group-2').text('Remove');
-                
-                bindRemove($clone.find('.remove-form-group'));
-                bindRemove($clone.find('.remove-form-group-2'));
-            });
-        }
-
         function bindRemove($btn) {
             $btn.on('click', function() {
                 $(this).closest('.form-group').remove();
@@ -574,14 +527,7 @@
             bindRemove($(this));
         });
 
-        //handleClone('add-transport', 'transport-container');
-        //handleClone('add-general', 'general-container');
-
-        initializeFileUploader_receipts_invoices_receipts_invoices_0();
-        initializeFileUploader_supporting_documents_supporting_documents_0();
-
-        initializeFileUploader_general_receipts_invoices_general_receipts_invoices_0();
-        initializeFileUploader_general_supporting_documents_general_supporting_documents_0();
+        
 
         addTransportExpense('add-transport', 'transport-container'); 
         addGeneralExpense('add-general', 'general-container');
@@ -633,32 +579,20 @@
                 $('#transport_by').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').val($('#transport_by_name').val()).appendTo(div);  
 				$('#distance').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div);
                 $('#transport_amount').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div);
-                 
-                $('#expense_description').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-12').appendTo(div);
+                $('#receipts_invoices').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div);
+                $('#expense_description').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-11').appendTo(div);
+                $('#supporting_documents').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div);
 				  
+            
+
 				$('<div class="col-sm-1 px-0"><button class="btn btn-danger btn-sm" type="button" onClick="removeTaRow(this)"><span class="ta-data">'+srNo+'</span> <i class="fa fa-trash" aria-hidden="true"></i></button></div>').prependTo(div);
 				$(div).appendTo($('#transport-details-container')); 
 
                 $('.clearInputField').val('');
+                $('#distance,#transport_amount').val(0);
+                 
                 serialAndTotalTa(); 
-                
-                // Transport tab elements
-                const receiptClass = `receipts_invoices_${srNo}`;
-                $("#receipts_invoices")
-                    .addClass(receiptClass);
-                $("#hidden-input-receipts_invoices_0")
-                    .attr('name', `receipts_invoices_${srNo}`);
-                    
-                initializeFileUploader_receipts_invoices_receipts_invoices_0(receiptClass);
-
-                const supportingClass = `supporting_documents_${srNo}`;
-                $("#supporting_documents")
-                    .addClass(supportingClass);
-                $("#hidden-input-supporting_documents_0")
-                    .attr('name', `supporting_documents_${srNo}`);
-                initializeFileUploader_supporting_documents_supporting_documents_0(supportingClass);
- 
-                
+                 
             });
             
         }
@@ -678,8 +612,8 @@
                     return false; 
                 }
 
-                if($('#expense_type').val() === '') {
-                    alert('Please enter From Location!'); 
+                if($('#expense_type_name').val() === '') {
+                    alert('Please enter expense type!'); 
                     valid = false;
                     return false;
                 }
@@ -700,28 +634,18 @@
                 $('#general_expense_description').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-3').appendTo(div); 
                 $('#general_amount').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-2').appendTo(div); 
 				 
+                $('#general_receipts_invoices').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div);
+                $('#general_supporting_documents').clone().removeAttr('id').removeClass('clearInputField').addClass('col-sm-1').appendTo(div);
+
+            
+
 				$('<div class="col-sm-1 px-0"><button class="btn btn-danger btn-sm" type="button" onClick="removeDaRow(this)"><span class="da-data">'+slNo+'</span> <i class="fa fa-trash" aria-hidden="true"></i></button></div>').prependTo(div);
 				$(div).appendTo($('#general-expense-container')); 
 
                 $('.clearInputField').val('');
+                $('#general_amount').val(0);
                 serialAndTotalDa(); 
-
-                // General tab elements
-                const $clone = containerId === 'transport-container' ? $(transportFormGroup) : $(generalFormGroup); 
-                const generalReceiptClass = `general_receipts_invoices_${slNo}`;
-                $("#general_receipts_invoices")
-                    .addClass(generalReceiptClass);
-                $("#hidden-input-general_receipts_invoices_0")
-                    .attr('name', `general_receipts_invoices_${slNo}`);
-                initializeFileUploader_general_receipts_invoices_general_receipts_invoices_0(generalReceiptClass);
-
-                const generalSupportingClass = `general_supporting_documents_${slNo}`;
-                $("#general_supporting_documents")
-                    .addClass(generalSupportingClass);
-                $("[name='general_supporting_documents_0']")
-                    .attr('name', `general_supporting_documents_${slNo}`);
-                initializeFileUploader_general_supporting_documents_general_supporting_documents_0(generalSupportingClass);
-                
+ 
                 
             });
             

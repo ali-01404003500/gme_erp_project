@@ -41,12 +41,12 @@
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Delay Buffer time</label>
                             <input type="text" id="delay_buffer" name="delay_buffer" class="form-control delay_buffer" value="{{ $policy->delay_buffer }}"
-                                placeholder="00:00">
+                                placeholder="0" value="0">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Ex. Delay Buffer time</label>
                             <input type="text" id="ex_delay_buffer" name="ex_delay_buffer" class="form-control ex_delay_buffer"
-                                value="{{ $policy->ex_delay_buffer }}" placeholder="00:00">
+                                value="{{ $policy->ex_delay_buffer }}" placeholder="0" value="0">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Early Out Time</label>
@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Break Time (In minutes)</label>
-                            <input type="number" id="break_time" name="break_time" class="form-control break_time"  value="{{ $policy->break_time }}">
+                            <input type="number" id="break_time" name="break_time" class="form-control break_time"  value="{{ $policy->break_time }}" >
                         </div> 
                     </div>
 

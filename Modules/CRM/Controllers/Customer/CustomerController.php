@@ -55,9 +55,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $data['customers'] = $this->service->getAll();
-        $data['customersearch'] = Customer::all();
-        $data['company_info'] = CompanyInfo::first();
-        $data['employees'] = Employee::all();
+        $data['customerTypes'] = CustomerType::get();
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
@@ -85,9 +83,7 @@ class CustomerController extends Controller
     public function create()
     {
         $data['customerTypes'] = CustomerType::pluck('name', 'id');
-        $data['customers'] = Customer::get();
-        $data['employees'] = Employee::pluck('full_name', 'id');
-        $data['areas'] = Area::get();
+        $data['employees'] = Employee::where('status', 1)->pluck('full_name', 'id');
         return view('CRM::customer.create', $data);
     }
 
@@ -204,15 +200,14 @@ class CustomerController extends Controller
         }
         // dd($data['customer']);
         $data['customerRatings'] = CustomerRating::all();
-        $data['percentageTypes'] = Tag::all(); 
-        $data['brokers'] = Broker::activeBrokers()->get();
-
-        $data['products'] = ProductCatalog::with('tag')->get();
+        $data['percentageTypes'] = Tag::all();
+       
+ 
         return view('CRM::customer.settings', $data);
     }
     public function getBrokerDetails(Request $request)
     {
-        $broker = Broker::with(['brokerCommission', 'brokerCommission.PercentageType','brokerCommission.product'])->find($request->id);
+        $broker = Broker::with(['brokerCommission', 'brokerCommission.PercentageType', 'brokerCommission.product'])->find($request->id);
         return response()->json($broker);
     }
     public function customerSettingStore($id, Request $request)
@@ -237,20 +232,20 @@ class CustomerController extends Controller
     }
 
     public function updateBrokerWithSettings(Request $request)
-    { 
-       
+    {
+
         $broker = Broker::find($request->broker_id);
         $commissionType = in_array(1, $request->commission_type ?? []) || in_array(2, $request->commission_type ?? []) ? 1 : 0;
         $broker->update([
             "commission_type" => $commissionType
         ]);
 
-         // Update or add commission details for the broker
-        if (in_array(1, $request->commission_type ?? []) && $request->has('percentage_type')) {   
+        // Update or add commission details for the broker
+        if (in_array(1, $request->commission_type ?? []) && $request->has('percentage_type')) {
             $brokerCommission = BrokerCommission::where("broker_id", $request->broker_id)
                 ->where('commission_type', 1)
                 ->delete();
-                
+
             foreach ($request->percentage_type as $key => $percentageType) {
                 if ($percentageType != null) {
                     BrokerCommission::create([
@@ -260,18 +255,18 @@ class CustomerController extends Controller
                         'percentage' => $request->percentage[$key] ?? null,
                     ]);
                 }
-            } 
-        } 
+            }
+        }
 
-        if (in_array(2, $request->commission_type ?? []) ) {  
+        if (in_array(2, $request->commission_type ?? [])) {
             $brokerCommission = BrokerCommission::where("broker_id", $request->broker_id)
-                ->whereIn('commission_type', ['2','3'])
+                ->whereIn('commission_type', ['2', '3'])
                 ->delete();
 
-            foreach ($request->fixed_type as $key => $fixedType) { 
+            foreach ($request->fixed_type as $key => $fixedType) {
 
                 if ($key == 0) {
-                    if ($fixedType != null && $request->fixed[$key] != 0) { 
+                    if ($fixedType != null && $request->fixed[$key] != 0) {
                         BrokerCommission::create([
                             'commission_type' => '3',
                             'broker_id' => $request->broker_id,
@@ -279,21 +274,17 @@ class CustomerController extends Controller
                             'fixed' => $request->fixed[$key] ?? 0,
                         ]);
                     }
+                } else {
+                    if ($fixedType != null && $request->fixed[$key] != 0) {
+                        BrokerCommission::create([
+                            'commission_type' => '2',
+                            'broker_id' => $request->broker_id,
+                            'fixed_type' => $request->fixed_type[$key],
+                            'fixed' => $request->fixed[$key] ?? 0,
+                        ]);
+                    }
                 }
-                else
-                {
-                    if ($fixedType != null && $request->fixed[$key] != 0) { 
-                    BrokerCommission::create([
-                        'commission_type' => '2',
-                        'broker_id' => $request->broker_id,
-                        'fixed_type' => $request->fixed_type[$key],
-                        'fixed' => $request->fixed[$key] ?? 0,
-                    ]);
-                }
-                }
-                
             }
-    
         }
 
 
@@ -352,9 +343,7 @@ class CustomerController extends Controller
     public function edit(Customer $customer)
     {
         $data['customerTypes'] = CustomerType::pluck('name', 'id');
-        $data['customers'] = Customer::get();
-        $data['employees'] = Employee::pluck('full_name', 'id');
-        $data['areas'] = Area::get();
+        $data['employees'] = Employee::where('status', 1)->pluck('full_name', 'id');
         $data['customer'] = $customer;
         return view("CRM::customer.edit", $data);
     }
@@ -558,20 +547,51 @@ class CustomerController extends Controller
         $this->service->insertFromCSV($filename);
         return redirect()->route('crm.customers.index')->with('success', 'Customer imported successfully.');
     }
-
-
+ 
+    
     public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
-    {
-
+    { 
         //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
   
-        $data = $autocompleteService->search(
+        $data = $autocompleteService->customerSearch(
             Customer::class,
             ['company_name','address','phone'],
             $request->search,
-            ['id', 'company_name','company_place_id'],
-            10
+            ['id', 'company_name','company_place_id', 'phone', 'customer_type', 'address'],
+            30
+        ); 
+
+        
+        return response()->json($data);
+    }
+
+    
+
+    public function areaAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            Area::class,
+            ['area'],
+
+            $request->search,
+            ['id', 'area'],
+            20
         ); 
         return response()->json($data);
     }
+    public function brokerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            Broker::class,
+            ['broker_name'],
+
+            $request->search,
+            ['id', 'broker_name'],
+            20
+        ); 
+        return response()->json($data);
+    }
+    
 }

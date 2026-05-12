@@ -92,6 +92,7 @@
                                                     {{ $salesOrder->customer->company_name }} - {{ $salesOrder->customer->area->area ?? '' }} 
                                                 </option>
                                             </select>
+                                             <input type="hidden"    id="is_condition_bill" value="0">
                                         </div>
                                     </div>
                                     <div class="col-md-3 mt-4">
@@ -454,8 +455,33 @@
 @section('page_scripts')
     <script>
         $(document).ready(function() {
-            $('#approve').click(function() {
+            $('#approve').click(function (e) {
+
+                // checkbox checked kina
+                if ($('#condition').is(':checked')) {
+
+                    // amount value
+                    let netAmount = parseFloat($("#net_amount").val()) || 0;
+                    let paymentsTotalAmount = parseFloat($('[name="payments_total_amount"]').val()) || 0;
+                    let conditionLimit = parseFloat($("#is_condition_bill").val()) || 0; 
+
+                    if ((conditionLimit == 1 ) && ((paymentsTotalAmount + 500) < (netAmount / 2))) {
+ 
+                        e.preventDefault();
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validation Failed',
+                            text: 'Payment must be at least 50% of Net Amount!',
+                            confirmButtonText: 'OK'
+                        });
+
+                        return false;
+                    }
+                }
+
                 $("#status").val("approved");
+
                 return true;
             });
         });
@@ -881,10 +907,12 @@
                         var area = data.customers.customer.area;
                         var area_id = area ? area.id : "address";
                         var area_name = area ? area.area : "New Address";
+                        $("#is_condition_bill").val(data.customers.is_condition_bill);
 
                         const credit_limit = customerData.credit_limit;
                         // console.log({customerData, credit_limit});
-                        $("#credit_limit").val(credit_limit);
+                        $("#credit_limit").val(credit_limit); 
+
 
                         window.shipmentsOptions = [
                             {
@@ -1517,6 +1545,8 @@
             });
 
             $('input[name="payments_due_amount"], #condition').on('change', async function () {
+
+                
                 const dueAmount = $('input[name="payments_due_amount"]').val();
                 console.log("changed due amount: ", dueAmount);
                 console.log("changed: ", Number($('#credit_limit').val()));

@@ -27,6 +27,7 @@ class Supplier extends BaseModel
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+
     public function brand(){
         return $this->hasMany(Brand::class);
     }

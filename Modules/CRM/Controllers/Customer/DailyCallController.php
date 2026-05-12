@@ -32,7 +32,7 @@ class DailyCallController extends Controller
      */
     public function index( Request $request)
     {
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['customer'] = Customer::find($request->customer_id)?->company_name;
         $data['dailyCalls'] = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
 
@@ -52,7 +52,7 @@ class DailyCallController extends Controller
 
             return $dompdf->stream('daily_call_list_' . date('Y-m-d') . '.pdf', ['Attachment' => false]);
         }
-
+ 
         return view("CRM::daily-call.index", $data);
     }
 
@@ -60,9 +60,8 @@ class DailyCallController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $data['customers'] = Customer::where('status', 2)->get();
-        return view('CRM::daily-call.create', $data);
+    { 
+        return view('CRM::daily-call.create');
     }
 
     /**
@@ -112,8 +111,7 @@ class DailyCallController extends Controller
      */
     public function edit(DailyCall $dailyCall)
     {
-        $data['dailyCall'] = $dailyCall;
-        $data['customers'] = Customer::where('status', 2)->get();
+        $data['dailyCall'] = $dailyCall; 
         return view("CRM::daily-call.edit", $data);
     }
 

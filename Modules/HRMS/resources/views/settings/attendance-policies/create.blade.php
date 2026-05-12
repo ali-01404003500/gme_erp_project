@@ -34,11 +34,11 @@
 
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Delay Buffer time</label>
-                            <input type="text" id="delay_buffer" name="delay_buffer" class="form-control" placeholder="00:00">
+                            <input type="text" id="delay_buffer" name="delay_buffer" class="form-control" placeholder="0" value="0">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Ex. Delay Buffer time</label>
-                            <input type="text" id="ex_delay_buffer" name="ex_delay_buffer" class="form-control" placeholder="00:00">
+                            <input type="text" id="ex_delay_buffer" name="ex_delay_buffer" class="form-control" placeholder="0" value="0">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Early Out Time</label>
@@ -46,7 +46,7 @@
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Break Time (In minutes)</label>
-                            <input type="number" id="break_time" name="break_time" class="form-control" placeholder="0">
+                            <input type="number" id="break_time" name="break_time" class="form-control" placeholder="0" value="0">
                         </div>
                     </div>
 

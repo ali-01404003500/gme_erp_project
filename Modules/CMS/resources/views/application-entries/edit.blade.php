@@ -4,87 +4,7 @@
 
 @section('content')
 <style>
-    /* Modern Mesh Gradient Background */
-    body {
-        background: radial-gradient(at 0% 0%, rgba(95, 99, 242, 0.12) 0px, transparent 50%),
-                    radial-gradient(at 100% 0%, rgba(121, 40, 202, 0.1) 0px, transparent 50%),
-                    radial-gradient(at 100% 100%, rgba(0, 212, 255, 0.12) 0px, transparent 50%),
-                    radial-gradient(at 0% 100%, rgba(95, 99, 242, 0.08) 0px, transparent 50%),
-                    #f8fafc !important;
-        min-height: 100vh;
-    }
-
-    /* Vertical Title Aesthetic */
-    /* .vertical-title {
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        white-space: nowrap;
-        font-weight: 800;
-        color: #1e293b;
-        border-left: 4px solid #5f63f2;
-        padding-right: 15px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        font-size: 1.1rem;
-        margin-top: 20px;
-    } */
-
-    /* Glassmorphism Card Style */
-    .form-card {
-        border: 1px solid rgba(255, 255, 255, 0.7) !important;
-        background: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
-        border-radius: 20px !important;
-        overflow: hidden;
-    }
-
-    /* Form Styling */
-    .form-label {
-        font-weight: 700;
-        color: #475569;
-        margin-bottom: 8px;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .input-styled {
-        border-radius: 12px !important;
-        padding: 12px 15px !important;
-        border: 1px solid #e2e8f0 !important;
-        background-color: #ffffff !important;
-        transition: all 0.3s ease;
-    }
-
-    .input-styled:focus {
-        border-color: #5f63f2 !important;
-        box-shadow: 0 0 0 4px rgba(95, 99, 242, 0.1) !important;
-    }
-
-    .btn-update {
-        background: linear-gradient(90deg, #5f63f2, #7928ca);
-        border: none;
-        padding: 12px 40px;
-        font-weight: 700;
-        border-radius: 12px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        color: white;
-        box-shadow: 0 4px 15px rgba(95, 99, 242, 0.3);
-        transition: all 0.3s ease;
-    }
-
-    .btn-update:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(95, 99, 242, 0.4);
-        color: white;
-    }
-
-    .breadcrumb-main {
-        background: transparent;
-    }
+    
 </style>
 
 <div class="container-fluid mb-5">
@@ -113,7 +33,7 @@
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-xxl-8 col-xl-10">
+        <div class="col-xl-12 col-xl-12">
             <div class="card form-card">
                 <div class="card-body p-40 p-lg-5">
                     <form action="{{ route('cms.application-entries.update', $applicationEntry->id) }}" method="POST" enctype="multipart/form-data">
@@ -121,17 +41,21 @@
                         @method('PUT')
 
                         <div class="row g-4">
-                            {{-- Date --}}
+                           
+                             {{-- Customer --}}
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control flatdate input-styled shadow-sm" name="date" id="date"
-                                        placeholder="Date" value="{{ old('date', $applicationEntry->date) }}">
+                                    <label for="customer_id" class="form-label">Customer <span class="text-danger">*</span></label>
+                                    <select class="form-control  input-styled" name="customer_id" id="customer_id" required> 
+                                        <option value="{{ $applicationEntry->customer_id}}" selected>
+                                            {{ $applicationEntry->customer->company_name }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
-
+                            
                             {{-- Application Type --}}
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="type" class="form-label">Application Type <span class="text-danger">*</span></label>
                                     <select class="form-control tom-select input-styled" name="type" id="type">
@@ -141,20 +65,18 @@
                                 </div>
                             </div>
 
-                            {{-- Customer --}}
-                            <div class="col-md-12">
+                            
+                            {{-- Date --}}
+                            <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="customer_id" class="form-label">Customer <span class="text-danger">*</span></label>
-                                    <select class="form-control tom-select input-styled" name="customer_id" id="customer_id" required>
-                                        <option value="">Select a Customer</option>
-                                        @foreach ($customers as $item)
-                                            <option value="{{ $item->id }}" {{ old('customer_id', $applicationEntry->customer_id) == $item->id ? 'selected' : '' }}>
-                                                {{ $item->company_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control flatdate input-styled shadow-sm" name="date" id="date"
+                                        placeholder="Date" value="{{ old('date', $applicationEntry->date) }}">
                                 </div>
                             </div>
+
+
+                           
 
                             {{-- Description --}}
                             <div class="col-md-12">
@@ -180,4 +102,35 @@
 @endsection
 
 @section('page_scripts')
+
+    $(document).ready(function () {
+     
+
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label   })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+     
+  
+            
+        });
+
 @endsection

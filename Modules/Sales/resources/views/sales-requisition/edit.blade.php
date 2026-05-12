@@ -52,7 +52,7 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="invoice_date">Requisition Date</label>
-                                            <input type="date" name="invoice_date" class="form-control" id="invoice_date"
+                                            <input type="date" name="invoice_date" class="form-control flatdate" id="invoice_date"
                                                 placeholder="Invoice Date"
                                                 value="{{ old('invoice_date', date('Y-m-d', strtotime($salesRequisition->invoice_date))) }}"
                                                 readonly>

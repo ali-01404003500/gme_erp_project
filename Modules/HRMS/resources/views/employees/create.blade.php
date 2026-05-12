@@ -360,6 +360,7 @@
                                                                     value="{{ old('national_id') }}">
                                                             </div>
                                                         </div>
+                                                      
                                                         <div class="col-md-4 mb-4">
                                                             <div class="form-group">
                                                                 <label for="card_no"
@@ -367,7 +368,7 @@
                                                                     ID/Number <span class="text-danger">*</span></label>
                                                                 <input type="text"
                                                                     class="form-control ip-gray radius-xs b-light px-15"
-                                                                    id="card_no" name="card_no" value="{{ old('card_no') }}" >
+                                                                    id="card_no" name="card_no" value="{{ old('card_no', $nextCardNo) }}" >
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4 mb-4">

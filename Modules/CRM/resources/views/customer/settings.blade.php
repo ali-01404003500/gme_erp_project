@@ -470,24 +470,18 @@
                                                 </table>
 
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group" id="fixed-section" style="display: none;">
                                                 <br>
-                                                <h2>Product wise fixed price</h2>
+                                                <h2>Product Wise Fixed Price</h2>
                                                 <br>
                                                 <div class="row">
                                                     <div class="col-md-5">
                                                         <div class="form-group mb-25">
-                                                            <label for="product_tag_id"
+                                                            <label for="product_id"
                                                                 class="color-dark fs-14 fw-500 align-center">Product</label>
-                                                            <select class="form-control tom-select" name="product_tag_id"
-                                                                id="product_tag_id">
-                                                                <option value="">Choose Product</option>
-                                                                {{-- <option value="PDTG-001"> All i-Chroma</option>
-                                                                <Option value="PDTG-009">All Easy Life Plus</Option> --}}
-                                                                @foreach ($products as $product)
-                                                                    <option value="{{ $product->id }}">
-                                                                        {{ $product->name }}</option>
-                                                                @endforeach
+                                                            <select class="form-control " name="product_id"
+                                                                id="product_id">
+                                                                <option value="">Choose Product</option> 
                                                             </select>
                                                         </div>
                                                     </div>
@@ -506,7 +500,7 @@
                                                             <br>
                                                             <button type="button"
                                                                 class="btn btn-primary btn-default btn-squared radius-md shadow2 btn-xs"
-                                                                onclick="addProductTag()">+ Add</button>
+                                                                onclick="addProduct()">+ Add</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -519,7 +513,7 @@
                                                                     <tr>
                                                                         <th style="width: 5%; text-align: center">Sl
                                                                         </th>
-                                                                        <th style="width: 25%; text-align: center">Type
+                                                                        <th style="width: 25%; text-align: center">Product Name
                                                                         </th>
                                                                         <th style="width: 15%; text-align: center ">
                                                                             Amount
@@ -539,7 +533,7 @@
                                                                                         name="product_ids[]"
                                                                                         class="form-control"
                                                                                         value="{{ $value->product_id }}">
-                                                                                    {{ old('product_tag_id', $value->product->name) }}
+                                                                                    {{ old('product_id', $value->product->name) }}
                                                                                 </td>
                                                                                 <td>
                                                                                     <input type="hidden"
@@ -574,13 +568,9 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="broker_id">Broker Name</label>
-                                                    <select class="form-control tom-select" name="broker_id"
+                                                    <select class="form-control" name="broker_id"
                                                         id="broker_id">
-                                                        <option value="">Select Broker</option>
-                                                        @foreach ($brokers as $broker)
-                                                            <option value="{{ $broker->id }}">
-                                                                {{ $broker->broker_name }}</option>
-                                                        @endforeach
+                                                        <option value="">Select Broker</option> 
                                                     </select>
                                                 </div>
                                             </div>
@@ -640,7 +630,7 @@
                                                                                         onclick="viewBroker({{ @$value->broker->id }})"
                                                                                         data-bs-toggle="modal"
                                                                                         data-bs-target="#editModal">
-                                                                                        <i class="fas fa-eye"></i>
+                                                                                        <i class="fas fa-cog"></i>
                                                                                     </button>
                                                                                     <button class="btn btn-danger btn-xs"
                                                                                         onclick="removeBroker(this)"
@@ -738,8 +728,7 @@
                         id: brokerId
                     },
                     success: function(response) {
-                        var table = document.getElementById('broker_info_table').getElementsByTagName('tbody')[
-                            0];
+                        var table = document.getElementById('broker_info_table').getElementsByTagName('tbody')[0];
                         var newRow = table.insertRow();
                         newRow.innerHTML = `
                         <td>${table.rows.length}</td>
@@ -767,7 +756,7 @@
         }
 
         function viewBroker(broker_id) {
-            console.log(broker_id);
+            //console.log(broker_id);
             $.ajax({
                 url: '{{ route('crm.get-broker-details') }}',
                 type: 'GET',
@@ -777,7 +766,7 @@
                 success: function(response) {
                     var broker = response;
 
-                    console.log(broker);
+                    //console.log(broker);
   
                     if (broker.broker_commission && broker.broker_commission.length > 0) 
                     {
@@ -791,13 +780,18 @@
                     }
 
                     if (broker.broker_commission && broker.broker_commission.length > 0) 
-                    {
+                    {   
                         fixedRows = broker.broker_commission
                             .filter(item => Number(item.commission_type) === 3) // only commission_type 1
                             .map(item => showFixedRow(item, percentageTypes))
                             .join('');
+
+
+                        if (!fixedRows) {
+                           fixedRows = createFixedRow({}, percentageTypes);
+                        }
                     } 
-                    else {
+                    else { alert(5);
                         // Optionally, create empty row if no data
                         fixedRows = createFixedRow({}, percentageTypes);
                     }
@@ -808,6 +802,10 @@
                             .filter(item => Number(item.commission_type) === 2) // only commission_type 2
                             .map(item => showFixedProductRow(item, percentageTypes))
                             .join('');
+
+                        if (!fixedProductRows) {
+                           fixedProductRows = createFixedProductRow({}, percentageTypes);
+                        }
                     } 
                     else {
                         // Optionally, create empty row if no data
@@ -934,18 +932,18 @@
         `;
         }
 
-        function showFixedRow(item,percentageTypes) {
+        function showFixedRow(item,percentageTypes) {  
          
             return `
                 <tr>
                     <td>
                         <select class="form-control fixed_type" name="fixed_type[]">
                             <option value="">Select Type</option>
-                            <option value="1" ${percentageTypes?.fixed_type ?? '' == 1 ? 'selected' : ''}>Invoice Wise</option>
-                            <option value="2" ${percentageTypes?.fixed_type ?? '' == 2 ? 'selected' : ''}>Monthly</option>
-                            <option value="3" ${percentageTypes?.fixed_type ?? '' == 3 ? 'selected' : ''}>Yearly</option>
-                            <option value="4" ${percentageTypes?.fixed_type ?? '' == 4 ? 'selected' : ''}>Festival-Eid</option>
-                            <option value="5" ${percentageTypes?.fixed_type ?? '' == 5 ? 'selected' : ''}>Festival-Durga Puja</option>
+                            <option value="1" ${(item?.fixed_type ?? '') == "1" ? 'selected' : ''}>Invoice Wise</option>
+                            <option value="2" ${(item?.fixed_type ?? '') == "2" ? 'selected' : ''}>Monthly</option>
+                            <option value="3" ${(item?.fixed_type ?? '') == "3" ? 'selected' : ''}>Yearly</option>
+                            <option value="4" ${(item?.fixed_type ?? '') == "4" ? 'selected' : ''}>Festival-Eid</option>
+                            <option value="5" ${(item?.fixed_type ?? '') == "5" ? 'selected' : ''}>Festival-Durga Puja</option>
                         </select>
                     </td>
                     <td><input type="text" class="form-control input-sm" name="fixed[]" value="${percentageTypes?.fixed ?? item?.fixed ?? ''}" placeholder="Fixed"></td>
@@ -974,7 +972,7 @@
             `;
         }
 
-        function createFixedProductRow(item,products) {   
+        function createFixedProductRow(item) {   
             return `
                 <tr>
                     <td>
@@ -988,7 +986,7 @@
             `;
         }
 
-        function showFixedProductRow(item,products) {   
+        function showFixedProductRow(item) {  
             return `
                 <tr>
                     <td>
@@ -996,7 +994,7 @@
                             <option value="${item.fixed_type}"  >${ item.product.name }</option> 
                         </select>
                     </td>
-                    <td><input type="text" class="form-control input-sm" name="fixed[]" value="${products?.fixed ?? item?.fixed ?? ''}" placeholder="Fixed"></td>
+                    <td><input type="text" class="form-control input-sm" name="fixed[]" value="${ item?.fixed }" placeholder="Fixed"></td>
                     <td><button type="button" class="btn btn-danger btn-xs" onclick="deleteFixedRow(this)"><i class="fa fa-trash"></i></button></td>
                 </tr>  
             `;
@@ -1101,7 +1099,7 @@
                         if(!query.length || query.length < 2) return callback();
 
                         $.ajax({
-                            url: "{{ route('crm.autocomplete.products') }}",
+                            url: "{{ route('sales.sales-orders-autocomplete.products') }}",
                             type: "GET",
                             data: { search: query },
                             success: function(res){
@@ -1165,7 +1163,7 @@
     </script>
     <script>
         var percentageTypes = @json($percentageTypes); 
-        var products = @json($products); 
+
         
     </script>
     </script>
@@ -1270,6 +1268,53 @@
                 toggleSections();
             }); 
             
+            const productSelect = new TomSelect("#product_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            });
+ 
+     
+                
+            const brokerSelect = new TomSelect("#broker_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('crm.autocomplete.brokers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            brokerSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
 
         });
 
@@ -1337,59 +1382,35 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var selectedProductIds = []; // Array to store selected product IDs
-            var products = @json($products); // Array to store all products
+ 
 
-            function handleProductTagChange() {
-                var productTagId = document.getElementById('product_tag_id').value;
-                if (productTagId === 'PDTG-001' || productTagId === 'PDTG-009') {
-                    addAllProductsByTag(productTagId);
-                }
-            }
-
-            function addAllProductsByTag(tagId) {
-                var salesAmount = document.getElementById('sales_amount').value;
-                if (salesAmount === "") {
-                    toastr.warning("Please provide sales amount.");
-                    return;
-                }
-                var filteredProducts = products.filter(product => product.tag && product.tag.code === tagId);
-                filteredProducts.forEach(product => {
-                    if (!selectedProductIds.includes(product.id)) {
-                        addProductRow(product.id, product.name, salesAmount);
-                        selectedProductIds.push(product.id);
-                    }
-                });
-            }
-
-            function addProductTag() {
-                var productTagId = document.getElementById('product_tag_id').value;
+            function addProduct() {
+                var productId = document.getElementById('product_id').value;
+                var productName = $('#product_id option:selected').text();
                 var salesAmount = document.getElementById('sales_amount').value;
 
                 if (salesAmount === "") {
                     toastr.warning("Please provide sales amount.");
                     return;
                 }
-                if (productTagId === "") {
+                if (productId === "") {
                     toastr.warning("Please select a product.");
                     return;
                 }
-                if (productTagId === 'PDTG-001' || productTagId === 'PDTG-009') {
-                    addAllProductsByTag(productTagId);
-                } else {
-                    if (!selectedProductIds.includes(productTagId)) {
-                        var selectedProduct = products.find(product => product.id == productTagId);
-                        if (selectedProduct) {
-                            addProductRow(productTagId, selectedProduct.name, salesAmount);
-                            selectedProductIds.push(productTagId);
-                        }
-                    } else {
-                        toastr.warning("You have already selected this product.");
+    
+                if (!selectedProductIds.includes(productId)) { ;
+                    if (productId) {
+                        addProductRow(productId, productName, salesAmount);
+                        selectedProductIds.push(productId);
                     }
+                } else {
+                    toastr.warning("You have already selected this product.");
                 }
+        
                 // Clear the input fields after adding the product
                 document.getElementById('sales_amount').value = "";
-                document.getElementById('product_tag_id').tomselect.clear();
-                document.getElementById('product_tag_id').value = "";
+                document.getElementById('product_id').tomselect.clear();
+                document.getElementById('product_id').value = "";
             }
 
 
@@ -1421,9 +1442,8 @@
                     table.rows[i].cells[0].innerHTML = i + 1;
                 }
             }
- 
-            window.handleProductTagChange = handleProductTagChange;
-            window.addProductTag = addProductTag;
+  
+            window.addProduct = addProduct;
             window.deleteRow = deleteRow;
         });
     </script>

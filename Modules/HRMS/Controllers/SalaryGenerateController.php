@@ -43,17 +43,7 @@ class SalaryGenerateController extends Controller
 
     public function payrolls()
     {
-        $data['payrolls'] = Payroll::latest()
-            ->searchByFields(['department_id', 'year_month'])
-            ->paginate(20);
-        $data['departments'] = Department::where('status', 1)->get();
-        $data['employees'] = Employee::where('status', 1)->get();
-
-
-        return view("HRMS::payroll.salary-generates.payrolls", $data);
-    }
-    public function index(Request $request)
-    { 
+        
         $data['salaryGenerates'] = $this->service->getAll(); 
         $data['salaryBreakdowns'] = SalaryBreakdown::where('status',1)->get();
         $data['departments'] = Department::where('status', 1)->orderBy('code', 'asc')->get();
@@ -61,7 +51,19 @@ class SalaryGenerateController extends Controller
         $data['employees'] = Employee::where('status', 1)->get(); 
         $data['salarySignatories'] = SalarySignatory::get();
         $data['accounts'] = Account::orderBy('account_group_id', 'asc')->get();
-        return view("HRMS::payroll.salary-generates.index", $data);
+
+        return view("HRMS::salary-generates.payrolls", $data);
+ 
+    }
+    public function index(Request $request)
+    { 
+        $data['payrolls'] = Payroll::latest()
+            ->searchByFields(['department_id', 'year_month'])
+            ->paginate(20);
+        $data['departments'] = Department::where('status', 1)->get();
+        $data['employees'] = Employee::where('status', 1)->get();
+       
+        return view("HRMS::salary-generates.index", $data);
     }
 
     public function salarySheet( Request $request, $id)
@@ -74,7 +76,7 @@ class SalaryGenerateController extends Controller
         if ($request->export_type == "pdf") {
           
             set_time_limit(1000);
-            return  $html = view('HRMS::payroll.salary-generates.salarySheetView', $data)->render();
+            return  $html = view('HRMS::salary-generates.salarySheetView', $data)->render();
             // dd($html);
 
             // Set Dompdf options
@@ -90,7 +92,7 @@ class SalaryGenerateController extends Controller
             // return $dompdf->stream('salary_sheet_' . date('Y-m-d') . '.pdf', ['Attachment' => false]);
         }
 
-        return view("HRMS::payroll.salary-generates.salary_sheets", $data);
+        return view("HRMS::salary-generates.salary_sheets", $data);
         
     }
 
@@ -169,7 +171,7 @@ class SalaryGenerateController extends Controller
         // Call Service function that handles all active employee salary calculation & save
         $allSalaries = $this->service->salaryGenerateAndSaveAllActiveEmployee($month,$request);
 
-        return redirect()->route('hrm.payrolls')->with('success', 'SalaryGenerate created successfully.');
+        return redirect()->route('hrm.salary-generates')->with('success', 'SalaryGenerate created successfully.');
     }
  
 
@@ -181,7 +183,7 @@ class SalaryGenerateController extends Controller
     {
         $data['salaryGenerate'] = $this->service->show($id);
 
-        return view("HRMS::payroll.salary-generates.show", $data);
+        return view("HRMS::salary-generates.show", $data);
     }
 
     /**

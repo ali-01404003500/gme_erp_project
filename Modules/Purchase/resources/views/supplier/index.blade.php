@@ -93,10 +93,7 @@
                                     <th>Sl</th>
                                     <th>Suplier Name</th>
                                     <th>Contact Phone</th>
-                                    <th>Email</th>
-                                    <th style="width: 150px!important;">Address</th>
-                                    <th>Opening Balance</th>
-
+                                    <th>Email</th>   
                                     <th class="no-content">Action</th>
                                 </tr>
                             </thead>
@@ -106,12 +103,11 @@
                                     <tr>
                                         <td class="text-center">{{ ($suppliers->currentPage() - 1) * $suppliers->perPage() + $loop->iteration  }}</td>
                                         <td>
-                                            <a href="{{ route('purchase.suppliers.show', $supplier->id) }}">{{ $supplier->company_name }}</a>
+                                            <a href="{{ route('purchase.suppliers.show', $supplier->id) }}">{{ $supplier->company_name }}</a><br>
+                                            <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $supplier->address }}</small> 
                                         </td>
                                         <td>{{ $supplier->phone }}</td>
-                                        <td>{{ $supplier->email }}</td>
-                                        <td style="Max-width: 150px!important; overflow: hidden">{{ $supplier->address }}</td>
-                                        <td>{{ $supplier->opening_balance }}</td>
+                                        <td>{{ $supplier->email }}</td>  
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
                                                     @if (hasPermission('purchase.suppliers.update'))

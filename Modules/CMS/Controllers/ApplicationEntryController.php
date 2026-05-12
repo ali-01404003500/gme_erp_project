@@ -19,19 +19,15 @@ class ApplicationEntryController extends Controller
         $this->service = $service;
     }
     
-    public function index()
+    public function index(Request $request)
     {
-        $data['applicationEntrys'] = $this->service->getAll();
-        $data['customers'] = Customer::activeCustomers()->get();
-
+        $data['applicationEntrys'] = $this->service->getAll();  
+        $data['customer'] = $request->customer_id  ? Customer::activeCustomers()->where('id', $request->customer_id)->first() : null;
         return view("CMS::application-entries.index", $data);
     }
 
     public function create(Request $request)
-    {
-        $customers = Customer::all();
-        $customerSearch = Customer::all();
-
+    { 
         $data['entries'] = AdvanceChequeEntry::with([
             'customer',
             'details' => function ($q) {
@@ -48,7 +44,7 @@ class ApplicationEntryController extends Controller
         ->where('status', 'Approved')
         ->get();
 
-        return view('CMS::application-entries.create', compact('customers','customerSearch'), $data);
+        return view('CMS::application-entries.create', $data);
     }
 
     public function store(Request $request)
@@ -83,8 +79,7 @@ class ApplicationEntryController extends Controller
 
     public function edit(ApplicationEntry $applicationEntry)
     {
-        $data['applicationEntry'] = $applicationEntry;
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['applicationEntry'] = $applicationEntry; 
         return view("CMS::application-entries.edit", $data);
     }
 

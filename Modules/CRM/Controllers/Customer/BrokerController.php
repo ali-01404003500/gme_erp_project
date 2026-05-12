@@ -37,8 +37,8 @@ class BrokerController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $data['customers'] = Customer::activeCustomers()->get();
+    { 
+        $data['customer'] = Customer::find($request->customer_id)?->company_name;
         $data['brokers'] = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
 
@@ -58,7 +58,7 @@ class BrokerController extends Controller
 
             return $dompdf->stream('broker_list_' . date('Y-m-d') . '.pdf', ['Attachment' => false]);
         }
-
+ 
         return view("CRM::broker.index", $data);
     }
 
@@ -68,8 +68,7 @@ class BrokerController extends Controller
     public function create()
     {
         $data['percentageTypes'] = Tag::all();
-
-        $data['customers'] = Customer::activeCustomers()->get();
+ 
         return view('CRM::broker.create', $data);
     }
 
@@ -224,8 +223,7 @@ class BrokerController extends Controller
      */
     public function edit(Broker $broker)
     {
-        $data['broker'] = $broker;
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['broker'] = $broker; 
         $data['percentageTypes'] = Tag::all();  
       //  dd($data);
         return view("CRM::broker.edit", $data);
@@ -425,6 +423,7 @@ class BrokerController extends Controller
     }
 
 
+
     public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
     {  
         //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
@@ -434,6 +433,20 @@ class BrokerController extends Controller
             $request->search,
             ['id', 'name','model','product_brand_id'],
             30
+        ); 
+        return response()->json($data);
+    }
+
+    public function brokerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            Broker::class,
+            ['broker_name'],
+
+            $request->search,
+            ['broker_name', 'broker_name'],
+            20
         ); 
         return response()->json($data);
     }

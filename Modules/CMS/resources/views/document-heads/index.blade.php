@@ -4,124 +4,7 @@
 
 @section('content')
     <style>
-        /* Modern Mesh Gradient Background */
-        body {
-            background: radial-gradient(at 0% 0%, rgba(95, 99, 242, 0.12) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(121, 40, 202, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(0, 212, 255, 0.12) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(95, 99, 242, 0.08) 0px, transparent 50%),
-                #f8fafc !important;
-            min-height: 100vh;
-        }
-
-        .container-fluid {
-            padding-top: 25px;
-            padding-bottom: 50px;
-        }
-
-        /* Glassmorphism Card Style */
-        .card {
-            border: 1px solid rgba(255, 255, 255, 0.7) !important;
-            background: rgba(255, 255, 255, 0.8) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
-            border-radius: 16px !important;
-            margin-bottom: 2rem;
-        }
-
-        /* FULL TABLE BORDER STYLING */
-        .table-container {
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-        }
-
-        .table-bordered {
-            border: 1px solid #e2e8f0 !important;
-        }
-
-        .table-bordered th,
-        .table-bordered td {
-            border: 1px solid #e2e8f0 !important;
-        }
-
-        /* BOLD & MEDIUM-BIG Table Headers */
-        .table thead th {
-            background-color: rgba(95, 99, 242, 0.08) !important;
-            color: #0f172a !important;
-            font-weight: 800 !important;
-            text-transform: uppercase;
-            font-size: 0.95rem !important;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid #5f63f2 !important;
-            padding: 18px 15px !important;
-            vertical-align: middle;
-            text-align: center;
-        }
-
-        .table tbody td {
-            padding: 15px !important;
-            vertical-align: middle !important;
-            color: #334155;
-            background: transparent;
-        }
-
-        .table tbody tr:hover td {
-            background-color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Floating Action Buttons (Consistent Design) */
-        .action-btn-group .btn {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-            margin: 0 3px;
-            border-radius: 8px !important;
-            transition: all 0.2s;
-            padding: 5px 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .action-btn-group .btn:hover {
-            background: #5f63f2;
-            color: white !important;
-            border-color: #5f63f2;
-            transform: translateY(-2px);
-        }
-
-        /* Form & Badge Styling */
-        .form-control {
-            border-radius: 10px !important;
-            border: 1px solid #e2e8f0 !important;
-        }
-
-        .btn-primary {
-            background: linear-gradient(90deg, #5f63f2, #7928ca);
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-
-        .badge-active {
-            background-color: #ecfdf5;
-            color: #059669;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.75rem;
-        }
-
-        .badge-inactive {
-            background-color: #fef2f2;
-            color: #dc2626;
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.75rem;
-        }
+         
     </style>
 
     <div class="container-fluid py-4">
@@ -134,7 +17,8 @@
                             <li class="breadcrumb-item"><a href="#" class="text-muted"><i class="las la-home"></i> Home</a>
                             </li>
                             <li class="breadcrumb-item active text-primary fw-bold" aria-current="page">
-                                {{ trans('Document Head') }}</li>
+                                {{ trans('Document Head') }}
+                            </li>
                         </ol>
                     </nav>
                     <div class="action-btn">
@@ -155,10 +39,10 @@
                 <div class="card border-0">
                     <div class="card-body p-4">
                         <div class="table-responsive table-container">
-                            <table id="zero-config" class="table table-bordered mb-0"
+                            <table id="zero-config" class="table condition-table-custom dt-table-hover"
                                 data-page='@include('utils.table_paginate', ['data' => $documentHeads])'>
                                 <thead>
-                                    <tr class="text-center">
+                                    <tr class="text-left">
                                         <th width="60">Sl</th>
                                         <th>Document Type</th>
                                         <th>Document Head</th>
@@ -169,15 +53,15 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($documentHeads as $item)
-                                        <tr class="text-center">
-                                            <td class="text-center fw-bold text-muted small">
+                                        <tr class="text-left">
+                                            <td class="text-left  text-muted small">
                                                 {{ ($documentHeads->currentPage() - 1) * $documentHeads->perPage() + $loop->iteration }}
                                             </td>
-                                            <td class="text-center">
+                                            <td class="text-left">
                                                 <span
-                                                    class="text-dark border px-2 py-1 small fw-bold">{{ @$item->documentType->name }}</span>
+                                                    class="text-dark  px-2 py-1 small ">{{ @$item->documentType->name }}</span>
                                             </td>
-                                            <td class="fw-bold text-dark text-center">{{ $item->name }}</td>
+                                            <td class=" text-dark text-left">{{ $item->name }}</td>
                                             <td class="text-muted small">{{ Str::limit($item->description, 50) ?? '---' }}</td>
                                             <td class="text-center">
                                                 @if($item->status == 1)

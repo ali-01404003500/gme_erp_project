@@ -87,24 +87,20 @@
                                                         placeholder="Requisition Id">
                                                 </td>
                                                 <td class="text-center" style="width: 25%">
-                                                    <select name="supplier_id" id="supplier_id" class="tom-select input-sm"
+                                                    <select name="supplier_id" id="supplier_id" class="  input-sm"
                                                         data-placeholder="Select Supplier">
-                                                        <option value=""></option>
-                                                        @foreach ($suppliers as $key => $value)
-                                                            <option {{ request('supplier_id') == $value->id ? 'selected' : '' }}
-                                                                value="{{ $value->id }}">{{ $value->company_name }}</option>
-                                                        @endforeach
+                                                        <option value=""></option> 
+                                                        <option  value="{{ request('supplier_id') }}"> {{ optional($suppliers)->company_name }}</option>
+                                                       
                                                     </select>
                                                 </td>
                                                 <td class="text-center" style="width: 25%">
-                                                    <select name="customer_id" id="customer_id" class="tom-select input-sm"
+                                                    <select name="customer_id" id="customer_id" class="  input-sm"
                                                         data-placeholder="Select Customer">
                                                         <option value=""></option>
-                                                        @foreach ($customers as $key => $value)
-                                                            <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                                value="{{ $value->id }}">
-                                                                {{ optional($value)->company_name }}({{ optional($value->area)->area }})</option>
-                                                        @endforeach
+                                                        <option value="{{ optional($customers)->id }}">
+                                                            {{ optional($customers)->company_name }}
+                                                        </option>
                                                     </select>
                                                 </td>
                                                 <td class="text-center" style="width: 25%">
@@ -270,5 +266,72 @@
             format: 'dd-mm-yyyy',
             autoclose: true
         });
+
+        $(document).ready(function() {
+
+            const supplierSelect = new TomSelect("#supplier_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('purchase.purchase-autocomplete.suppliers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            supplierSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('supplier_id'))
+                supplierSelect.addOption({
+                    id: "{{ request('supplier_id') }}",
+                    text: "{{ request('supplier_id') }}"
+                });
+                supplierSelect.setValue("{{ request('supplier_id') }}");
+            @endif
+
+
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('purchase.purchase-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ request('customer_id') }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+
+        }); 
     </script>
 @endsection

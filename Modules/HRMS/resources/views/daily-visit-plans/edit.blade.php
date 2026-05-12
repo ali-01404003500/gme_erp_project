@@ -59,7 +59,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="company_name">Company's Name<span class="text-danger">*</span>:</label>
+                                            <label for="company_name">Company's Name<span class="text-danger">*</span></label>
                                             <input type="text" name="company_name" id="company_name"
                                                 class="form-control px-15"
                                                 value="{{ old('company_name', $dailyVisitPlan->company_name) }}">
@@ -68,7 +68,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="phone_no">Phone No<span class="text-danger">*</span>:</label>
+                                            <label for="phone_no">Phone No<span class="text-danger">*</span></label>
                                             <input type="text" name="phone_no" id="phone_no"
                                                 class="form-control px-15"
                                                 value="{{ old('phone_no', $dailyVisitPlan->phone_no) }}">
@@ -77,7 +77,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="date">Visit Date<span class="text-danger">*</span>:</label>
+                                            <label for="date">Visit Date<span class="text-danger">*</span></label>
                                             <input type="text" name="date" id="date"
                                                 class="form-control px-15 flatdate"
                                                 value="{{ old('date', $dailyVisitPlan->date) }}">
@@ -86,7 +86,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="address">Address<span class="text-danger">*</span>:</label>
+                                            <label for="address">Address<span class="text-danger">*</span></label>
                                             <input type="text" name="address" id="address"
                                                 class="form-control px-15"
                                                 value="{{ old('address', $dailyVisitPlan->address) }}">
@@ -95,7 +95,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="contact_person">Contact Person:</label>
+                                            <label for="contact_person">Contact Person</label>
                                             <input type="text" name="contact_person" id="contact_person"
                                                 class="form-control px-15"
                                                 value="{{ old('contact_person', $dailyVisitPlan->contact_person) }}">
@@ -104,7 +104,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="business_type">Business Type<span class="text-danger">*</span>:</label>
+                                            <label for="business_type">Business Type<span class="text-danger">*</span></label>
                                             <select name="business_type" id="business_type"
                                                 class="form-control tom-select px-15">
                                                 <option value="New Client" {{ old('business_type', $dailyVisitPlan->business_type) == 'New Client' ? 'selected' : '' }}>New Client</option>
@@ -115,7 +115,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="visit_purpose">Visit Purpose:</label>
+                                            <label for="visit_purpose">Visit Purpose</label>
                                             <input type="text" name="visit_purpose" id="visit_purpose"
                                                 class="form-control px-15"
                                                 value="{{ old('visit_purpose', $dailyVisitPlan->visit_purpose) }}">
@@ -124,7 +124,7 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="file">File:</label>
+                                            <label for="file">File</label>
                                             <x-file-uploader multiple :value="$dailyVisitPlan->attachment" name="attachment" />
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="description">Product Requirements/Remarks<span class="text-danger">*</span>:</label>
+                                            <label for="description">Product Requirements/Remarks<span class="text-danger">*</span></label>
                                             <textarea name="description" id="description" class="form-control px-15" rows="3">{{ old('description', $dailyVisitPlan->description) }}</textarea>
                                         </div>
                                     </div>

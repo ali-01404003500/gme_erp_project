@@ -2,16 +2,11 @@
     <table class="table table-bordered table-striped" id="received-courier-table">
         <thead>
             <tr>
-                <th>SL</th>
-                <th>Invoice ID</th>
+                <th>SL</th> 
                 <th>Courier</th>
-                <th>Invoice Amount</th>
-                <th>Payment Amount</th>
-                <th>Discount</th>
                 <th>Conditional Amount</th>
-                <th>Receipt No</th>
-                <th>Service Charge</th>
-                <th>Delivery Charge</th>
+                <th>Receipt No</th>  
+                <th>Invoice</th>  
                 <th class="no-print">Action</th>
             </tr>
         </thead>
@@ -22,23 +17,15 @@
                     $shipmentVerify = $item->shipmentVerify;
                 @endphp
                 <tr data-id="{{ $item->id }}">
-                    <td>{{ $index + 1 }}</td>
-                    <td>
-                        <a href="{{ route('sales.sales-orders.show', $salesOrder->id) }}" target="_blank">
-                            {{ $salesOrder->sales_order_id }}
-                        </a>
-                    </td>
+                    <td>{{ $index + 1 }}</td> 
                     <td>{{ $item->courier->courier_name ?? '' }}</td>
-                    <td>{{ number_format($item->invoice_amount) }}</td>
-                    <td>
-                        {{-- Payment Amount (Total Amount - Discount) or Net Amount --}}
-                        {{ number_format($salesOrder->net_amount ?? 0) }}
-                    </td>
-                    <td>{{ number_format($salesOrder->discount ?? 0) }}</td>
                     <td>{{ number_format($item->condition_amount) }}</td>
                     <td>{{ $shipmentVerify->receipt_no ?? '' }}</td>
-                    <td>{{ number_format($shipmentVerify->service_charge ?? 0) }}</td>
-                    <td>{{ number_format($shipmentVerify->delivery_charge ?? 0) }}</td>
+                    <td>
+                        <a href="{{ route('sales.sales-orders.show', $salesOrder->id) }}" target="_blank">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
                     <td class="no-print">
                         <button type="button" class="btn btn-danger btn-sm btn-received-back" data-id="{{ $item->id }}">
                             Received Back

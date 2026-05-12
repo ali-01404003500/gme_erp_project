@@ -150,10 +150,8 @@ class ShipmentVerifyController extends Controller
 
         $this->service->update($shipmentVerify, $validate, $files);
 
-        // Determine redirect route
-        $redirectRoute = $request->input('redirect_to')
-            ? $request->input('redirect_to')
-            : route('sales.shipment-verifies.index');
+        // Determine redirect route);
+        $redirectRoute = $request->input('redirect_url', route('sales.shipment-verifies.index'));
 
         if ($request->has('send_sms') && $request->input('send_sms') == 1) {
             $shipmentVerify->refresh();
@@ -188,6 +186,7 @@ class ShipmentVerifyController extends Controller
         }
 
         return redirect($redirectRoute)->with('success', 'ShipmentVerify updated successfully.');
+        
     }
 
     /**

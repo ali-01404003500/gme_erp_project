@@ -204,7 +204,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Groups',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Groups',
-                'key' => 'hrm.leave-group',
+                'key' => 'hrm.leave-groups',
                 'parent_key' => 'hrm',
             ],
 
@@ -213,7 +213,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Years',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Years',
-                'key' => 'hrm.leave-year',
+                'key' => 'hrm.leave-years',
                 'parent_key' => 'hrm',
             ],
 
@@ -221,7 +221,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Approver Setup',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Approver Setup',
-                'key' => 'hrm.leave-approver-setup',
+                'key' => 'hrm.leave-approver-setups',
                 'parent_key' => 'hrm',
             ],
 
@@ -229,7 +229,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Status',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Status',
-                'key' => 'hrm.leave-status',
+                'key' => 'hrm.leave-statuses',
                 'parent_key' => 'hrm',
             ],
 
@@ -238,7 +238,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Eligible Employees',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Eligible Employees',
-                'key' => 'hrm.leave-eligible-employee',
+                'key' => 'hrm.leave-eligible-employees',
                 'parent_key' => 'hrm',
             ],
 
@@ -246,7 +246,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Adjustments',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Adjustments',
-                'key' => 'hrm.leave-adjustment',
+                'key' => 'hrm.leave-adjustments',
                 'parent_key' => 'hrm',
             ],
 
@@ -270,7 +270,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Salary Generation Policy',
                 'description' => 'Permission of Add, Remove, Update, Delete Salary Generation Policy',
-                'key' => 'hrm.salary-generation-policy',
+                'key' => 'hrm.salary-generation-policies',
                 'parent_key' => 'hrm',
             ],
 
@@ -278,7 +278,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Salary Deduction Policy',
                 'description' => 'Permission of Add, Remove, Update, Delete Salary Deduction Policy',
-                'key' => 'hrm.salary-deduction-policy',
+                'key' => 'hrm.salary-deduction-policies',
                 'parent_key' => 'hrm',
             ],
 
@@ -1333,10 +1333,22 @@ class PermissionMasterTableSeeder extends Seeder
             ],
             
 
-            
+             //Employee Leave Application
+            [
+                'title' => 'Employee Leave Application',
+                'description' => "Permission of Add, Remove, Update, Delete Employee Leave Application",
+                'key' => 'hrm.leave-application-employees',
+                'parent_key' => 'hrm',
+            ],
+
  
-           
-            
+            //Document Report
+            [
+                'title' => 'Document Report',
+                'description' => "Permission of Add, Remove, Update, Delete Document Report",
+                'key' => 'cms.document-entries',
+                'parent_key' => 'cms',
+            ],
           
            
             

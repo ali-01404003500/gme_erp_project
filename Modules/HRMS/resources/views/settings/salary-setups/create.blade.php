@@ -64,7 +64,7 @@
                                         <div class="form-group row mb-25 col-md-4">
                                             <label for="basic" class="col-md-4 col-form-label color-dark fs-14 fw-500">Basic (%)<span class="text-danger">*</span></label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="basic" id="basic" class="form-control" value="{{ old('basic') }}" required>
+                                                 <input type="text" name="basic" id="basic" class="form-control" value="{{ old('basic') ? old('basic') : 0 }}" required>
                                                 @if ($errors->has('basic'))
                                                     <p class="text-danger">{{ $errors->first('basic') }}</p>
                                                 @endif
@@ -83,7 +83,7 @@
                                         <div class="form-group row mb-25 col-md-4">
                                             <label for="house_rent" class="col-md-4 col-form-label color-dark fs-14 fw-500">House Rent (%)<span class="text-danger">*</span></label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="house_rent" id="house_rent" class="form-control" value="{{ old('house_rent') }}" >
+                                                 <input type="text" name="house_rent" id="house_rent" class="form-control" value="{{ old('house_rent') ? old('house_rent') : 0 }}" >
                                                 @if ($errors->has('house_rent'))
                                                     <p class="text-danger">{{ $errors->first('house_rent') }}</p>
                                                 @endif
@@ -104,7 +104,7 @@
                                         <div class="form-group row mb-25 col-md-4">
                                             <label for="conveyance" class="col-md-4 col-form-label color-dark fs-14 fw-500">Conveyance Allowance (%)</label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="conveyance" id="conveyance" class="form-control" value="{{ old('conveyance') }}">
+                                                 <input type="text" name="conveyance" id="conveyance" class="form-control" value="{{ old('conveyance') ? old('conveyance') : 0 }}">
                                                 @if ($errors->has('conveyance'))
                                                     <p class="text-danger">{{ $errors->first('conveyance') }}</p>
                                                 @endif
@@ -125,7 +125,7 @@
                                         <div class="form-group row mb-25 col-md-4">
                                             <label for="medical" class="col-md-4 col-form-label color-dark fs-14 fw-500">Medical Allowance (%)</label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="medical" id="medical" class="form-control" value="{{ old('medical') }}">
+                                                 <input type="text" name="medical" id="medical" class="form-control" value="{{ old('medical') ? old('medical') : 0 }}">
                                                 @if ($errors->has('medical'))
                                                     <p class="text-danger">{{ $errors->first('medical') }}</p>
                                                 @endif
@@ -146,7 +146,7 @@
                                          <div class="form-group row mb-25 col-md-4">
                                             <label for="entertainment" class="col-md-4 col-form-label color-dark fs-14 fw-500">Entertainment Allowance (%)</label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="entertainment" id="entertainment" class="form-control" value="{{ old('entertainment') }}">
+                                                 <input type="text" name="entertainment" id="entertainment" class="form-control" value="{{ old('entertainment') ? old('entertainment') : 0 }}">
                                                 @if ($errors->has('entertainment'))
                                                     <p class="text-danger">{{ $errors->first('entertainment') }}</p>
                                                 @endif
@@ -168,7 +168,7 @@
                                         <div class="form-group row mb-25 col-md-4">
                                             <label for="leave_fare" class="col-md-4 col-form-label color-dark fs-14 fw-500">Leave Fare Assistance (%)</label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="leave_fare" id="leave_fare" class="form-control" value="{{ old('leave_fare') }}">
+                                                 <input type="text" name="leave_fare" id="leave_fare" class="form-control" value="{{ old('leave_fare') ? old('leave_fare') : 0 }}">
                                                 @if ($errors->has('leave_fare'))
                                                     <p class="text-danger">{{ $errors->first('leave_fare') }}</p>
                                                 @endif
@@ -189,7 +189,7 @@
                                          <div class="form-group row mb-25 col-md-4">
                                             <label for="utility" class="col-md-4 col-form-label color-dark fs-14 fw-500">Utility Allowance (%)</label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="utility" id="utility" class="form-control" value="{{ old('utility') }}">
+                                                 <input type="text" name="utility" id="utility" class="form-control" value="{{ old('utility') ? old('utility') : 0 }}">
                                                 @if ($errors->has('utility'))
                                                     <p class="text-danger">{{ $errors->first('utility') }}</p>
                                                 @endif
@@ -211,7 +211,7 @@
                                          <div class="form-group row mb-25 col-md-4">
                                             <label for="unkeep" class="col-md-4 col-form-label color-dark fs-14 fw-500">Unkeep Allowance (%)</label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="unkeep" id="unkeep" class="form-control" value="{{ old('unkeep') }}">
+                                                 <input type="text" name="unkeep" id="unkeep" class="form-control" value="{{ old('unkeep') ? old('unkeep') : 0 }}">
                                                 @if ($errors->has('unkeep'))
                                                     <p class="text-danger">{{ $errors->first('unkeep') }}</p>
                                                 @endif
@@ -233,7 +233,7 @@
                                         <div class="form-group row mb-25 col-md-4">
                                             <label for="others" class="col-md-4 col-form-label color-dark fs-14 fw-500">Others Allowance (% )</label>
                                             <div class="col-md-3">
-                                                 <input type="text" name="others" id="others" class="form-control" value="{{ old('others') }}">
+                                                 <input type="text" name="others" id="others" class="form-control" value="{{ old('others') ? old('others') : 0 }}">
                                                 @if ($errors->has('others'))
                                                     <p class="text-danger">{{ $errors->first('others') }}</p>
                                                 @endif
@@ -268,11 +268,13 @@
 @section('page_scripts')
 <script>
     $(document).ready(function() {
-        $('form').on('submit', function(e) {
-            // Prevent form submission
-            e.preventDefault();
 
-            // Get the input values
+
+       $('.checkbox').on('change', function () { 
+            $('.checkbox').prop('checked', this.checked); 
+        });
+        
+        function calculateTotalPercentage() {
             // Get the input values
             let basic = parseFloat($('#basic').val()) || 0;
             let houseRent = parseFloat($('#house_rent').val()) || 0;
@@ -285,19 +287,41 @@
             let others = parseFloat($('#others').val()) || 0;
 
             total =  basic + houseRent + conveyance + medical + entertainment + leave_fare + utility + unkeep + others;
+            return total;
+        }
+    
+        function validateTotalPercentage() {
+            let basic = parseFloat($('#basic').val()) || 0;
 
- 
-            if (total <= 100) {
+            let total = calculateTotalPercentage();
+            if (total < 100) {
                 toastr.error('The total percentage must equal 100.');
                 return false;
             }
             else if (total > 100 && (total - basic) < 100) {
                 toastr.error('The total percentage excluding basic must be at least 100.');
                 return false;
-            } else {
-                $(this).off('submit').submit();
+            }
+            return true;
+        }
+
+        // Recalculate total percentage on input change
+        $('input[type="text"], input[type="checkbox"]').on('change', function() {
+            validateTotalPercentage();
+        });
+
+        // Handle form submission
+        $('form').on('submit', function(e) {
+            // Prevent form submission if validation fails
+            if (!validateTotalPercentage()) {
+                e.preventDefault();
             }
         });
+
+        // Initial validation on page load
+        validateTotalPercentage();
+
+         
     });
 </script>
 

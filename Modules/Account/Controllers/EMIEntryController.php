@@ -64,9 +64,9 @@ class EMIEntryController extends Controller
         $result = $this->service->store($validate, $emiDetails);
 
         // Soft-delete the newly created EMI entry and its details
-        if (isset($result['eMIEntry'])) {
+        /*if (isset($result['eMIEntry'])) {
             $result['eMIEntry']->delete(); // This will soft delete the EMIEntry
-        }
+        }*/
 
         return response()->json(['success' => true, 'message' => 'EMIEntry created successfully as a draft.', 'data' => $result]);
     }

@@ -90,7 +90,7 @@
                                             Phone No
                                         </th>
                                         <th>
-                                            Sales Date
+                                            Requisition Date
                                         </th>
                                         <th>
                                             Discount
@@ -112,14 +112,15 @@
                                         <tr>
                                             <td class="text-center">{{ ($salesRequisitions->currentPage() - 1) * $salesRequisitions->perPage() + $loop->iteration  }}</td>
 
-                                            <td><a href="{{ route('sales.sales-requisitions.show', $salesRequisition->id) }}">
-                                                {{$salesRequisition->invoice_id}}
-                                            </a></td>
+                                            <td>
+                                                SR-{{$salesRequisition->id}}
+                                            </td>
                                             <td>
                                                 <a class="text-dark fw-500"
                                                     href="{{ route('sales.sales-requisitions.show', $salesRequisition->id) }}">
                                                     {{ optional($salesRequisition->customer)->company_name }}</i>
-                                                </a>
+                                                </a><br>
+                                                 <small class="text-muted">{!! wordwrap( optional($salesRequisition->customer)->customer_address , 60, '<br>', true) !!}</small>
 
                                             </td>
                                             <td>

@@ -84,11 +84,7 @@
                                         </th>
                                         <th>
                                             Company Name
-                                        </th>
-
-                                        <th>
-                                            Address
-                                        </th>
+                                        </th> 
                                         <th>
                                             Phone
                                         </th>
@@ -122,10 +118,8 @@
                                             </td>
                                             <td>
                                                 {{ $plan->company_name }}
-                                            </td>
-                                            <td>
-                                                {{ $plan->address ?? 'N/A' }}
-                                            </td>
+                                                <br><small class="text-muted"> {{ $plan->address ?? 'N/A' }}</small>
+                                            </td> 
                                             <td>
                                                 {{ $plan->phone_no ?? 'N/A' }}
                                             </td>

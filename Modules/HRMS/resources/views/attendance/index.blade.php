@@ -179,18 +179,24 @@
                                             </tr>
                                         </thead>
                                         <tbody> 
+                                         
                                             @foreach ($period as $date) 
                                                 @php
+                                                
                                                     $d = $date->format('Y-m-d');
                                                     $attendance = $attendancesByEmployee[$employee->id][$d] ?? null; 
+                                                    $isHoliday = in_array($d, $holidayDates);
+                                                    $currentDay = \Carbon\Carbon::parse($date)->format('l');  
+                                                    $isWeekend = in_array($currentDay, $weekends);
+                                                    
                                                 @endphp 
                                                 <tr>
                                                     <td>{{ $date->format('D') }}, {{ $date->format('d-m-Y') }}</td>
 
-                                                    <td id="flag">{{ $attendance->flag  ?? 'A'}}</td>
+                                                    <td id="flag">{{ $isHoliday ? 'H' : ($isWeekend ? 'W' : ($attendance->flag ?? 'A')) }}</td>
 
                                                     <td> 
-                                                        <input type="text" class="form-control intimepicker" name="check_in_time"   data-touched="{{ optional($attendance)->check_in_time ? 'true' : 'false' }}" 
+                                                        <input type="text" class="form-control intimepicker" @if(optional($attendance)->check_in_time == '')  style="background-color:#f0eba6;" @endif name="check_in_time"   data-touched="{{ optional($attendance)->check_in_time ? 'true' : 'false' }}" 
                                                         value="{{ optional($attendance)->check_in_time  ? \Carbon\Carbon::parse($attendance->check_in_time)->format('h:i A') : '' }}" >
 
                                                         <input type="hidden" class="form-control" name="check_in_date" id="check_in_date" value="{{ $attendance->check_in_date ?? $date->format('Y-m-d') }}"> 
@@ -210,7 +216,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <input type="text" class="form-control outtimepicker" name="check_out_time" id="check_out_time"   data-touched="{{ optional($attendance)->check_out_time ? 'true' : 'false' }}" 
+                                                        <input type="text" class="form-control outtimepicker " @if(optional($attendance)->check_out_time == '')  style="background-color:#f0eba6;" @endif  name="check_out_time" id="check_out_time"   data-touched="{{ optional($attendance)->check_out_time ? 'true' : 'false' }}" 
                                                         value="{{ optional($attendance)->check_out_time ? \Carbon\Carbon::parse($attendance->check_out_time)->format('h:i A') : '' }}"  >
                                                     </td>
 
@@ -265,15 +271,21 @@
 @section('page_scripts')
     <script>
  
- 
+        
+        $(document).on('focus click', '.intimepicker,.outtimepicker', function () {
+     
+            $(this).css('background-color', '#88fdab');
+        
+        });
+
         $(document).ready(function() { 
 
             $('.intimepicker,.outtimepicker').on('click', function() {
                 $(this).data('touched', true);
             }); 
+            
            
-
-           
+            
             $('.employee-header').click(function() {
                 var icon = $(this).find('.toggle-icon');
                 var target = $(this).data('bs-target');

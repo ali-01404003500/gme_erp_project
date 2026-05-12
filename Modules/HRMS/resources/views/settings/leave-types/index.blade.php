@@ -249,36 +249,39 @@
 @endsection
 
 @section('page_scripts')
-    <script>
+    <script> 
+
         $(document).on('click', '.btn-edit', function () {
-            const data = $(this).data('data');
+
+            let data = $(this).data('data');
             const action = $(this).data('action');
+
+            if (typeof data === 'string') {
+                data = JSON.parse(data);
+            }
 
             let form = $('#editForm');
             form.attr('action', action);
 
-
+            // inputs
             form.find('input[name="leave_type_name"]').val(data.leave_type_name);
             form.find('input[name="flag"]').val(data.flag);
             form.find('input[name="half_flag"]').val(data.half_flag);
             form.find('input[name="total_day"]').val(data.total_day);
             form.find('input[name="simultaneously_limit"]').val(data.simultaneously_limit);
 
-
+            // reset checkboxes
             form.find('input[type="checkbox"]').prop('checked', false);
 
+            // checkboxes (safe)
+            form.find('#mat2').prop('checked', Number(data.is_maternity) === 1);
+            form.find('#unp2').prop('checked', Number(data.is_unpaid) === 1);
+            form.find('#par2').prop('checked', Number(data.is_partially_balance) === 1);
 
-            if (parseInt(data.is_maternity) === 1) {
-                form.find('#mat2').prop('checked', true);
-            }
-            if (parseInt(data.is_unpaid) === 1) {
-                form.find('#unp2').prop('checked', true);
-            }
-            if (parseInt(data.is_partially_balance) === 1) {
-                form.find('#par2').prop('checked', true);
-            }
+            // radio
+            form.find('input[name="leave_count_type"][value="'+data.leave_count_type+'"]').prop('checked', true);
 
-            form.find('input[name="leave_count_type"][value="' + data.leave_count_type + '"]').prop('checked', true);
         });
+
     </script>
 @endsection

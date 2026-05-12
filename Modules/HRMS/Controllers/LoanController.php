@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Modules\HRMS\Models\Loan;
 use Modules\HRMS\Services\LoanService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Modules\HRMS\Models\Employee;
 
@@ -28,7 +29,7 @@ class LoanController extends Controller
     public function index()
     {
         $data['loans'] = $this->service->getAll();
-        $data['employees'] = Employee::all();
+        $data['employees'] = Employee::where('status',1)->get();
 
         return view('HRMS::loans.index', $data);
     }
@@ -38,7 +39,8 @@ class LoanController extends Controller
      */
     public function create()
     {
-        $data['employees'] = Employee::all();
+        $employeeId = Auth::user()->employee->id; 
+        $data['employee'] = Employee::where('id', $employeeId)->first();  
         return view('HRMS::loans.create', $data);
     }
     public function loanPayment()
@@ -103,7 +105,8 @@ class LoanController extends Controller
     public function edit(Loan $loan)
     {
         $data['loan'] = $loan;
-        $data['employees'] = Employee::all();
+        $employeeId = Auth::user()->employee->id; 
+        $data['employee'] = Employee::where('id', $employeeId)->first();  
         //
         return view('HRMS::loans.edit', $data);
     }

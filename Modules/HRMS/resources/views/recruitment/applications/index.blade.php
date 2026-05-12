@@ -88,11 +88,17 @@
                                                 <p>{{ $jobApplication->mobile }}</p>
                                             </td>
 
-                                            <td>
-                                                <p><strong>Present:
-                                                    </strong>{{ $jobApplication->present_address ?? 'N/A' }}</p>
-                                                <p><strong>Permanent: </strong>{{ $jobApplication->permanent_address }}</p>
-                                            </td>
+                                           <td style="white-space: normal; word-break: break-word;">
+                                            <p>
+                                                <strong>Present:</strong><br>
+                                                {{ $jobApplication->present_address ?? 'N/A' }}
+                                            </p>
+
+                                            <p class="mt-2">
+                                                <strong>Permanent:</strong><br>
+                                                {{ $jobApplication->permanent_address ?? 'N/A' }}
+                                            </p>
+                                        </td>
                                             <td class="text-center">
 
                                                 @if ($jobApplication->status == 0)

@@ -3,13 +3,35 @@
 use Illuminate\Support\Facades\Route;
 use Modules\HRMS\Controllers\Api\AttendanceController;
 use Modules\HRMS\Controllers\Api\BillsAndAllowanceController;
+use Modules\HRMS\Controllers\Api\CareerApiController;
 use Modules\HRMS\Controllers\Api\DailyVisitPlanController;
 use Modules\HRMS\Controllers\Api\EmployeeController;
+use Modules\HRMS\Controllers\Api\JobApplicationApiController;
 use Modules\HRMS\Controllers\Api\LeaveApplicationController;
 use Modules\HRMS\Controllers\Api\NoticeBoardController;
 use Modules\HRMS\Controllers\Api\SalaryGenerateController;
 use Modules\HRMS\Controllers\CareerController;
 use Modules\HRMS\Http\Controllers\LeaveEncashmentController;
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC CAREER API
+|--------------------------------------------------------------------------
+*/
+Route::post('/apply', [JobApplicationApiController::class, 'store']);
+
+Route::prefix('career')->group(function () {
+
+    Route::get('/', [CareerApiController::class, 'jobs']);
+    Route::get('/jobs/{slug}', [CareerApiController::class, 'jobDetails']);
+    Route::get('/departments', [CareerApiController::class, 'departments']);
+    Route::get('/locations', [CareerApiController::class, 'locations']);
+});
+/*
+|--------------------------------------------------------------------------
+| PUBLIC HRMS API
+|--------------------------------------------------------------------------
+*/
 
 Route::group(['middleware' => ['auth:api'], 'prefix' => 'hrm', 'as' => 'hrm.'], function () {
     Route::apiResource('attendances', AttendanceController::class);

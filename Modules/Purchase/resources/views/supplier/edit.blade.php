@@ -176,12 +176,9 @@
                                                                     class="form-control"
                                                                     name="customer_id" id="customer_id">
                                                                     <option value="">Select Customer</option>
-                                                                    @foreach ($customers as $customer)
-                                                                        <option value="{{ $customer->id }}"
-                                                                            {{ old('customer_id', $supplier->customer_id) == $customer->id ? 'selected' : '' }}>
-                                                                            {{ $customer->company_name }} - {{ $customer->address}}
-                                                                        </option>
-                                                                    @endforeach
+                                                                    <option value="{{ $supplier->customer_id }}" selected>
+                                                                        {{ $supplier->customer?->company_name }}
+                                                                    </option>
                                                                 </select>
                                                                 @if ($errors->has('customer_id'))
                                                                     <p class="text-danger">
@@ -625,6 +622,40 @@
                 });
                 countryCodeSelect.tomselect.sync();            
             });
+    });
+
+
+    $(document).ready(function() {
+        const companySelect = new TomSelect("#customer_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('purchase.purchase-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        companySelect.clearOptions(); 
+                        callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(request('customer_id'))
+            companySelect.addOption({
+                id: "{{ request('customer_id') }}",
+                text: "{{ request('customer_id') }}"
+            });
+            companySelect.setValue("{{ request('customer_id') }}");
+        @endif
     });
 </script>
     <script>

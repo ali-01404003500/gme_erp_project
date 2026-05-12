@@ -42,6 +42,16 @@ class DailyCreditCallController extends Controller
         // Build the report data
         $reportData = $this->buildReportData($search);
 
+        $perPage = 50;
+        $currentPage = $request->input('page', 1);
+        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
+            $reportData->forPage($currentPage, $perPage),
+            $reportData->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
         // Calculate totals
         $totals = $this->calculateTotals($reportData);
 
@@ -49,13 +59,21 @@ class DailyCreditCallController extends Controller
         // Only load filter data when needed (not for export)
         $filterData = $this->getFilterData();
 
+        $selectedCustomer = null;
+
+        if ($search) {
+            $selectedCustomer = Customer::select('id', 'company_name')
+                ->find($search);
+        }
+
+
         return view('CRM::daily-credit-call.index', [
-            'reportData' => $reportData,
-            'customersearch' => $filterData['customersearch'],
+            'reportData' => $paginatedData, 
             'company_info' => $filterData['company_info'],
             'divisions' => $filterData['divisions'],
             'districts' => $filterData['districts'],
-            'totals' => $totals
+            'totals' => $totals,
+            'selectedCustomer' => $selectedCustomer,
         ]);
 
  
@@ -228,11 +246,7 @@ class DailyCreditCallController extends Controller
             return CompanyInfo::first();
         }); 
 
-        return [
-            'customersearch' => Customer::actived()
-                ->select('id', 'company_name','company_place_id')
-                ->orderBy('company_name')
-                ->get(),
+        return [ 
             'company_info' => $companyInfo,
             'divisions' => GeoLocation::where('type', 'Division')->get(),
             'districts' => GeoLocation::where('type', 'District')->get(),

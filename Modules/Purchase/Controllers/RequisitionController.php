@@ -6,6 +6,7 @@ namespace Modules\Purchase\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\Branch;
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use Modules\Inventory\Models\Product\Settings\ProductType;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Inventory\Models\Settings\Unit;
@@ -18,6 +19,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Payments\MakePayment;
+use Modules\Account\Models\Supplier as ModelsSupplier;
 use Modules\CRM\Models\Customer\Customer;
 
 class RequisitionController extends Controller
@@ -40,7 +42,8 @@ class RequisitionController extends Controller
     {
         $this->service = $service;
         $this->generalNotificationService = $generalNotificationService;
-        $this->middleware('permited')->except(['getProduct', 'approve', 'approve', 'approveStore', 'getRequisionNumber', 'getSerials', 'batches']);
+        $this->middleware('permited')->except(['getProduct', 'approve', 'approve', 'approveStore', 'getRequisionNumber', 'getSerials', 'batches', 'productAutocomplete','supplierAutocomplete','customerAutocomplete']);
+ 
         // $this->middleware('CheckSlugPermited:get,put')->only(['update', 'store']);
     }
 
@@ -52,9 +55,8 @@ class RequisitionController extends Controller
         $data['warehouses'] = Branch::query()->get();
         $data['productTypes'] = ProductType::query()->where('status', 1)->get();
         $data['units'] = Unit::all();
-        $data['products'] = ProductCatalog::where('status', 'active')->get();
-        $data['suppliers'] = Supplier::query()->where('status', 1)->get();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['suppliers'] = Supplier::find($request->supplier_id) ?? null;
+        $data['customers'] = Customer::find($request->customer_id) ?? null;
 
         $data['requisitions'] = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
@@ -86,10 +88,7 @@ class RequisitionController extends Controller
     {
         $data['warehouses'] = Branch::query()->get();
         $data['productTypes'] = ProductType::query()->where('status', 1)->get();
-        $data['units'] = Unit::all();
-        $data['products'] = ProductCatalog::where('status', 'active')->get();
-        $data['suppliers'] = Supplier::query()->where('status', 1)->get();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['units'] = Unit::all(); 
         return view('Purchase::requisition.create', $data);
     }
 
@@ -338,10 +337,7 @@ class RequisitionController extends Controller
         $data['requisition'] = $requisition;
         $data['warehouses'] = Branch::query()->get();
         $data['productTypes'] = ProductType::query()->where('status', 1)->get();
-        $data['units'] = Unit::all();
-        $data['products'] = ProductCatalog::where('status', 'active')->get();
-        $data['suppliers'] = Supplier::query()->where('status', 1)->get();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['units'] = Unit::all(); 
         return view("Purchase::requisition.edit", $data);
     }
 
@@ -405,5 +401,49 @@ class RequisitionController extends Controller
     {
         $this->service->delete($requisition);
         return redirect()->route('purchase.requisitions.index')->with('success', 'Requisition deleted successfully.');
+    }
+
+
+    public function customerAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    { 
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+  
+        $data = $autocompleteService->customerSearch(
+            Customer::class,
+            ['company_name','address','phone'],
+            $request->search,
+            ['id', 'company_name','company_place_id', 'phone', 'customer_type', 'address'],
+            30
+        ); 
+
+        
+        return response()->json($data);
+    }
+
+    public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->productSearch(
+            ProductCatalog::class,
+            ['name','model'],
+            $request->search,
+            ['id', 'name','model','product_brand_id'],
+            30
+        ); 
+        return response()->json($data);
+    }
+    public function supplierAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            Supplier::class,
+            ['company_name'],
+
+            $request->search,
+            ['id', 'company_name'],
+            20,
+            ['status' => '1']
+        ); 
+        return response()->json($data);
     }
 }

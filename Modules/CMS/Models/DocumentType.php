@@ -13,4 +13,9 @@ class DocumentType extends BaseModel
     use AutoCreateUpdateAndHistory;
     use SoftDeletes;
     protected $guarded = [];
+
+    public function documentEntries()
+    {
+        return $this->hasMany(DocumentEntry::class, 'document_type_id');
+    }
 }

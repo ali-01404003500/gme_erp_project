@@ -352,12 +352,30 @@
         $(document).on('click', '.btn-edit', function() {
             const data = $(this).data('data');
             
-            // Loop through data object
+            // Loop through data object 
             $.each(data, function(key, value) {
-                $('#editModal input[name="' + key + '"]').val(value);
-                $('#editModal select[name="' + key + '"] option[value="' + value + '"]').prop('selected', true);
+
+                let el = $('#editModal').find('[name="'+key+'"]')[0];
+
+                if (!el) return;
+
+                // TomSelect check
+                if (el.tomselect) {
+                    el.tomselect.setValue(value);
+                }
+                // normal select
+                else if (el.tagName === 'SELECT') {
+                    $(el).val(value).trigger('change');
+                }
+                // input/textarea
+                else {
+                    $(el).val(value);
+                }
+
             });
-            
+ 
+
+
             $("#editFrom").attr("action", $(this).data('action'));
             
             // Initialize edit map after modal is shown

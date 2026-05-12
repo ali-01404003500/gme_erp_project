@@ -70,7 +70,7 @@ class SalarySetupController extends Controller
             'unkeep' => 'nullable|numeric|min:0',
             'is_unkeep_basic' => 'nullable|in:0,1',
             'others' => 'nullable|numeric|min:0',
-            'is_others_fixed' => 'nullable|in:0,1',
+            'is_others_basic' => 'nullable|in:0,1',
  
         ]);
         $this->service->store($validate);
@@ -120,7 +120,7 @@ class SalarySetupController extends Controller
             'unkeep' => 'nullable|numeric|min:0',
             'is_unkeep_basic' => 'nullable|in:0,1',
             'others' => 'nullable|numeric|min:0',
-            'is_others_fixed' => 'nullable|in:0,1',
+            'is_others_basic' => 'nullable|in:0,1',
  
         ]);
         // dd($validate);

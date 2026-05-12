@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Modules\Sales\Models\ConditionAmountCollect;
 use Modules\Sales\Services\ConditionAmountCollectService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ConditionAmountCollectController extends Controller
 {
@@ -248,7 +249,7 @@ class ConditionAmountCollectController extends Controller
                 $successCount++;
             } catch (\Exception $e) {
                 // Log the error but continue with other items
-                \Log::error("Error marking condition amount collect as received: " . $e->getMessage());
+                Log::error("Error marking condition amount collect as received: " . $e->getMessage());
             }
         }
 

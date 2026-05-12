@@ -701,134 +701,134 @@ class PermissionTableSeed extends Seeder
             //Leave Group
             [
                 'name' => 'Leave Group List',
-                'slug' => 'hrm.leave-group.index',
+                'slug' => 'hrm.leave-groups.index',
                 'description' => 'Leave group list permission',
-                'key' => 'hrm.leave-group',
+                'key' => 'hrm.leave-groups',
             ],
             [
                 'name' => 'Create Leave Group',
-                'slug' => 'hrm.leave-group.create',
+                'slug' => 'hrm.leave-groups.create',
                 'description' => 'Leave group create permission',
-                'key' => 'hrm.leave-group',
+                'key' => 'hrm.leave-groups',
             ],
             [
                 'name' => 'Leave Group Update',
-                'slug' => 'hrm.leave-group.update',
+                'slug' => 'hrm.leave-groups.update',
                 'description' => 'Leave group update permission',
-                'key' => 'hrm.leave-group',
+                'key' => 'hrm.leave-groups',
             ],
             [
                 'name' => 'Leave Group Delete',
-                'slug' => 'hrm.leave-group.destroy',
+                'slug' => 'hrm.leave-groups.destroy',
                 'description' => 'Leave group delete permission',
-                'key' => 'hrm.leave-group',
+                'key' => 'hrm.leave-groups',
             ],
 
  
             //Leave Year
             [
                 'name' => 'Leave Year List',
-                'slug' => 'hrm.leave-year.index',
+                'slug' => 'hrm.leave-years.index',
                 'description' => 'Leave year list permission',
-                'key' => 'hrm.leave-year',
+                'key' => 'hrm.leave-years',
             ],
             [
                 'name' => 'Create Leave Year',
-                'slug' => 'hrm.leave-year.create',
+                'slug' => 'hrm.leave-years.create',
                 'description' => 'Leave year create permission',
-                'key' => 'hrm.leave-year',
+                'key' => 'hrm.leave-years',
             ],
             [
                 'name' => 'Leave Year Update',
-                'slug' => 'hrm.leave-year.update',
+                'slug' => 'hrm.leave-years.update',
                 'description' => 'Leave year update permission',
-                'key' => 'hrm.leave-year',
+                'key' => 'hrm.leave-years',
             ],
             [
                 'name' => 'Leave Year Delete',
-                'slug' => 'hrm.leave-year.destroy',
+                'slug' => 'hrm.leave-years.destroy',
                 'description' => 'Leave year delete permission',
-                'key' => 'hrm.leave-year',
+                'key' => 'hrm.leave-years',
             ],
  
             //Leave Approver Setup
             [
                 'name' => 'Leave Approver Setup List',
-                'slug' => 'hrm.leave-approver-setup.index',
+                'slug' => 'hrm.leave-approver-setups.index',
                 'description' => 'Leave approver setup list permission',
-                'key' => 'hrm.leave-approver-setup',
+                'key' => 'hrm.leave-approver-setups',
             ],
             [
                 'name' => 'Create Leave Approver Setup',
-                'slug' => 'hrm.leave-approver-setup.create',
+                'slug' => 'hrm.leave-approver-setups.create',
                 'description' => 'Leave approver setup create permission',
-                'key' => 'hrm.leave-approver-setup',
+                'key' => 'hrm.leave-approver-setups',
             ],
             [
                 'name' => 'Leave Approver Setup Update',
-                'slug' => 'hrm.leave-approver-setup.update',
+                'slug' => 'hrm.leave-approver-setups.update',
                 'description' => 'Leave approver setup update permission',
-                'key' => 'hrm.leave-approver-setup',
+                'key' => 'hrm.leave-approver-setups',
             ],
             [
                 'name' => 'Leave Approver Setup Delete',
-                'slug' => 'hrm.leave-approver-setup.destroy',
+                'slug' => 'hrm.leave-approver-setups.destroy',
                 'description' => 'Leave approver setup delete permission',
-                'key' => 'hrm.leave-approver-setup',
+                'key' => 'hrm.leave-approver-setups',
             ],
         
 
             //Leave status
             [
                 'name' => 'Leave Status List',
-                'slug' => 'hrm.leave-status.index',
+                'slug' => 'hrm.leave-statuses.index',
                 'description' => 'Leave status list permission',
-                'key' => 'hrm.leave-status',
+                'key' => 'hrm.leave-statuses',
             ],
             [
                 'name' => 'Create Status Setup',
-                'slug' => 'hrm.leave-status.create',
+                'slug' => 'hrm.leave-statuses.create',
                 'description' => 'Leave status create permission',
-                'key' => 'hrm.leave-status',
+                'key' => 'hrm.leave-statuses',
             ],
             [
                 'name' => 'Leave Status Update',
-                'slug' => 'hrm.leave-status.update',
+                'slug' => 'hrm.leave-statuses.update',
                 'description' => 'Leave status update permission',
-                'key' => 'hrm.leave-status',
+                'key' => 'hrm.leave-statuses',
             ],
             [
                 'name' => 'Leave Statusp Delete',
-                'slug' => 'hrm.leave-status.destroy',
+                'slug' => 'hrm.leave-statuses.destroy',
                 'description' => 'Leave status delete permission',
-                'key' => 'hrm.leave-status',
+                'key' => 'hrm.leave-statuses',
             ],
             
 
             //Leave Eligible Employees
             [
                 'name' => 'Leave Eligible Employees List',
-                'slug' => 'hrm.leave-eligible-employee.index',
+                'slug' => 'hrm.leave-eligible-employees.index',
                 'description' => 'Leave eligible employee list permission',
-                'key' => 'hrm.leave-eligible-employee',
+                'key' => 'hrm.leave-eligible-employees',
             ],
             [
                 'name' => 'Create Eligible Employees Setup',
-                'slug' => 'hrm.leave-eligible-employee.create',
+                'slug' => 'hrm.leave-eligible-employees.create',
                 'description' => 'Leave eligible employee create permission',
-                'key' => 'hrm.leave-eligible-employee',
+                'key' => 'hrm.leave-eligible-employees',
             ],
             [
                 'name' => 'Leave Eligible Employees Update',
-                'slug' => 'hrm.leave-eligible-employee.update',
+                'slug' => 'hrm.leave-eligible-employees.update',
                 'description' => 'Leave eligible employee update permission',
-                'key' => 'hrm.leave-eligible-employee',
+                'key' => 'hrm.leave-eligible-employees',
             ],
             [
                 'name' => 'Leave Eligible Employees Delete',
-                'slug' => 'hrm.leave-eligible-employee.destroy',
+                'slug' => 'hrm.leave-eligible-employees.destroy',
                 'description' => 'Leave eligible employee delete permission',
-                'key' => 'hrm.leave-eligible-employee',
+                'key' => 'hrm.leave-eligible-employees',
 
 
             ],
@@ -838,34 +838,34 @@ class PermissionTableSeed extends Seeder
             //Leave Adjustments
             [
                 'name' => 'Leave Adjustments List',
-                'slug' => 'hrm.leave-adjustment.index',
+                'slug' => 'hrm.leave-adjustments.index',
                 'description' => 'Leave adjustment list permission',
-                'key' => 'hrm.leave-adjustment',
+                'key' => 'hrm.leave-adjustments',
             ],
             [
                 'name' => 'Create Adjustments Setup',
-                'slug' => 'hrm.leave-adjustment.create',
+                'slug' => 'hrm.leave-adjustments.create',
                 'description' => 'Leave adjustment create permission',
-                'key' => 'hrm.leave-adjustment',
+                'key' => 'hrm.leave-adjustments',
             ],
             [
                 'name' => 'Leave Adjustments Update',
-                'slug' => 'hrm.leave-adjustment.update',
+                'slug' => 'hrm.leave-adjustments.update',
                 'description' => 'Leave adjustment update permission',
-                'key' => 'hrm.leave-adjustment',
+                'key' => 'hrm.leave-adjustments',
             ],
             [
                 'name' => 'Leave Adjustments Delete',
-                'slug' => 'hrm.leave-adjustment.destroy',
+                'slug' => 'hrm.leave-adjustments.destroy',
                 'description' => 'Leave adjustment delete permission',
-                'key' => 'hrm.leave-adjustment',
+                'key' => 'hrm.leave-adjustments',
             ],
  
 
             // Salary generate
             [
                 'name' => 'Payrolls View',
-                'slug' => 'hrm.payrolls',
+                'slug' => 'hrm.salary-generates',
                 'description' => 'Payrolls view permission',
                 'key' => 'hrm.salary-generates',
             ],
@@ -899,7 +899,15 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Salary sheet show permission',
                 'key' => 'hrm.salary-generates',
             ], 
+
+            [
+                'name' => 'Salary Sheet Verify',
+                'slug' => 'hrm.salary-generates.payroll',
+                'description' => 'Salary sheet Verify permission',
+                'key' => 'hrm.salary-generates',
+            ], 
  
+            
             //Salary Setups
             [
                 'name' => 'Salary Setups List',
@@ -932,56 +940,56 @@ class PermissionTableSeed extends Seeder
             // Salary generation policy
             [
                 'name' => 'Salary Generation Policy List',
-                'slug' => 'hrm.salary-generation-policy.index',
+                'slug' => 'hrm.salary-generation-policies.index',
                 'description' => 'Salary generation policy list permission',
-                'key' => 'hrm.salary-generation-policy',
+                'key' => 'hrm.salary-generation-policies',
             ],
             [
                 'name' => 'Create Generation Policy Setup',
-                'slug' => 'hrm.salary-generation-policy.create',
+                'slug' => 'hrm.salary-generation-policies.create',
                 'description' => 'Salary generation policy create permission',
-                'key' => 'hrm.salary-generation-policy',
+                'key' => 'hrm.salary-generation-policies',
             ],
             [
                 'name' => 'Salary Generation Policy Update',
-                'slug' => 'hrm.salary-generation-policy.update',
+                'slug' => 'hrm.salary-generation-policies.update',
                 'description' => 'Salary generation policy update permission',
-                'key' => 'hrm.salary-generation-policy',
+                'key' => 'hrm.salary-generation-policies',
             ],
 
             [
                 'name' => 'Salary Generation Policy Delete',
-                'slug' => 'hrm.salary-generation-policy.destroy',
+                'slug' => 'hrm.salary-generation-policies.destroy',
                 'description' => 'Salary generation policy delete permission',
-                'key' => 'hrm.salary-generation-policy',
+                'key' => 'hrm.salary-generation-policies',
             ],
 
 
             // Salary deduction policy
             [
                 'name' => 'Salary Deduction Policy List',
-                'slug' => 'hrm.salary-deduction-policy.index',
+                'slug' => 'hrm.salary-deduction-policies.index',
                 'description' => 'Salary deduction policy list permission',
-                'key' => 'hrm.salary-deduction-policy',
+                'key' => 'hrm.salary-deduction-policies',
             ],
             [
                 'name' => 'Create Deduction Policy Setup',
-                'slug' => 'hrm.salary-deduction-policy.create',
+                'slug' => 'hrm.salary-deduction-policies.create',
                 'description' => 'Salary deduction policy create permission',
-                'key' => 'hrm.salary-setups',
+                'key' => 'hrm.salary-deduction-policies',
             ],
             [
                 'name' => 'Salary Deduction Policy Update',
-                'slug' => 'hrm.salary-deduction-policy.update',
+                'slug' => 'hrm.salary-deduction-policies.update',
                 'description' => 'Salary deduction policy update permission',
-                'key' => 'hrm.salary-deduction-policy',
+                'key' => 'hrm.salary-deduction-policies',
             ],
 
             [
                 'name' => 'Salary Deduction Policy Delete',
-                'slug' => 'hrm.salary-deduction-policy.destroy',
+                'slug' => 'hrm.salary-deduction-policies.destroy',
                 'description' => 'Salary deduction policy delete permission',
-                'key' => 'hrm.salary-deduction-policy',
+                'key' => 'hrm.salary-deduction-policies',
             ],
  
             //Salary Signatory
@@ -2317,6 +2325,28 @@ class PermissionTableSeed extends Seeder
                 'key' => 'sales.backup-challans'
             ],
 
+            [
+                'name' => 'Backup to Sales Create',
+                'slug' => 'sales.backup-challans.save-to-sales-order',
+                'description' => 'Backup to Sales Create permission',
+                'key' => 'sales.backup-challans'
+            ],
+
+            [
+                'name' => 'Backup Challans Delivery',
+                'slug' => 'sales.backup-challans.send-to-delivery ',
+                'description' => 'Backup Challans Delivery permission',
+                'key' => 'sales.backup-challans'
+            ],
+
+
+            [
+                'name' => 'Backup to Sales Approve',
+                'slug' => 'sales.backup-challan.sales.order',
+                'description' => 'Backup to Sales permission',
+                'key' => 'sales.backup-challans'
+            ],
+ 
 
             //quotations
             [
@@ -4980,8 +5010,37 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Permission for employee cash handling report',
                 'key' => 'account.report'
             ],
+
+
+            //Employee leave application
+            [
+                'name' => 'Leave Application List',
+                'slug' => 'hrm.leave-application-employees.index',
+                'description' => 'Leave application list permission',
+                'key' => 'hrm.leave-application-employees'
+            ],
+
+            [
+                'name' => 'Create Leave Application',
+                'slug' => 'hrm.leave-application-employees.create',
+                'description' => 'Leave application create permission',
+                'key' => 'hrm.leave-application-employees'
+            ],
+
+            [
+                'name' => 'Leave Application Update',
+                'slug' => 'hrm.leave-application-employees.update',
+                'description' => 'Leave application update permission',
+                'key' => 'hrm.leave-application-employees'
+            ],
  
-            
+             // Document Report
+            [
+                'name' => 'Document Report',
+                'slug' => 'cms.document-entries.document-reports',
+                'description' => 'Permission to  document entries report',
+                'key' => 'cms.document-entries',
+            ],
 
 
 

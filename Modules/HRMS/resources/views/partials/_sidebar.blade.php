@@ -149,6 +149,17 @@
                     <a href="{{ route('hrm.leaves.index') }}"
                        class="{{ request()->routeIs('hrm.leaves.*') ? 'active' : '' }}">
                         <span class="nav-icon uil uil-house-user"></span>
+                        <span class="menu-text">{{ t_('menu.Leaves Application (All)') }}</span>
+                    </a>
+                </li>
+            @endif
+
+
+            @if (hasPermission('hrm.leave-application-employees.*'))
+                <li>
+                    <a href="{{ route('hrm.leave-application-employees.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-application-employees.*') ? 'active' : '' }}">
+                        <span class="nav-icon uil uil-house-user"></span>
                         <span class="menu-text">{{ t_('menu.Leaves Application') }}</span>
                     </a>
                 </li>
@@ -224,12 +235,12 @@
  
 
             {{-- Leave Adjustment --}}
-            @if (hasPermission('hrm.leaveAdjustment.index'))
+            @if (hasPermission('hrm.leave-adjustments.index'))
                 <li>
-                    <a href="{{ route('hrm.leaveAdjustment.index') }}"
-                       class="{{ request()->routeIs('hrm.leaveAdjustment.*') ? 'active' : '' }}">
+                    <a href="{{ route('hrm.leave-adjustments.index') }}"
+                       class="{{ request()->routeIs('hrm.leave-adjustments.*') ? 'active' : '' }}">
                         <span class="nav-icon fas fa-exchange-alt"></span>
-                        <span class="menu-text">{{ t_('menu.leave-adjustment') }}</span>
+                        <span class="menu-text">{{ t_('menu.leave-adjustments') }}</span>
                     </a>
                 </li>
             @endif 
@@ -241,20 +252,20 @@
     {{-- ===================== Salary Menu ===================== --}}
     @if (
         hasPermission('hrm.salary-generation-policies.index') ||
-        hasPermission('hrm.payrolls') ||
+        hasPermission('hrm.salary-generates') ||
         hasPermission('hrm.salary-setups.index') ||
         hasPermission('hrm.salary-deduction-policies.index')
     )
     <li class="has-subchild 
         {{ request()->routeIs('hrm.salary-generation-policies.*') 
-            || request()->routeIs('hrm.payrolls') 
+            || request()->routeIs('hrm.salary-generates') 
             || request()->routeIs('hrm.salary-setups.*') 
             || request()->routeIs('hrm.salary-deduction-policies.*') ? 'open' : '' }}">
  
 
         <a href="#" class="
             {{ request()->routeIs('hrm.salary-generation-policies.*') 
-                || request()->routeIs('hrm.payrolls') 
+                || request()->routeIs('hrm.salary-generates') 
                 || request()->routeIs('hrm.salary-setups.*') 
                 || request()->routeIs('hrm.salary-deduction-policies.*') ? 'active' : '' }}">
 
@@ -266,10 +277,10 @@
         <ul>
 
             {{-- Payroll --}}
-            @if (hasPermission('hrm.payrolls'))
+            @if (hasPermission('hrm.salary-generates.index'))
                 <li>
-                    <a href="{{ route('hrm.payrolls') }}"
-                       class="{{ request()->routeIs('hrm.payrolls') ? 'active' : '' }}">
+                    <a href="{{ route('hrm.salary-generates.index') }}"
+                       class="{{ request()->routeIs('hrm.salary-generates.*') ? 'active' : '' }}">
                         <span class="nav-icon uil uil-money-bill"></span>
                         <span class="menu-text">{{ t_('menu.Payroll') }}</span>
                     </a>

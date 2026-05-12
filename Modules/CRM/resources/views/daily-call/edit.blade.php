@@ -77,14 +77,11 @@
                                     <div class="col-md-6">
                                         <div class="form-group ">
                                             <label for="customer_id" class="text-capitalize">Customer Name</label>
-                                            <select name="customer_id" id="customer_id" class="form-control">
-                                                <option value="">Select Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}" {{ $customer->id == $dailyCall->customer_id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}
-                                                        @if ($customer->area != null) ({{ $customer->area->area }}) @endif
-                                                    </option>
-                                                @endforeach
+                                            <select name="customer_id" id="customer_id" class="form-control"> 
+                                                <option value="{{  $dailyCall->customer_id}}" selected>
+                                                    {{ $dailyCall->customer->company_name }} - {{ $dailyCall->customer->area->area }} 
+                                                </option>
+                                       
                                             </select>
                                             @if ($errors->has('customer_id'))
                                                 <p class="text-danger">{{ $errors->first('customer_id') }}</p>
