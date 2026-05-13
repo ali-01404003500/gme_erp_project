@@ -469,7 +469,7 @@
 
 
                     if ((conditionLimit == 1 && minimumConditionBill != 2 ) && ((paymentsTotalAmount + 500) < (netAmount / 2))) {
- 
+                         
                         e.preventDefault();
 
                         Swal.fire({
