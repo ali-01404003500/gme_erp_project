@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\CRM\Models\Customer\Customer;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Services\Models\Settings\ServiceType;
 
@@ -58,6 +59,10 @@ class Service extends BaseModel
             foreignPivotKey: 'offerable_id',
             relatedPivotKey: 'offer_id'
         );
+    }
+
+    public function customer(){
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
 }

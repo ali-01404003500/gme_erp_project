@@ -75,8 +75,8 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="customer_id">{{ __('Customer') }}<span
-                                                        class="text-danger">*</span>:</label>
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select" disabled>
+                                                        class="text-danger">*</span></label>
+                                                <select name="customer_id" id="customer_id" class="form-control  " disabled>
                                                 <option value="{{ $service->serviceTokens->first()->customer_id ?? '' }}" selected>
                                                     {{ optional($service->serviceTokens->first()->customer)->company_name ?? __('Select Customer') }}
                                                 </option>
@@ -90,7 +90,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="contact_person_phone">Contact Person Phone No<span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" name="contact_person_phone" id="contact_person_phone"
                                                     class="form-control" placeholder="{{ __('Contact Person Phone No') }}">
                                             </div>
@@ -98,7 +98,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="token_date">{{ __('Token Date') }}<span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <input type="date" name="token_date" id="token_date" class="form-control"
                                                     value="{{ date('Y-m-d') }}">
                                             </div>
@@ -107,31 +107,28 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="sales_order_id">{{ __('Invoice ID') }}:</label>
+                                                <label for="sales_order_id">{{ __('Invoice ID') }}</label>
                                                 <select name="invoice_id" id="sales_order_id"
                                                     class="form-control tom-select" >
-                                                    <option value="">{{ __('Select Invoice ID') }}</option>
-
-                                                    @foreach ($salesOrders as $salesOrder)
-                                                        <option value="{{ $salesOrder->id }}"
-                                                            @if (old('sales_order_id') == $salesOrder->id) selected @endif
-                                                            data-customer = "{{ $salesOrder->customer_id }}"
-                                                            data-invoice_date = "{{ $salesOrder->invoice_date }}">
-                                                            {{ $salesOrder->sales_order_id }}</option>
-                                                    @endforeach
+                                                    <option value="">{{ __('Select Invoice ID') }}</option> 
+                                                        <option value="{{ $service->serviceTokens->invoice_id }}" selected
+                                                            data-customer = "{{ $service->serviceTokens->customer_id }}"
+                                                            data-invoice_date = "{{ $service->serviceTokens->invoice_date }}">
+                                                            {{ $service->serviceTokens->invoice_id}}
+                                                        </option> 
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="invoice_date">{{ __('Invoice Date') }}:</label>
+                                                <label for="invoice_date">{{ __('Invoice Date') }}</label>
                                                 <input type="text" name="invoice_date" id="invoice_date"
                                                     class="form-control flatdate">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="expire_date">{{ __('Expire Date') }}:</label>
+                                                <label for="expire_date">{{ __('Expire Date') }}</label>
                                                 <input type="text" name="expire_date" id="expire_date"
                                                     class="form-control flatdate" readonly>
                                             </div>
@@ -143,16 +140,14 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="product_id">{{ __('Product') }}<span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <select name="product_catalog_id" id="product_catalog_id"
                                                     class="form-control tom-select">
-                                                    <option value="">{{ __('Select Product') }}</option>
-                                                    @foreach ($productCatalogs as $productCatalog)
-                                                        <option value="{{ $productCatalog->id }}"
-                                                            data-warranty_period="{{ $productCatalog->warranty_period }}"
-                                                            data-warranty_period_input="{{ $productCatalog->warranty_period_input }}">
-                                                            {{ $productCatalog->name }}</option>
-                                                    @endforeach
+                                                    <option value="">{{ __('Select Product') }}</option>  
+
+                                                    <option value="{{ $service->serviceTokens->product_catalog_id ?? '' }}" selected>
+                                                        {{ optional($service->serviceTokens->product)->company_name ?? __('Select Product') }}
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -161,7 +156,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="serial_number">{{ __('Serial Number') }}<span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <select name="serial_number" id="serial_number" class="form-control">
                                                 </select>
                                             </div>
@@ -171,7 +166,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="service_type">{{ __('Service Type') }} <span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <select name="service_type" id="service_type" class="form-control">
                                                     <option value="ON SPOT">ON SPOT</option>
                                                     <option value="IN HOUSE">IN HOUSE</option>
@@ -184,7 +179,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="InternalVideoLink">{{ __('Internal Video Link') }}<span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" name="internal_video_link" id="InternalVideoLink"
                                                     class="form-control">
                                             </div>
@@ -192,7 +187,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="ExternalVideoLink">{{ __('External Video Link') }}<span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <input type="text" name="external_video_link" id="ExternalVideoLink"
                                                     class="form-control">
                                             </div>
@@ -203,7 +198,7 @@
                                         <div class="col-md-9">
                                             <div class="form-group">
                                                 <label for="problem_details">{{ __('Problem Details') }}<span
-                                                        class="text-danger">*</span>:</label>
+                                                        class="text-danger">*</span></label>
                                                 <textarea name="problem_details" id="problem_details" class="form-control"
                                                     placeholder="{{ __('Problem Details') }}"></textarea>
                                             </div>
@@ -965,6 +960,108 @@
                     });
                 }
             });
+
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('customer_id'))
+                companySelect.addOption({
+                    id: "{{ request('customer_id') }}",
+                    text: "{{ request('customer_id') }}"
+                });
+                companySelect.setValue("{{ request('customer_id') }}");
+            @endif
+ 
+
+
+            const productSelect = new TomSelect("#product_catalog_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('product_catalog_id'))
+                productSelect.addOption({
+                    id: "{{ request('product_catalog_id') }}",
+                    text: "{{ request('product_catalog_id') }}"
+                });
+                productSelect.setValue("{{ request('product_catalog_id') }}");
+            @endif
+
+
+            const invoiceIdSelect = new TomSelect("#sales_order_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.invoice') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            invoiceIdSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label, number: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                },
+                onChange: function(value) { 
+                    if (!value) return; 
+                    let selected = this.options[value]; 
+                    $('#sales_order_id').val(selected.text);
+                }
+            }); 
+
+            @if(request('sales_order_id') && request('sales_order_id'))
+                invoiceIdSelect.addOption({
+                    id: "{{ request('sales_order_id') }}",          // submit value
+                    text: "{{ request('sales_order_id') }}"     // display label
+                });
+
+                invoiceIdSelect.setValue("{{ request('sales_order_id') }}"); // MUST be ID
+            @endif
         });
         // === Product change: update serials, warranty expire date, and quantity ===
         function updateWarrantyExpiry(productId, customerId, invoiceDate) {
@@ -991,10 +1088,6 @@
         }
 
         function onChangeCustomer(element = null) {
-            const phone = $('#customer_id').find(':selected').data('phone');
-            $("#contact_person_phone").val(phone);
-            $("#address").val($('address'));
-
             // === Unselect Product and Serial when customer changes ===
             if ($('#product_catalog_id')[0]?.tomselect) {
                 $('#product_catalog_id')[0].tomselect.clear(true); // clear product

@@ -93,6 +93,7 @@
                                                 </option>
                                             </select>
                                              <input type="hidden"    id="is_condition_bill" value="0">
+                                             <input type="hidden"    id="minimum_condition_bill" value="0">
                                         </div>
                                     </div>
                                     <div class="col-md-3 mt-4">
@@ -464,8 +465,10 @@
                     let netAmount = parseFloat($("#net_amount").val()) || 0;
                     let paymentsTotalAmount = parseFloat($('[name="payments_total_amount"]').val()) || 0;
                     let conditionLimit = parseFloat($("#is_condition_bill").val()) || 0; 
+                    let minimumConditionBill = parseFloat($("#minimum_condition_bill").val()) || 0; 
 
-                    if ((conditionLimit == 1 ) && ((paymentsTotalAmount + 500) < (netAmount / 2))) {
+
+                    if ((conditionLimit == 1 && minimumConditionBill != 2 ) && ((paymentsTotalAmount + 500) < (netAmount / 2))) {
  
                         e.preventDefault();
 
@@ -908,6 +911,7 @@
                         var area_id = area ? area.id : "address";
                         var area_name = area ? area.area : "New Address";
                         $("#is_condition_bill").val(data.customers.is_condition_bill);
+                        $("#minimum_condition_bill").val(data.customers.minimum_condition_bill);
 
                         const credit_limit = customerData.credit_limit;
                         // console.log({customerData, credit_limit});

@@ -76,17 +76,6 @@ class ServiceController extends Controller
         
         $data['serviceTypes'] = ServiceType::all();
         $data['problemTypes'] = ProblemType::all();
-        $data['employees'] = Employee::all();
-        $data['customers'] = Customer::activeCustomers()->get();
-        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        $data['salesOrders'] = SalesOrder::where('status', 'delivered')
-        ->whereHas('salesOrderDetails', function($query) {
-            $query->whereHas('product', function($query) {
-                $query->where('is_serial', 'yes');
-            });
-        })
-        ->get();
-        $data['dongleOrSerialEntries'] = DongleOrSerialEntry::all();
         return view('Services::service.create', $data);
          
     }
@@ -284,9 +273,7 @@ class ServiceController extends Controller
         $data['employees'] = Employee::all();
         $data['serviceTypes'] = ServiceType::all();
         $data['problemTypes'] = ProblemType::all();
-        $data['service'] = $service;
-        $data['customers'] = Customer::activeCustomers()->get();
-        $data['productCatalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
+        $data['service'] = $service; 
         $data['salesOrders'] = SalesOrder::all();
         $data['dongleOrSerialEntries'] = DongleOrSerialEntry::all();
                 $data['company_info'] = CompanyInfo::first();

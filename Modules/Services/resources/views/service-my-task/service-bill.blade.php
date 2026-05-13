@@ -62,14 +62,8 @@
                         @for($i = 0; $i < $count; $i++)
                             <tr>
                                 <td>
-                                    <select name="bill_product_ids[]" class="form-control product-select to-select">
-                                        <option value="">Choose Product</option>
-                                        @foreach ($productCatalogs as $productCatalog)
-                                            <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}"
-                                                {{ old('bill_product_ids.'.$i) == $productCatalog->id ? 'selected' : '' }}>
-                                                    {{ $productCatalog->name }}
-                                            </option>
-                                        @endforeach
+                                    <select name="bill_product_ids[]" class="form-control product-select">
+                                        <option value="">Choose Product</option> 
                                     </select>
                                 </td>
                                 <td>
@@ -615,6 +609,31 @@
 
             // Initial calculation on page load for any pre-filled data
             calculateTotal();
+
+            const productSelect = new TomSelect(".product-select", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            
 
         });
     </script>

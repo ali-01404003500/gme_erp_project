@@ -90,6 +90,7 @@
                                             <input type="hidden" name="customer_address"  id="customer_address" value="{{ old('customer_address') }}">
                                             <input type="hidden" name="customer_phone"  id="customer_phone" value="{{ old('customer_phone') }}">
                                             <input type="hidden"    id="is_condition_bill" value="0">
+                                            <input type="hidden"    id="minimum_condition_bill" value="0">
                                       
                                         </div>
                                     </div>
@@ -876,8 +877,10 @@
                 let netAmount = parseFloat($("#net_amount").val()) || 0;
                 let paymentsTotalAmount = parseFloat($('[name="payments_total_amount"]').val()) || 0;
                 let conditionLimit = parseFloat($("#is_condition_bill").val()) || 0; 
-
-                if ((conditionLimit == 1 ) && ((paymentsTotalAmount + 500) < (netAmount / 2))) {
+                let minimumConditionBill = parseFloat($("#minimum_condition_bill").val()) || 0; 
+ 
+                //alert(conditionLimit+' '+paymentsTotalAmount+' '+netAmount / 2); 
+                if ((conditionLimit == 1 && minimumConditionBill != 2 ) && ((paymentsTotalAmount + 500) < (netAmount / 2))) {
 
                     e.preventDefault();
 
@@ -1042,6 +1045,8 @@
                         var area_id = area ? area.id : "address";
                         var area_name = area ? area.area : "New Address";
                         $("#is_condition_bill").val(data.customers.is_condition_bill);
+                        $("#minimum_condition_bill").val(data.customers.minimum_condition_bill);
+                      
 
                         window.shipmentsOptions = [
                             {
