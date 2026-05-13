@@ -31,8 +31,8 @@ class USGOrOPGLicenseRequisitionController extends Controller
      */
     public function index()
     {
-        $data['uSGOrOPGLicenseRequisitions'] = $this->service->getAll();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['uSGOrOPGLicenseRequisitions'] = $this->service->getAll(); 
+        $data['customer'] = Customer::find(request('customer_id'));
 
         return view("Licenses::usg-opg-license-requisition.index", $data);
     }
@@ -41,9 +41,8 @@ class USGOrOPGLicenseRequisitionController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $data['customers'] = Customer::activeCustomers()->get();
-        return view('Licenses::usg-opg-license-requisition.create', $data);
+    { 
+        return view('Licenses::usg-opg-license-requisition.create' );
     }
 
     public function getDongleIds(Request $request)
@@ -101,8 +100,7 @@ class USGOrOPGLicenseRequisitionController extends Controller
     public function edit($id)
     {
         $uSGOrOPGLicenseRequisition = $this->service->show($id);
-        $data['license'] = $uSGOrOPGLicenseRequisition;
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['license'] = $uSGOrOPGLicenseRequisition; 
 
         return view("Licenses::usg-opg-license-requisition.edit", $data);
     }

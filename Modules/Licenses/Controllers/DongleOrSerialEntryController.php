@@ -31,7 +31,7 @@ class DongleOrSerialEntryController extends Controller
      */
     public function index()
     {
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['customer'] = Customer::find(request('customer_id'));
         $data['dongleOrSerialEntrys'] = $this->service->getAll();
 
         return view("Licenses::dongle-or-serial-entry.index", $data);
@@ -41,11 +41,8 @@ class DongleOrSerialEntryController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-
-        $data['customers'] = Customer::activeCustomers()->get();
-        $data['products'] = ProductCatalog::query()->get();
-        return view('Licenses::dongle-or-serial-entry.create', $data);
+    { 
+        return view('Licenses::dongle-or-serial-entry.create');
     }
     public function dropdown(Request $request)
     {

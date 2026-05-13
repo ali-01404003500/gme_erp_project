@@ -136,7 +136,7 @@
                                                 placeholder="Remarks">{{ old('remarks', $license->remarks) }}</textarea>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 p-4">
+                                    <div class="col-md-6 offset-3 p-4">
                                         <fieldset class="border p-4 m-4">
                                             <legend class="float-none w-auto p-2">
                                                 Multiple Phone No Info

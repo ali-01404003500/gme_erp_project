@@ -42,14 +42,9 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td>
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select"
+                                                <select name="customer_id" id="customer_id" class="form-control  "
                                                     data-placeholder="Select Customer">
-                                                    <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ optional($value)->company_name }}</option>
-                                                    @endforeach
+                                                    <option value=""></option> 
                                                 </select>
                                             </td>
                                           
@@ -85,14 +80,14 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $cBCLicenseRequisitions])'
+                            <table id="zero-config" class="table table-bordered dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $cBCLicenseRequisitions])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>Sl</th>
-                                        <th>License Id</th>
+                                        <th>Sl</th> 
                                         <th>Customer Name</th>
-                                        <th>License Key</th>
+                                        <th>Product</th>
+                                        <th>Dongle Id</th> 
                                         <th>Generated Date</th>
                                         <th>Prepared By</th>
                                         <th>Status</th>
@@ -103,11 +98,15 @@
 
                                     @foreach ($cBCLicenseRequisitions as $value)
                                         <tr>
-                                        <td class="text-center">{{ ($cBCLicenseRequisitions->currentPage() - 1) * $cBCLicenseRequisitions->perPage() + $loop->iteration  }}</td>
-                                            <td>{{ $value->license_id }}</td>
+                                        <td class="text-center">{{ ($cBCLicenseRequisitions->currentPage() - 1) * $cBCLicenseRequisitions->perPage() + $loop->iteration  }}</td> 
                                             <td>
-                                                {{ $value->customer->company_name }}
+                                                {{ $value->customer->company_name }}<br>
+                                                 <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $value->customer->area?->area }}</small> 
                                             </td>
+                                            <td>
+                                                {{ $value->product->withoutModelSuffix()->name }}<br>
+                                                <small class="text-muted">Model: {{ $value->product->model }}</small> 
+                                            </td> 
                                             <td>{{ $value->dongles->dongle_id }}</td>
                                             <td>{{ date('Y-m-d', strtotime($value->created_at)) }}</td>
                                             <td>{{ $value->createdBy->name }}</td>
@@ -249,6 +248,42 @@
         format: 'dd-mm-yyyy',
         autoclose: true
     });
+    $(document).ready(function() {
+        const companySelect = new TomSelect("#customer_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
+
+                if (!query.length || query.length < 2) return callback();
+
+                $.ajax({
+                    url: "{{ route('licenses.dongle-or-serial-autocomplete.customers') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        companySelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+
+        @if(!empty($customer))
+            companySelect.addOption({
+                id: "{{ $customer->id }}",
+                text: "{{ $customer->name }}"
+            });
+
+            companySelect.setValue("{{ $customer->id }}");
+        @endif
+
+        
+    });
+    
 </script>
 
 @endSection

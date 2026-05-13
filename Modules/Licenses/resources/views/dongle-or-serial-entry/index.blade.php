@@ -42,9 +42,8 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td>
-                                                <select name="customer_id" id="customer_id" class="form-control "
-                                                    data-placeholder="Select Customer">
-                                                    <option value=""></option> 
+                                                <select name="customer_id" id="customer_id" class="form-control " data-placeholder="Select Customer">
+                                                    <option value="">Select Customer</option>
                                                 </select>
                                             </td>
                                             <td>
@@ -70,15 +69,14 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $dongleOrSerialEntrys])'
+                            <table id="zero-config" class="table table-bordered dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $dongleOrSerialEntrys])'
                                 style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>Sl</th>
                                         <th>Customer Name</th>
-                                        <th>Dongle/Serial Id</th>
-                                        <th>Product Name</th>
-                                        <th>Model</th>
+                                        <th>Dongle</th>
+                                        <th>Product Name</th> 
                                         <th>Type</th>
                                         <th>File Status</th>
                                         <th>Prepared By</th>
@@ -92,12 +90,16 @@
                                         <tr>
                                         <td class="text-center">{{ ($dongleOrSerialEntrys->currentPage() - 1) * $dongleOrSerialEntrys->perPage() + $loop->iteration  }}</td>
                                             <td>
-                                                <a
-                                                    href="{{ route('licenses.dongle-or-serial-entries.show', $value->id) }}">{{ $value->customer->company_name }}</a>
+                                                <a href="{{ route('licenses.dongle-or-serial-entries.show', $value->id) }}">
+                                                    {{ $value->customer->company_name }}
+                                                </a><br>
+                                                <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $value->customer->area?->area }}</small> 
                                             </td>
                                             <td>{{ $value->dongle_id }}</td>
-                                            <td>{{ $value->product->name }}</td>
-                                            <td>{{ $value->product->model }}</td>
+                                            <td>
+                                                {{ $value->product->withoutModelSuffix()->name }}<br>
+                                                <small class="text-muted">Model: {{ $value->product->model }}</small> 
+                                            </td> 
                                             <td>{{ $value->product_type }}</td>
                                             <td>
                                                 @if($value->file_upload != null)
@@ -246,12 +248,13 @@
                 }
             }); 
 
-            @if(request('customer_id'))
+            @if(!empty($customer))
                 companySelect.addOption({
-                    id: "{{ request('customer_id') }}",
-                    text: "{{ request('customer_id') }}"
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->name }}"
                 });
-                companySelect.setValue("{{ request('customer_id') }}");
+
+                companySelect.setValue("{{ $customer->id }}");
             @endif
  
             

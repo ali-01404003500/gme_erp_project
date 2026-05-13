@@ -320,10 +320,11 @@
         function updateTotal() {
             let total = 0;
             $('.amount-value').each(function () {
-                let val = parseFloat($(this).text()); 
+                let val = parseFloat($(this).text());  
                 /*total value without emi amount*/
-                let payMode = row.find('[name="payments_pay_mode[]"]').val();  
-                if (payMode != 'EMI') { 
+                let row = $(this).closest('tr'); // or closest container div
+                let payMode = row.find('[name="payments_pay_mode[]"]').val(); 
+                if (payMode != 'EMI') {  
                     if (!isNaN(val)) total += val;
                 }
             });

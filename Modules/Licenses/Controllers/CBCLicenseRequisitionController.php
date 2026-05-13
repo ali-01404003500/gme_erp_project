@@ -38,8 +38,8 @@ class CBCLicenseRequisitionController extends Controller
      */
     public function index()
     {
-        $data['cBCLicenseRequisitions'] = $this->service->getAll();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['cBCLicenseRequisitions'] = $this->service->getAll(); 
+        $data['customer'] = Customer::find(request('customer_id'));
         return view("Licenses::cbc-license-requisition.index", $data);
     }
 
@@ -47,10 +47,8 @@ class CBCLicenseRequisitionController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $data['customers'] = Customer::activeCustomers()->get();
-
-        return view('Licenses::cbc-license-requisition.create', $data);
+    { 
+        return view('Licenses::cbc-license-requisition.create' );
     }
 
     /**
@@ -116,8 +114,7 @@ class CBCLicenseRequisitionController extends Controller
     public function edit($id)
     {
         $cBCLicenseRequisition = $this->service->show($id);
-        $data['license'] = $cBCLicenseRequisition;
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['license'] = $cBCLicenseRequisition; 
 
         return view("Licenses::cbc-license-requisition.edit", $data);
     }

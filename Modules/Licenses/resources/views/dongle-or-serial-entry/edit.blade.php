@@ -1,5 +1,5 @@
-@section('title', 'Dongle Or Serial Update')
-@section('description', 'Dongle Or Serial Update')
+@section('title', 'Dongle Update')
+@section('description', 'Dongle Update')
 @extends('layout.app')
 @section('content')
     <div class="container-fluid">
@@ -39,7 +39,7 @@
                                 @method('PUT')
                                 @csrf
                                 <div class="row mb-4">
-                                    <div class="col-md-4 mt-4">
+                                    <div class="col-md-6 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
                                             <select name="customer_id" id="customer_id" class="form-control required" required>
@@ -49,14 +49,14 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-8 mt-4">
+                                    <div class="col-md-6 mt-4">
                                         <div class="form-group">
                                             <label for="address">Address</label>
                                             <input type="text" name="address" class="form-control" id="address" value="{{ $dongleOrSerialEntry->address }}"
                                                 placeholder="Address" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="product_id">Product Name<span class="text-danger">*</span></label>
                                             <select name="product_id" id="product_id" class="form-control" required>  
@@ -66,7 +66,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="product_type">Product Type</label>
                                             <select name="product_type" id="product_type" class="form-control" >
@@ -79,9 +79,9 @@
                                    
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="dongle_id"> Dongle Id/Serial No<span class="text-danger">*</span></label>
+                                            <label for="dongle_id"> Dongle Id<span class="text-danger">*</span></label>
                                             <input type="text" name="dongle_id" class="form-control" value="{{ $dongleOrSerialEntry->dongle_id }}"
-                                                id="dongle_id" placeholder="Dongle Id/Serial No" required>
+                                                id="dongle_id" placeholder="Dongle Id" required>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -93,6 +93,17 @@
                                         </div>
                                     </div>
 
+                                    
+                                    <div class="col-md-3"> 
+                                        <div class="form-group">
+                                            <label for="status">Dongle Status</label>
+                                            <select name="status" id="status" class="form-control">
+                                                <option value="Active" {{ old('status', $dongleOrSerialEntry->status) == 'Active' ? 'selected' : '' }}>Active</option>
+                                                <option value="Inactive" {{ old('status', $dongleOrSerialEntry->status) == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="file_up">File Up</label>
@@ -101,16 +112,6 @@
                                             {{-- <input type="file"
                                                 class="file-control form-control"
                                                 id="file_upload" name="file_upload"> --}}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3"> 
-                                        <div class="form-group">
-                                            <label for="status">Dongle Status</label>
-                                            <select name="status" id="status" class="form-control">
-                                                <option value="Active" {{ old('status', $dongleOrSerialEntry->status) == 'Active' ? 'selected' : '' }}>Active</option>
-                                                <option value="Inactive" {{ old('status', $dongleOrSerialEntry->status) == 'Inactive' ? 'selected' : '' }}>Inactive</option>
-                                            </select>
                                         </div>
                                     </div>
 
@@ -256,7 +257,7 @@
             @endif
 
 
-            const productSelect = new TomSelect(".product_ids", {
+            const productSelect = new TomSelect("#product_id", {
                 valueField: "id",
                 labelField: "text",
                 searchField: [], 
@@ -279,12 +280,12 @@
                 }
             }); 
 
-            @if(request('product_ids'))
+            @if(request('product_id'))
                 productSelect.addOption({
-                    id: "{{ request('product_ids') }}",
-                    text: "{{ request('product_ids') }}"
+                    id: "{{ request('product_id') }}",
+                    text: "{{ request('product_id') }}"
                 });
-                productSelect.setValue("{{ request('product_ids') }}");
+                productSelect.setValue("{{ request('product_id') }}");
             @endif
 
         });

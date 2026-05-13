@@ -45,16 +45,8 @@
                                     <div class="col-md-4 mt-4">
                                         <div class="form-group">
                                             <label for="customer_id">Customer Name<span class="text-danger">*</span></label>
-                                            <select name="customer_id" id="customer_id" class="form-control tom-select">
-                                                <option value="">Choose Customer</option>
-                                                @foreach ($customers as $customer)
-                                                    <option value="{{ $customer->id }}"
-                                                        {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                        {{ $customer->company_name }} - {{ $customer->address}}@if ($customer->area != null)
-                                                            ({{ $customer->area->area }})
-                                                        @endif
-                                                    </option>
-                                                @endforeach
+                                            <select name="customer_id" id="customer_id" class="form-control ">
+                                                <option value="">Choose Customer</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -152,7 +144,7 @@
                                             <label for="note"><span class="text-danger">Note: </span> <span id="note" class="text-danger note"></span> </label>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 p-4">
+                                    <div class="col-md-6 offset-3 p-4">
                                         <fieldset class="border p-4 m-4">
                                             <legend class="float-none w-auto p-2">
                                                 Multiple Phone No Info
@@ -464,5 +456,32 @@
             format: 'dd-mm-yyyy',
             autoclose: true
         });
+        $(document).ready(function() {
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('licenses.dongle-or-serial-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+    
+            
+    });
+
     </script>
 @endsection

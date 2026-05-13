@@ -15,7 +15,7 @@ class LicenseReportController extends Controller
 {
     public function index(Request $request)
     {
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['customer'] = Customer::find(request('customer_id'));
 
         $data['cbcSms'] = CbcSms::where('status', 'Send')
             ->searchByFields(['customer_id'])

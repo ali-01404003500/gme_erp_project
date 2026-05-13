@@ -179,8 +179,9 @@
             let val = parseFloat($(this).text());
 
             /*total value without emi amount*/
-            let payMode = row.find('[name="payments_pay_mode[]"]').val();  
-            if (payMode != 'EMI') { 
+            let row = $(this).closest('tr'); // or closest container div
+            let payMode = row.find('[name="payments_pay_mode[]"]').val(); 
+            if (payMode != 'EMI') {  
                 if (!isNaN(val)) total += val;
             }
  

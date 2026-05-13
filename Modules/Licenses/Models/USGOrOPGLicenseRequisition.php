@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\CRM\Models\Customer\Customer;
+use Modules\Inventory\Models\ProductCatalog;
 
 class USGOrOPGLicenseRequisition extends BaseModel
 {
@@ -29,5 +30,9 @@ class USGOrOPGLicenseRequisition extends BaseModel
 
     public function dongles(){
         return $this->belongsTo(DongleOrSerialEntry::class, 'dongle_id');
+    }
+    public function product()
+    {
+        return $this->belongsTo(ProductCatalog::class, 'product_id');
     }
 }
