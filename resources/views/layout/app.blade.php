@@ -51,11 +51,6 @@
     {{-- ===== jQuery FIRST ===== --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    {{-- Flatpickr MUST be first --}} 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
-
     {{-- Plugins --}}
     <script src="{{ asset('/assets/js/plugins.min.js') }}"></script>
     <script src="{{ asset('/assets/js/script.min.js') }}"></script>
@@ -85,8 +80,7 @@
             mapClockIcon: "{{ asset('assets/img/svg/clock-ticket1.sv') }}g"
         }
     </script>
- 
-    @vite('resources/js/custom.js')
+  
 
     {{-- Other plugins --}}
     <script src="{{ asset('/assets/plugins/tom-select/tom-select.complete.js') }}"></script>
