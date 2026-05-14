@@ -52,8 +52,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     {{-- Flatpickr MUST be first --}} 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> --}}
 
     {{-- Plugins --}}
     <script src="{{ asset('/assets/js/plugins.min.js') }}"></script>
