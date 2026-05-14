@@ -236,7 +236,7 @@ class SalesOrderService
 
 
         // Process payments
-        /**  uncomment later
+        /*  uncomment later
         foreach ($payments['payment_mode'] as $index => $mode){
             $salesPaymentDetail = $salesPayment->salesPaymentDetails()->create([
                 'payment_mode' => $mode,

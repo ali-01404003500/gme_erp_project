@@ -152,7 +152,7 @@ class EMIEntryController extends Controller
             'emi_detail_id' => 'required|exists:e_m_i_entry_details,id',
             'emi_amount' => 'required|numeric|min:0',
             'payments_total_amount' => 'required|numeric|min:0',
-            'payments_payable_amount' => 'required|numeric|min:0',
+            'payments_payable_amount' => 'required|numeric',
             'payments_due_amount' => 'required|numeric|min:0',
             'payments_advance_amount' => 'required|numeric|min:0',
 

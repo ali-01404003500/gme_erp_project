@@ -55,13 +55,13 @@ class CollectionController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+    
         $validate = $request->validate([
             'voucher_type' => 'required|string|in:Collection',
             'collection_type' => 'required|string|in:customer',
             'collection_from' => 'required|integer|exists:customers,id',
             'payments_total_amount' => 'required|numeric|min:0',
-            'payments_payable_amount' => 'required|numeric|min:0',
+            'payments_payable_amount' => 'required|numeric',
             'payments_due_amount' => 'required|numeric|min:0',
             'payments_advance_amount' => 'required|numeric|min:0',
             'status' => 'required|in:pending,verified,approved,denied',
@@ -145,7 +145,7 @@ class CollectionController extends Controller
             'collection_type' => 'required|string|in:customer',
             'collection_from' => 'required|integer|exists:customers,id',
             'payments_total_amount' => 'required|numeric|min:0',
-            'payments_payable_amount' => 'required|numeric|min:0',
+            'payments_payable_amount' => 'required|numeric',
             'payments_due_amount' => 'required|numeric|min:0',
             'payments_advance_amount' => 'required|numeric|min:0',
             'status' => 'required|in:pending,verified,approved,denied',
