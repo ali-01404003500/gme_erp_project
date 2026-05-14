@@ -874,7 +874,7 @@
         @endif
 
 
-         const areaIdSelect = new TomSelect("#company_place_id", {
+        const areaIdSelect = new TomSelect("#company_place_id", {
             valueField: "id",
             labelField: "text",
             searchField: [], 
@@ -898,7 +898,7 @@
             onChange: function(value) { 
                 if (!value) return; 
                 let selected = this.options[value]; 
-                $('#company_place_id').val(selected.text);
+                $('#company_place_id').val(selected.id);
             }
         }); 
  
