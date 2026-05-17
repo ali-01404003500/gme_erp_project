@@ -57,28 +57,16 @@
                                         <table class="table table-bordered">
                                             <tr>
                                                 <td class="text-center">
-                                                    <select name="name" id="name" class="form-control tom-select"
+                                                    <select name="name" id="name" class="form-control"
                                                         data-placeholder="Select Product Name">
-                                                        <option value=""></option>
-                                                        @foreach ($products as $productCatalog)
-                                                            <option
-                                                                {{ request('name') == $productCatalog->name ? 'selected' : '' }}
-                                                                value="{{ $productCatalog->name }}">
-                                                                {{ $productCatalog->name }}</option>
-                                                        @endforeach
+                                                        <option value=""></option> 
                                                     </select>
                                                 </td>
 
                                                 <td class="text-center">
-                                                    <select name="model" id="model" class="form-control tom-select"
+                                                    <select name="model" id="model" class="form-control "
                                                         data-placeholder="Select Model Name">
-                                                        <option value=""></option>
-                                                        @foreach ($productCatalogs as $productCatalog)
-                                                            <option
-                                                                {{ request('model') == $productCatalog->model ? 'selected' : '' }}
-                                                                value="{{ $productCatalog->model }}">
-                                                                {{ $productCatalog->model }}</option>
-                                                        @endforeach
+                                                        <option value=""></option> 
                                                     </select>
                                                 </td>
 
@@ -128,11 +116,10 @@
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>
                                         <th class="text-center">Product Name</th>
-                                        <th class="text-center">Product Code</th>
+                                        <th class="text-center d-none">Product Code</th>
                                         <th class="text-center">Model</th>
                                         <th class="text-center">Brand</th>
-                                        <th class="text-center">Mrp</th>
-                                        <th class="text-center">Product Tag</th>
+                                        <th class="text-center">Mrp</th> 
                                         <th class="text-center no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -141,14 +128,13 @@
                                     @foreach ($productCatalogs as $key => $productCatalog)
                                         <tr>
                                             <td class="text-center">{{ ($productCatalogs->currentPage() - 1) * $productCatalogs->perPage() + $loop->iteration }}</td>
-                                            <td class="text-center">
+                                            <td class="text-left">
                                                 <a href="{{ route('inv.product-catalogs.show', $productCatalog->id) }}">{{ $productCatalog->withoutModelSuffix()->name }}</a>
                                             </td>
-                                            <td class="text-center">{{ $productCatalog->product_code }}</td>
-                                            <td class="text-center">{{ $productCatalog->model }}</td>
-                                            <td class="text-center">{{ optional($productCatalog->brand)->name }}</td>
-                                            <td class="text-center">{{ $productCatalog->mrp }}</td>
-                                            <td class="text-center">{{ optional($productCatalog->tag)->name }}</td>
+                                            <td class="text-center  d-none">{{ $productCatalog->product_code }}</td>
+                                            <td class="text-left">{{ $productCatalog->model }}</td>
+                                            <td class="text-left">{{ optional($productCatalog->brand)->name }}</td>
+                                            <td class="text-end">{{ $productCatalog->mrp }}</td> 
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
 
@@ -370,6 +356,70 @@
                     }
                 }
             });
+            const productSelect = new TomSelect("#name", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.label, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('name'))
+                productSelect.addOption({
+                    id: "{{ request('name') }}",
+                    text: "{{ request('name') }}"
+                });
+                productSelect.setValue("{{ request('name') }}");
+            @endif
+
+
+            const arrangebySelect = new TomSelect("#model", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('inv.product-autocomplete.model') }}",
+                        type: "GET", 
+                        data: { search: query },
+                        success: function(res) {
+                            arrangebySelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(request('model'))
+                arrangebySelect.addOption({
+                    id: "{{ request('model') }}",
+                    text: "{{ request('model') }}"
+                });
+                arrangebySelect.setValue("{{ request('model') }}");
+            @endif
+
+            
         });
     </script>
 @endsection

@@ -21,7 +21,7 @@ class BrandController extends Controller
     function __construct(BrandService $service)
     {
         $this->service = $service;
-        $this->middleware('permited');
+        $this->middleware('permited')->except('getProductCatalogs');
     }
     
     /**

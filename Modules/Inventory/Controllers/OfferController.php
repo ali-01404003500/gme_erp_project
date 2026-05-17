@@ -85,8 +85,8 @@ class OfferController extends Controller
             'invoice_type' => 'nullable',
             'rule_status' => 'nullable',
             'rule_type' => 'nullable',
-        ]);
-$result = [];
+        ]);     
+        $result = [];
 
         if ($request->offer_type == 'discount') {
             $offerDetails = $request->validate([

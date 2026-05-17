@@ -177,8 +177,7 @@
                                                 <th>Product Name</th>
                                                 <th>Brand</th>
                                                 <th>Model</th>
-                                                <th>Origin</th>
-                                                <th>Tag</th>
+                                                <th>Origin</th> 
                                                 <th>QTY</th>
                                                 <th>MRP</th>
                                                 
@@ -193,11 +192,10 @@
                                                         <input type="checkbox" class="product-checkbox" checked value="1">
                                                     </td>
                                                     <td class="text-center">{{ $key + 1 }}</td>
-                                                    <td>{{ $product->name }}</td>
+                                                    <td>{{ $product->withoutModelSuffix()->name }}</td>
                                                     <td>{{ optional($product->brand)->name }}</td>
                                                     <td>{{ optional($product)->model }}</td>
-                                                    <td>{{ $product->product_origin }}</td>
-                                                    <td>{{ optional($product)->tag->name }}</td>
+                                                    <td>{{ $product->product_origin }}</td> 
                                                     <td>1</td>
                                                     <td>{{ $product->mrp }}</td>
                                                     <td class="offer-price" data-original-price="{{ $product->mrp }}">{{ $product->mrp }}</td>

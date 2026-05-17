@@ -30,7 +30,7 @@ Route::group(['middleware'=>'auth', 'prefix' => 'inv', 'as' => 'inv.'],function 
        //updateCatalogMrp
          Route::post('update-catalog-mrp/{id}', [ProductCatalogController::class, 'updateCatalogMrp'])->name('products.update-catalog-mrp');
 
-
+        Route::get('product-autocomplete-model', [ProductCatalogController::class, 'prodcutModelAutocomplete']) ->name('product-autocomplete.model');
 
        /* Issue Product */
        Route::resource('issue-products', IssueProductController::class);

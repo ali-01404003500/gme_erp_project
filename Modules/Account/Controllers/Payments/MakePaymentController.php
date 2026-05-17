@@ -208,7 +208,7 @@ class MakePaymentController extends Controller
             case 'vendor':
                 $data['accounts'] = Vendor::where('status', '1')->select('id', 'company_name as name')->get();
                 break;
-
+ 
             case 'broker':
                 $data['accounts'] = Broker::where('status', 2)->select('id', 'broker_name as name')->get();
                 break;
@@ -217,15 +217,15 @@ class MakePaymentController extends Controller
                 $data['accounts'] = Account::where('account_group_id', 5)->where('status', 1)->select('id', 'name')->get();
                 break;
 
-            case 'Withdrawal':
+            case 'withdrawal':
                 $data['accounts'] = Account::where('account_group_id', 3)->where('status', 1)->select('id', 'name')->get();
                 break;
 
-            case 'Equipment':
+            case 'equipment':
                 $data['accounts'] = Account::where('account_group_id', 1)->where('account_control_id', 1050)->where('account_subsidiary_id', 5109)->where('status', 1)->select('id', 'name')->get();
                 break;  
 
-            case 'Loan Payment':
+            case 'loan_payment':
                 $data['accounts'] = Account::where('account_group_id', 2)->whereIn('account_control_id', [2010, 2030])->where('status', 1)->select('id', 'name')->get();
                 break;  
             default:

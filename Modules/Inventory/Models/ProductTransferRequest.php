@@ -22,7 +22,7 @@ class ProductTransferRequest extends BaseModel
 
     public function product()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(ProductCatalog::class);
     }
     
     public function productTransferRequestDetails(){

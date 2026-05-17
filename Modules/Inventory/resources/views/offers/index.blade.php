@@ -164,12 +164,12 @@
                                         <tr>
                                         <td class="text-center">{{ ($offers->currentPage() - 1) * $offers->perPage() + $loop->iteration  }}</td>
                                             {{-- <td class="text-center">{{ $offer->title }}</td> --}}
-                                            <td class="text-center">
+                                            <td class="text-left">
                                                 <a href="{{ route('inv.offers.show', $offer->id) }}">{{ $offer->title }}</a>
                                             </td>
                                             <td class="text-center">{{ $offer->applied_date }}</td>
                                             <td class="text-center">{{ $offer->stop_date }}</td>
-                                            <td class="text-center">{{ $offer->offer_type }}</td>
+                                            <td class="text-center">{{ ucfirst($offer->offer_type) }}</td>
                                             {{-- <td class="text-center">{{ $offer->brand->name }}</td>
                                             <td class="text-center">{{ $offer->productType->name }}</td> --}}
                                             <td class="text-center">

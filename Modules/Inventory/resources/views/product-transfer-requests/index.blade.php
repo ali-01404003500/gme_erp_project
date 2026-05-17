@@ -97,10 +97,9 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 8%">Sl</th>
-                                        <th class="text-center">Source branch</th>
-                                        <th class="text-center"> Destination branch</th>
-                                        <th class="text-center">Product Quantity</th>
                                         <th class="text-center">Date</th>
+                                        <th class="text-center">Source branch</th>
+                                        <th class="text-center"> Destination branch</th>  
                                         <th class="text-center">Requested By</th>
                                         <th>Status</th>
                                         <th class="text-center no-content">Action</th>
@@ -110,14 +109,13 @@
                                     @csrf
                                     @foreach ($productTransferRequests as $key => $productTransferRequest)
                                         <tr>
-                                        <td class="text-center">{{ ($productTransferRequests->currentPage() - 1) * $productTransferRequests->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">{{ ($productTransferRequests->currentPage() - 1) * $productTransferRequests->perPage() + $loop->iteration  }}</td>
+                                            <td class="text-center">{{ $productTransferRequest->request_date }}</td>
                                             {{-- <td class="text-center">{{ optional($productTransferRequest->sourceBranch)->name }}</td> --}}
                                             <td class="text-center">
                                                 <a href="{{ route('inv.product-transfer-requests.show', $productTransferRequest->id) }}">{{ optional($productTransferRequest->sourceBranch)->name }}</a>
                                             </td>
-                                            <td class="text-center">{{ optional($productTransferRequest->destinationBranch)->name }}</td>
-                                            <td class="text-center">{{ $productTransferRequest->productTransferRequestDetails->sum('quantity') }} </td>
-                                            <td class="text-center">{{ $productTransferRequest->request_date }}</td>
+                                            <td class="text-center">{{ optional($productTransferRequest->destinationBranch)->name }}</td>  
                                             <td class="text-center">{{ $productTransferRequest->createdBy->name }}</td>
                                             <td  class="text-center">
                                                 @if ($productTransferRequest->status == "approved")
