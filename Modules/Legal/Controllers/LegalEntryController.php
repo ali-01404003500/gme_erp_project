@@ -116,10 +116,8 @@ class LegalEntryController extends Controller
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        $data['customers'] = Customer::activeCustomers()->get();
-
-        return view('Legal::legal-entries.create', $data);
+    { 
+        return view('Legal::legal-entries.create' );
     }
 
     /**

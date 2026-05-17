@@ -417,10 +417,10 @@
                                         <td style="border: 1px solid black; text-align: right;">
                                             {{ numberFormat($quotationDetail->price) }}
                                         </td>
-                                        <td style="border: 1px solid black;">
+                                        <td style="border: 1px solid black; text-align: right;">
                                             {{ numberFormat($quotationDetail->unit_discount) }}</td>
                                         </td>
-                                        <td style="border: 1px solid black;">
+                                        <td style="border: 1px solid black; text-align: right;">
                                             {{ numberFormat($quotationDetail->amount) }}
                                         </td>
                                     </tr>

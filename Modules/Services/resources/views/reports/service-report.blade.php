@@ -55,28 +55,15 @@
                                 <div class="row">
                                     <div class="col-md-3 mb-3">
                                         <label>Product Name</label>
-                                        <select name="product_id" class="tom-select" data-placeholder="Select Product">
+                                        <select id="product_id" name="product_id" class="form-control" data-placeholder="Select Product">
                                             <option value=""></option>
-                                            @foreach ($products as $product)
-                                                <option value="{{ $product->id }}"
-                                                    {{ request('product_id') == $product->id ? 'selected' : '' }}>
-                                                    {{ $product->name }}
-                                                    {{ $product->model_no ? '(' . $product->model_no . ')' : '' }}
-                                                </option>
-                                            @endforeach
                                         </select>
                                     </div>
 
                                     <div class="col-md-3 mb-3">
                                         <label>Customer Name</label>
-                                        <select name="customer_id" class="tom-select" data-placeholder="Select Customer">
+                                        <select id="customer_id" name="customer_id" class="form-control" data-placeholder="Select Customer">
                                             <option value=""></option>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}"
-                                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                    {{ $customer->company_name }} - {{ $customer->address}}
-                                                </option>
-                                            @endforeach
                                         </select>
                                     </div>
 
@@ -168,10 +155,11 @@
                                             <th class="text-center">SL</th>
                                             <th>Service Date</th>
                                             <th>Customer Name</th>
-                                            <th>Service Status</th>
-                                            <th>Service Type</th>
                                             <th>Name of Problematic Product</th>
+                                         
+                                            <th>Service Type</th> 
                                             <th style="min-width: 300px;">Problem & Solution Details</th>
+                                            <th>Service Status</th>
                                             <th>Completion Info</th>
                                         </tr>
                                     </thead>
@@ -232,29 +220,24 @@
                                                         {{ $token->customer->company_name ?? 'N/A' }}
                                                     </a>
                                                     <br>
-                                                    <small
-                                                        class="text-muted">{{ $token->customer->address ?? '' }}</small>
+                                                    <small 
+                                                        class="text-muted">{{ $token->customer->area?->area  ?? '' }}</small>
                                                     <br>
                                                     <small class="text-info">Service ID:
                                                         {{ $token->service->service_unique_id ?? 'N/A' }}</small>
                                                 </td>
                                                 <td>
-                                                    <span
-                                                        class="badge {{ $statusClass }} badge-round">{{ $status }}</span>
+                                                    {{ $token->product->withoutModelSuffix()->name }} <br>
+                                                    <small class="text-muted">Model: {{ $token->product->withoutModelSuffix()->model }}  </small> 
                                                 </td>
+                                                
                                                 <td>{{ $token->service_type ?? 'N/A' }}</td>
-                                                <td>
-                                                    <strong>{{ $token->product->name ?? 'N/A' }}</strong>
-                                                    @if ($token->product && $token->product->model_no)
-                                                        <br><small class="text-muted">Model:
-                                                            {{ $token->product->model_no }}</small>
-                                                    @endif
-                                                </td>
+                                                
                                                 <td>
                                                     <div class="problem-solution-details">
                                                         <div class="mb-2">
                                                             <strong class="text-danger">Problem:</strong>
-                                                            <p class="mb-1">{{ $token->problem_details ?? 'N/A' }}</p>
+                                                            <p class="mb-1"> {!! wordwrap(e($token->problem_details), 50, '<br>') !!} </p>
                                                         </div>
 
                                                         @if ($token->serviceMyTask)
@@ -267,15 +250,15 @@
                                                                             class="border-left border-success pl-2 ml-2 mb-2">
                                                                             @if ($reportType == 'customer')
                                                                                 <textarea class="form-control form-control-sm solution-field" data-pending-token-id="{{ $pendingToken->id }}"
-                                                                                    rows="2">{{ $pendingToken->description ?? '' }}</textarea>
+                                                                                    rows="2"> {!! wordwrap(e($pendingToken->description ?? ''), 50, '<br>') !!} </textarea>
                                                                                 <button type="button"
                                                                                     class="btn btn-xs btn-primary mt-1 save-solution"
                                                                                     data-pending-token-id="{{ $pendingToken->id }}">
                                                                                     <i class="fa fa-save"></i> Update
                                                                                 </button>
                                                                             @else
-                                                                                <p class="mb-1">
-                                                                                    {{ $pendingToken->description ?? 'N/A' }}
+                                                                                <p class="mb-1"> 
+                                                                                     {!! wordwrap(e($pendingToken->description ?? 'N/A'), 50, '<br>') !!}  
                                                                                 </p>
                                                                             @endif
                                                                             {{-- <small class="text-muted d-block mt-1">
@@ -292,7 +275,7 @@
                                                                 <div class="mb-2">
                                                                     <strong class="text-success">Solution:</strong>
                                                                     <p class="mb-1">
-                                                                        {{ $token->serviceMyTask->description ?? 'N/A' }}
+                                                                        {!! wordwrap(e($token->serviceMyTask->description ?? 'N/A'), 50, '<br>') !!}  
                                                                     </p>
                                                                 </div>
                                                             @endif
@@ -335,6 +318,10 @@
                                                             </div>
                                                         @endif
                                                     </div>
+                                                </td>
+                                                 <td>
+                                                    <span
+                                                        class="badge {{ $statusClass }} badge-round">{{ $status }}</span>
                                                 </td>
                                                 <td>
                                                     @if ($token->service)
@@ -439,7 +426,76 @@
 
 @section('page_scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function() { 
+
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if($customer)
+                companySelect.addOption({
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->company_name }}" 
+                });
+                companySelect.setValue("{{ $customer->id }}");
+            @endif
+
+ 
+
+
+            const productSelect = new TomSelect("#product_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if($product)
+                productSelect.addOption({
+                    id: "{{ $product->id }}",
+                    text: "{{ $product->name }}"
+                });
+                productSelect.setValue("{{ $product->id }}");
+            @endif
+
+ 
+
+
             // Save solution button click - Updated for pending tokens
             $('.save-solution').on('click', function() {
                 const pendingTokenId = $(this).data('pending-token-id');

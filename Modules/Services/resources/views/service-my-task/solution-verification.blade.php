@@ -49,10 +49,16 @@
                                                 <tr data-action="{{ $task->action }}">
                                                     <td class="text-center" style="vertical-align: top; width: 2%;">
                                                         {{ $key + 1 }}</td>
-                                                    <td style="vertical-align: top;">{{ optional($task->serviceToken->customer)->company_name }}</td>
                                                     <td style="vertical-align: top;">
-                                                        Invoice ID: {{ @$task->serviceToken->service->service_unique_id }} <br>
-                                                        Product Name: {{ @$task->serviceToken->product->name }} <br>
+                                                        {{ optional($task->serviceToken->customer)->company_name }}<br> 
+                                                        <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ optional($task)->serviceToken->customer->area?->area ?? '' }}</small> 
+
+
+                                                    </td>
+                                                    <td style="vertical-align: top;">
+                                                        Invoice ID: {{ @$task->serviceToken->service->service_unique_id }} <br> 
+                                                        Product Name: {{ @$task->serviceToken->product->withoutModelSuffix()->name }} <br>
+                                                        Model: {{ @$task->serviceToken->product->withoutModelSuffix()->model }}  <br>
                                                         Serial No: {{ @$task->serviceToken->serial_number }}
                                                     </td>
                                                     <td style="vertical-align: top; width: 15%;">{{ $task->serviceToken->problem_type }}</td>

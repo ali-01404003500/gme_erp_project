@@ -6,10 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model{
 
-    protected static function booted()
+    /*protected static function booted()
     {
         static::addGlobalScope('latest', function ($query) {
             $query->orderBy('created_at', 'desc');
+        });
+    }*/
+
+    protected static function booted()
+    {
+        static::addGlobalScope('latest', function ($query) {
+            $model = $query->getModel();
+            $table = $model->getTable();
+
+            // only apply when NO joins
+            if (count($query->getQuery()->joins ?? []) == 0) {
+                $query->orderBy("$table.created_at", 'desc');
+            }
         });
     }
 

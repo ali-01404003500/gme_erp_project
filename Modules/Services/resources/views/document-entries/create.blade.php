@@ -47,14 +47,8 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="product_id">Product<span class="text-danger">*</span></label>
-                                    <select name="product_id" id="product_id" class="form-control tom-select"
-                                        data-placeholder="Select a Product" required>
-                                        <option value="">Select a Product</option>
-                                        @foreach ($products as $product)
-                                            <option value="{{ $product->id }}"
-                                                {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                                                {{ $product->name }}</option>
-                                        @endforeach
+                                    <select name="product_id" id="product_id" class="form-control" required>
+                                        <option value="">Select a Product</option> 
                                     </select>
                                    
                                 </div>
@@ -83,8 +77,33 @@
         </div>
     </div>
 @endsection
+
+
 @section('page_scripts')
+<script>
+    $(document).ready(function () {
+        const productSelect = new TomSelect("#product_id", {
+            valueField: "id",
+            labelField: "text",
+            searchField: [], 
+            load: function(query, callback) {
 
+                if (!query.length || query.length < 2) return callback();
 
-
-@endSection
+                $.ajax({
+                    url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                    type: "GET",
+                    data: { search: query },
+                    success: function(res) {
+                        productSelect.clearOptions();
+                        callback(res.map(item => ({ id: item.id, text: item.label })));
+                    },
+                    error: function() {
+                        callback();
+                    }
+                });
+            }
+        }); 
+    }); 
+ </script>
+ @endsection

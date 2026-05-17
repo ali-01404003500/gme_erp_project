@@ -4,110 +4,122 @@
     <meta charset="UTF-8">
     <title>Certificate of Installation</title>
     <style>
-        @page {
-            margin: 15mm;
+         @page {
+            margin: 10mm;
             size: A4;
         }
-        body {
+
+        html, body {
+            margin-left: 10mm;
+            margin-right: 10mm;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 0;
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 11px;
-            line-height: 1.4;
+            font-size: 9.5px;
+            line-height: 1.2;
             color: #333;
-            padding-top: 20px !important;
         }
+
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        h4 {
+            margin: 6px 0 4px 0;
+            font-size: 11px;
+        }
+
+        /* HEADER (IMPORTANT: no margin push) */
         .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #333;
+            margin: 0;
+            padding: 0;
         }
-        .logo {
-            max-height: 60px;
-            margin-bottom: 10px;
-        }
-        .company-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .company-details {
-            font-size: 9px;
-            color: #666;
-        }
+
+        /* TITLE */
         .report-title {
             text-align: center;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: bold;
-            margin: 20px 0;
-            text-decoration: underline;
+            margin: 6px 0;
         }
-        .report-info {
-            margin: 15px 0;
-            font-size: 10px;
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4px 0;
         }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 3px;
+            font-size: 9px;
+            vertical-align: top;
+        }
+
+        table th {
+            background: #f2f2f2;
+        }
+
+        /* CUSTOMER */
         .customer-info {
-            margin: 20px 0;
-            padding: 10px;
-            background-color: #f5f5f5;
-            border-left: 3px solid #007bff;
+            margin: 5px 0;
+            padding: 5px;
+            background: #f5f5f5;
         }
+
+        /* CERTIFICATION */
         .certification-text {
             text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            font-size: 11px;
-            line-height: 1.6;
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 9px;
             font-style: italic;
         }
+
+        /* ENGINEER */
         .engineer-info {
-            margin: 20px 0;
+            margin: 5px 0;
         }
-        .info-label {
-            font-weight: bold;
-            display: inline-block;
-            width: 150px;
-        }
-        
-        .basic-info {
-            margin: 20px 0;
-        }
+
+        /* BASIC INFO */
         .info-row {
             display: table;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
+
         .info-cell {
             display: table-cell;
             width: 50%;
-            padding: 5px;
+            padding: 2px;
         }
+
+        /* SIGNATURE */
         .signature-section {
-            margin-top: 40px;
-            page-break-inside: avoid;
+            margin-top: 8px;
         }
+
         .signature-box {
             border: 1px solid #333;
-            min-height: 80px;
-            margin: 10px 0;
+            height: 55px;
+            margin-top: 3px;
         }
+
+        /* FOOTER */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 15px;
+            margin-top: 8px;
+            font-size: 8px;
             border-top: 1px solid #333;
-            font-size: 9px;
-            color: #666;
+            padding-top: 4px;
         }
-        .download-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #007bff;
-            color: white;
-            padding: 8px 15px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 10px;
+
+        /* IMPORTANT FIX: prevent unwanted spacing from includes */
+        * {
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -126,89 +138,276 @@
     @endphp
 
     <!-- Header -->
-    <header class="my-header">
-                  @include('partials._for_pdf_header_2nd')
-              </header>
+    <div class="header">
+        @include('partials._for_pdf_header_2nd')
+    </div>
 
     <!-- Report Title -->
     <div class="report-title">
         CERTIFICATE OF INSTALLATION OF MEDICAL EQUIPMENT
     </div>
 
-    <!-- Report Info -->
-    <div class="report-info">
-        <div><strong>Report No:</strong> {{ $reportNo ?? 'N/A' }}</div>
-        <div><strong>Date:</strong> {{ $installationDate }}</div>
-    </div>
+    <!-- Report Info -->  
+    <table style="margin-top:20px;">
+        <tr>
+            <td width="50%">
+                <strong>Report No:</strong> {{ $reportNo ?? 'N/A' }}
+            </td>
+            <td width="50%" style="text-align:right;">
+                <strong>Date:</strong> {{ $installationDate->format('d-m-Y') }}
+            </td>
+        </tr>
+    </table>
 
-    <!-- Customer Information -->
-    <div class="customer-info">
-        <div><strong>Organization Name:</strong> {{ $token->customer->company_name ?? 'N/A' }}</div>
-        <div><strong>Address:</strong> {{ $token->customer->address ?? 'N/A' }}</div>
-    </div>
+    <!-- Customer Information -->  
+    <table style="margin-top:20px;">
+        <tr>
+            <td width="30%">
+                <strong>Organization Name</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->customer->company_name ?? 'N/A' }}
+            </td>
+        </tr>
+        <tr>
+            <td width="30%">
+                <strong>Address</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->customer->address ?? 'N/A' }}
+            </td>
+        </tr>
+    </table>
 
     <!-- Certification Statement -->
-    <div class="certification-text">
+    <div class="certification-text" style="font-size:16px;">
         We the above named organization certify that he has been trained in the installation of medical equipment 
         and is hereby certified as competent to install the named equipment.
     </div>
 
     <!-- Engineer Information -->
-    <div class="engineer-info">
-        <div><span class="info-label">Installation Done By:</span> {{ $engineerName }}</div>
-        <div><span class="info-label">Designation:</span> {{ $engineerDesignation }}</div>
-    </div>
+    <table style="margin-top:20px;">
+        <tr>
+            <td width="30%">
+                <strong>Installation Done By</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $engineerName }}
+            </td>
+        </tr>
+        <tr>
+            <td width="30%">
+                <strong>Designation</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $engineerDesignation }}
+            </td>
+        </tr>
+    </table>
 
     <!-- Instrument Details Table -->
-    <h4 style="margin-top: 20px;">Instrument Details</h4>
-    <table>
+    <h4 style="margin-top:20px;">INSTALL INSTRUMENT DETAILS </h4>
+    <table width="100%" >
         <thead>
             <tr>
-                <th style="width: 10%;">SL</th>
-                <th style="width: 90%;">Instrument Details</th>
+                <th width="5" >SL</th>
+                <th width="95%" >Instrument Details</th> 
             </tr>
         </thead>
         <tbody>
-           
+            @php
+                $pendingTokens = $token->serviceMyTask->pendingServiceTokens ?? collect();
+            @endphp
+
+            @forelse($pendingTokens as $index => $pendingToken)
                 <tr>
-                    <td class="text-center">{{  1 }}</td>
-                    <td>
-                            <strong>Name:</strong> {{ $token->product->withoutModelSuffix()->name ?? 'N/A' }}<br>
-                            <strong>Model:</strong> {{ $token->product->model ?? 'N/A' }}<br>
-                            <strong>Serial No:</strong> {{ $token->serial_number ?? 'N/A' }}
-                        </td>
+                    <td width="5%" >{{ $index + 1 }}</td>
+                    <td width="95%" >
+                        {{ $pendingToken->serviceToken->product->withoutModelSuffix()->name ?? 'N/A' }}<br>
+                        Model:{{ $pendingToken->serviceToken->product->model ?? '' }}<br>
+                        Serial: {{ $pendingToken->serviceToken->serial_number ?? '' }}
+                    </td>
                 </tr>
-                
+            @empty
+                <tr>
+                    <td width="5%" >1</td>
+                    <td width="95%" >
+                        {{ $token->product->withoutModelSuffix()->name ?? 'N/A' }}<br>
+                        Model: {{ $token->product->model ?? '' }}<br>
+                        Serial: {{ $token->serial_number ?? '' }}
+                    </td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 
-    <!-- Basic Information -->
-    <h4 style="margin-top: 20px;">Basic Information</h4>
-    <div class="basic-info">
-        
-        <div class="info-row">
-            <div class="info-cell"><strong>Supply Voltage:</strong> {{ $token->serviceMyTask->basic_info_supply_voltage ?? 'N/A' }}</div>
-            <div class="info-cell"><strong>Generator Backup:</strong> {{ $token->serviceMyTask->basic_info_generator_backup ?? 'N/A' }}</div>
-        </div>
-        <div class="info-row">
-            <div class="info-cell"><strong>Ground Voltage:</strong> {{ $token->serviceMyTask->basic_info_ground_voltage ?? 'N/A' }}</div>
-            <div class="info-cell"><strong>UPS Backup:</strong> {{  $token->serviceMyTask->basic_info_ups_backup ?? 'N/A' }}</div>
-        </div>
-    </div>
+ 
+    <!-- BASIC INFO -->
+    <h4 style="margin-top:20px;">BASIC INFORMATION </h4> 
+    <table>
+        <tr>
+            <td width="20%">
+                <strong>Supply Voltage</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="25%" style="text-align:left;">
+                {{ $token->serviceMyTask->basic_info_supply_voltage ?? 'N/A' }}
+            </td>
+            <td width="20%">
+                <strong>Generator</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="25%" style="text-align:left;">
+                {{ $token->serviceMyTask->basic_info_generator_backup === 1 ? 'Yes' : ($token->serviceMyTask->basic_info_generator_backup === 0 ? 'No' : 'N/A') }}
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <strong>Ground</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="25%" style="text-align:left;">
+                {{ $token->serviceMyTask->basic_info_ground_voltage ?? 'N/A' }}
+            </td>
+            <td width="20%">
+                <strong>UPS</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="25%" style="text-align:left;">
+                {{ $token->serviceMyTask->basic_info_ups_backup ?? 'N/A' }}
+            </td>
+        </tr>
+    </table>
+    
+ 
+    <!-- Operator Training -->
+    <h4 style="margin-top:20px;">OPERATOR TRAINING: </h4> 
+    <table>
+        <tr>
+            <td width="30%">
+                <strong>Operator Training Complete</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+               {{ $token->serviceMyTask->operator_info_training_status === 1 ? 'Yes' : ($token->serviceMyTask->basic_info_generator_backup === 0 ? 'No' : 'No') }}
+            </td>
+        </tr> 
+        <tr>
+            <td width="30%">
+                <strong>Operator Name</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->operator_info_name ?? 'N/A' }}
+            </td>
+        </tr>       
+        <tr> 
+            <td width="30%">
+                <strong>Operator Designation</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->operator_info_designation ?? 'N/A' }}
+            </td>
+        </tr> 
+        <tr>
+            <td width="30%">
+                <strong>Contact Number</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->operator_info_contact_no ?? 'N/A' }}
+            </td>
+        </tr>
+        <tr>
+            <td width="30%">
+                <strong>Operator Comments</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->operator_comments ?? 'N/A' }}
+            </td>
+        </tr>
+    </table>
 
-    <!-- Handover Information -->
-    <h4 style="margin-top: 20px;">Instrument Handover Information</h4>
-    <div class="basic-info">
-        
-        <div class="info-row">
-            <div class="info-cell"><strong>Name:</strong> {{ $token->serviceMyTask->handover_info_name ?? 'N/A' }}</div>
-            <div class="info-cell"><strong>Department:</strong> {{ $token->serviceMyTask->handover_info_department ?? 'N/A' }}</div>
-        </div>
-        <div class="info-row">
-            <div class="info-cell"><strong>Designation:</strong> {{ $token->serviceMyTask->handover_info_designation ?? 'N/A' }}</div>
-            <div class="info-cell"><strong>Contact Number:</strong> {{ $token->serviceMyTask->handover_info_contact_no ?? 'N/A' }}</div>
-        </div>
-    </div>
+    <!-- HANDOVER -->
+    <h4 style="margin-top:20px;">INSTRUMENTS HANDOVER TAKEN BY AFTER SERVICING:</h4> 
+    <table>
+        <tr>
+            <td width="30%">
+                <strong>Name</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->handover_info_name ?? 'N/A' }}
+            </td>
+        </tr>
+        <tr>
+            <td width="30%">
+                <strong>Department</strong> 
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->handover_info_department ?? 'N/A' }}
+            </td>
+        </tr>
+        <tr> 
+            <td width="30%">
+                <strong>Designation</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->handover_info_designation ?? 'N/A' }}
+            </td>
+        </tr> 
+        <tr>
+            <td width="30%">
+                <strong>Contact Number</strong>
+            </td>
+            <td width="5%">
+                <strong>:</strong>
+            </td>
+            <td width="65%" style="text-align:left;">
+                {{ $token->serviceMyTask->handover_info_contact_no ?? 'N/A' }}
+            </td>
+        </tr>
+    </table>
 
     <!-- Remarks -->
     @if($token->serviceMyTask && $token->serviceMyTask->remarks)
@@ -227,7 +426,7 @@
     <!-- Footer -->
     <div class="footer">
         <p>
-            <strong>This is a software generated report and this installation is verified through OTP with this number 01910501060.</strong><br>
+            <strong>This is a software generated report and this installation is verified through OTP.</strong><br>
             No signature required.
         </p>
     </div>

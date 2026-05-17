@@ -165,6 +165,7 @@ class ServiceBillController extends Controller
         if (substr($customerPhone, 0, 2) === '01') {
             $customerPhone = '88' . $customerPhone;
         }
+        //$customerPhone="8801404003500";
 
         $message = "Your service is successfully completed. If you are satisfied with the service, please share your pin code. Pin Code is {$otp}.";
 

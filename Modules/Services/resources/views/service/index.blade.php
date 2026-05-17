@@ -122,6 +122,7 @@
                                 <thead>
                                     <tr>
                                         <th>SL</th>
+                                        <th>Customer</th> 
                                         <th>
                                             Service ID
                                         </th>
@@ -137,10 +138,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                  
                                     @foreach ($service as $services)
                                         <tr>
-                                                                                    <td class="text-center">{{ ($service->currentPage() - 1) * $service->perPage() + $loop->iteration  }}</td>
-
+                                            <td class="text-center">{{ ($service->currentPage() - 1) * $service->perPage() + $loop->iteration  }}</td>
+                                            <td>
+                                               
+                                                {{ $services->serviceTokens[0]->customer->company_name ?? '' }}<br>
+                                            
+                                                <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $services->serviceTokens[0]->customer->area?->area ?? '' }}</small> 
+                                            </td>
                                             <td>
                                                 {{ $services->service_unique_id }}
                                             </td>

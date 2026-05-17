@@ -4,317 +4,415 @@
 <head>
     <meta charset="UTF-8">
     <title>Certificate of Servicing</title>
-   <style>
+
+    <style>
         @page {
-            margin: 15mm;
+            margin: 10mm;
             size: A4;
         }
-        body {
+
+        html, body {
+            margin-left: 10mm;
+            margin-right: 10mm;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 0;
             font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 11px;
-            line-height: 1.4;
+            font-size: 9.5px;
+            line-height: 1.2;
             color: #333;
-            padding-top: 20px !important;
         }
+
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        h4 {
+            margin: 6px 0 4px 0;
+            font-size: 11px;
+        }
+
+        /* HEADER (IMPORTANT: no margin push) */
         .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #333;
+            margin: 0;
+            padding: 0;
         }
-        .logo {
-            max-height: 60px;
-            margin-bottom: 10px;
-        }
-        .company-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .company-details {
-            font-size: 9px;
-            color: #666;
-        }
+
+        /* TITLE */
         .report-title {
             text-align: center;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: bold;
-            margin: 20px 0;
-            text-decoration: underline;
+            margin: 6px 0;
         }
-        .report-info {
-            margin: 15px 0;
-            font-size: 10px;
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4px 0;
         }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 3px;
+            font-size: 9px;
+            vertical-align: top;
+        }
+
+        table th {
+            background: #f2f2f2;
+        }
+
+        /* CUSTOMER */
         .customer-info {
-            margin: 20px 0;
-            padding: 10px;
-            background-color: #f5f5f5;
-            border-left: 3px solid #007bff;
+            margin: 5px 0;
+            padding: 5px;
+            background: #f5f5f5;
         }
+
+        /* CERTIFICATION */
         .certification-text {
             text-align: center;
-            margin: 30px 0;
-            padding: 20px;
-            font-size: 11px;
-            line-height: 1.6;
+            margin: 5px 0;
+            padding: 5px;
+            font-size: 9px;
             font-style: italic;
         }
+
+        /* ENGINEER */
         .engineer-info {
-            margin: 20px 0;
+            margin: 5px 0;
         }
-        .info-label {
-            font-weight: bold;
-            display: inline-block;
-            width: 150px;
-        }
-        
-        .basic-info {
-            margin: 20px 0;
-        }
+
+        /* BASIC INFO */
         .info-row {
             display: table;
             width: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
+
         .info-cell {
             display: table-cell;
             width: 50%;
-            padding: 5px;
+            padding: 2px;
         }
+
+        /* SIGNATURE */
         .signature-section {
-            margin-top: 40px;
-            page-break-inside: avoid;
+            margin-top: 8px;
         }
+
         .signature-box {
             border: 1px solid #333;
-            min-height: 80px;
-            margin: 10px 0;
+            height: 55px;
+            margin-top: 3px;
         }
+
+        /* FOOTER */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 15px;
+            margin-top: 8px;
+            font-size: 8px;
             border-top: 1px solid #333;
-            font-size: 9px;
-            color: #666;
+            padding-top: 4px;
         }
-        .download-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #007bff;
-            color: white;
-            padding: 8px 15px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 10px;
+
+        /* IMPORTANT FIX: prevent unwanted spacing from includes */
+        * {
+            box-sizing: border-box;
         }
     </style>
 </head>
 
 <body>
-    {{-- < style="margin-top: 10px"> --}}
 
-    @php
-        $reportNo = 'GME-CER-' . $token->serviceMyTask->updated_at->format('Ym') . '-' . str_pad($token->id, 4, '0', STR_PAD_LEFT);
-        $servicingDate = @$token->serviceMyTask->updated_at;
+@php
+    $reportNo = 'GME-CER-' . $token->serviceMyTask->updated_at->format('Ym') . '-' . str_pad($token->id, 4, '0', STR_PAD_LEFT);
+    $servicingDate = @$token->serviceMyTask->updated_at;
 
-        $engineerName = 'N/A';
-        $engineerDesignation = 'N/A';
-        if ($token->engineerAssign && $token->engineerAssign->engineers->count() > 0) {
-            $engineer = $token->engineerAssign->engineers->first();
-            $engineerName = $engineer->full_name;
-            $engineerDesignation = $engineer->employementDetail->designation->name ?? 'N/A';
-        }
-    @endphp
+    $engineerName = 'N/A';
+    $engineerDesignation = 'N/A';
 
-    <!-- Header -->
-    <header class="my-header">
-        @include('partials._for_pdf_header_2nd')
-    </header>
+    if ($token->engineerAssign && $token->engineerAssign->engineers->count() > 0) {
+        $engineer = $token->engineerAssign->engineers->first();
+        $engineerName = $engineer->full_name;
+        $engineerDesignation = $engineer->employementDetail->designation->name ?? 'N/A';
+    }
+@endphp
 
-    <!-- Report Title -->
-        <div class="report-title">
-            CERTIFICATE OF SERVICING OF MEDICAL EQUIPMENT
-        </div>
+<!-- HEADER -->
+<div class="header">
+    @include('partials._for_pdf_header_2nd')
+</div>
 
-        <!-- Report Info -->
-        <div class="report-info">
-            <div><strong>Report No:</strong> {{ $reportNo ?? 'N/A' }}</div>
-            <div><strong>Date:</strong> {{ $servicingDate }}</div>
-        </div>
+<!-- TITLE -->
+<div class="report-title">
+    CERTIFICATE OF SERVICING OF MEDICAL EQUIPMENT
+</div>
 
-        <!-- Customer Information -->
-        <div class="customer-info">
-            <div><strong>Organization Name:</strong> {{ $token->customer->company_name ?? 'N/A' }}</div>
-            <div><strong>Address:</strong> {{ $token->customer->address ?? 'N/A' }}</div>
-        </div>
+<!-- REPORT INFO -->
+<table style="margin-top:20px;">
+    <tr>
+        <td width="50%">
+            <strong>Report No:</strong> {{ $reportNo ?? 'N/A' }}
+        </td>
+        <td width="50%" style="text-align:right;">
+            <strong>Date:</strong> {{ $servicingDate->format('d-m-Y') }}
+        </td>
+    </tr>
+</table>
 
-        <!-- Certification Statement -->
-        <div class="certification-text">
-            We the above named organization certify that he has been trained in the servicing of medical equipment
-            and is hereby certified as competent to service the named equipment.
-        </div>
+<!-- CUSTOMER -->
+<table style="margin-top:20px;">
+    <tr>
+        <td width="30%">
+            <strong>Organization Name</strong> 
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $token->customer->company_name ?? 'N/A' }}
+        </td>
+    </tr>
+    <tr>
+        <td width="30%">
+            <strong>Address</strong>
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $token->customer->address ?? 'N/A' }}
+        </td>
+    </tr>
+</table>
 
-        <!-- Engineer Information -->
-        <div class="engineer-info">
-            <div><span class="info-label">Service Done By:</span> {{ $engineerName }}</div>
-            <div><span class="info-label">Designation:</span> {{ $engineerDesignation }}</div>
-        </div>
+<!-- CERTIFICATION -->
+<div class="certification-text" style="font-size:16px;">
+    We the above name organization certifies that he has been trained in the Servicing of medical equipment and is hereby certified as competent to service the named equipment.
+</div>
 
-        <!-- Servicing Instrument Details Table -->
-        <h4 style="margin-top: 20px;">Servicing Instrument Details</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 5%;">SL</th>
-                    <th style="width: 30%;">Instrument Details</th>
-                    <th style="width: 30%;">Problem Details</th>
-                    <th style="width: 35%;">Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $pendingTokens = $token->serviceMyTask->pendingServiceTokens ?? collect();
-                @endphp
-                @forelse($pendingTokens as $index => $pendingToken)
-                    <tr>
-                        <td class="text-center">{{ $index + 1 }}</td>
-                        <td>
-                            <strong>Name:</strong> {{ $pendingToken->serviceToken->product->withoutModelSuffix()->name ?? 'N/A' }}<br>
-                            <strong>Model:</strong> {{ $pendingToken->serviceToken->product->model ?? 'N/A' }}<br>
-                            <strong>Serial No:</strong> {{ $pendingToken->serviceToken->serial_number ?? 'N/A' }}
-                        </td>
-                        <td>{{ $token->problem_details ?? 'N/A' }}</td>
-                        <td>{{ $pendingToken->description ?? 'N/A' }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td class="text-center">1</td>
-                        <td>
-                            <strong>Name:</strong> {{ $token->product->withoutModelSuffix()->name ?? 'N/A' }}<br>
-                            <strong>Model:</strong> {{ $token->product->model ?? 'N/A' }}<br>
-                            <strong>Serial No:</strong> {{ $token->serial_number ?? 'N/A' }}
-                        </td>
-                        <td>{{ $token->problem_details ?? 'N/A' }}</td>
-                        <td>{{ $token->serviceMyTask->description ?? 'N/A' }}</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+<!-- ENGINEER -->  
+<table style="margin-top:20px;">
+    <tr>
+        <td width="30%">
+            <strong>Service Done By</strong> 
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $engineerName }}
+        </td>
+    </tr>
+    <tr>
+        <td width="30%">
+            <strong>Designation</strong>
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $engineerDesignation }}
+        </td>
+    </tr>
+</table>
 
-        <!-- Basic Information -->
-        <h4 style="margin-top: 20px;">Basic Information</h4>
-        <div class="basic-info">
+<!-- INSTRUMENT TABLE -->
+<h4 style="margin-top:20px;">SERVICING INSTRUMENT DETAILS </h4>
+<table width="100%" >
+    <thead>
+        <tr>
+            <th width="2%" >SL</th>
+            <th width="28%" >Instrument</th>
+            <th width="10%" >Problem</th>
+            <th width="60%" >Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php
+            $pendingTokens = $token->serviceMyTask->pendingServiceTokens ?? collect();
+        @endphp
 
-            <div class="info-row">
-                <div class="info-cell"><strong>Supply Voltage:</strong>
-                    {{ $token->serviceMyTask->basic_info_supply_voltage ?? 'N/A' }}</div>
-                <div class="info-cell"><strong>Generator Backup:</strong>
-                    {{ $token->serviceMyTask->basic_info_generator_backup ?? 'N/A' }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-cell"><strong>Ground Voltage:</strong>
-                    {{ $token->serviceMyTask->basic_info_ground_voltage ?? 'N/A' }}</div>
-                <div class="info-cell"><strong>UPS Backup:</strong>
-                    {{ $token->serviceMyTask->basic_info_ups_backup ?? 'N/A' }}</div>
-            </div>
-        </div>
+        @forelse($pendingTokens as $index => $pendingToken)
+            <tr>
+                <td width="2%" >{{ $index + 1 }}</td>
+                <td width="28%" >
+                    {{ $pendingToken->serviceToken->product->withoutModelSuffix()->name ?? 'N/A' }}<br>
+                    Model:{{ $pendingToken->serviceToken->product->model ?? '' }}<br>
+                    Serial: {{ $pendingToken->serviceToken->serial_number ?? '' }}
+                </td>
+                <td width="10%">  {{ $token->problem_details ?? 'N/A' }}</td>
+                <td width="60%">  {{ $pendingToken->description ?? 'N/A' }}</td>
+            </tr>
+        @empty
+            <tr>
+                <td width="2%" >1</td>
+                <td width="28%" >
+                    {{ $token->product->withoutModelSuffix()->name ?? 'N/A' }}<br>
+                    Model: {{ $token->product->model ?? '' }}<br>
+                    Serial: {{ $token->serial_number ?? '' }}
+                </td>
+                <td width="10%" >{{ $token->problem_details ?? 'N/A' }}</td>
+                <td width="60%" >{{ $token->serviceMyTask->description ?? 'N/A' }}</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
+
+<!-- BASIC INFO -->
+<h4 style="margin-top:20px;">BASIC INFORMATION </h4> 
+<table>
+    <tr>
+        <td width="20%">
+            <strong>Supply Voltage</strong> 
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="25%" style="text-align:left;">
+            {{ $token->serviceMyTask->basic_info_supply_voltage ?? 'N/A' }}
+        </td>
+        <td width="20%">
+            <strong>Generator</strong>
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="25%" style="text-align:left;">
+            {{ $token->serviceMyTask->basic_info_generator_backup === 1 ? 'Yes' : ($token->serviceMyTask->basic_info_generator_backup === 0 ? 'No' : 'N/A') }}
+        </td>
+    </tr>
+    <tr>
+        <td width="20%">
+            <strong>Ground</strong> 
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="25%" style="text-align:left;">
+            {{ $token->serviceMyTask->basic_info_ground_voltage ?? 'N/A' }}
+        </td>
+        <td width="20%">
+            <strong>UPS</strong>
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="25%" style="text-align:left;">
+            {{ $token->serviceMyTask->basic_info_ups_backup ?? 'N/A' }}
+        </td>
+    </tr>
+</table>
+ 
+
+<!-- SPARE PARTS -->
+<h4 style="margin-top:20px;">SPARE PARTS USED</h4>
+<table>
+    <thead>
+        <tr>
+            <th>SL</th>
+            <th>Spare Name</th>
+            <th>Qty</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php
+            $spareParts = collect();
+            foreach ($token->serviceMyTask->bills ?? [] as $bill) {
+                if ($bill->product && $bill->product->tag && stripos($bill->product->tag->name, 'service') === false) {
+                    $spareParts->push([
+                        'name' => $bill->product->withoutModelSuffix()->name,
+                        'model' => $bill->product->model,
+                        'quantity' => $bill->quantity ?? 1,
+                    ]);
+                }
+            }
+        @endphp
+
+        @forelse($spareParts as $i => $part)
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $part['name'] }} {{ $part['model'] ? '(' . $part['model'] . ')' : '' }}</td>
+                <td>{{ $part['quantity'] }}</td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="3" style="text-align:center;">No spare parts used</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
+
+<!-- HANDOVER -->
+<h4 style="margin-top:20px;">INSTRUMENTS HANDOVER TAKEN BY AFTER SERVICING:</h4> 
+<table>
+    <tr>
+        <td width="30%">
+            <strong>Name</strong> 
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $token->serviceMyTask->handover_info_name ?? 'N/A' }}
+        </td>
+    </tr>
+    <tr>
+        <td width="30%">
+            <strong>Department</strong> 
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $token->serviceMyTask->handover_info_department ?? 'N/A' }}
+        </td>
+    </tr>
+    <tr> 
+        <td width="30%">
+            <strong>Designation</strong>
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $token->serviceMyTask->handover_info_designation ?? 'N/A' }}
+        </td>
+    </tr> 
+    <tr>
+        <td width="30%">
+            <strong>Contact Number</strong>
+        </td>
+        <td width="5%">
+            <strong>:</strong>
+        </td>
+        <td width="65%" style="text-align:left;">
+            {{ $token->serviceMyTask->handover_info_contact_no ?? 'N/A' }}
+        </td>
+    </tr>
+</table>
 
 
+<!-- REMARKS -->
+@if($token->serviceMyTask && $token->serviceMyTask->remarks)
+<h4>Remarks</h4>
+<div>{{ $token->serviceMyTask->remarks }}</div>
+@endif
 
-        <!-- Spare Parts Used -->
-        <h4 style="margin-top: 20px;">Spare Parts Used</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 10%;">SL</th>
-                    <th style="width: 70%;">Name of Spare</th>
-                    <th style="width: 20%;">Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $spareParts = collect();
-                    if ($token->serviceMyTask) {
-                        foreach ($token->serviceMyTask->bills as $bill) {
-                            if (
-                                $bill->product &&
-                                $bill->product->tag &&
-                                stripos($bill->product->tag->name, 'service') === false
-                            ) {
-                                $spareParts->push([
-                                    'name' => $bill->product->withoutModelSuffix()->name,
-                                    'model' => $bill->product->model,
-                                    'quantity' => $bill->quantity ?? 1,
-                                ]);
-                            }
-                        }
-                    }
-                @endphp
-                @forelse($spareParts as $index => $part)
-                    <tr>
-                        <td class="text-center">{{ $index + 1 }}</td>
-                        <td>{{ $part['name'] }} @if ($part['model'])
-                                ({{ $part['model'] }})
-                            @endif
-                        </td>
-                        <td class="text-center">{{ $part['quantity'] }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="text-center">No spare parts used</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+<!-- SIGNATURE -->
+<div class="signature-section">
+    <h4>Seal & Signature</h4>
+    <div class="signature-box"></div>
+</div>
 
-        <!-- Handover After Servicing -->
-        <h4 style="margin-top: 20px;">Instrument Handover Taken By After Servicing</h4>
-        <!-- Handover Information -->
-        <div class="basic-info">
-
-            <div class="info-row">
-                <div class="info-cell"><strong>Name:</strong> {{ $token->serviceMyTask->handover_info_name ?? 'N/A' }}
-                </div>
-                <div class="info-cell"><strong>Department:</strong>
-                    {{ $token->serviceMyTask->handover_info_department ?? 'N/A' }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-cell"><strong>Designation:</strong>
-                    {{ $token->serviceMyTask->handover_info_designation ?? 'N/A' }}</div>
-                <div class="info-cell"><strong>Contact Number:</strong>
-                    {{ $token->serviceMyTask->handover_info_contact_no ?? 'N/A' }}</div>
-            </div>
-        </div>
-
-        <!-- Remarks -->
-        @if ($token->serviceMyTask && $token->serviceMyTask->remarks)
-            <h4 style="margin-top: 20px;">Remarks</h4>
-            <div style="padding: 10px; background-color: #f9f9f9; border-left: 3px solid #28a745;">
-                {{ $token->serviceMyTask->remarks }}
-            </div>
-        @endif
-
-        <!-- Seal & Signature Section -->
-        <div class="signature-section">
-            <h4>Seal & Signature</h4>
-            <div class="signature-box"></div>
-        </div>
-    
-
-    <!-- Footer -->
-    <div class="footer">
-        <p>
-            <strong>This is a software generated report and this service is verified through OTP with this number
-                01999977450.</strong><br>
-            No signature required.
-        </p>
-    </div>
-
-    {{-- </div> --}}
+<!-- FOOTER -->
+<div class="footer">
+    <strong>This is System generated report and This service is verified through OTP. No signature required.</strong>
+</div>
 
 </body>
-
 </html>

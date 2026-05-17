@@ -67,7 +67,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="date">Date<span class="text-danger">*</span>:</label>
+                                                    <label for="date">Date<span class="text-danger">*</span></label>
                                                     <input type="test" name="date" id="date"
                                                         class="form-control px-15 flatdate"
                                                         value="{{ old('date', date('Y-m-d')) }}" >
@@ -75,7 +75,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="amount">Amount<span class="text-danger">*</span>:</label>
+                                                    <label for="amount">Amount<span class="text-danger">*</span></label>
                                                     <input type="number" name="amount" id="amount" value="{{ old('amount') }}"
                                                         class="form-control px-15" step="0.01" >
                                                 </div>
@@ -83,7 +83,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="legal_type">Legal Type<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <select name="legal_type" id="legal_type"
                                                         class="form-control px-15 tom-select" >
                                                         <option value="">Select Type</option>
@@ -98,7 +98,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label for="case_no">Case No<span
-                                                                    class="text-danger">*</span>:</label>
+                                                                    class="text-danger">*</span></label>
                                                             <input type="text" name="case_no" id="case_no" value="{{ old('case_no') }}"
                                                                 class="form-control px-15">
                                                         </div>
@@ -106,7 +106,7 @@
 
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label for="occurrence_info">Occurrence Info:</label>
+                                                            <label for="occurrence_info">Occurrence Info</label>
                                                             <input type="text" name="occurrence_info" value="{{ old('occurrence_info') }}"
                                                                 id="occurrence_info" class="form-control px-15">
                                                         </div>
@@ -114,7 +114,7 @@
 
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label for="occurrence_date">Occurrence Date:</label>
+                                                            <label for="occurrence_date">Occurrence Date</label>
                                                             <input type="text" name="occurrence_date" value="{{ old('occurrence_date') }}"
                                                                 id="occurrence_date" class="form-control px-15 flatdate">
                                                         </div>
@@ -122,7 +122,7 @@
 
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label for="first_hajira_date">First Hajira Date:</label>
+                                                            <label for="first_hajira_date">First Hajira Date</label>
                                                             <input type="text" name="first_hajira_date" value="{{ old('first_hajira_date') }}"
                                                                 id="first_hajira_date" class="form-control px-15 flatdate">
                                                         </div>
@@ -131,13 +131,13 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <div class="form-group">
-                                                    <label for="legal_description">Legal Description:</label>
+                                                    <label for="legal_description">Legal Description<span class="text-danger">*</span></label>
                                                     <textarea name="legal_description" id="legal_description" class="form-control px-15" rows="3">{{ old('legal_description') }}</textarea>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="file">File:</label>
+                                                    <label for="file">File</label>
                                                         <x-file-uploader multiple name="attachment" />
                                                 </div>
 
@@ -155,18 +155,11 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="customer_id">{{ __('Customer') }}<span
-                                                                class="text-danger">*</span>:</label>
+                                                                class="text-danger">*</span></label>
                                                         <select name="customer_id" id="customer_id"
-                                                            class="form-control px-15 tom-select"
+                                                            class="form-control px-15  "
                                                             onchange="onChangeCustomer(this)" >
-                                                            <option value="">{{ __('Select Customer') }}</option>
-                                                            @foreach ($customers as $customer)
-                                                                <option value="{{ $customer->id }}"
-                                                                    {{ old('customer_id') == $customer->id ? 'selected' : '' }}
-                                                                    data-phone = "{{ $customer->phone }}"
-                                                                    data-address="{{ $customer->address }}">
-                                                                    {{ $customer->company_name }} - {{ $customer->address}}</option>
-                                                            @endforeach
+                                                            <option value="">{{ __('Select Customer') }}</option> 
                                                         </select>
                                                     </div>
                                                 </div>
@@ -174,7 +167,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="convict_name"> Name<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="convict_name" id="convict_name"
                                                         class="form-control px-15" placeholder="{{ __('Name') }}">
                                                 </div>
@@ -183,7 +176,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="convict_designation"> Designation<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="convict_designation"
                                                         id="convict_designation" class="form-control px-15"
                                                         placeholder="{{ __('Designation') }}">
@@ -193,7 +186,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="convict_phone"> Phone No<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="convict_phone" id="convict_phone"
                                                         class="form-control px-15" placeholder="{{ __('Phone') }}">
                                                 </div>
@@ -220,7 +213,7 @@
 
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="convict_mother_name"> Mother's Name:</label>
+                                                    <label for="convict_mother_name"> Mother's Name</label>
                                                     <input type="text" name="convict_mother_name"
                                                         id="convict_mother_name" class="form-control px-15"
                                                         placeholder="{{ __('Mothers Name') }}">
@@ -230,7 +223,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="convict_nid"> NID
-                                                        :</label>
+                                                        </label>
                                                     <input type="text" name="convict_nid" id="convict_nid"
                                                         class="form-control px-15" placeholder="{{ __('NID') }}">
                                                 </div>
@@ -239,7 +232,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="convict_address"> Address<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="convict_address" id="convict_address"
                                                         class="form-control px-15" placeholder="{{ __('Address') }}">
                                                 </div>
@@ -286,7 +279,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="Company">{{ __('Company Name') }}<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="company_name" id="company_name"
                                                         value="{{ old('company_name', 'Global Medical Engineering(BD) Ltd.') }}"
                                                         class="form-control px-15"
@@ -297,7 +290,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="complainant_name"> Name<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="complainant_name" id="complainant_name"
                                                         value="{{ old('complainant_name', 'Md Hasibur Rahman') }}"
                                                         class="form-control px-15" placeholder="{{ __('Name') }}">
@@ -307,7 +300,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="complainant_designation"> Designation<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="complainant_designation"
                                                         value="{{ old('complainant_designation', 'Executive Officer') }}"
                                                         id="complainant_designation" class="form-control px-15"
@@ -318,7 +311,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="complainant_phone"> Phone No<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="complainant_phone"
                                                         value="{{ old('complainant_phone', '01404003510') }}"
                                                         id="complainant_phone" class="form-control px-15"
@@ -330,7 +323,7 @@
 
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="complainant_father"> Father's Name:</label>
+                                                    <label for="complainant_father"> Father's Name</label>
                                                     <input type="text" name="complainant_father"
                                                         value="{{ old('complainant_father', 'Md. Mojibur Rahman') }}"
                                                         id="complainant_father" class="form-control px-15"
@@ -341,7 +334,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="complainant_nid"> NID
-                                                        :</label>
+                                                        </label>
                                                     <input type="text" name="complainant_nid" id="complainant_nid"
                                                         value="{{ old('complainant_nid', '19997815588000069') }}"
                                                         class="form-control px-15" placeholder="{{ __('NID') }}">
@@ -351,7 +344,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="complainant_address"> Address<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="complainant_address"
                                                         value="{{ old('complainant_address', '17/2, Topkhana Road,(2nd Floor), Dhaka-1000') }}"
                                                         id="complainant_address" class="form-control px-15"
@@ -376,7 +369,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="advocate_name"> Name<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="advocate_name" id="advocate_name"
                                                         value="{{ old('advocate_name', 'MD. Abed Ali') }}"
                                                         class="form-control px-15" placeholder="{{ __('Name') }}">
@@ -386,7 +379,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="advocate_designation"> Designation<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="advocate_designation"
                                                         value="{{ old('advocate_designation', 'Advocate') }}"
                                                         id="advocate_designation" class="form-control px-15"
@@ -397,7 +390,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label for="advocate_phone"> Phone No<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="advocate_phone"
                                                         value="{{ old('advocate_phone', '01916001396') }}"
                                                         id="advocate_phone" class="form-control px-15"
@@ -408,7 +401,7 @@
                                             <div class="col-md-9">
                                                 <div class="form-group">
                                                     <label for="advocate_address"> Address<span
-                                                            class="text-danger">*</span>:</label>
+                                                            class="text-danger">*</span></label>
                                                     <input type="text" name="advocate_address"
                                                         value="{{ old('advocate_address', 'Chamber:36, Court House Street Agar-Batir Goli,1st Floor, Room No:205, Kotwali, Dhaka-1100. ') }}"
                                                         id="advocate_address" class="form-control px-15"
@@ -430,7 +423,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label for="witness_name"> Name<span
-                                                                    class="text-danger">*</span>:</label>
+                                                                    class="text-danger">*</span></label>
                                                             <input type="text" name="witness_name" id="witness_name"
                                                                 class="form-control px-15"
                                                                 placeholder="{{ __('Name') }}">
@@ -438,7 +431,7 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label for="witness_father_name"> Father’s Name:</label>
+                                                            <label for="witness_father_name"> Father’s Name</label>
                                                             <input type="text" name="witness_father_name"
                                                                 id="witness_father_name" class="form-control px-15"
                                                                 placeholder="{{ __('Father Name') }}">
@@ -447,7 +440,7 @@
 
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label for="witness_mother_name"> Mother's Name:</label>
+                                                            <label for="witness_mother_name"> Mother's Name</label>
                                                             <input type="text" name="witness_mother_name"
                                                                 id="witness_mother_name" class="form-control px-15"
                                                                 placeholder="{{ __('Mothers Name') }}">
@@ -457,7 +450,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="witness_address"> Address<span
-                                                                    class="text-danger">*</span>:</label>
+                                                                    class="text-danger">*</span></label>
                                                             <input type="text" name="witness_address"
                                                                 id="witness_address" class="form-control px-15"
                                                                 placeholder="{{ __('Address') }}">
@@ -467,7 +460,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label for="witness_phone"> Phone No<span
-                                                                    class="text-danger">*</span>:</label>
+                                                                    class="text-danger">*</span></label>
                                                             <input type="text" name="witness_phone" id="witness_phone"
                                                                 class="form-control px-15"
                                                                 placeholder="{{ __('Phone') }}">
@@ -763,6 +756,39 @@
         $('.datePicker').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true
+        });
+
+        $(document).ready(function() {
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(isset($customer))
+                companySelect.addOption({
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->company_name }}"
+                });
+                companySelect.setValue("{{ $customer->id }}");
+            @endif
         });
     </script>
 @endSection

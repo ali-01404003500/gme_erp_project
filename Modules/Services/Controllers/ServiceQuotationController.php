@@ -4,6 +4,7 @@ namespace Modules\Services\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessControl\CompanyInfo;
+use App\Services\AutocompleteService;
 use App\Services\Notifications\GeneralNotificationService;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -18,6 +19,7 @@ use Modules\Services\Services\ServiceQuotationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Modules\Inventory\Models\Product\Settings\Brand;
+use Modules\Services\Models\ServiceToken;
 
 class ServiceQuotationController extends Controller
 {
@@ -42,7 +44,7 @@ class ServiceQuotationController extends Controller
     public function index(Request $request)
     {
         $data['quotations'] = $this->service->getAll();
-        $data['customers'] = Customer::activeCustomers()->get();
+        $data['customer'] = Customer::find($request->customer_id);
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
@@ -70,12 +72,8 @@ class ServiceQuotationController extends Controller
      */
     public function create(Request $request)
     {
-        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        $data['services'] = Service::all();
-        $data['customers'] = Customer::get();
+       
         $data['selected_service_id'] = $request->service_id; // pass selected service id from query parameter
-        $data['brands'] = Brand::all();
-
         return view('Services::quotation.create', $data);
     }
 
@@ -176,8 +174,6 @@ class ServiceQuotationController extends Controller
     public function edit(ServiceQuotation $quotation)
     {
         $data['quotation'] = $quotation;
-        $data['products'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
-        $data['customers'] = Customer::activeCustomers()->get();
 
         return view("Services::quotation.edit", $data);
     }
@@ -362,4 +358,35 @@ class ServiceQuotationController extends Controller
         $this->service->delete($quotation);
         return redirect()->route('services.quotations.index')->with('success', 'ServiceQuotation deleted successfully.');
     }
+
+    public function serviceAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            Service::class,
+            ['service_unique_id'],
+
+            $request->search,
+            ['id', 'service_unique_id'],
+            20
+        ); 
+        return response()->json($data);
+    }
+
+    public function getCustomerByService(Request $request)
+    {     
+
+        $service = ServiceToken::with('customer')
+            ->where('service_id', $request->service_id)
+            ->first();
+ 
+
+        return response()->json([
+            'id' => $service?->customer?->id,
+            'name' => $service?->customer?->name,
+        ]);
+    }
+
+    
 }
+ 

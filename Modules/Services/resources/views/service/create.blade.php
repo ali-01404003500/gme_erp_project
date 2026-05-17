@@ -103,7 +103,7 @@
                                             <div class="form-group">
                                                 <label for="sales_order_id">{{ __('Invoice ID') }}</label>
                                                 <select name="invoice_id" id="sales_order_id"
-                                                    class="form-control" >
+                                                    class="form-control" readonly >
                                                     <option value="">{{ __('Select Invoice ID') }}</option> 
                                                 </select>
                                             </div>
@@ -112,14 +112,14 @@
                                             <div class="form-group">
                                                 <label for="invoice_date">{{ __('Invoice Date') }}</label>
                                                 <input type="text" name="invoice_date" id="invoice_date"
-                                                    class="form-control flatdate">
+                                                    class="form-control ">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="expire_date">{{ __('Expire Date') }}</label>
                                                 <input type="text" name="expire_date" id="expire_date"
-                                                    class="form-control flatdate" readonly >
+                                                    class="form-control " readonly >
                                             </div>
 
 
@@ -435,9 +435,15 @@
     <script>
         $(document).ready(function() {
 
+            $('#serial_number').select2({
+                tags: true,
+                placeholder: "Select or type serial number",
+                allowClear: true
+            });
+            
             const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-            const serialSelect = new TomSelect('#serial_number', {
+            /*const serialSelect = new TomSelect('#serial_number', {
                 valueField: 'id',
                 labelField: 'name',
                 searchField: 'name',
@@ -473,7 +479,7 @@
                         }
                     });
                 },
-            });
+            });*/
 
             $('#product_catalog_id').on('change', function() {
                 let productId = $(this).val();
@@ -929,8 +935,7 @@
             @if(request('customer_id'))
                 companySelect.addOption({
                     id: "{{ request('customer_id') }}",
-                    text: "{{ request('customer_id') }}"
-                    contact_person_phone
+                    text: "{{ request('customer_id') }}" 
                 });
                 companySelect.setValue("{{ request('customer_id') }}");
             @endif

@@ -99,7 +99,7 @@
                                             <div class="form-group">
                                                 <label for="token_date">{{ __('Token Date') }}<span
                                                         class="text-danger">*</span></label>
-                                                <input type="date" name="token_date" id="token_date" class="form-control"
+                                                <input type="date" name="token_date" id="token_date" class="form-control flatdate"
                                                     value="{{ date('Y-m-d') }}">
                                             </div>
                                         </div>
@@ -110,12 +110,17 @@
                                                 <label for="sales_order_id">{{ __('Invoice ID') }}</label>
                                                 <select name="invoice_id" id="sales_order_id"
                                                     class="form-control tom-select" >
-                                                    <option value="">{{ __('Select Invoice ID') }}</option> 
-                                                        <option value="{{ $service->serviceTokens->invoice_id }}" selected
-                                                            data-customer = "{{ $service->serviceTokens->customer_id }}"
-                                                            data-invoice_date = "{{ $service->serviceTokens->invoice_date }}">
-                                                            {{ $service->serviceTokens->invoice_id}}
-                                                        </option> 
+                                                        @php
+                                                            $token = $service->serviceTokens->first();
+                                                        @endphp
+
+                                                        @if($token)
+                                                        <option value="{{ $token->invoice_id }}" selected
+                                                            data-customer="{{ $token->customer_id }}"
+                                                            data-invoice_date="{{ $token->invoice_date }}">
+                                                            {{ $token->invoice_id }}
+                                                        </option>
+                                                        @endif
                                                 </select>
                                             </div>
                                         </div>
@@ -123,14 +128,14 @@
                                             <div class="form-group">
                                                 <label for="invoice_date">{{ __('Invoice Date') }}</label>
                                                 <input type="text" name="invoice_date" id="invoice_date"
-                                                    class="form-control flatdate">
+                                                    class="form-control ">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="expire_date">{{ __('Expire Date') }}</label>
                                                 <input type="text" name="expire_date" id="expire_date"
-                                                    class="form-control flatdate" readonly>
+                                                    class="form-control " readonly>
                                             </div>
 
 
@@ -145,9 +150,6 @@
                                                     class="form-control tom-select">
                                                     <option value="">{{ __('Select Product') }}</option>  
 
-                                                    <option value="{{ $service->serviceTokens->product_catalog_id ?? '' }}" selected>
-                                                        {{ optional($service->serviceTokens->product)->company_name ?? __('Select Product') }}
-                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
@@ -597,7 +599,7 @@
         $(document).ready(function() {
             const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-            const serialSelect = new TomSelect('#serial_number', {
+            /*const serialSelect = new TomSelect('#serial_number', {
                 valueField: 'id',
                 labelField: 'name',
                 searchField: 'name',
@@ -633,7 +635,7 @@
                         }
                     });
                 },
-            });
+            });*/
 
             $('#product_catalog_id').on('change', function() {
                 let productId = $(this).val();
@@ -919,6 +921,12 @@
     <script>
         $(document).ready(function() {
 
+
+            $('#serial_number').select2({
+                tags: true,
+                placeholder: "Select or type serial number",
+                allowClear: true
+            });
             $('#serial_number').on('change', function() {
                 let serialNumber = $(this).val();
                 let customerId = $('#customer_id').val();

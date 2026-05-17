@@ -95,17 +95,16 @@
                             </tr>
                         @endfor
                     @elseif(!empty($serviceMyTask) && ($serviceMyTask->bill_type == 'service_bill') && $serviceMyTask->bills && $serviceMyTask->bills->isNotEmpty())
+               
                         @foreach($serviceMyTask->bills as $bill)
                             <tr>
                                 <td>
-                                    <select name="bill_product_ids[]" class="form-control product-select to-select">
-                                        <option value="">Choose Product</option>
-                                        @foreach ($productCatalogs as $productCatalog)
-                                            <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}"
-                                                {{ old('bill_product_ids.'.$loop->index, $bill->product_id) == $productCatalog->id ? 'selected' : '' }}>
-                                                {{ $productCatalog->name }}
-                                            </option>
-                                        @endforeach
+                                    <select name="bill_product_ids[]" class="form-control product-select">
+                                        <option value="">Choose Product</option> 
+
+                                        <option value="{{ $bill->product_id }}" selected >
+                                            {{ $bill->product->name }}
+                                        </option>
                                     </select>
                                 </td>
                                 <td>
@@ -136,17 +135,20 @@
                                 </td>
                             </tr>
                         @endforeach
+                       
                     @elseif (isset($product))
+                     
                         <tr>
                             <td>
-                                <select name="bill_product_ids[]" class="form-control product-select to-select">
+                                <select name="bill_product_ids[]" class="form-control product-select">
                                     <option value="">Choose Product</option>
-                                    @foreach ($productCatalogs as $productCatalog)
-                                        <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}" {{ $product->id == $productCatalog->id ? 'selected' : '' }}>
-                                            {{ $productCatalog->name }}
-                                        </option>
-                                    @endforeach
+                                    <option value="{{  $product->id }}" selected >
+                                        {{ $product->name }}
+                                    </option>
                                 </select>
+ 
+                            
+
                             </td>
                             <td>
                                 <input type="number" name="bill_quantity[]" class="form-control quantity"
@@ -162,7 +164,7 @@
                             </td>
                             <td>
                                 <input type="text" name="bill_total_discount[]" class="form-control total_discount"
-                                    placeholder="Total Discount" readonly>
+                                    placeholder="Total Discount" value="0" readonly>
                             </td>
                             <td>
                                 <input type="text" class="form-control text-center amount" name="bill_amount[]"
@@ -177,13 +179,8 @@
                     @else
                         <tr>
                             <td>
-                                <select name="bill_product_ids[]" class="form-control product-select to-select">
-                                    <option value="">Choose Product</option>
-                                    @foreach ($productCatalogs as $productCatalog)
-                                        <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}">
-                                            {{ $productCatalog->name }}
-                                        </option>
-                                    @endforeach
+                                <select name="bill_product_ids[]" class="form-control product-select  ">
+                                    <option value="">Choose Product</option> 
                                 </select>
                             </td>
                             <td>
@@ -201,7 +198,7 @@
                             </td>
                             <td>
                                 <input type="text" name="bill_total_discount[]" class="form-control total_discount"
-                                    placeholder="Total Discount" readonly>
+                                    placeholder="Total Discount" readonly value="0">
                             </td>
                             <td>
                                 <input type="text" class="form-control text-center amount" name="bill_amount[]" readonly>
@@ -259,7 +256,7 @@
                         <th style="width: 15%">Total Discount</th>
                         <th style="width: 15%">Amount</th>
                         <th style="width: 8%; text-align: right;">
-                            <button type="button" class="btn btn-info btn-sm add_row_btn">
+                            <button type="button" class="btn btn-info btn-sm return_add_row_btn">
                                 <i class="fa fa-plus"></i> Add
                             </button>
                         </th>
@@ -279,14 +276,8 @@
                         @for($i = 0; $i < $count; $i++)
                             <tr>
                                 <td>
-                                    <select name="return_bill_product_ids[]" class="form-control product-select to-select">
-                                        <option value="">Choose Product</option>
-                                        @foreach ($productCatalogs as $productCatalog)
-                                            <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}"
-                                                {{ old('return_bill_product_ids.'.$i) == $productCatalog->id ? 'selected' : '' }}>
-                                                {{ $productCatalog->name }}
-                                            </option>
-                                        @endforeach
+                                    <select name="return_bill_product_ids[]" class="form-control product-select">
+                                        <option value="">Choose Product</option> 
                                     </select>
                                 </td>
                                 <td>
@@ -321,14 +312,11 @@
                         @foreach($serviceMyTask->returnBills as $returnBill)
                             <tr>
                                 <td>
-                                    <select name="return_bill_product_ids[]" class="form-control product-select to-select">
+                                    <select name="return_bill_product_ids[]" class="form-control product-select">
                                         <option value="">Choose Product</option>
-                                        @foreach ($productCatalogs as $productCatalog)
-                                            <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}"
-                                                {{ old('return_bill_product_ids.'.$loop->index, $returnBill->product_id) == $productCatalog->id ? 'selected' : '' }}>
-                                                {{ $productCatalog->name }}
-                                            </option>
-                                        @endforeach
+                                        <option value="{{ $returnBill->product_id }}"  selected>
+                                            {{ $returnBill->product->name }}
+                                        </option> 
                                     </select>
                                 </td>
                                 <td>
@@ -360,15 +348,14 @@
                             </tr>
                         @endforeach
                     @elseif (isset($return_product))
+            
                         <tr>
                             <td>
-                                <select name="return_bill_product_ids[]" class="form-control product-select to-select">
-                                    <option value="">Choose Product</option>
-                                    @foreach ($productCatalogs as $productCatalog)
-                                        <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}" {{ $return_product->id == $productCatalog->id ? 'selected' : '' }} >
-                                            {{ $productCatalog->name }}
-                                        </option>
-                                    @endforeach
+                                <select name="return_bill_product_ids[]" class="form-control product-select">
+                                    <option value="">Choose Product</option> 
+                                    <option value="{{ $return_product->id }}"  selected >
+                                        {{ $return_product->name }}
+                                    </option> 
                                 </select>
                             </td>
                             <td>
@@ -376,7 +363,7 @@
                                     placeholder="Quantity" value="1">
                             </td>
                             <td>
-                                <input type="text" name="return_bill_price[]" class="form-control price" placeholder="Price"
+                                <input type="text" name="return_bill_price[]" class="form-control price" placeholder="Price" value={{ $return_product->mrp }}
                                     readonly>
                             </td>
                             <td>
@@ -386,10 +373,10 @@
                             </td>
                             <td>
                                 <input type="text" name="return_bill_total_discount[]" class="form-control total_discount"
-                                    placeholder="Total Discount" readonly>
+                                    placeholder="Total Discount" value="0" readonly>
                             </td>
                             <td>
-                                <input type="text" class="form-control text-center amount" name="return_bill_amount[]"
+                                <input type="text" class="form-control text-center amount" name="return_bill_amount[]" value="0"
                                     readonly>
                             </td>
                             <td>
@@ -401,13 +388,8 @@
                     @else
                         <tr>
                             <td>
-                                <select name="return_bill_product_ids[]" class="form-control product-select to-select">
-                                    <option value="">Choose Product</option>
-                                    @foreach ($productCatalogs as $productCatalog)
-                                        <option value="{{ $productCatalog->id }}" data-price="{{ $productCatalog->mrp }}">
-                                            {{ $productCatalog->name }}
-                                        </option>
-                                    @endforeach
+                                <select name="return_bill_product_ids[]" class="form-control product-select ">
+                                    <option value="">Choose Product</option> 
                                 </select>
                             </td>
                             <td>
@@ -475,11 +457,10 @@
                 if ($(this).val() == 'service_bill') {
                     $('#serviceBillDiv').show();
                     $('#serviceReturnBillDiv').hide();
-                    $('#serviceBillDiv').find('select.product-select').trigger('change');
                 } else {
                     $('#serviceBillDiv').hide();
                     $('#serviceReturnBillDiv').show();
-                    $('#serviceReturnBillDiv').find('select.product-select').trigger('change');
+                    initTomSelect(this.find('.product-select')[0]);
                 }
                 // Recalculate total for the visible table
                 calculateTotal();
@@ -488,24 +469,60 @@
             $('input[name="bill_type"]:checked').trigger('change'); // Trigger change on page load to set initial visibility
             // --- 2. ADD NEW ROW ---
             // Use event delegation to handle clicks on the "Add" button
+
             $(document).on('click', '.add_row_btn', function () {
-                // Find the table this button belongs to
-                var table = $(this).closest('table');
-                // Get the first row of the table body, clone it, and clear its inputs
-                var newRow = table.find('tbody tr:first').clone();
 
-                newRow.find('select').val(''); // Reset select
-                newRow.find('input').not('.remove_row_btn').val(''); // Clear all inputs
-                newRow.find('.quantity').val('1'); // Set default quantity
-                newRow.find('.unit_discount').val('0'); // Set default discount
-                newRow.find('.opt-required').removeClass('opt-required'); // Remove opt-required class
+                let table = $(this).closest('table');
 
-                // Append the new row to the table body
+                let newRow = $(`
+                    <tr>
+                        <td>
+                            <select name="bill_product_ids[]" class="form-control product-select">
+                                <option value="">Choose Product</option>
+                            </select>
+                        </td>
+                        <td> <input type="number" name="bill_quantity[]" class="form-control quantity"  placeholder="Quantity" value="1"></td>
+                        <td><input type="text" name="bill_price[]" class="form-control price" placeholder="Price"  value="0" readonly></td>
+                        <td><input type="number" name="bill_unit_discount[]"  class="form-control unit_discount unit_discount_input" placeholder="Unit Discount" value="0"></td>
+                        <td><input type="text" name="bill_total_discount[]" class="form-control total_discount" placeholder="Total Discount" value="0" readonly></td>
+                        <td><input type="text" class="form-control text-center amount" name="bill_amount[]"value="0" readonly></td>
+                        <td> <button type="button" class="btn btn-danger btn-xs remove_row_btn"><i class="fa fa-times"></i>   </button></td>
+                    </tr>
+                `);
+
                 table.find('tbody').append(newRow);
 
-                // If you are using a library like Select2, you might need to re-initialize it
-                // newRow.find('.to-select').select2(); 
+                // IMPORTANT: pass DOM element, not string
+                initTomSelect(newRow.find('.product-select')[0]);
             });
+
+
+            $(document).on('click', '.return_add_row_btn', function () {
+
+                let table = $(this).closest('table');
+
+                let newRow = $(`
+                    <tr>
+                        <td>
+                            <select name="return_bill_product_ids[]" class="form-control product-select">
+                                <option value="">Choose Product</option>
+                            </select>
+                        </td>
+                        <td> <input type="number" name="return_bill_quantity[]" class="form-control quantity"  placeholder="Quantity" value="1"></td>
+                        <td><input type="text" name="return_bill_price[]" class="form-control price" placeholder="Price"  value="0" readonly></td>
+                        <td><input type="number" name="return_bill_unit_discount[]"  class="form-control unit_discount unit_discount_input" placeholder="Unit Discount" value="0"></td>
+                        <td><input type="text" name="return_bill_total_discount[]" class="form-control total_discount" placeholder="Total Discount" value="0" readonly></td>
+                        <td><input type="text" class="form-control text-center amount" name="return_bill_amount[]"value="0" readonly></td>
+                        <td> <button type="button" class="btn btn-danger btn-xs remove_row_btn"><i class="fa fa-times"></i>   </button></td>
+                    </tr>
+                `);
+
+                table.find('tbody').append(newRow);
+
+                // IMPORTANT: pass DOM element, not string
+                initTomSelect(newRow.find('.product-select')[0]);
+            });
+ 
 
             // --- 3. REMOVE ROW ---
             // Use event delegation for the remove button
@@ -527,13 +544,22 @@
 
             // --- 4. LOAD PRICE & CALCULATE ON CHANGE ---
             // Use event delegation for product selection, quantity, and discount changes
+    
+
             $(document).on('change', '.product-select', function () {
-                var selectedOption = $(this).find('option:selected');
-                var price = selectedOption.data('price') || 0;
-                var row = $(this).closest('tr');
+
+                let select = this.tomselect;
+                let selected = select.options[this.value];
+
+                let price = selected?.price || 0;
+
+                let row = $(this).closest('tr');
+
                 row.find('.price').val(price);
-                calculateRow(row); // Calculate amounts for this row
+
+                calculateRow(row);
             });
+
 
             $(document).on('keyup change', '.quantity, .unit_discount', function () {
                 var row = $(this).closest('tr');
@@ -619,22 +645,82 @@
                     if (!query.length || query.length < 2) return callback();
 
                     $.ajax({
-                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        url: "{{ route('services.service-autocomplete.products') }}",
                         type: "GET",
                         data: { search: query },
-                        success: function(res) {
+                        success: function(res) {   
                             productSelect.clearOptions();
-                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                            callback(res.map(item => ({  id: item.id, text: item.label, price: item.price })));
                         },
                         error: function() {
                             callback();
                         }
                     });
+                },
+                onChange: function(value) {
+
+                    let option = this.options[value]; // selected object
+
+                    let price = option?.price || 0;
+
+                    let row = $(this.input).closest('tr');
+
+                    row.find('.price').val(price);
                 }
             }); 
+ 
 
             
 
         });
+
+        function initTomSelect(el) {
+
+            if (!el) return;
+
+            if (el.tomselect) {
+                el.tomselect.destroy();
+            }
+
+            new TomSelect(el, {
+
+                valueField: "id",
+                labelField: "text",
+                searchField: ["text"],
+
+                load: function(query, callback) {
+
+                    query = query || "";   // 🔥 FIX CRASH
+
+                    if (query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('services.service-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) { 
+                            callback(res.map(item => ({
+                                id: item.id,
+                                text: item.label,
+                                price:item.price
+                            })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                },
+                onChange: function(value) {
+
+                    let option = this.options[value]; // selected object
+
+                    let price = option?.price || 0;
+
+                    let row = $(this.input).closest('tr');
+
+                    row.find('.price').val(price);
+                }
+            });
+        }
     </script>
 @endpush

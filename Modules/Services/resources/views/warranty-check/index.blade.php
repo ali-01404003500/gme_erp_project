@@ -33,10 +33,7 @@
                 <div class="col-md-6">
                     <label>Customer *</label>
                     <select id="customer_select" class="form-control" placeholder="Select Customer">
-                        <option value=""></option>
-                        @foreach ($customers as $c)
-                            <option value="{{ $c->id }}">{{ $c->company_name }}</option>
-                        @endforeach
+                        <option value=""></option> 
                     </select>
 
                     <label class="mt-3">Serial *</label>
@@ -237,5 +234,38 @@ $(document).ready(function() {
     }
 
 });
+
+        $(document).ready(function() {
+            const companySelect = new TomSelect("#customer_select", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(isset($customer))
+                companySelect.addOption({
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->company_name }}"
+                });
+                companySelect.setValue("{{ $customer->id }}");
+            @endif
+        });
 </script>
 @endsection

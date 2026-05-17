@@ -66,9 +66,11 @@ class ServiceMyTaskService
 
 
             // Save service bills
+            $salesAmount = 0;
             if( $data['bill_type'] == 'service_bill' ) {
                 foreach ($serviceBills['bill_product_ids'] ?? [] as $key => $productId) {
                     if ($productId) {
+                        $salesAmount += $serviceBills['bill_amount'][$key] ?? 0;
                         $result['serviceBills'][] = $serviceMyTask->bills()->create([
                             'product_id' => $productId,
                             'quantity' => $serviceBills['bill_quantity'][$key] ?? 0,
@@ -86,6 +88,7 @@ class ServiceMyTaskService
                 // Save service return bills
                 foreach ($serviceReturnBills['return_bill_product_ids'] ?? [] as $key => $productId) {
                     if ($productId) {
+                        $salesAmount += $serviceReturnBills['return_bill_amount'][$key] ?? 0;
                         $result['serviceReturnBills'][] = $serviceMyTask->returnBills()->create([
                             'product_id' => $productId,
                             'quantity' => $serviceReturnBills['return_bill_quantity'][$key] ?? 0,
@@ -100,8 +103,10 @@ class ServiceMyTaskService
             
 
             // Save payments
+            $paymentAmount = 0;
             foreach ($payments['payments_pay_mode'] ?? [] as $key => $payMode) {
                 if ($payMode) {
+                    $paymentAmount += $payments['payments_amount'][$key] ?? 0;
                     $result['payments'][] = $serviceMyTask->payments()->create([
                         'pay_mode' => $payMode,
                         'bank_id' => $payments['payments_bank_id'][$key] ?? null,
@@ -124,8 +129,15 @@ class ServiceMyTaskService
                     break;
 
                 case 'approved':
-                    $serviceMyTask->serviceToken->update(['action' => 'Done']);
-                    $this->storeToSalesOrders($serviceMyTask);
+                    $serviceMyTask->serviceToken->update(['action' => 'Done']); 
+                    Service::whereKey($serviceMyTask->id)->update(['status' => 'Done']); 
+
+                    $result = $this->storeToSalesOrders($serviceMyTask); 
+                    $salesOrderId = $result->id ?? $result['id'] ?? null;
+
+                    if ($paymentAmount >= $salesAmount && $salesOrderId) {
+                        SalesOrder::whereKey($salesOrderId)->update(['paid_status' => 'paid']);
+                    }
                     break;
 
                 case 'rejected':
@@ -276,7 +288,7 @@ class ServiceMyTaskService
             $payments = [
                 'payments_pay_mode' => [],
                 'payments_bank_id' => [],
-                'payments_branch_id' => [],+
+                'payments_branch_id' => [],
                 'payments_transaction_id' => [],
                 'payments_emi_id' => [],
                 'payments_amount' => [],

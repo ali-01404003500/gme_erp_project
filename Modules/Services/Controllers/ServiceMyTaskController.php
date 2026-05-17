@@ -4,6 +4,7 @@ namespace Modules\Services\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Services\AutocompleteService;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Services\Models\Service;
 use Modules\Services\Models\ServiceMyTask;
@@ -33,27 +34,35 @@ class ServiceMyTaskController extends Controller
     {
         $dateRange = request()->query('from_to_date');
         $status = request()->query('status');
-        $query = ServiceToken::whereIn('action', ['Live', 'Started', 'Done', 'Failed']);
+
+        $query = ServiceToken::query()->whereIn('action', ['Live', 'Started', 'Done', 'Failed'])->latest();
+
         if ($dateRange) {
             $dates = explode(' to ', $dateRange);
 
-            $query->whereBetween('updated_at', [$dates[0] . ' 00:00:00', $dates[1] . ' 23:59:59']);
+            $query->whereBetween('updated_at', [
+                $dates[0] . ' 00:00:00',
+                $dates[1] . ' 23:59:59'
+            ]);
         }
+
         if ($status) {
             $query->where('action', $status);
         }
-        if (!auth()->user()->id == 1) {
-            $query->where('engineerAssign', function ($query) {
-                $query->where('engineers', function ($query) {
-                    $query->where('engineer_id', auth()->user()->employee->id);
-                });
+
+        if (auth()->user()->id != 1) {
+            $engineerId = auth()->user()->employee->id;
+
+            $query->whereHas('engineerAssign.engineers', function ($q) use ($engineerId) {
+                $q->where('engineer_id', $engineerId);
             });
         }
+        
+  
         $data['myTasks'] = $query->get();
 
         return view("Services::service-my-task.index", $data);
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -277,4 +286,19 @@ class ServiceMyTaskController extends Controller
 
         return redirect()->back()->with('success', 'Solution Verified successfully.');
     }
+
+    public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->productSearchWithMrp(
+            ProductCatalog::class,
+            ['name','model'],
+            $request->search,
+            ['id', 'name','model','mrp'],
+            30
+        ); 
+        return response()->json($data);
+    }
+
+     
 }

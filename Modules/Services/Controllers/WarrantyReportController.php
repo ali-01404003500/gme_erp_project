@@ -12,8 +12,7 @@ class WarrantyReportController extends Controller
 {
     public function index()
     {
-        return view('Services::warranty-check.index', [
-            'customers' => Customer::activeCustomers()->get(),
+        return view('Services::warranty-check.index', [ 
             'serialNumbers' => DongleOrSerialEntry::with('product')->get()
         ]);
     }

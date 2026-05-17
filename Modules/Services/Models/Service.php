@@ -65,4 +65,6 @@ class Service extends BaseModel
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    
+
 }

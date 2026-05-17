@@ -270,7 +270,7 @@ class ServiceController extends Controller
      */
     public function edit(Service $service)
     {
-        $data['employees'] = Employee::all();
+        $data['employees'] = Employee::where('is_active', 1)->get();
         $data['serviceTypes'] = ServiceType::all();
         $data['problemTypes'] = ProblemType::all();
         $data['service'] = $service; 

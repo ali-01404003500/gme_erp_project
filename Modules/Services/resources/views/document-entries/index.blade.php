@@ -74,8 +74,7 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
-                                    <th>Product</th>
-                                    <th>Model</th>
+                                    <th>Product</th> 
                                     <th>Note</th>
                                     <th>Date</th>
                                     <th class="no-content">Action</th>
@@ -85,10 +84,14 @@
                                 @foreach ($serviceDocumentEntrys as $value )
                                 {{-- @dd($value); --}}
                                     <tr>
-<td class="text-center">{{ ($serviceDocumentEntrys->currentPage() - 1) * $serviceDocumentEntrys->perPage() + $loop->iteration  }}</td>         
-                                        <td>{{ $value->product->name }}</td>
-                                        <td>{{ $value->product->model }}</td>
-                                        <td>{{ $value->remarks }}</td>
+                                        <td class="text-center">{{ ($serviceDocumentEntrys->currentPage() - 1) * $serviceDocumentEntrys->perPage() + $loop->iteration  }}</td>         
+                                        <td> 
+                                            {{ $value->product->withoutModelSuffix()->name }} <br>
+                                            <small class="text-muted">Model: {{ $value->product->withoutModelSuffix()->model }}  </small> 
+                                        </td> 
+                                        <td> 
+                                            {!! wordwrap(e($value->remarks), 50, '<br>') !!}
+                                        </td>
                                         <td>{{ $value->document_date }}</td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">

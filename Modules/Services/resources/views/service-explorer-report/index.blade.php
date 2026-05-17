@@ -50,43 +50,24 @@
                                     <!-- Customer Name -->
                                     <div class="col-md-3 mb-3">
                                         <label class="font-weight-bold">Customer Name</label>
-                                        <select name="customer_id" class="tom-select" data-placeholder="Select Customer">
-                                            <option value="">All Customers</option>
-                                            @foreach ($customers as $customer)
-                                                <option value="{{ $customer->id }}"
-                                                    {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                    {{ $customer->company_name }} - {{ $customer->address}}
-                                                </option>
-                                            @endforeach
+                                        <select id="customer_id" name="customer_id" class="form-control" data-placeholder="Select Customer">
+                                            <option value="">All Customers</option> 
                                         </select>
                                     </div>
 
                                     <!-- Product Name -->
                                     <div class="col-md-3 mb-3">
                                         <label class="font-weight-bold">Product Name</label>
-                                        <select name="product_id" class="tom-select" data-placeholder="Select Product">
-                                            <option value="">All Products</option>
-                                            @foreach ($products as $product)
-                                                <option value="{{ $product->id }}"
-                                                    {{ request('product_id') == $product->id ? 'selected' : '' }}>
-                                                    {{ $product->name }}
-                                                    {{ $product->model_no ? '(' . $product->model_no . ')' : '' }}
-                                                </option>
-                                            @endforeach
+                                        <select id="product_id" name="product_id" class="form-control" data-placeholder="Select Product">
+                                            <option value="">All Products</option> 
                                         </select>
                                     </div>
 
                                     <!-- Token ID -->
                                     <div class="col-md-3 mb-3">
                                         <label class="font-weight-bold">Token ID</label>
-                                        <select name="token_id" class="tom-select" data-placeholder="Select Token">
-                                            <option value="">All Tokens</option>
-                                            @foreach ($serviceTokens as $token)
-                                                <option value="{{ $token->id }}"
-                                                    {{ request('token_id') == $token->id ? 'selected' : '' }}>
-                                                    {{ $token->service->service_unique_id ?? 'Token #' . $token->id }}
-                                                </option>
-                                            @endforeach
+                                        <select id="token_id" name="token_id" class="form-control" data-placeholder="Select Token">
+                                            <option value="">All Tokens</option> 
                                         </select>
                                     </div>
 
@@ -218,21 +199,17 @@
                                     style="font-size: 11px;">
                                     <thead class="bg-primary text-white">
                                         <tr>
-                                            <th class="text-center" style="width: 3%;">SL</th>
-                                            <th style="width: 8%;">Token ID</th>
-                                            <th style="width: 12%;">Customer</th>
-                                            <th style="width: 10%;">Service Product</th>
-                                            <th style="width: 8%;">Serial No</th>
-                                            <th style="width: 10%;">Problem Type</th>
-                                            <th style="width: 15%;">Solution Description</th>
-                                            <th style="width: 7%;">Service Status</th>
+                                            <th class="text-center" style="width: 3%;">SL</th> 
                                             <th style="width: 7%;">Service Date</th>
-                                            <th style="width: 7%;">Service Type</th>
-                                            <th style="width: 8%;">Assign By</th>
+                                            <th style="width: 12%;">Customer</th>
+                                            <th style="width: 10%;">Service Product</th> 
+                                            <th style="width: 10%;">Problem & Solution Details</th> 
+                                            <th style="width: 7%;">Service Status</th>
+                                          
+                                            <th style="width: 7%;">Service Type</th> 
                                             <th style="width: 7%;">Complete Date</th>
                                             <th style="width: 8%;">Engineer</th>
-                                            <th class="text-right" style="width: 7%;">Service Bill</th>
-                                            <th class="text-right" style="width: 7%;">Product Bill</th>
+                                            <th class="text-right" style="width: 7%;">Bill Amount</th> 
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -278,60 +255,52 @@
                                                 }
                                             @endphp
                                             <tr>
-                                                <td class="text-center">{{ $rowNumber }}</td>
-                                                <td>
-                                                    <strong class="text-primary">{{ $token->service->service_unique_id ?? 'N/A' }}</strong>
-                                                </td>
-                                                <td>
-                                                    <strong>{{ $token->customer->company_name ?? 'N/A' }}</strong>
-                                                    <br>
-                                                    <small class="text-muted">{{ $token->customer->phone ?? '' }}</small>
-                                                </td>
-                                                <td>
-                                                    <strong>{{ $token->product->name ?? 'N/A' }}</strong>
-                                                    @if ($token->product && $token->product->model_no)
-                                                        <br><small class="text-muted">{{ $token->product->model_no }}</small>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-round badge-light">{{ $token->serial_number ?? 'N/A' }}</span>
-                                                </td>
-                                                <td>{{ $token->problem_type ?? 'N/A' }}</td>
-                                                <td>
-                                                    @if ($token->serviceMyTask && $token->serviceMyTask->pendingServiceTokens->count() > 0)
-                                                            @foreach ($token->serviceMyTask->pendingServiceTokens as $idx => $pendingToken)
-                                                                <div class="mb-1">
-                                                                   <small style="
-                                                                        display: inline-block;
-                                                                        width: 350px;
-                                                                        word-wrap: break-word;
-                                                                        white-space: normal;
-                                                                    ">
-                                                                        {{ $pendingToken->description ?? 'N/A' }}
-                                                                    </small>
-                                                                </div>
-                                                            @endforeach
-                                                        @else
-                                                            <small class="text-break">
-                                                                {{ $token->serviceMyTask->description ?? 'N/A' }}
-                                                            </small>
-                                                        @endif
-
-                                                </td>
-                                                <td class="text-center">
-                                                    <span class="badge badge-round {{ $statusClass }}">{{ $status }}</span>
-                                                </td>
+                                                <td class="text-center">{{ $rowNumber }}</td> 
                                                 <td>
                                                     {{ $token->token_date ? \Carbon\Carbon::parse($token->token_date)->format('d-M-Y') : 'N/A' }}
                                                 </td>
+                                                <td style="vertical-align: top;">
+                                                    <strong>{{ $token->customer->company_name ?? 'N/A' }}</strong>
+                                                    <br>
+                                                    <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $token->customer->area?->area ?? '' }}</small> 
+                                                </td>
+                                                <td style="vertical-align: top;">
+                                                    <strong>{{ $token->product->withoutModelSuffix()->name ?? 'N/A' }}</strong>
+                                                  
+                                                    <br>Model: <small class="text-muted">{{ $token->product->withoutModelSuffix()->model }}</small> 
+                                                   
+                                                    <br>Serial:<span class="badge badge-round badge-light">{{ $token->serial_number ?? 'N/A' }}</span>
+
+                                                </td> 
+                                                <td style="vertical-align: top;">
+                                                    <strong>Problem:</strong> {!! wordwrap(e($token->problem_type), 50, '<br>') !!} <br>
+                                                    <strong>Solution:</strong> <br>
+                                                    @if ($token->serviceMyTask && $token->serviceMyTask->pendingServiceTokens->count() > 0)
+                                                        @foreach ($token->serviceMyTask->pendingServiceTokens as $idx => $pendingToken)
+                                                            <div class="mb-1">
+                                                                <small style="
+                                                                    display: inline-block;
+                                                                    width: 350px;
+                                                                    word-wrap: break-word;
+                                                                    white-space: normal;
+                                                                ">
+                                                                    {{ $pendingToken->description ?? 'N/A' }}
+                                                                </small>
+                                                            </div>
+                                                        @endforeach
+                                                    @else
+                                                        <small class="text-break">
+                                                            {{ $token->serviceMyTask->description ?? 'N/A' }}
+                                                        </small>
+                                                    @endif
+
+                                                </td> 
+                                                <td class="text-center">
+                                                    <span class="badge badge-round {{ $statusClass }}">{{ $status }}</span>
+                                                </td> 
                                                 <td>
                                                     <span class="badge badge-round badge-info">{{ $token->service_type ?? 'N/A' }}</span>
-                                                </td>
-                                                <td>
-                                                    {{ $token->service->createdBy->name ?? 'N/A' }}
-                                                    <br>
-                                                    {{-- <small class="text-muted">{{ @$token->service->created_at->format('d-M-Y') ?? '' }}</small> --}}
-                                                </td>
+                                                </td> 
                                                 <td>
                                                     @if ($token->serviceMyTask && $token->serviceMyTask->updated_at)
                                                         {{ $token->serviceMyTask->updated_at->format('d-M-Y') }}
@@ -343,15 +312,13 @@
                                                 </td>
                                                 <td>{{ $engineerName }}</td>
                                                 <td class="text-right">
-                                                    <strong class="text-success">৳{{ number_format($serviceBill) }}</strong>
-                                                </td>
-                                                <td class="text-right">
-                                                    <strong class="text-info">৳{{ number_format($productBill) }}</strong>
-                                                </td>
+                                                    Service Bill: <strong class="text-success">৳{{ number_format($serviceBill) }}</strong><br>
+                                                    Product Bill: <strong class="text-info">৳{{ number_format($productBill) }}</strong>
+                                                </td> 
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="15" class="text-center py-4">
+                                                <td colspan="10" class="text-center py-4">
                                                     <i class="las la-inbox" style="font-size: 48px; color: #ddd;"></i>
                                                     <p class="mb-0 mt-2">No service records found matching your criteria</p>
                                                     <small class="text-muted">Try adjusting your filters</small>
@@ -362,21 +329,23 @@
                                     @if ($reportData->count() > 0)
                                         <tfoot>
                                             <tr class="font-weight-bold" style="font-size: 13px;">
-                                                <td colspan="13" class="text-right">
+                                                <td colspan="7" class="text-right">
                                                     <strong class="text-primary">TOTAL SUMMARY:</strong>
                                                 </td>
-                                                <td class="text-right bg-success text-white">
-                                                    <strong>৳{{ number_format($totalServiceBill) }}</strong>
-                                                </td>
-                                                <td class="text-right bg-info text-white">
+                                                <td  class="text-end bg-success text-white">
+                                                    Service Bill:<br>
+                                                    Product Bill:
+                                                </td> 
+                                                <td colspan="2" class="text-end bg-success text-white">
+                                                    <strong>৳{{ number_format($totalServiceBill) }}</strong><br>
                                                     <strong>৳{{ number_format($totalProductBill) }}</strong>
-                                                </td>
+                                                </td> 
                                             </tr>
                                             <tr class="font-weight-bold" style="font-size: 14px;">
-                                                <td colspan="13" class="text-right">
+                                                <td colspan="8" class="text-right">
                                                     <strong>GRAND TOTAL:</strong>
                                                 </td>
-                                                <td colspan="2" class="text-right">
+                                                <td colspan="2" class="text-end">
                                                     <strong>৳{{ number_format($totalServiceBill + $totalProductBill) }}</strong>
                                                 </td>
                                             </tr>
@@ -423,6 +392,105 @@
                     return false;
                 }
             });
+
+             const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if($customer)
+                companySelect.addOption({
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->company_name }}" 
+                });
+                companySelect.setValue("{{ $customer->id }}");
+            @endif
+
+ 
+
+
+            const productSelect = new TomSelect("#product_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            productSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if($product)
+                productSelect.addOption({
+                    id: "{{ $product->id }}",
+                    text: "{{ $product->name }}"
+                });
+                productSelect.setValue("{{ $product->id }}");
+            @endif
+
+
+            const serviceSelect = new TomSelect("#token_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('services.service-autocomplete.service-id') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            serviceSelect.clearOptions();
+                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+       
+            @if($serviceToken)
+                serviceSelect.addOption({ 
+                    id: "{{ $serviceToken->id }}",
+                    text: "{{ $serviceToken->service_unique_id }}"
+                });
+                serviceSelect.setValue("{{ $serviceToken->id }}");
+            @endif
+
+
         });
     </script>
 

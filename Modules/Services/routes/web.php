@@ -28,14 +28,18 @@ Route::group(['middleware'=>'auth', 'prefix' => 'Services', 'as' => 'services.']
         Route::resource('quotations', ServiceQuotationController::class);
         Route::get('quotations/sales-order/{id}', [ServiceQuotationController::class, 'salesOrder'])->name('quotations.sales.order');
         Route::get('quotations/print/{id}', [ServiceQuotationController::class, 'print'])->name('quotations.print');
+        Route::get('service-autocomplete-service-id', [ServiceQuotationController::class, 'serviceAutocomplete']) ->name('service-autocomplete.service-id');
+        Route::get('service-customer-id', [ServiceQuotationController::class, 'getCustomerByService']) ->name('service-customer-id');
 
         // Route::resource('emergency-notes', EmergencyNoteController::class); 
         Route::resource('service-my-task', ServiceMyTaskController::class);
+        Route::get('service-autocomplete-products', [ServiceMyTaskController::class, 'productAutocomplete']) ->name('service-autocomplete.products');
         Route::get('solution-verification', [ServiceMyTaskController::class, 'solutionVerification'])->name('service-my-task.solution-verification');
         Route::put('solution-verification/{id}', [ServiceMyTaskController::class, 'solutionVerificationStore'])->name('service-my-task.solution-verification-store');
 
         Route::resource('service-bills', ServiceBillController::class);
 
+     
         // OTP Routes for Service Bill
         Route::post('send-otp', [ServiceBillController::class, 'sendOtp'])->name('send-otp');
         Route::post('verify-otp', [ServiceBillController::class, 'verifyOtp'])->name('verify-otp');
@@ -66,11 +70,8 @@ Route::group(['middleware'=>'auth', 'prefix' => 'Services', 'as' => 'services.']
             Route::get('monthly-service-reports', [MonthlyServiceReportController::class, 'index'])->name('monthly-service-reports');
 
             Route::get('monthly-service-reports/details', [MonthlyServiceReportController::class, 'getEngineerDetails'])->name('monthly-service-reports.details');
-            Route::get('installation-reports', [InstallationReportController::class, 'index'])
-                    ->name('installation-reports');
-                
-            Route::get('installation-report-details/{id}', [InstallationReportController::class, 'details'])
-                    ->name('installation-report-details');
+            Route::get('installation-reports', [InstallationReportController::class, 'index'])->name('installation-reports'); 
+            Route::get('installation-report-details/{id}', [InstallationReportController::class, 'details'])->name('installation-report-details'); 
         });
 
             

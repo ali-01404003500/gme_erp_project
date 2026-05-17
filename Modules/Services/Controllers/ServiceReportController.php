@@ -39,7 +39,7 @@ class ServiceReportController extends Controller
         $reportData = $query->orderBy('token_date', 'desc')->get();
 
         // Get filter data for dropdowns
-        $filterData = $this->getFilterData();
+        $filterData = $this->getFilterData($request);
 
         // Determine report type based on filters
         $reportType = $this->getReportType($request);
@@ -62,8 +62,8 @@ class ServiceReportController extends Controller
 
         return view('Services::reports.service-report', [
             'reportData' => $paginatedData,
-            'customers' => $filterData['customers'],
-            'products' => $filterData['products'],
+            'customer' => $filterData['customer'],
+            'product' => $filterData['product'],
             'divisions' => $filterData['divisions'],
             'districts' => $filterData['districts'],
             'company_info' => $filterData['company_info'],
@@ -141,11 +141,11 @@ class ServiceReportController extends Controller
     /**
      * Get filter dropdown data
      */
-    private function getFilterData()
+    private function getFilterData($request)  
     {
         return [
-            'customers' => Customer::activeCustomers()->get(),
-            'products' => ProductCatalog::where('status', 'active')->get(),
+            'customer' => Customer::find($request->customer_id),
+            'product' => ProductCatalog::find($request->product_id),
             'divisions' => GeoLocation::where('type', 'Division')->get(),
             'districts' => GeoLocation::where('type', 'District')->get(),
             'company_info' => CompanyInfo::first()

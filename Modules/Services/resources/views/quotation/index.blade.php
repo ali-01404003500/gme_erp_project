@@ -63,14 +63,9 @@
                                                 </td>
     
                                                 <td width="20%">
-                                                    <select name="customer_id" id="customer_id" class="form-control tom-select"
+                                                    <select name="customer_id" id="customer_id" class="form-control "
                                                         data-placeholder="Select Customer">
                                                         <option value=""></option>
-                                                        @foreach ($customers as $customer)
-                                                            <option value="{{ $customer->id }}"
-                                                                {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                                                                {{ $customer->company_name }} - {{ $customer->address}}</option>
-                                                        @endforeach
                                                     </select>
                                                 </td>
                                                 <td class="text-right" width="20%">
@@ -106,9 +101,13 @@
                                 <tbody>
                                     @foreach ($quotations as $quotation)
                                         <tr>
-<td class="text-center">{{ ($quotations->currentPage() - 1) * $quotations->perPage() + $loop->iteration  }}</td>                                            <td>{{ $quotation->quotation_no }}</td>
+                                            <td class="text-center">{{ ($quotations->currentPage() - 1) * $quotations->perPage() + $loop->iteration  }}</td>                                            
+                                            <td>{{ $quotation->quotation_no }}</td>
                                             <td>{{ $quotation->created_at->format('Y-m-d') }}</td>
-                                            <td>{{ $quotation->customer->company_name }}</i></td>
+                                            <td>
+                                                {{ $quotation->customer->company_name }}<br>
+                                                <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $quotation->customer->area?->area ?? '' }}</small> 
+                                            </td>
                                             <td>{{ $quotation->user->name }}</td>
                                             <td>
                                                 @if ($quotation->status == 0)
@@ -149,9 +148,12 @@
 
                                                     @if ($quotation->status == 1 || $quotation->status == 0)
                                                         @if (hasPermission('services.quotations.sales-order'))
-                                                            <a class="btn btn-outline-secondary" title="Sales Order"
-                                                                href="{{ route('services.quotations.sales.order', $quotation->id) }}"><i
-                                                                    class="fas fa-cart-plus"></i></a>
+                                                                    <a href="javascript:void(0)"
+                                                                        class="btn btn-outline-secondary sales-order-btn"
+                                                                        data-url="{{ route('services.quotations.sales.order', $quotation->id) }}"
+                                                                        title="Sales Order">
+                                                                            <i class="fas fa-cart-plus"></i>
+                                                                    </a>
                                                         @endif
                                                     @endif
                                                     {{-- @if (hasPermission('services.quotations.show'))
@@ -190,6 +192,56 @@
         $(".datePicker").datepicker({
             format: 'dd-mm-yyyy',
             autoclose: true
+        });
+        $(document).on('click', '.sales-order-btn', function () {
+
+            let url = $(this).data('url');
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to create Sales Order?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, proceed',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            const companySelect = new TomSelect("#customer_id", {
+                valueField: "id",
+                labelField: "text",
+                searchField: [], 
+                load: function(query, callback) {
+
+                    if (!query.length || query.length < 2) return callback();
+
+                    $.ajax({
+                        url: "{{ route('sales.sales-orders-autocomplete.customers') }}",
+                        type: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            companySelect.clearOptions(); 
+                            callback(res.map(item => ({ id: item.id, text: item.label, phone: item.phone, address: item.address    })));
+                        },
+                        error: function() {
+                            callback();
+                        }
+                    });
+                }
+            }); 
+
+            @if(isset($customer))
+                companySelect.addOption({
+                    id: "{{ $customer->id }}",
+                    text: "{{ $customer->company_name }}"
+                });
+                companySelect.setValue("{{ $customer->id }}");
+            @endif
         });
     </script>
 @endsection

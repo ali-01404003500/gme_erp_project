@@ -44,4 +44,9 @@ class ServiceToken extends BaseModel
         return $this->hasOne(ServiceMyTask::class, 'service_token_id');
     }
     
+    public function scopeLatest($query)
+    {
+        return $query->orderBy($this->getTable().'.created_at', 'desc');
+    }
+
 }

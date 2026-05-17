@@ -89,13 +89,13 @@
                                             <thead>
                                                 <tr>
                                                     <th class="text-center" style="width: 8%">SL</th>
-                                                    <th class="text-center">Token</th>
+                                                    <th class="text-center d-none">Token</th>
+                                                    <th class="text-center">Customer </th>
                                                     <th class="text-center">Product</th>
-                                                    <th class="text-center">Customer</th>
                                                     <th class="text-center">Problem Type</th>
                                                     <th class="text-center">Service Date</th>
-                                                    <th class="text-center">Service Status</th>
-                                                    <th class="text-center">Assign By</th>
+                                                    <th class="text-center ">Service Status</th>
+                                                    <th class="text-center  d-none">Assign By</th>
                                                     <th class="text-center">Priority</th>
                                                     <th class="text-center">Service Type</th>
                                                     <th class="text-center no-content">Action</th>
@@ -105,16 +105,24 @@
                                                 @foreach ($myTasks as $key => $task)
                                                     <tr>
                                                         <td class="text-center">{{ $key + 1 }}</td>
-                                                        <td class="text-center">{{ $task->service->service_unique_id }}</td>
-                                                        <td>{{ optional(optional($task)->product)->name }}</td>
-                                                        <td>{{ optional($task)->customer->company_name }}</td>
+                                                        <td class="text-center d-none">{{ $task->service->service_unique_id }}</td>
+                                                        <td>
+                                                            {{ optional($task)->customer->company_name }} <br>
+                                                            <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ optional($task)->customer->area?->area ?? '' }}</small> 
+
+                                                        </td>
+                                                        <td> 
+                                                            {{ $task->product->withoutModelSuffix()->name }} <br>
+                                                            Model: {{ $task->product->withoutModelSuffix()->model }}  
+                                                        </td>
+                                                      
                                                         <td>{{ $task->problem_type }}</td>
                                                         <td>{{ $task->token_date }}</td>
                                                         <td>
                                                             {{ $task->action }}
                                                         </td>
                                                         {{-- @dd($task->engineerAssign) --}}
-                                                        <td>{{ @$task->engineerAssign->createdBy->name }}</td>
+                                                        <td class="d-none">{{ @$task->engineerAssign->createdBy->name }}</td>
                                                         <td>{{ @$task->engineerAssign->service_priority }}</td>
                                                         <td>{{ @$task->engineerAssign->serviceType->name??@$task->engineerAssign->service_type }}</td>
                                                         <td>

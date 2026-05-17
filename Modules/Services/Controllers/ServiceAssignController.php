@@ -40,10 +40,12 @@ class ServiceAssignController extends Controller
             ->pluck('id')
             ->toArray();
 
-        $data['engineers'] = Employee::whereHas('employementDetail', function($q) use ($department_id) {
+        $data['engineers'] = Employee::where('status', 1)->whereHas('employementDetail', function($q) use ($department_id) {
                 $q->whereIn('department_id', $department_id);
             })
             ->get();
+
+            
 
                 $data ['serviceTypes'] = ServiceType::all();
 

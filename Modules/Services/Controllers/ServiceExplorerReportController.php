@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\Settings\Department;
 use Modules\Inventory\Services\ExportService;
+use Modules\Services\Models\Service;
 
 class ServiceExplorerReportController extends Controller
 {
@@ -81,7 +82,7 @@ class ServiceExplorerReportController extends Controller
         $totals = $this->calculateTotals($reportData);
 
         // Get filter data for dropdowns
-        $filterData = $this->getFilterData();
+        $filterData = $this->getFilterData($request);
 
         // Handle exports
         if ($request->filled('export_type')) {
@@ -102,10 +103,10 @@ class ServiceExplorerReportController extends Controller
         return view('Services::service-explorer-report.index', [
             'reportData' => $paginatedData,
             'totals' => $totals,
-            'customers' => $filterData['customers'],
-            'products' => $filterData['products'],
+            'customer' => $filterData['customer'],
+            'product' => $filterData['product'],
             'engineers' => $filterData['engineers'],
-            'serviceTokens' => $filterData['serviceTokens'],
+            'serviceToken' => $filterData['serviceToken'],
             'company_info' => $filterData['company_info']
         ]);
     }
@@ -201,35 +202,25 @@ class ServiceExplorerReportController extends Controller
     /**
      * Get filter dropdown data
      */
-    private function getFilterData()
+    private function getFilterData($request)
     {
         $department_id = Department::withoutGlobalScope('latest')
             ->whereIn('name', ['Sales & Service', 'Sales & Marketing'])
             ->pluck('id')
             ->toArray();
-      
+    
+            
         return [
-            'customers' => Customer::withoutGlobalScope('latest')
-                ->activeCustomers()
-                ->get(),
-            'products' => ProductCatalog::withoutGlobalScope('latest')
-                ->where('status', 'active')
-                ->get(),
+            'customer' => Customer::find($request->customer_id),
+            'product' => ProductCatalog::find($request->product_id),
             'engineers' => Employee::withoutGlobalScope('latest')
+                ->where('status', 1)
                 ->whereHas('employementDetail', function($q) use ($department_id) {
                     $q->withoutGlobalScope('latest')
                       ->whereIn('department_id', $department_id);
                 })
                 ->get(),
-            'serviceTokens' => ServiceToken::withoutGlobalScope('latest')
-                ->select('id', 'service_id')
-                ->with(['service' => function($q) {
-                    $q->withoutGlobalScope('latest')
-                      ->select('id', 'service_unique_id');
-                }])
-                ->latest('service_tokens.created_at')
-                ->limit(500)
-                ->get(),
+            'serviceToken' => Service::where('service_unique_id', $request->token_id)->first(),
             'company_info' => CompanyInfo::withoutGlobalScope('latest')
                 ->first()
         ];

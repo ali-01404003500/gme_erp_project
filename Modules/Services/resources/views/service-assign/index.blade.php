@@ -1,6 +1,17 @@
 @section('title', 'Service Assign List')
 @section('description', 'Service Assign List')
 @extends('layout.app')
+<style>
+#zero-config td, 
+#zero-config th {
+    white-space: normal !important;
+    word-break: break-word;
+}
+
+#zero-config {
+    width: 100%;
+}
+</style>
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">
@@ -53,8 +64,8 @@
                     <div class="col-md-12 my-4">
                         <div class="card">
                             <div class="card-body">
-                                <div class="col-sm-12">
-                                    <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $serviceTokens])' style="width:100%">
+                                <div class="col-sm-12 table-responsive">
+                                    <table id="zero-config" class="table table-bordered dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $serviceTokens])' style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th class="text-center" style="width: 2%">Sl</th>
@@ -63,31 +74,35 @@
                                                 <th class="text-center" style="width: 15%">Service Type</th>
                                                 <th class="text-center" style="width: 15%">Problem Type</th>
                                                 <th class="text-center" style="width: 10%">Date</th>
-                                                <th class="text-center no-content" style="width: 10%">Emergency Note
-                                                </th>
+                                                <th class="text-center no-content" style="width: 10%">Emergency Note  </th>
                                                 <th class="text-center no-content" style="width: 10%">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($serviceTokens as $key => $token)
                                                 <tr data-action="{{ $token->action }}"
-                                                    style="background-color: {{ $token->action == 'Junk' ? 'rgb(168, 168, 168)' : ($token->action == 'Failed' ? 'rgba(255, 199, 206, 0.5)' : '') }};">
-                                                    <td class="text-center" style="vertical-align: top;">
+                                                    style=" background-color: {{ $token->action == 'Junk' ? 'rgb(168, 168, 168)' : ($token->action == 'Failed' ? 'rgba(255, 199, 206, 0.5)' : '') }};">
+                                                    <td class="text-center" style="width: 2%; vertical-align: top;">
                                                         {{ $key + 1 }}</td>
-                                                    <td style="vertical-align: top;">
+                                                    <td style="width: 20%; vertical-align: top;">
                                                         Invoice ID: {{ @$token->service->service_unique_id }} <br>
-                                                        Product Name: {{ @$token->product->name }} <br>
+                                                        Product Name: {{ @ $token->product->withoutModelSuffix()->name }} <br>
+                                                        Product Model: {{ @ $token->product->withoutModelSuffix()->model }} <br>
                                                         Serial No: {{ @$token->serial_number }}
                                                     </td>
-                                                    <td style="vertical-align: top;">
-                                                        {{ optional($token->customer)->company_name }}</td>
-                                                    <td style="vertical-align: top;">{{ $token->service_type }}</td>
-                                                    <td style="vertical-align: top;">{{ $token->problem_type }}</td>
-                                                    <td style="vertical-align: top;">
+ 
+
+                                                    <td style="width: 18%; vertical-align: top;">
+                                                        {{ optional($token->customer)->company_name }}<br>
+                                                        <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ optional($token->customer)->area?->area ?? '' }}</small> 
+                                                    </td>
+                                                    <td style="width: 15%; vertical-align: top;">{{ $token->service_type }}</td>
+                                                    <td style="width: 15%; vertical-align: top;">{{ $token->problem_type }}</td>
+                                                    <td style="width: 10%; vertical-align: top;">
                                                         Invoice Date: {{ $token->invoice_date }} <br>
                                                         Expire Date: {{ $token->expire_date }}
                                                     </td>
-                                                    <td style="vertical-align: top;">
+                                                    <td style="width: 10%;vertical-align: top;">
                                                         @foreach ($token->emergencyNotes as $emergencyNote)
                                                             <li>
                                                                 Call By: {{ $emergencyNote->createdBy->name }} <br>
@@ -99,7 +114,7 @@
                                                             <br><br>
                                                         @endforeach
                                                     </td>
-                                                    <td style="vertical-align: top;">
+                                                    <td style="width: 10%; vertical-align: top;">
                                                         <form id="service-form-{{ $key + 1 }}"
                                                             action="{{ route('services.services-action-update', $token->id) }}"
                                                             method="POST">
@@ -120,14 +135,19 @@
                                                                     {{ $token->action == 'Junk' ? 'selected' : '' }}>
                                                                     Junk</option>
                                                             </select>
-                                                            <button type="submit"
-                                                                class="btn btn-sm btn-primary small-btn d-inline-block me-2"
-                                                                style="width: 80px;">Update</button>
-                                                            <a href="javascript:void(0);" 
-                                                                class="btn btn-sm btn-outline-primary small-btn d-inline-block assignBtn" 
-                                                                data-id="{{ $token->id }}" 
-                                                                style="width: 80px;">Assign</a>
+                                              
 
+                                                            <div class="d-flex gap-1">
+                                                                <button type="submit"
+                                                                    class="btn btn-sm btn-primary small-btn d-inline-block me-2  px-0"
+                                                                    style="width: 80px;">Update
+                                                                </button>
+                                                                <a href="javascript:void(0);" 
+                                                                    class="btn btn-sm btn-outline-primary small-btn d-inline-block assignBtn px-0" 
+                                                                    data-id="{{ $token->id }}" 
+                                                                    style="width: 80px;">Assign
+                                                                </a>
+                                                            </div>
                                                         </form>
                                                     </td>
                                                 </tr>

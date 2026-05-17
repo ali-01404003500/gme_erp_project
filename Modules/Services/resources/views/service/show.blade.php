@@ -235,6 +235,8 @@
                                                 <td>{{ $key + 1 }}</td>
                                                 <td>
                                                    {{ $item->product->name }} <br>
+                                                   Issue: {{ wordwrap($item->problem_details, 50, "\n", true) }}
+                                                   
                                                 </td>
                                                 <td>
                                                    {{ $item->serial_number}}

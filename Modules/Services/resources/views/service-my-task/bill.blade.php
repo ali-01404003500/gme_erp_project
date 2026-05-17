@@ -460,11 +460,11 @@
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fa fa-save"></i> Temporary Save
                                             </button>
-                                            @if (hasPermission('sales.sales-orders.approve'))
-                                                <button type="submit" id="approve" class="btn btn-success">
-                                                    <i class="fa fa-check"></i> Save and bill
-                                                </button>
-                                            @endif
+                                        
+                                            <button type="submit" id="approve" class="btn btn-success">
+                                                <i class="fa fa-check"></i> Save and bill
+                                            </button>
+                                         
                                             <button type="submit" id="reject" class="btn btn-danger">
                                                 <i class="fa fa-times"></i> Quit
                                             </button>
