@@ -102,7 +102,16 @@ class QuotationService
 
     public function show($id)
     {
-      $quotation = Quotation::with(['quotationDetails.product.brand.supplier','approvedBy.employee.employementDetail','quotationTerms'])->find($id);
+      //$quotation = Quotation::with(['quotationDetails.product.brand.supplier','approvedBy.employee.employementDetail','quotationTerms'])->find($id);
+
+      $quotation = Quotation::with([
+                    'quotationDetails' => function ($q) {
+                        $q->orderBy('id', 'asc'); // or 'desc'
+                    },
+                    'quotationDetails.product.brand.supplier',
+                    'approvedBy.employee.employementDetail',
+                    'quotationTerms'
+                ])->find($id);
       return $quotation;
     }
 

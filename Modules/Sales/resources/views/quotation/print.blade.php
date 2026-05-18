@@ -300,7 +300,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($quotation->quotationDetails as $key => $quotationDetail)
+                                          
+                                            @foreach ($quotation->quotationDetails->sortBy('id') as $key => $quotationDetail)
                                                 <tr style="page-break-inside: avoid;">
                                                     <td
                                                         style="border: 1px solid black; text-align: center; vertical-align: top;">
