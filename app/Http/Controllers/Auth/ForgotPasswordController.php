@@ -47,8 +47,9 @@ class ForgotPasswordController extends Controller
     public function showForgetPasswordForm($user_id)
     {
         $user = User::with('employee')->find($user_id);
-        if (!$user) {
-            return redirect()->back()->with('error', 'User not found');
+   
+        if (!$user || !$user->employee || $user->employee->status === 0) {
+            return redirect()->back()->with('error', 'User is inactive or not found');
         }
         $data = (object)  [
             'user_id'      => $user->id,
@@ -77,7 +78,8 @@ class ForgotPasswordController extends Controller
         }
 
         // Find user by employee phone number
-        $user = User::whereHas('employee', function($query) use ($request) {
+        $user = User::where('user_status', 'active') 
+            ->whereHas('employee', function($query) use ($request) {
             $query->where('office_phone', $request->phone_number);
         })->first();
 
