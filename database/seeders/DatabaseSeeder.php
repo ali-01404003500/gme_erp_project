@@ -10,6 +10,7 @@ use App\Models\AccessControl\CommercialInfo;
 use App\Models\AccessControl\CompanyInfo;
 use App\Models\AccessControl\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Foundation\Auth\User;
 use Modules\HRMS\Models\Settings\Shift;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +22,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        User::updateOrCreate(
+            ['id' => 1],
+            [
+                'name' => 'Admin',
+                'email' => 'admin@gmail.com',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+        
 
         //create company info
         CompanyInfo::updateOrCreate([
