@@ -9,8 +9,8 @@ use App\Models\AccessControl\BranchType;
 use App\Models\AccessControl\CommercialInfo;
 use App\Models\AccessControl\CompanyInfo;
 use App\Models\AccessControl\Role;
-use Illuminate\Database\Seeder;
-use Illuminate\Foundation\Auth\User;
+use App\Models\User;
+use Illuminate\Database\Seeder; 
 use Modules\HRMS\Models\Settings\Shift;
 
 class DatabaseSeeder extends Seeder
@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         User::updateOrCreate(
             ['id' => 1],
             [
-                'name' => 'Admin',
+                'name' => 'admin',
                 'email' => 'admin@gmail.com',
                 'password' => bcrypt('12345678'),
             ]
