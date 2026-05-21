@@ -437,22 +437,20 @@
                                     {{ t_('menu.loan-payment') }}
                                 </a>
                             </li>
-                        @endif 
-
-                        @if (hasPermission('account.payments.payment-verifications.index'))
-                            <li>
-                                <a href="{{ route('account.payments.payment-verifications.index') }}"
-                                    class="{{ request()->routeIs('account.payments.payment-verifications*') ? 'active' : '' }}">
-                                    <span class="nav-icon fas fa-coins"></span>
-                                    {{ t_('menu.payment-verifications') }}
-                                </a>
-                            </li>
-                        @endif 
-                        
+                        @endif  
                     </ul>
                 </li>
             @endif
 
+            @if (hasPermission('account.payments.payment-verifications.index'))
+                <li>
+                    <a href="{{ route('account.payments.payment-verifications.index') }}"
+                        class="{{ request()->routeIs('account.payments.payment-verifications.index') ? 'active' : '' }}">
+                        <span class="nav-icon fas fa-receipt"></span>
+                        {{ t_('payment verifications') }}
+                    </a>
+                </li>
+            @endif
          
 
 

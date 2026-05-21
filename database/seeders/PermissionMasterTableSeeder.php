@@ -1349,8 +1349,16 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'cms.document-entries',
                 'parent_key' => 'cms',
             ],
+
+
+            //payment verifications
+            [
+                'title' => 'Payments Verifications',
+                'description' => 'Permission of Add, Remove, Update, Delete Loan Payments Verifications',
+                'key' => 'account.payments.payment-verifications',
+                'parent_key' => 'account.payments',
+            ],
           
-           
             
             
 

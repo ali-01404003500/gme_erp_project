@@ -73,14 +73,14 @@
                                 <thead>
                                     <tr>
                                         <th>SL</th>
-                                        <th>Supplier/Vendor Name</th>
+                                        <th>Date</th>
                                         <th>Payment Type</th>
+                                        <th>Payment To</th>  
+                                        <th>Amount</th>
+                                        <th>Attachments</th>
                                         <th>Prepared By</th>
                                         <th>Verified By</th>
                                         <th>Approved By</th>
-                                        <th>Amount</th>
-                                        <th>Document/Images</th>
-                                        <th>Date</th>
                                         <th>Status</th>
                                         <th class="no-content">Action</th>
                                     </tr>
@@ -89,18 +89,10 @@
                                     @foreach ($makePayments as $payment)
                                         <tr>
                                             {{-- Serial number --}}
-                                            <td>{{ ($makePayments->currentPage() - 1) * $makePayments->perPage() + $loop->iteration }}
-                                            </td>
+                                            <td>{{ ($makePayments->currentPage() - 1) * $makePayments->perPage() + $loop->iteration }} </td>
 
-                                           
-                                            {{-- Supplier / Vendor Name (clickable) --}}
-                                            <td>
-                                                <a class="text-dark fw-500"
-                                                    href="{{ route('account.payments.make-payments.show', $payment->id) }}">
-                                                    {{ $payment->paymentTo->company_name??$payment->paymentTo->broker_name?? $payment->paymentTo->name }}
-                                                   
-                                                </a>
-                                            </td>
+                                            {{-- Date --}}
+                                            <td>{{ $payment->date }}</td>
 
                                             {{-- Payment Type --}}
                                             <td>
@@ -115,22 +107,14 @@
                                                 @endphp
                                                 {{ $paymentTypeLabel }}
                                             </td>
-
-                                            {{-- Prepared By --}}
-                                            <td>{{ $payment->createdBy?->name ?? 'N/A' }}</td>
-
-                                            {{-- Verified By --}}
+                                           
+                                            {{-- Payment To (clickable) --}}
                                             <td>
-                                                @if($payment->status != 'pending' && $payment->verifiedBy)
-                                                    {{ $payment->verifiedBy->name }}
-                                                @endif
-                                            </td>
-
-                                            {{-- Approved By --}}
-                                            <td>
-                                                @if($payment->status == 'approved' && $payment->approvedBy)
-                                                    {{ $payment->approvedBy->name }}
-                                                @endif
+                                                <a class="text-dark fw-500"
+                                                    href="{{ route('account.payments.make-payments.show', $payment->id) }}">
+                                                    {{ $payment->paymentTo->company_name??$payment->paymentTo->broker_name?? $payment->paymentTo->name }}
+                                                   
+                                                </a>
                                             </td>
 
                                             {{-- Amount --}}
@@ -171,8 +155,24 @@
 
                                             </td>
 
-                                            {{-- Date --}}
-                                            <td>{{ $payment->date }}</td>
+
+                                            {{-- Prepared By --}}
+                                            <td>{{ $payment->createdBy?->name ?? 'N/A' }}</td>
+
+                                            {{-- Verified By --}}
+                                            <td>
+                                                @if($payment->status != 'pending' && $payment->verifiedBy)
+                                                    {{ $payment->verifiedBy->name }}
+                                                @endif
+                                            </td>
+
+                                            {{-- Approved By --}}
+                                            <td>
+                                                @if($payment->status == 'approved' && $payment->approvedBy)
+                                                    {{ $payment->approvedBy->name }}
+                                                @endif
+                                            </td>
+ 
 
                                             {{-- Status --}}
                                             <td>

@@ -79,10 +79,11 @@ class PaymentVerificationController extends Controller
     {
         $validate = $request->validate([
             //validate rules
-            'verified' => 'required|in:0,1,2,-1',
+            'verified' => 'required|in:0,1,2,-1,-2',
             'remark' => 'nullable|string|max:255'
         ]);
         $makePaymentDetails = MakePaymentDetail::findOrFail($id);
+        
         $this->service->update($makePaymentDetails, $validate); 
 
         return redirect()->route('account.payments.payment-verifications.index')->with('success', 'Payment Verification updated successfully.');

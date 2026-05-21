@@ -5043,6 +5043,35 @@ class PermissionTableSeed extends Seeder
             ],
 
 
+            //Payments verify
+            [
+                'name' => 'Payments Verification List',
+                'slug' => 'account.payments.payment-verifications.index',
+                'description' => 'Payments Verification list permission',
+                'key' => 'account.payments.payment-verifications'
+            ],
+            [
+                'name' => 'Payments Checking',
+                'slug' => 'account.payments.payment-verifications.checking',
+                'description' => 'Payments Verification checking permission',
+                'key' => 'account.payments.payment-verifications'
+            ],
+            [
+                'name' => 'Payments Verify',
+                'slug' => 'account.payments.payment-verifications.verify',
+                'description' => 'Payments Verification verify permission',
+                'key' => 'account.payments.payment-verifications'
+            ],
+            [
+                'name' => 'Payments Approve',
+                'slug' => 'account.payments.payment-verifications.approve',
+                'description' => 'Payments Verification approve permission',
+                'key' => 'account.payments.payment-verifications'
+            ],
+
+             
+           
+
 
         ];
 

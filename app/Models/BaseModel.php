@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class BaseModel extends Model{
 
@@ -67,7 +68,7 @@ class BaseModel extends Model{
         }
     }
 
-    public function scopeFilterByDateRange($query, $filed_name, $filter="from_to")
+    /*public function scopeFilterByDateRange($query, $filed_name, $filter="from_to")
     {
         $query->when(request()->filled($filter), function ($qr) use ($filed_name, $filter) {
             $dataRange = explode(' to ', request()->$filter);
@@ -78,6 +79,27 @@ class BaseModel extends Model{
                 $to = date('Y-m-d', strtotime($from . ' +1 days'));
             }
             $qr->whereBetween($filed_name, [$from, $to]);
+        });
+    }*/
+
+
+    public function scopeFilterByDateRange($query, $field_name, $filter = "from_to")
+    {
+        $query->when(request()->filled($filter), function ($qr) use ($field_name, $filter) {
+            $dataRange = explode(' to ', str_replace('+', ' ', request()->$filter));
+
+            $from = Carbon::parse($dataRange[0])->startOfDay();
+
+            if (isset($dataRange[1])) {
+                $to = Carbon::parse($dataRange[1])->endOfDay();
+            } else {
+                $to = Carbon::parse($dataRange[0])->endOfDay();
+            }
+
+            $qr->whereBetween($field_name, [$from, $to]);
+        }, function ($qr) use ($field_name) {
+            // default: today
+            $qr->whereDate($field_name, now()->toDateString());
         });
     }
 

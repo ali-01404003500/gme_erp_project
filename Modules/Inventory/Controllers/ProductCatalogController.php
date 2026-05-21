@@ -27,7 +27,7 @@ class ProductCatalogController extends Controller
     function __construct(ProductCatalogService $service)
     {
         $this->service = $service; 
-        $this->middleware('permited')->except(['prodcutModelAutocomplete']);
+        $this->middleware('permited')->except(['prodcutModelAutocomplete','prodcutAutocomplete']);
 
     }
     
@@ -506,6 +506,21 @@ class ProductCatalogController extends Controller
         ->unique('name')
         ->values();
         return response()->json($merged);
+    }
+
+    public function prodcutAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->search(
+            ProductCatalog::class,
+            ['name'],
+
+            $request->search,
+            ['name', 'name'],
+            20
+        ); 
+     
+        return response()->json($data);
     }
 
 

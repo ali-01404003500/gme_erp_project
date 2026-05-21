@@ -13,7 +13,7 @@ class MakePaymentDetail extends BaseModel
     use HasFactory;
     
     protected $guarded = [];
-    protected $casts = ['attachments'=>'array'];
+    protected $casts = ['attachments'=>'array', 'date' => 'datetime'];
 
     public function bank()
     {
@@ -38,7 +38,12 @@ class MakePaymentDetail extends BaseModel
     public function verifiedBy(){
         return $this->belongsTo(User::class, 'verified_by');
     }
- 
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
 
     public function createBy()
     {

@@ -38,6 +38,13 @@ class MakePaymentController extends Controller
         return view("Account::payments.make-payments.index", $data);
     }
 
+    public function verification()
+    {
+        $data['makePayments'] = $this->service->getAll();
+ 
+        return view('Account::payments.payment-verifications.index', $data);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

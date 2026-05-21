@@ -365,7 +365,7 @@
                     if (!query.length || query.length < 2) return callback();
 
                     $.ajax({
-                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        url: "{{ route('inv.product-autocomplete.products') }}",
                         type: "GET",
                         data: { search: query },
                         success: function(res) {

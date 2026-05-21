@@ -16,9 +16,15 @@ class MakePaymentService
 {
 
     public function getAll(int $limit = 20)
-    {
-        return MakePayment::query()->filterByDateRange('created_at') 
-            ->paginate($limit);
+    { 
+        $query = MakePayment::query();
+
+        if (!request('from_to') ) {
+            $query->whereDate('created_at', now()->toDateString());
+        } else {
+            $query->filterByDateRange('created_at');
+        }
+        return $query->paginate($limit);
  
     }
 

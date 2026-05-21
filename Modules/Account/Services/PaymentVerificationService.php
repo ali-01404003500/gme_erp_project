@@ -18,7 +18,7 @@ class PaymentVerificationService
 {
     
     public function getAll(int $limit = 20) {
-        return MakePaymentDetail::whereNotIn('verified', ['2','-1'])->paginate($limit);
+        return MakePaymentDetail::whereIn('verified', ['0','1','-2'])->paginate($limit);
     }
     
     public function store(array $data)
@@ -33,8 +33,23 @@ class PaymentVerificationService
             $paymentVerification->update(['verified_by' => auth()->id(), 'verified_date' => now()]); 
         }
 
+        if($data['verified'] == '2' || $data['verified'] == '-2') { 
+            $paymentVerification->update(['approved_by' => auth()->id(), 'approved_date' => now()]); 
+        }
+         
+        if($data['verified'] == '-1' || $data['verified'] == '-2') {
+            if($paymentVerification->paymentable_type === MakePayment::class) {
+                $paymentVerification->paymentable->update(['status' => 'deny']);
+            }
+            else if($paymentVerification->paymentable_type === InvoiceWisePayment::class) {
+                $paymentVerification->paymentable->update(['status' => 'deny']);
+            }
+        }
+
+
         // Additional logic based on the 'verified' status
         if($data['verified'] == '2') {  
+            
             if($paymentVerification->paymentable_type === MakePayment::class) {
                 $paymentVerification->paymentable->update(['status' => 'approved']);
                 app(MakePaymentService::class)->makeDummyTransaction($paymentVerification->paymentable);
@@ -55,14 +70,7 @@ class PaymentVerificationService
             } 
            
         } 
-        if($data['verified'] == '-1') {
-            if($paymentVerification->paymentable_type === MakePayment::class) {
-                $paymentVerification->paymentable->update(['status' => 'deny']);
-            }
-            else if($paymentVerification->paymentable_type === InvoiceWisePayment::class) {
-                $paymentVerification->paymentable->update(['status' => 'deny']);
-            }
-        }
+      
         return $paymentVerification;
     }
 
