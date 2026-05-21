@@ -1357,6 +1357,33 @@ class AccountGroupSeeder extends Seeder
 
             ],
 
+            [
+                'id' => 5064,
+                'name' => 'MFS Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
+
+            ],
+            [
+                'id' => 5063,
+                'name' => 'Bank Charge Expense',
+                'account_group_id' => 5,
+                'account_control_id' => 5060,
+                'branch_id' => 1,
+                'status' => 1,
+                'is_deletable' => 0,
+                'created_by' => 1,
+                'updated_by' => 1
+
+            ],
+
+ 
+
             //Indirect Expense
             [
                 'id' => 5071,
@@ -1862,10 +1889,10 @@ class AccountGroupSeeder extends Seeder
                 'name' => 'MFS Charge Expense',
                 'account_group_id' => 5,
                 'account_control_id' => 5060,
-                'account_subsidiary_id' => 5064,
+                'account_subsidiary_id' => 5063,
                 'branch_id' => 1,
                 'is_deletable' => 0,
-                'account_number' => '506401',
+                'account_number' => '506301',
             ],
             [
                 'name'=>'Bank Charge Expense',
