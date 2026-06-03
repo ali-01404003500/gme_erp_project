@@ -18,18 +18,18 @@ trait S3FileHandler
     public function uploadFile(UploadedFile $file, $directory="commons", $name=null)
     {
         $filename = $name ? $name : uniqid().'-' . $file->getClientOriginalName();
-        Storage::disk('s3')->put($directory.'/'.$filename, file_get_contents($file));
+        Storage::disk('public')->put($directory.'/'.$filename, file_get_contents($file));
         
         return "/files"."/".$directory.'/'.$filename;
     }
 
     public function deleteFile($path)
     {
-        Storage::disk('s3')->delete($path);
+        Storage::disk('public')->delete($path);
     }
 
     public function getFile($path)
     {
-        return Storage::disk('s3')->get($path);
+        return Storage::disk('public')->get($path);
     }
 }

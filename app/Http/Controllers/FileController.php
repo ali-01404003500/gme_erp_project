@@ -12,7 +12,7 @@ class FileController extends Controller
     
     public function getFile($path)
     {
-        $content = Storage::disk('s3')->get($path);
+        $content = Storage::disk('public')->get($path);
         return response($content)->header('Content-Type', $this->getMimeType($path));
     }
 

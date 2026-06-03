@@ -538,8 +538,8 @@ function s3FileToBase64($filename)
     $directory = str_replace('/files/', '', $filename);
 
     try {
-        // Get raw file content from S3
-        $s3FileContent = Storage::disk('s3')->get($directory);
+        // Get raw file content from local vps 
+        $s3FileContent = Storage::disk('public')->get($directory);
         
         // Critical fix: Use file content to determine MIME type (NOT file extension)
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
