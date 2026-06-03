@@ -15,12 +15,22 @@ trait S3FileHandler
      * @throws Some_Exception_Class If the upload fails.
      * @return string The path to the uploaded file on S3.
      */
-    public function uploadFile(UploadedFile $file, $directory="commons", $name=null)
+    /*public function uploadFile(UploadedFile $file, $directory="commons", $name=null)
     {
         $filename = $name ? $name : uniqid().'-' . $file->getClientOriginalName();
         Storage::disk('public')->put($directory.'/'.$filename, file_get_contents($file));
         
         return "/files"."/".$directory.'/'.$filename;
+    }*/
+
+    public function uploadFile(UploadedFile $file, $directory="commons", $name=null)
+    {
+        $extension = $file->getClientOriginalExtension();
+
+        $filename = date('Ymd_His').'_'.uniqid().'_'.bin2hex(random_bytes(8)).'.'.$extension;
+        Storage::disk('public')->put($directory.'/'.$filename, file_get_contents($file));
+        return "/files"."/".$directory.'/'.$filename;
+         
     }
 
     public function deleteFile($path)
