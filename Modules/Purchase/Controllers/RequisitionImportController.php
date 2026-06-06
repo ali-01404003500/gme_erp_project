@@ -632,7 +632,7 @@ class RequisitionImportController extends Controller
             $serialData = $product['serials'] ?? [];
             $batchData = $product['batches'] ?? [];
 
-            if ($productType['is_serial'] == 'yes') {
+            /*if ($productType['is_serial'] == 'yes') {
                 if (!empty($batchData)) {
                     throw new \Exception("Record {$rowNumber}, Product {$index}: Serial product '{$product['name']}' cannot have batch data");
                 }
@@ -668,7 +668,7 @@ class RequisitionImportController extends Controller
                 }
             } else {
                 throw new \Exception("Record {$rowNumber}, Product {$index}: Product '{$product['name']}' must be configured as either serial or batch product");
-            }
+            }*/
         }
     }
 
