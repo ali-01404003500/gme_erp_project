@@ -319,10 +319,13 @@ class RequisitionImportController extends Controller
                 throw new \Exception("Record {$rowNumber}, Product {$index}: Product name cannot be empty");
             }
 
-            $productModel = ProductCatalog::where('name', $product['name'])
-                ->where('model', $product['model'])
-                ->where('status', 'active')
-                ->first();
+            // $productModel = ProductCatalog::where('name', $product['name'])
+            //     ->where('model', $product['model'])
+            //     ->where('status', 'active')
+            //     ->first();
+            $productModel = ProductCatalog::where('product_code', $product['product_code'])->first();
+
+            
 
             if (!$productModel) {
                 throw new \Exception("Record {$rowNumber}, Product {$index}: Product '{$product['name']}' not found or inactive");
