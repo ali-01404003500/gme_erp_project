@@ -406,7 +406,20 @@ class RequisitionImportController extends Controller
                 if (!empty($product['serials'])) {
                     $this->createSerials($requisition, $productId, $product['serials'], $rowNumber, $key);
                 } else {
-                    throw new \Exception("Record {$rowNumber}, Product {$key}: Serial product '{$product['name']}' must have serial data");
+                    //throw new \Exception("Record {$rowNumber}, Product {$key}: Serial product '{$product['name']}' must have serial data");
+
+                    $dummySerials = [];
+
+                    $qty = $product['quantity'] ?? 1; // fallback quantity
+
+                    for ($i = 1; $i <= $qty; $i++) {
+                        $dummySerials[] = [
+                            'serial' => 'DUMMY-' . $productId . '-' . $rowNumber . '-' . $i
+                        ];
+                    }
+
+                    $this->createSerials($requisition, $productId, $dummySerials, $rowNumber, $key);
+                    
                 }
             } elseif ($productType['is_expire_date'] == 'yes') {
                 if (!empty($product['serials'])) {
@@ -415,8 +428,39 @@ class RequisitionImportController extends Controller
                 if (!empty($product['batches'])) {
                     $this->createBatches($requisition, $productId, $product['batches'], $rowNumber, $key);
                 } else {
-                    throw new \Exception("Record {$rowNumber}, Product {$key}: Batch product '{$product['name']}' must have batch data");
+                    //throw new \Exception("Record {$rowNumber}, Product {$key}: Batch product '{$product['name']}' must have batch data");
+
+                    $dummyBatches = [];
+
+                    $qty = $product['quantity'] ?? 1;
+
+                    for ($i = 1; $i <= $qty; $i++) {
+                        $dummyBatches[] = [
+                            'batch_no'    => 'DUMMY-BATCH-' . $productId . '-' . $rowNumber . '-' . $i,
+                            'expire_date' => now()->addYear()->format('Y-m-d'), // default expiry (1 year)
+                        ];
+                    }
+
+                    $this->createBatches($requisition, $productId, $dummyBatches, $rowNumber, $key);
+
+                    
                 }
+            }  elseif ($productType['is_serial'] == 'no' && $productType['is_expire_date'] == 'no') {
+                    
+                $dummyBatches = [];
+
+                $qty = $product['quantity'] ?? 1;
+
+                for ($i = 1; $i <= $qty; $i++) {
+                    $dummyBatches[] = [
+                        'batch_no'    => 'DUMMY-BATCH-' . $productId . '-' . $rowNumber . '-' . $i,
+                        'expire_date' => now()->addYear()->format('Y-m-d'), // default expiry (1 year)
+                    ];
+                }
+
+                $this->createBatches($requisition, $productId, $dummyBatches, $rowNumber, $key);
+
+
             } else {
                 throw new \Exception("Record {$rowNumber}, Product {$key}: Product '{$product['name']}' must be configured as either serial or batch product");
             }
@@ -426,7 +470,7 @@ class RequisitionImportController extends Controller
     /**
      * Create serial records
      */
-    private function createSerials(Requisition $requisition, $productId, array $serials, int $rowNumber, int $productIndex)
+    private function createSerials(Requisition $requisition, $productId, array $serials, int $rowNumber, int $prodcutIndex)
     {
         foreach ($serials as $index => $serial) {
             $serialNo = trim($serial['serial_no'] ?? '');
