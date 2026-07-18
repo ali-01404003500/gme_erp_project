@@ -343,7 +343,7 @@ class CustomerController extends Controller
     public function edit(Customer $customer)
     {
         $data['customerTypes'] = CustomerType::pluck('name', 'id');
-        $data['employees'] = Employee::where('status', 1)->pluck('full_name', 'id');
+        $data['employees'] = Employee::pluck('full_name', 'id');
         $data['customer'] = $customer;
         return view("CRM::customer.edit", $data);
     }
