@@ -82,7 +82,7 @@ class DocumentEntryController extends Controller
         ]); 
         $result = $this->service->store($validate);
         
-        return redirect()->route('cms.document-entries.edit', $result->id)->with('success', 'DocumentEntry created successfully.');
+        return redirect()->route('cms.document-entries.edit', $result->id)->with('success', 'Document Entry created successfully.');
     }
 
     /**
@@ -132,7 +132,7 @@ class DocumentEntryController extends Controller
         ]);
         $this->service->update($documentEntry, $validate);
 
-        return redirect()->route('cms.document-entries.index')->with('success', 'DocumentEntry updated successfully.');
+        return redirect()->route('cms.document-entries.index')->with('success', 'Document Entry updated successfully.');
     }
 
     /**
@@ -141,7 +141,7 @@ class DocumentEntryController extends Controller
     public function destroy(DocumentEntry $documentEntry)
     {
         $this->service->delete($documentEntry);
-        return redirect()->route('cms.document-entries.index')->with('success', 'DocumentEntry deleted successfully.');
+        return redirect()->route('cms.document-entries.index')->with('success', 'Document Entry deleted successfully.');
     }
 
 

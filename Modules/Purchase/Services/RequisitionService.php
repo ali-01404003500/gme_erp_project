@@ -5,6 +5,7 @@ namespace Modules\Purchase\Services;
 use App\Traits\S3FileHandler;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Modules\Account\Models\Account;
 use Modules\Account\Models\Payments\MakePayment;
 use Modules\Purchase\Models\Requisition;
 use Modules\Purchase\Models\RequisitionDetail;
@@ -203,13 +204,12 @@ class RequisitionService
                 'invoice_no'            => $requisition->requisition_no,
                 'debit_amount'          => $requisitionDetail->amount,
                 'credit_amount'         => 0,
-                'description'           => "Purchase Order Created. #" . $requisition->requisition_no,
+                'description'           => "Inventory received against for Purchase Order Created. #" . $requisition->requisition_no,
                 'transaction_date'      => $requisition->invoice_date
             ]);
         }
 
-        //cre
-// Accounts Payable
+        //credit - Accounts Payable
         $AccountsPayable = $requisition->supplier->getAccount();
 
         $requisition->transactions()->create([
@@ -218,10 +218,29 @@ class RequisitionService
             'invoice_no'            => $requisition->requisition_no,
             'debit_amount'          => 0,
             'credit_amount'         => $requisition->net_amount,
-            'description'           => "Purchase Order Created. #" . $requisition->requisition_no,
-                            'transaction_date'      => $requisition->invoice_date
+            'description'           => "Accounts payable recorded forInventory received againstPurchase Order Created. #" . $requisition->requisition_no,
+            'transaction_date'      => $requisition->invoice_date
 
         ]);
+
+        // Credit - Purchase Discount
+        if ($requisition->discount > 0) {
+
+            // Discount Account
+            $PurchaseDiscountAccount = Account::find(509201);
+
+            $requisition->transactions()->create([
+                'account_id'       => $PurchaseDiscountAccount->id,
+                'balance_type'     => "credit",
+                'invoice_no'       => $requisition->requisition_no,
+                'debit_amount'     => 0,
+                'credit_amount'    => $requisition->discount,
+                'description'      => "Purchase discount received for Purchase Discount. #" . $requisition->requisition_no,
+                'transaction_date' => $requisition->invoice_date,
+            ]);
+        }
+
+
         // // Delete existing transactions
         // $requisition->transactions()->delete();
 

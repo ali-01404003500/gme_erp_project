@@ -209,7 +209,7 @@
                                                         class="text-danger">*</span></label>
                                                 <select class="form-control" name="company_place_id" id="company_place_id">
                                                     <option value="">Choose Company Place</option>
-                                                    <option value="{{ $customer->company_place_id }}" selected>{{ $customer->area->area }}</option>
+                                                    <option value="{{ $customer->company_place_id }}" selected>{{ $customer->area->area ?? '' }}</option>
                                                    
                                                 </select>
                                                 @if ($errors->has('company_place'))

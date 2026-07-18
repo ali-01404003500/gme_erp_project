@@ -119,12 +119,11 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="attachment" class="form-label">Upload Attachment <span class="text-danger">*</span></label>
-                                    <div class="custom-file-wrapper shadow-sm" style="border-radius: 12px; overflow: hidden;">
-                                        <x-file-uploader name="attachment" />
+                                    <div class="custom-file-wrapper shadow-sm" style="border-radius: 12px; overflow: hidden;"> 
+                                        <x-file-uploader :value="old('attachment')" name="attachment" />
                                     </div>
                                 </div>
-                            </div>
-
+                            </div> 
                             
                         </div>
 
