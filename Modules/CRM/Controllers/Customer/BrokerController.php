@@ -67,7 +67,7 @@ class BrokerController extends Controller
      */
     public function create()
     {
-        $data['percentageTypes'] = Tag::all();
+        $data['percentageTypes'] = Tag::where('status', 1)->get();
  
         return view('CRM::broker.create', $data);
     }

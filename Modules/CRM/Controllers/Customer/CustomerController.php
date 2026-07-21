@@ -200,7 +200,7 @@ class CustomerController extends Controller
         }
         // dd($data['customer']);
         $data['customerRatings'] = CustomerRating::all();
-        $data['percentageTypes'] = Tag::all();
+        $data['percentageTypes'] = Tag::where('status', 1)->get();
        
  
         return view('CRM::customer.settings', $data);

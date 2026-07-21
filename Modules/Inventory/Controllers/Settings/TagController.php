@@ -93,6 +93,7 @@ class TagController extends Controller
         $validate = $request->validate([
             'name' => 'required|string|max:255',
             'code' =>'required|string|max:255',
+            'status' => 'required|in:0,1',
 
         ]);
         $this->service->update($tag, $validate);

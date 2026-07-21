@@ -52,7 +52,7 @@
                                         <th class="text-center" style="width: 8%">Sl</th>
                                         <th class="text-center">Code</th>
                                         <th class="text-center">Name</th>
-
+                                        <th class="text-center">Status</th>
                                         <th class="text-center no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -63,6 +63,11 @@
                                         <td class="text-center">{{ ($tags->currentPage() - 1) * $tags->perPage() + $loop->iteration  }}</td>
                                             <td class="text-center">{{ $tag->code }}</td>
                                             <td class="text-center">{{ $tag->name }}</td>
+                                            <td class="text-center">
+                                                <span class="badge {{ $tag->status == 1 ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $tag->status == 1 ? 'Active' : 'Inactive' }}
+                                                </span>
+                                            </td>
 
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm" role="group"
@@ -182,6 +187,16 @@
                             </div>
                         </div>
 
+                        <!-- Status Field -->
+                        <div class="row mb-4">
+                            <label class="col-sm-12 col-form-label">Status</label>
+                            <div class="col-sm-12">
+                                <select name="status" id="status" class="form-control" required> 
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -207,7 +222,9 @@
                 $.each(data, function(key, value) {
 
                     $('#editModal input[name="' + key + '"]').val(value);
-                    // console.log();
+                    $('#editModal select[name="' + key + '"]').val(value);
+
+                    //console.log(key+' :'+value);
                 })
                 $("#editFrom").attr("action", $(this).data('action'));
             });
