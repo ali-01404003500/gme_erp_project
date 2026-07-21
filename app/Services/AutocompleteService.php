@@ -141,6 +141,51 @@ class AutocompleteService
     }
 
 
+    public function productSearchForBrokerPrice(
+        string $model,
+        array $searchColumns,
+        string $searchValue,
+        array $displayColumns = ['id', 'name'],
+        int $limit = 10,
+        array $extraConditions = []
+    ) {
+        if (!$searchValue) {
+            return collect([]);
+        }
+
+        $query = $model::query();
+
+        // Extra conditions (optional)
+        foreach ($extraConditions as $column => $value) {
+            $query->where($column, $value);
+        }
+
+        // Search logic
+        $query->where(function ($q) use ($searchColumns, $searchValue) {
+            foreach ($searchColumns as $column) {
+                $q->orWhere($column, 'LIKE', "%{$searchValue}%");
+            }
+        });
+
+        return $query->select($displayColumns)
+            ->with('brand')
+            ->limit($limit)
+            ->get() 
+            ->map(function ($item) use ($displayColumns) {
+                return [
+                    'id'    => $item->{$displayColumns[0]},
+                    'label' => $item->name, // dropdown display
+                    'value' => $item->{$displayColumns[1]}, // input fill
+                    'text'  => $item->{$displayColumns[1]}, 
+                    'mrp'  => $item->{$displayColumns[4]},
+                    'broker_price'  => $item->{$displayColumns[5]}, 
+                ];
+            });
+
+             
+    }
+
+
     
     public function search(
         string $model,

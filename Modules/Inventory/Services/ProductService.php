@@ -33,7 +33,7 @@ class ProductService
         return $data;
     }
     
-    public function store(array $data, array $barcodes=[])
+    public function store(array $data, array $broker_price_validation, array $barcodes=[])
     {
         if(isset($data['image_upload'])) {
             $data['image_upload']= $this->uploadFile($data['image_upload'], 'products');
@@ -46,7 +46,7 @@ class ProductService
         }
 
         $result['products'] = Product::create($data);
-        $result['products']->productCatalog()->update(['product_tag_id' => $data['product_tag_id']]);
+        $result['products']->productCatalog()->update(['product_tag_id' => $data['product_tag_id'], 'broker_price' => $broker_price_validation['broker_price']]);
         // $result['barcodes'] = [];
         // foreach ($barcodes['barcodes'] as $key => $value) {
         //     $result['barcodes'][] = ProductBarcode::create([
@@ -58,7 +58,7 @@ class ProductService
         return $result;
     }
 
-    public function update(Product $product, array $data)
+    public function update(Product $product, array $data, array $broker_price_validation)
     {
         if(isset($data['image_upload'])) {
             $data['image_upload']= $this->uploadFile($data['image_upload'], 'products');
@@ -71,7 +71,7 @@ class ProductService
         }
         // dd($data);
         $product->update($data);
-        $product->productCatalog()->update(['product_tag_id' => $data['product_tag_id']]);
+        $product->productCatalog()->update(['product_tag_id' => $data['product_tag_id'], 'broker_price' => $broker_price_validation['broker_price']]);
         return $product;
     }
 

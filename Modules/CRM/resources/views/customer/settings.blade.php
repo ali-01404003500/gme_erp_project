@@ -473,6 +473,13 @@
                                             <div class="form-group" id="fixed-section" style="display: none;">
                                                 <br>
                                                 <h2>Product Wise Fixed Price</h2>
+                                                <div class="form-check pt-3">
+                                                    <input class="form-check-input"   type="checkbox"     id="broker_price"    name="broker_price"  value="1"  style="width: 22px; height: 22px;"  >
+                                                    <label class="form-check-label ms-2"   for="broker_price"  style="font-size: 20px; font-weight: 600;"  >
+                                                        Set Broker Price
+                                                    </label>
+                                                </div>
+
                                                 <br>
                                                 <div class="row">
                                                     <div class="col-md-5">
@@ -485,11 +492,18 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-5">
+                                                    <div class="col-md-2">
+                                                        <div class="form-group mb-25">
+                                                            <label for="mrp"
+                                                                class="color-dark fs-14 fw-500 align-center">MRP</label>
+                                                            <input type="number" class="form-control" id="mrp"
+                                                                name="mrp" value="" placeholder="MRP" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
                                                         <div class="form-group mb-25">
                                                             <label for="sales_amount"
-                                                                class="color-dark fs-14 fw-500 align-center">Sales
-                                                                Amount</label>
+                                                                class="color-dark fs-14 fw-500 align-center">Sales Amount</label>
                                                             <input type="number" class="form-control" id="sales_amount"
                                                                 name="sales_amount" value="" placeholder="Amount">
                                                         </div>
@@ -511,12 +525,13 @@
                                                             <table class="table table-bordered" id="product_info_table">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th style="width: 5%; text-align: center">Sl
-                                                                        </th>
-                                                                        <th style="width: 25%; text-align: center">Product Name
+                                                                        <th style="width: 5%; text-align: center">Sl</th>
+                                                                        <th style="width: 25%; text-align: center">Product Name  </th>
+                                                                        <th style="width: 15%; text-align: center ">
+                                                                            MRP
                                                                         </th>
                                                                         <th style="width: 15%; text-align: center ">
-                                                                            Amount
+                                                                            Sales Amount
                                                                         </th>
                                                                         <th style="width: 8%" style="text-align: right;">
                                                                             Action
@@ -534,6 +549,9 @@
                                                                                         class="form-control"
                                                                                         value="{{ $value->product_id }}">
                                                                                     {{ old('product_id', $value->product->name) }}
+                                                                                </td>
+                                                                                <td> 
+                                                                                    {{ $value->product->mrp }}
                                                                                 </td>
                                                                                 <td>
                                                                                     <input type="hidden"
@@ -1277,17 +1295,36 @@
                     if (!query.length || query.length < 2) return callback();
 
                     $.ajax({
-                        url: "{{ route('sales.sales-orders-autocomplete.products') }}",
+                        url: "{{ route('crm.autocomplete.customer.products') }}",
                         type: "GET",
                         data: { search: query },
-                        success: function(res) {
+                        success: function(res) { 
+                            //console.log('Full Response:', res);
                             productSelect.clearOptions();
-                            callback(res.map(item => ({ id: item.id, text: item.label })));
+                            callback(res.map(item => ({ id: item.id, text: item.label, mrp: item.mrp, broker_price: item.broker_price})));
                         },
                         error: function() {
                             callback();
                         }
                     });
+                },
+
+                onItemAdd: function(value) {
+
+                    const item = this.options[value]; 
+
+                    $('#mrp').val(item?.mrp ?? '');
+                   
+                    if ($("#broker_price").is(':checked')) {
+                        $('#sales_amount').val(item?.broker_price ?? '5').prop('readonly', true);
+                    } else {
+                        $('#sales_amount').val('').prop('readonly', false);
+                    }
+                },
+
+                onItemRemove: function() {
+                    $('#mrp').val('');
+                    $('#sales_amount').val('');
                 }
             });
  
@@ -1387,6 +1424,7 @@
             function addProduct() {
                 var productId = document.getElementById('product_id').value;
                 var productName = $('#product_id option:selected').text();
+                var mrpAmount = document.getElementById('mrp').value;
                 var salesAmount = document.getElementById('sales_amount').value;
 
                 if (salesAmount === "") {
@@ -1400,7 +1438,7 @@
     
                 if (!selectedProductIds.includes(productId)) { ;
                     if (productId) {
-                        addProductRow(productId, productName, salesAmount);
+                        addProductRow(productId, productName, mrpAmount,salesAmount);
                         selectedProductIds.push(productId);
                     }
                 } else {
@@ -1415,16 +1453,18 @@
 
 
 
-            function addProductRow(id, name, amount) {
+            function addProductRow(id, name, mrp, amount) {
                 var table = document.getElementById('product_info_table').getElementsByTagName('tbody')[0];
                 var rowCount = table.rows.length;
                 var row = table.insertRow(rowCount);
                 row.insertCell(0).innerHTML = rowCount + 1;
                 row.insertCell(1).innerHTML = '<input type="hidden" name="product_ids[]" value="' + id + '">' +
                     name;
-                row.insertCell(2).innerHTML = '<input type="hidden" name="sales_amounts[]" value="' + amount +
+                row.insertCell(2).innerHTML = '<input type="hidden" name="mrp_amounts[]" value="' + mrp +
+                    '">' + mrp;
+                row.insertCell(3).innerHTML = '<input type="hidden" name="sales_amounts[]" value="' + amount +
                     '">' + amount;
-                row.insertCell(3).innerHTML =
+                row.insertCell(4).innerHTML =
                     '<button type="button" class="btn btn-danger btn-xs" onclick="deleteRow(this, \'' + id +
                     '\')"><i class="fa fa-trash"></i></button>';
             }

@@ -593,5 +593,18 @@ class CustomerController extends Controller
         ); 
         return response()->json($data);
     }
+
+    public function productAutocomplete(Request $request, AutocompleteService $autocompleteService)
+    {  
+        //search( string $model,  array $searchColumns, string $searchValue,  array $displayColumns = ['id', 'name'], int $limit = 10,  array $extraConditions = []
+        $data = $autocompleteService->productSearchForBrokerPrice(
+            ProductCatalog::class,
+            ['name','model'],
+            $request->search,
+            ['id', 'name','model','product_brand_id','mrp','broker_price'],
+            30
+        ); 
+        return response()->json($data);
+    }
     
 }

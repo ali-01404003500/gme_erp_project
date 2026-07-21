@@ -49,8 +49,10 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         $data = $this->service->create($request);
-        $data['productCatalog'] = ProductCatalog::with("productType")->find($request->product_catalog_id);
+        $data['productCatalog'] = ProductCatalog::with("productType")->find($request->product_catalog_id); 
         $product = Product::where('product_catalog_id', $request->product_catalog_id)->first();
+        $data['broker_price'] = ProductCatalog::where( 'id', $product->product_catalog_id)->value('broker_price');
+
         if($product) {
             $data['product'] = $product;
             return view('Inventory::products.edit', $data);
@@ -85,6 +87,10 @@ class ProductController extends Controller
             'max_discount' => 'nullable|numeric',
             'dollar_price' => 'nullable|numeric',
             'hs_code' => 'nullable|max:255',
+        ]);
+
+        $broker_price_validation = $request->validate([
+            'broker_price' => 'nullable|numeric',
         ]);
         // $new_validate = $request->validate([
         //     'product_type_id' => 'required|exists:product_types,id',
@@ -122,7 +128,7 @@ class ProductController extends Controller
 
         
         
-        $this->service->store($new_validate);
+        $this->service->store($new_validate, $broker_price_validation);
         return redirect()->route('inv.products.create', ['product_catalog_id' => $request->product_catalog_id])->with('success', 'Product created successfully.');
     }
 
@@ -193,11 +199,14 @@ class ProductController extends Controller
         $data['product'] = $product;
         $data['product_types'] = ProductType::query()->where('status', 1)->get();
         $data['product_catalogs'] =ProductCatalog::select('name', 'id', 'model', 'product_brand_id')->with('brand:name')->get();
+
+        $data['broker_price'] = ProductCatalog::where( 'id', $product->product_catalog_id)->value('broker_price');
+
         $data['brands'] = Brand::all();
         $data['units'] = Unit::all();
         $data['tags'] = Tag::all();
          //
-        return view("Inventory::products.edit", $data);
+        return view("Inventory::products.edit", $data); 
     }
 
     /**
@@ -208,7 +217,7 @@ class ProductController extends Controller
         // dd($request->all());
         $validate = $request->validate([
             'product_catalog_id' => 'required|exists:product_catalogs,id',
-            'last_cost_price' => 'nullable|numeric',
+            'last_cost_price' => 'nullable|numeric', 
             'remainder_quantity' => 'nullable|numeric',
             'product_status' => 'nullable|max:255',
             'discount_type' => 'nullable|max:255',
@@ -227,7 +236,11 @@ class ProductController extends Controller
             'dollar_price' => 'nullable|numeric',
             'hs_code' => 'nullable|max:255',
         ]);
-        $this->service->update($product, $validate);
+        $broker_price_validation = $request->validate([
+            'broker_price' => 'nullable|numeric',
+        ]);
+
+        $this->service->update($product, $validate, $broker_price_validation);
 
         $redirectUrl = route('inv.products.edit', $product->id);
         if ($request->has('active_tab')) {

@@ -99,6 +99,7 @@
                                                                                         {{ $product_catalog->name }}
                                                                                     </option>
                                                                                 @endforeach
+   
                                                                             </select>
                                                                         </div>
                                                                     </div>
@@ -128,6 +129,17 @@
                                                                         </div>
                                                                     </div>
 
+
+                                                                    <div class="col-md-4 mb-2">
+                                                                        <div class="form-group">
+                                                                            <label for="broker_price">Broker Price:</label>
+                                                                            <input type="number" step="0.01"
+                                                                                class="form-control" id="broker_price"
+                                                                                name="broker_price"
+                                                                                value="{{ old('broker_price', $broker_price) }}">
+                                                                        </div>
+                                                                    </div>
+ 
                                                                     <div class="col-md-4 mb-2">
                                                                         <div class="form-group">
                                                                             <label for="reminder_quantity">Reminder
