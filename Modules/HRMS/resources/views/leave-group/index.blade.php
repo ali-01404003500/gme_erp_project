@@ -114,6 +114,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {  
+
+             $('#leave_type_select').select2({
+                multiple: true,
+                width: '100%'
+            });
+            
             $('#leave_type_select').on('change', function () {
                 let selected = $(this).val() || [];
                 $('.config-card').each(function () {
