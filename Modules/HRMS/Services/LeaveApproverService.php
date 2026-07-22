@@ -42,11 +42,11 @@ class LeaveApproverService
     {
         DB::beginTransaction();
         try {
-            foreach ($approvers['approver_ids'] as $key=> $approver_ids) {
-                ApproverStep::where('employee_id', $approvers['employee_id'])
+            ApproverStep::where('employee_id', $approvers['employee_id'])
                 ->whereNotIn('id', $approvers['approver_update_id']??[])
                 ->delete();
-           
+            foreach ($approvers['approver_ids'] as $key=> $approver_ids) {
+              
                 ApproverStep::updateOrCreate([
                     'id'=> $approvers['approver_update_id'][ $key]??null,
                 ],[

@@ -50,7 +50,7 @@
                                                     name="approver_id">
                                                     <option value="">-- Select Approver --</option>
                                                     @foreach ($employees as $emp)
-                                                        <option value="{{ $emp->id }}" data-designation="{{ $emp->employementDetail->designation->name }}">
+                                                        <option value="{{ $emp->id }}" data-designation="{{ $emp->employementDetail->designation->name ?? '' }}">
                                                             {{ $emp->full_name }}
                                                         </option>
                                                     @endforeach
@@ -79,6 +79,7 @@
                                                 </thead>
                                                 <tbody>
                                                     {{-- JS diye data inject hobe --}}
+                                                    {{-- @dd($approvers) --}}
                                                     @foreach ($approvers as $key => $approver)
                                                         <tr>
                                                             <td>
@@ -168,18 +169,25 @@
                     const designation = approverOption.data('designation');
                     // const epfNumber = approverOption.data('epf_number');
                     const approverTable = $("#approver-table");
-                    approverTable.find('tbody').append($(`
+                    approverTable.find('tbody').append($(` 
+                                <tr>
+                                <td>${ approverTable.find('tbody tr').length+1}</td>                                                    
+                                <td>
+                                    ${name}
+                                    <input type="hidden" class="approver_ids" name="approver_ids[]" value="${approverId}">
+                                    </td>
+                                <td>${designation}</td>
+                                <td><button class="btn btn-danger remove" type="button">Remove</button></td>
+                            </tr>`
+                        ));
 
-                                                 <tr>
-                                                    <td>${ approverTable.find('tbody tr').length+1}</td>                                                    
-                                                    <td>
-                                                        ${name}
-                                                        <input type="hidden" class="approver_ids" name="approver_ids[]" value="${approverId}">
-                                                        </td>
-                                                    <td>${designation}</td>
-                                                    <td><button class="btn btn-danger remove" type="button">Remove</button></td>
-                                                </tr>
-                `))
+                   // Reset Tom Select
+                    const approverSelectElement = $("#approver-select")[0];
+
+                    if (approverSelectElement && approverSelectElement.tomselect) {
+                        approverSelectElement.tomselect.clear();
+                    }
+                
 
 
 
