@@ -269,7 +269,17 @@
                                                 @endif
                                             </div>
 
+                                            <div class="form-group col-md-4 mb-25"> 
+                                                <label for="ledger_files" class="color-dark fs-14 fw-500 align-center">
+                                                    Old Ledger Files
+                                                </label> 
+                                                <div class="account-profile w-100 mb-25">
 
+                                                    <div class="form-group w-100">  
+                                                        <x-file-uploader :value="$customer->ledger_files ?? old('ledger_files')"  name="ledger_files" multiple/>
+                                                    </div> 
+                                                </div> 
+                                            </div> 
                                         </div>
                                     </div>
 

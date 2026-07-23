@@ -4,6 +4,7 @@ namespace Modules\CRM\Services\Customer;
 
 
 use App\Traits\S3FileHandler;
+use Modules\Account\Models\Account;
 use Modules\CRM\Models\Customer\BrokerCustomerAttached;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\CRM\Models\Customer\CustomerOwner;
@@ -26,6 +27,7 @@ class CustomerSettingService
     public function customerSettingStore($request)
     {
         $customerSetting = CustomerSetting::where("customer_id", $request->customer_id)->first();
+ 
         if ($customerSetting) {
             $deleted = $customerSetting->customerSettingBrokers->whereNotIn('id', $request->customer_setting_broker_id);
             BrokerCustomerAttached::whereIn('broker_id', $deleted->pluck('broker_id'))
@@ -55,6 +57,7 @@ class CustomerSettingService
             'credit_limit' => $request->credit_limit,
             'additional_credit_limit' => $request->additional_credit_limit,
             'opening_balance' => $request->opening_balance,
+            'ledger_files' => !empty($request->ledger_files)? array_values($request->ledger_files): null,
             'is_condition_bill' => $request->is_condition_bill,
             'minimum_condition_bill' => $request->minimum_condition_bill,
             'vat_status' => $request->vat_status,
@@ -120,10 +123,164 @@ class CustomerSettingService
                 }
             }
         }
+
+        if ((float) $request->opening_balance != 0) {
+            $this->makeDummyTransaction(
+                $request->customer_id,
+                $request->opening_balance
+            );
+        }
     
         return ['customerSettings' => $customerSettings];
     }
     
+   public function makeDummyTransaction($customerId, $openingBalance)
+    {
+        if (!$customerId || (float) $openingBalance == 0) {
+            return;
+        }
+
+        $customer = Customer::find($customerId);
+
+        if (!$customer) {
+            throw new \Exception(
+                "Customer not found. Customer ID: {$customerId}"
+            );
+        }
+
+        $amount = abs((float) $openingBalance);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Opening Balance Equity Account
+        |--------------------------------------------------------------------------
+        */
+
+        $openingBalanceEquity = Account::query()
+            ->where('id', '28343')
+            ->first();
+
+        if (!$openingBalanceEquity) {
+            throw new \Exception(
+                'Opening Balance Equity account not found.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CUSTOMER DUE / RECEIVABLE
+        |--------------------------------------------------------------------------
+        |
+        | opening_balance > 0
+        |
+        | Dr. Accounts Receivable
+        | Cr. Opening Balance Equity
+        |
+        */
+
+        if ($openingBalance > 0) {
+
+            // Customer Account / Accounts Receivable
+            $customerAccount = $customer->getAccount();
+
+            if (!$customerAccount) {
+                throw new \Exception(
+                    "Customer account not found for: "
+                    . $customer->name
+                );
+            }
+
+
+            // Debit: Customer Receivable
+
+            $customer->transactions()->create([
+                'account_id'       => $customerAccount->id,
+                'balance_type'     => 'debit',
+                'invoice_no'       => 'OB-' . $customer->id,
+                'debit_amount'     => $amount,
+                'credit_amount'    => 0,
+                'description'      =>
+                    'Customer Opening Receivable - '
+                    . $customer->name,
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+
+
+            // Credit: Opening Balance Equity
+
+            $customer->transactions()->create([
+                'account_id'       => $openingBalanceEquity->id,
+                'balance_type'     => 'credit',
+                'invoice_no'       => 'OB-' . $customer->id,
+                'debit_amount'     => 0,
+                'credit_amount'    => $amount,
+                'description'      =>
+                    'Opening Balance Equity',
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CUSTOMER ADVANCE
+        |--------------------------------------------------------------------------
+        |
+        | opening_balance < 0
+        |
+        | Dr. Opening Balance Equity
+        | Cr. Customer Advance
+        |
+        */
+
+        if ($openingBalance < 0) {
+
+            // Customer Account / Accounts Receivable
+
+            $customerAccount = $customer->getAccount();
+
+            if (!$customerAccount) {
+                throw new \Exception(
+                    "Customer account not found for: "
+                    . $customer->name
+                );
+            }
+
+
+            // Debit: Opening Balance Equity
+
+            $customer->transactions()->create([
+                'account_id'       => $openingBalanceEquity->id,
+                'balance_type'     => 'debit',
+                'invoice_no'       => 'OB-' . $customer->id,
+                'debit_amount'     => $amount,
+                'credit_amount'    => 0,
+                'description'      =>
+                    'Customer Opening Advance Adjustment',
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+
+
+            // Credit: Customer Account
+
+            $customer->transactions()->create([
+                'account_id'       => $customerAccount->id,
+                'balance_type'     => 'credit',
+                'invoice_no'       => 'OB-' . $customer->id,
+                'debit_amount'     => 0,
+                'credit_amount'    => $amount,
+                'description'      =>
+                    'Customer Opening Advance - '
+                    . $customer->name,
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+        }
+    }
 
     public function update(Customer $customer, array $data, array $customerShipping, array $customerOwner)
     {

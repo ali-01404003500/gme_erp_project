@@ -87,7 +87,7 @@ class OfficePurchaseService
         
 
         //cre
-// Accounts Payable
+        // Accounts Payable
         $AccountsPayable = $officePurchase->vendor->getAccount();
 
         $officePurchase->transactions()->create([

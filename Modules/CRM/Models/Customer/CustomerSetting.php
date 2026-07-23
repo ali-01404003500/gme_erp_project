@@ -11,7 +11,9 @@ class CustomerSetting extends BaseModel
     use AutoCreatedUpdated;
     use HasFactory;
     protected $guarded = [];
-
+    protected $casts = [
+        'ledger_files' => 'array',
+    ];
     public function customer(){
         return $this->belongsTo(Customer::class);
     }
@@ -27,5 +29,7 @@ class CustomerSetting extends BaseModel
     public function customerSettingSelfCommissions(){
         return $this->hasMany(CustomerSettingSelfCommission::class);
     }
+
+    
 
 }

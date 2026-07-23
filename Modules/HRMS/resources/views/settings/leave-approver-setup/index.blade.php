@@ -11,6 +11,7 @@
                         <h5 class="mb-0 text-primary">
                             <i class="fas fa-user-check me-2"></i>Leave Approver Setup
                         </h5>
+                       
                     </div>
 
                     <div class="card-body">

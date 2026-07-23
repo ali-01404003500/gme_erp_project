@@ -213,13 +213,15 @@ class CustomerController extends Controller
     public function customerSettingStore($id, Request $request)
     {
 
-        // try {
+         try {
         $this->customerSetting->customerSettingStore($request);
+        
         return redirect()->route('crm.customers.settings', $request->customer_id)->with('success', 'Customer Settings updated successfully.');
-        // }
-        // catch (\Exception $e) {
-        //     return redirect()->back()->with('error', $e->getMessage());
-        // }
+        }
+        catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+  
+        }
 
     }
 
