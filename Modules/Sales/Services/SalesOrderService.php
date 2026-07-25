@@ -335,6 +335,7 @@ class SalesOrderService
                     'customer_current_balance ' => $customerBalance
                 ];   
 
+            
                 foreach ($data as $key => $value) {
                     $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
                 } 

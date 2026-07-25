@@ -335,7 +335,7 @@
                 font-size: 12px;
             }
 
-            .payment-info{
+            #payment-info{
                 font-size: 12px;
             }
 
@@ -560,7 +560,7 @@
                                         <label class="custom-control-label" for="customCheck4">AIT Status</label>
                                     </div>
                                     <div class="custom-control custom-checkbox mr-3" style="margin-right: 25px;">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck5">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck5" checked>
                                         <label class="custom-control-label" for="customCheck5">CW</label>
                                     </div>
                                     <div class="custom-control custom-checkbox mr-3" style="margin-right: 25px;">
@@ -572,7 +572,7 @@
                                         <label class="custom-control-label" for="customCheck7">OP Show</label>
                                     </div>
                                     <div class="custom-control custom-checkbox mr-3" style="margin-right: 25px;">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck8">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck8" checked>
                                         <label class="custom-control-label" for="customCheck8">Discount</label>
                                     </div>
                                     <div class="custom-control custom-checkbox mr-3" style="margin-right: 25px;">
@@ -589,11 +589,12 @@
                                         </div>
                                         <div style="width: 80%">
                                             <div style="text-align: center;">
-                                                <h1>{{ $company_info->company_name }}</h1>
-                                                <p>{{ $company_info->company_bio }}</p>
-                                                <p>Address : 17/2 (1st & 2nd Floor), Topkhana Road, Dhaka-1000</p>
-                                                <p>Hotline : +88 09678 020555 Mobile : +8801404003500</p>
-                                                <p>e-mail : <a href="mailto:info@gmebd.com">info@gmebd.com</a> web: <a
+                                                <h1 class="my-1">{{ $company_info->company_name }}</h1>
+                                                <p class="my-1">Provider of Medical Equipment & Solutions for Hospitals, Clinics, Diagnostics, and Healthcare Institutions. </p>
+                                                <p class="my-1">{{ $company_info->company_bio }}</p>
+                                                <p class="my-1">Address : 17/2 (1st & 2nd Floor), Topkhana Road, Dhaka-1000</p>
+                                                <p class="my-1">Hotline : +88 09678 020555 Mobile : +8801404003500</p>
+                                                <p class="my-1">e-mail : <a href="mailto:info@gmebd.com">info@gmebd.com</a> web: <a
                                                         href="http://www.gmebd.com">www.gmebd.com</a></p>
                                             </div>
                                         </div>
@@ -655,7 +656,7 @@
                                                 <td>{{ $salesOrder->additional_phone??$salesOrder->customer->phone  }}</td>
                                             </tr>
                                   
-                                            <tr>
+                                            <tr class="no-print">
                                                 <td>Reference Customer</td>
                                                 <td>:</td>
                                                 <td>{{ $salesOrder->customer->customerReference?->company_name ??'' }}</td>
@@ -705,12 +706,13 @@
                                 <section class="invoice-details">
                                     <table>
                                         <tr>
-                                            <th style="width: 15px;">SL</th>
-                                            <th>Product Name</th>
-                                            <th>Quantity</th>
-                                            <th>Unit Price</th>
-                                            <th id="discount">Discount</th>
-                                            <th>Amount</th>
+                                            <th class="text-center" style="width: 15px;">SL</th>
+                                            <th class="text-center">Product Name</th>
+                                            <th class="text-center" >Quantity</th>
+                                            <th class="text-center">Unit Price</th>
+                                            <th class="text-center" id="discount">Discount</th>
+                                            <th class="text-center" id="discount">Net Unit Price</th>
+                                            <th class="text-center">Amount</th>
                                         </tr>
                                         <tbody>
                                             {{-- @dd($salesOrder->salesOrderDetails) --}}
@@ -720,16 +722,33 @@
                                                     <td>{{ $salesOrderDetail->product->name }} <span
                                                             class="text-success">{{ $salesOrderDetail->is_offers_product === 2? '(Clearance Product)' :($salesOrderDetail->is_offers_product? '(Offer Product)' : '') }}</span>
                                                     </td>
-                                                    <td>{{ numberFormat($salesOrderDetail->quantity) }}</td>
-                                                    <td>{{ $isFree ? numberFormat(0) : numberFormat($salesOrderDetail->price) }}
+                                                    <td class="text-center">{{ numberFormat($salesOrderDetail->quantity) }}</td>
+                                                    <td class="text-end">{{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->price,2) }}
                                                     </td>
-                                                    <td class="discount_col">
-                                                        {{ $isFree ? numberFormat(0) : numberFormat($salesOrderDetail->total_discount) }}
+                                                    <td class="discount_col text-end">
+                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->total_discount,2) }}
                                                     </td>
-                                                    <td>{{ $isFree ? numberFormat(0) : numberFormat($salesOrderDetail->amount) }}
+                                                     <td class="discount_col text-end">
+                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->price - $salesOrderDetail->total_discount,2) }}
+                                                    </td>
+                                                    <td class="text-end">
+                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->quantity * ($salesOrderDetail->amount - $salesOrderDetail->total_discount),2) }}
                                                     </td>
                                                 </tr>
                                             @endforeach
+                                      
+                                            {{-- @foreach (range(1, 50) as $index)
+                                                <tr>
+                                                    <td style="width: 15px;"></td>
+                                                     <td style="width: 15px;"></td>
+                                                      <td style="width: 15px;"></td>
+                                                       <td style="width: 15px;"></td>
+                                                        <td style="width: 15px;"></td>
+                                                         <td style="width: 15px;"></td>
+                                                          <td style="width: 15px;"></td>
+                                                  
+                                                </tr>
+                                            @endforeach --}}
                                         </tbody>
                                     </table>
 
@@ -745,50 +764,91 @@
                                         <div class="right" style="width: 30%;">
                                             <table style="border: none!important;">
                                                 <tr style="border: none!important;">
-                                                    <td style="border: none!important;">Total</td>
-                                                    <td style="border: none!important;">:</td>
-                                                    <td style="border: none!important; text-align: end;">
-                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->total_amount) }}</strong>
+                                                    <td class="my-0 py-0" style="border: none!important;">Total</td>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td>
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->total_amount, 2) }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr style="border: none!important;" class="discount_col">
-                                                    <td style="border: none!important;">Discount</td>
-                                                    <td style="border: none!important;">:</td>
-                                                    <td style="border: none!important; text-align: end;">
-                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->discount) }}</strong>
+                                                    <td class="my-0 py-0" style="border: none!important;">Discount</td>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td>
+                                                    <td class="my-0 py-0"  style="border: none!important; text-align: end;">
+                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->discount, 2) }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr id="commission_row" style="border: none!important;">
-                                                    <th style="border: none!important;">Commission</th>
-                                                    <td style="border: none!important;">:</td>
-                                                    <td style="border: none!important; text-align: end;">
-                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->commission) }}</strong>
+                                                    <th class="my-0 py-0" style="border: none!important;">Commission</th>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td>
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->commission,2) }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr style="border: none!important;">
-                                                    <th style="border: none!important;">Total Amount</th>
-                                                    <td style="border: none!important;">:</td>
-                                                    <td style="border: none!important; text-align: end;">
-                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->total_amount - $salesOrder->discount) }}</strong>
+                                                    <th class="my-0 py-0" style="border: none!important;">Total Amount</th>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td>
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->total_amount - $salesOrder->discount,2) }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr id="vat-and-net-amount" style="border: none!important;">
-                                                    <th style="border: none!important;">VAT(5)%</th>
-                                                    <td style="border: none!important;">:</td>
-                                                    <td style="border: none!important; text-align: end;">
-                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->vat) }}</strong>
+                                                    <th class="my-0 py-0" style="border: none!important;">VAT(5)%</th>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td>
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->vat,2) }}</strong>
                                                     </td>
                                                 </tr>
-                                                <tr id="vat-and-net-amount" style="border: none!important;">
-                                                    <th style="border: none!important;">Net Amount</th>
-                                                    <td style="border: none!important;">:</td>
-                                                    <td style="border: none!important; text-align: end;"
+                                                <tr style="border: none!important;">
+                                                    <th class="my-0 py-0" style="border: none!important;">Net Amount</th>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td>
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;"
                                                         id="total-amount">
-                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->net_amount) }}</strong>
+                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->net_amount,2) }}</strong>
                                                     </td>
-                                                    <td style="border: none!important; text-align: end; display: none"
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end; display: none"
                                                         id="net-amount">
-                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->net_amount) }}</strong>
+                                                        <strong>{{ $isFree ? '0.00' : numberFormat($salesOrder->net_amount,2) }}</strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </section>
+                                    <section id="payment-info">
+                                        <div class="left" style="width: 50%;">
+                                            <table style="border: none!important;font-size:11px;">
+                                                <tr style="border: none!important;">
+                                                    <td class="my-0 py-0" style="border: none!important;">Last Collection Date</td>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td> 
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>02-Jul-2026 ({{ numberFormat(0,2) }})</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: none!important;">
+                                                    <td class="my-0 py-0" style="border: none!important;">Previous Due</td>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td> 
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ numberFormat(0,2) }}</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: none!important;">
+                                                    <td class="my-0 py-0" style="border: none!important;">Sales</td>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td> 
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ numberFormat(0,2) }}</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: none!important;">
+                                                    <td class="my-0 py-0" style="border: none!important;">Paid</td>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td> 
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ numberFormat(0,2) }}</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border: none!important;">
+                                                    <td class="my-0 py-0" style="border: none!important;">Total Due</td>
+                                                    <td class="my-0 py-0" style="border: none!important;">:</td> 
+                                                    <td class="my-0 py-0" style="border: none!important; text-align: end;">
+                                                        <strong>{{ numberFormat(0,2) }}</strong>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -796,9 +856,8 @@
                                     </section>
 
                                     <section>
-                                        <div id="remarks">
-                                            <p style="font-size: 18px; font-weight: bold;">Remarks</p>
-                                            <p style="text-align: justify;">{{ $salesOrder->remarks }}</p>
+                                        <div id="remarks"> 
+                                            <p style="text-align: justify;">Remarks: {{ $salesOrder->remarks }}</p>
                                         </div>
                                     </section>
                                 </section>
@@ -808,20 +867,20 @@
 
                                 <div style="font-family: Arial" class="bangla-text">
                                     <section>
-                                        <p>১. সুপ্রিয় গ্রাহক, লেন-দেনের সময় রশিদ বুঝিয়া নিবেন। রশিদ ছাড়া কোন রকম অভিযোগ
+                                        <p class="mb-0">১. সুপ্রিয় গ্রাহক, লেন-দেনের সময় রশিদ বুঝিয়া নিবেন। রশিদ ছাড়া কোন রকম অভিযোগ
                                             গ্রহণযোগ্য হবে না।</p>
-                                        <p>২. প্রতিটি বিল পাওয়ার পর প্রিভিয়াস ডিউ চেক করবেন। কোন সমস্যা থাকলে বিল পাওয়ার
+                                        <p class="mb-0">২. প্রতিটি বিল পাওয়ার পর প্রিভিয়াস ডিউ চেক করবেন। কোন সমস্যা থাকলে বিল পাওয়ার
                                             সাথে সাথে ফোন করে সমাধান নিবেন।৫ দিন অতিবাহিত হলে কোন অভিযোগ গ্রহণযোগ্য হবে না।
                                             আমাদের একমাত্র বিকাশ নং ০১৮৫২২৭৮২০০, ৪০৪০০৩৫০১ (বিকাশ পেমেন্ট)।</p>
-                                        <p><strong>৩. খুচরা রিএজেন্টের রেজাল্টের মান নিয়ে সকল অভিযোগ অগ্রহনযোগ্য ও উক্ত
+                                        <p class="mb-0"><strong>৩. খুচরা রিএজেন্টের রেজাল্টের মান নিয়ে সকল অভিযোগ অগ্রহনযোগ্য ও উক্ত
                                                 রিএজেন্ট অফেরতযোগ্য।</strong></p>
-                                        <p>৪.যে কোন প্রয়োজনে যোগাযোগ করুন +০৯৬৭৮০২০৫৫৫ অথবা, ০১৪০৪০০৩৫০০ নম্বরে। যেকোন
+                                        <p class="mb-0">৪.যে কোন প্রয়োজনে যোগাযোগ করুন +০৯৬৭৮০২০৫৫৫ অথবা, ০১৪০৪০০৩৫০০ নম্বরে। যেকোন
                                             প্রোডাক্ট অর্ডার করতে কল করুন- ০১৪০৪০০৩৫০১ নম্বরে, সার্ভিসিং এর জন্য যোগাযোগ
                                             করুন- ০১৪০৪০০৩৫৩৫ নম্বরে।</p>
-                                        <p>৫. কুরিয়ারে বহনকালে প্রাকৃতিক দুর্যোগ, অগ্নিকান্ড, বা অনভিপ্রেত যেকোনো কারনে
+                                        <p class="mb-0">৫. কুরিয়ারে বহনকালে প্রাকৃতিক দুর্যোগ, অগ্নিকান্ড, বা অনভিপ্রেত যেকোনো কারনে
                                             মালামালের ক্ষতি হইলে গ্লোবাল মেডিকেল ইঞ্জিনিয়ারিং (বিডি) লিঃ কোনো ভাবে দায়ী নয়।
                                         </p>
-                                        <p><strong>৬। কুরিয়ার থেকে দ্রুত পণ্য গ্রহণ করে সঠিক তাপমাত্রায় সংরক্ষণ করুন অন্যথায়
+                                        <p class="mb-0"><strong>৬। কুরিয়ার থেকে দ্রুত পণ্য গ্রহণ করে সঠিক তাপমাত্রায় সংরক্ষণ করুন অন্যথায়
                                                 রেজাল্টের তারতম্য হওয়ার সম্ভাবনা রয়েছে। তাপমাত্রা জনিত কারণে কোন অভিযোগ
                                                 গ্রহণযোগ্য নয় ও এর দায়ভার একান্ত গ্রাহকের উপর বর্তায়।</strong></p>
                                     </section>
@@ -926,7 +985,7 @@
             </script>
             <script>
                 $(document).ready(function() {
-                    $('.bangla-text').hide();
+                    $('.bangla-text').show();
 
                     $('#customCheck5').change(function() {
                         if ($(this).is(':checked')) {
@@ -971,9 +1030,9 @@
                 $(document).ready(function() {
                     $('#customCheck2').click(function() {
                         if ($(this).is(':checked')) {
-                            $('.payment-info').show();
+                            $('#payment-info').show();
                         } else {
-                            $('.payment-info').hide();
+                            $('#payment-info').hide();
                         }
                     });
                 });
