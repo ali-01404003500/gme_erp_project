@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\Log;
+use Modules\Account\Models\Account;
 use Modules\CRM\Models\Customer\Customer;
 
 class SupplierController extends Controller
@@ -119,6 +120,9 @@ class SupplierController extends Controller
 
         return redirect()->route('purchase.suppliers.edit', $supplier->id)->with('success', 'Supplier created successfully.');
     }
+
+
+
 
     /**
      * Display the specified resource.
@@ -266,7 +270,164 @@ class SupplierController extends Controller
         }
         $supplier = $this->service->update($supplier, $validate);
 
+        if ((float) $request->opening_balance != 0) {
+            $this->makeDummyTransaction(
+                $supplier->id,
+                $request->opening_balance
+            );
+        }
+
         return redirect()->route('purchase.suppliers.edit', $supplier->id)->with('success', 'Supplier updated successfully.');
+    }
+
+
+    public function makeDummyTransaction($supplierId, $openingBalance)
+    {
+        if (!$supplierId || (float) $openingBalance == 0) {
+            return;
+        }
+
+        $supplier = Supplier::find($supplierId);
+
+        if (!$supplier) {
+            throw new \Exception(
+                "Supplier not found. Supplier ID: {$supplierId}"
+            );
+        }
+
+        $amount = abs((float) $openingBalance);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Opening Balance Liabilities Account
+        |--------------------------------------------------------------------------
+        */
+
+        $openingBalanceLiabilities = Account::query()
+            ->where('id', '28343')
+            ->first();
+
+        if (!$openingBalanceLiabilities) {
+            throw new \Exception(
+                'Opening Balance Liabilities account not found.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUPPLIER DUE / PAYABLE
+        |--------------------------------------------------------------------------
+        |
+        | opening_balance > 0
+        |
+        | Dr. Accounts Payable
+        | Cr. Supplier Liabilities
+        |
+        */
+
+        if ($openingBalance > 0) {
+
+            // Supplier Account / Accounts Receivable
+            $supplierAccount = $supplier->getAccount();
+
+            if (!$supplierAccount) {
+                throw new \Exception(
+                    "Supplier account not found for: "
+                    . $supplier->name
+                );
+            }
+
+
+            // Debit: Supplier Receivable
+
+            $supplier->transactions()->create([
+                'account_id'       => $openingBalanceLiabilities->id,
+                'balance_type'     => 'credit',
+                'invoice_no'       => 'OB-' . $supplier->id,
+                'debit_amount'     => 0,
+                'credit_amount'    => $amount,
+                'description'      =>
+                    'Opening Balance Liabilities',
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+           
+
+
+            // Credit: Opening Balance Liabilities
+            $supplier->transactions()->create([
+                'account_id'       => $supplierAccount->id,
+                'balance_type'     => 'debit',
+                'invoice_no'       => 'OB-' . $supplier->id,
+                'debit_amount'     => $amount,
+                'credit_amount'    => 0,
+                'description'      =>
+                    'Supplier Opening Receivable - '
+                    . $supplier->name,
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+            
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SUPPLIER ADVANCE
+        |--------------------------------------------------------------------------
+        |
+        | opening_balance < 0
+        |
+        | Dr. Opening Balance Liabilities
+        | Cr. Supplier Advance
+        |
+        */
+
+        if ($openingBalance < 0) {
+
+            // Supplier Account / Accounts Receivable
+
+            $supplierAccount = $supplier->getAccount();
+
+            if (!$supplierAccount) {
+                throw new \Exception(
+                    "Supplier account not found for: "
+                    . $supplier->name
+                );
+            }
+
+
+            // Debit: Opening Balance Liabilities
+
+            $supplier->transactions()->create([
+                'account_id'       => $openingBalanceLiabilities->id,
+                'balance_type'     => 'debit',
+                'invoice_no'       => 'OB-' . $supplier->id,
+                'debit_amount'     => $amount,
+                'credit_amount'    => 0,
+                'description'      =>
+                    'Supplier Opening Advance Adjustment',
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+
+
+            // Credit: Supplier Account
+
+            $supplier->transactions()->create([
+                'account_id'       => $supplierAccount->id,
+                'balance_type'     => 'credit',
+                'invoice_no'       => 'OB-' . $supplier->id,
+                'debit_amount'     => 0,
+                'credit_amount'    => $amount,
+                'description'      =>
+                    'Supplier Opening Advance - '
+                    . $supplier->name,
+                'transaction_date' =>
+                    now()->toDateString(),
+            ]);
+        }
     }
 
     /**

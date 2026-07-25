@@ -92,6 +92,7 @@
                             <thead>
                                 <tr>
                                     <th>Sl</th>
+                                    <th>Code</th>
                                     <th>Service Name</th>
                                     <th>Trigger Name</th>
                                     <th>SMS Template Title</th>
@@ -102,7 +103,8 @@
 
                                 @foreach ($smsTemplates as $value)
                                     <tr>
-                                            <td class="text-center">{{ ($smsTemplates->currentPage() - 1) * $smsTemplates->perPage() + $loop->iteration  }}</td>
+                                        <td class="text-center">{{ ($smsTemplates->currentPage() - 1) * $smsTemplates->perPage() + $loop->iteration  }}</td>
+                                        <td>{{ $value->code_name }}</td>
                                         <td>
                                             {{ optional($value->serviceNames)->name }}
                                         </td>

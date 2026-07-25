@@ -264,11 +264,11 @@ class SalesOrderService
             }
 
 
-            /**Create:: sms send for sales invoice create */  
+            /**Create:: sms send for sales invoice create */ 
 
-            $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
-            $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
-            $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+            // $serviceName = ServiceName::where('code', 'S01')->where('status', 1)->first();
+            $triggerName = TriggerName::where('code', 'T14')->where('status', 1)->first();
+            $sms = SmsTemplate::where('code_name','TEM012')->first(); 
             $smsTemplate = $sms->template_body;
 
             $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first(); 
@@ -294,7 +294,7 @@ class SalesOrderService
                         'sms_reference' => $result['salesOrder']->id,
                         'sms_mem_id' => $result['salesOrder']->customer_id,
                         'sms_status' => 'pending', // condition
-                        'trigger_name' => 'T08', 
+                        'trigger_name' => 'T14', 
                     ],
                     [
                         'sms_send_time' => $newTime,
@@ -313,9 +313,9 @@ class SalesOrderService
             /*Create:: sms send for cash collection*/ 
             if ($cashCollectionAmount > 0) {
 
-                $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
+                // $serviceName = ServiceName::where('code', 'collection')->where('status', 1)->first();
                 $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
-                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+                $sms = SmsTemplate::where('code_name', "TEM003")->first(); 
                 $smsTemplate = $sms->template_body;
 
                 $customerInfo = Customer::where('id', $result['salesOrder']->customer_id)->first(); 
@@ -1446,9 +1446,9 @@ class SalesOrderService
 
             /*Update:: send sms for invoice create */ 
     
-            $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
+            // $serviceName = ServiceName::where('code', 'sales_invoice')->where('status', 1)->first();
             $triggerName = TriggerName::where('code', 'T08')->where('status', 1)->first();
-            $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+            $sms = SmsTemplate::where('code_name', "TEM012")->first(); 
             $smsTemplate = $sms->template_body;
 
             $customerInfo = Customer::where('id', $salesOrder->customer_id)->first(); 
@@ -1488,9 +1488,8 @@ class SalesOrderService
             /*Update:: send sms for cash collection */
             if ($cashCollectionAmount > 0) {
     
-                $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
-                $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first();
-                $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first(); 
+                // $serviceName = ServiceName::where('code', 'cash_collection')->where('status', 1)->first();
+                $triggerName = TriggerName::where('code', 'T03')->where('status', 1)->first(); 
                 $smsTemplate = $sms->template_body;
 
                 $customerInfo = Customer::where('id', $data['customer_id'])->first(); 

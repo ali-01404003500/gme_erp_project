@@ -44,7 +44,29 @@ class SmsTemplateController extends Controller
     {
         $data['serviceNames'] = ServiceName::query()->where('status',1)->get();
         $data['triggerNames'] = TriggerName::query()->where('status',1)->get();
+        $lastCodeName = SmsTemplate::orderByDesc('id')->value('code_name');
 
+        if ($lastCodeName) {
+            // Example: TEM01 -> TEM02
+            preg_match('/(\d+)$/', $lastCodeName, $matches);
+
+            if (!empty($matches)) {
+                $number = (int) $matches[1] + 1;
+                $prefix = substr($lastCodeName, 0, -strlen($matches[1]));
+
+                $codeName = $prefix . str_pad(
+                    $number,
+                    strlen($matches[1]),
+                    '0',
+                    STR_PAD_LEFT
+                );
+            } else {
+                $codeName = $lastCodeName . '1';
+            }
+        } else {
+            $codeName = 'TEM01';
+        }
+        $data['codeName'] = $codeName;
         return view('access_control.sms.templates.create', $data);
     }
     public function serviceNameWiseTrigerName(Request $request){
@@ -70,6 +92,7 @@ class SmsTemplateController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
+            'code_name' => 'required|string|max:10',
             'template_title' => 'required|string|max:255',
             'service_name_id' => 'required|exists:service_names,id',
             'trigger_name_id' => 'required|exists:trigger_names,id',

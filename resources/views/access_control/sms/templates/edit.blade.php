@@ -39,6 +39,17 @@
                                     <div class="col-md-5">
                                         <div class="col-md-10 mt-3">
                                             <div class="form-group">
+                                                <label for="code_name"> Code<span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="code_name" id="code_name"
+                                                    placeholder="Template Code" value="{{ old('code_name', $smsTemplate->code_name) }}" required readonly>
+                                                    @if ($errors->has('code_name'))
+                                                        <span class="text-danger">{{ $errors->first('code_name') }}</span>
+                                                    @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-10 mt-3">
+                                            <div class="form-group">
                                                 <label for="template_title"> Template Title<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" name="template_title" id="template_title"
                                                     placeholder="Enter SMS template title" value="{{ old('template_title', $smsTemplate->template_title) }}" required>

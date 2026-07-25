@@ -134,7 +134,7 @@ class CustomerSettingService
         return ['customerSettings' => $customerSettings];
     }
     
-   public function makeDummyTransaction($customerId, $openingBalance)
+    public function makeDummyTransaction($customerId, $openingBalance)
     {
         if (!$customerId || (float) $openingBalance == 0) {
             return;
