@@ -820,35 +820,35 @@
                                                     <td class="my-0 py-0" style="border: none!important;">Last Collection Date</td>
                                                     <td class="my-0 py-0" style="border: none!important;">:</td> 
                                                     <td class="my-0 py-0" style="border: none!important; text-align: end;">
-                                                        <strong>02-Jul-2026 ({{ numberFormat(0,2) }})</strong>
+                                                        <strong>{{  $lastCollectionDate }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr style="border: none!important;">
                                                     <td class="my-0 py-0" style="border: none!important;">Previous Due</td>
                                                     <td class="my-0 py-0" style="border: none!important;">:</td> 
                                                     <td class="my-0 py-0" style="border: none!important; text-align: end;">
-                                                        <strong>{{ numberFormat(0,2) }}</strong>
+                                                        <strong>{{ numberFormat($previousDue,2) }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr style="border: none!important;">
                                                     <td class="my-0 py-0" style="border: none!important;">Sales</td>
                                                     <td class="my-0 py-0" style="border: none!important;">:</td> 
                                                     <td class="my-0 py-0" style="border: none!important; text-align: end;">
-                                                        <strong>{{ numberFormat(0,2) }}</strong>
+                                                        <strong>{{ numberFormat($sales,2) }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr style="border: none!important;">
                                                     <td class="my-0 py-0" style="border: none!important;">Paid</td>
                                                     <td class="my-0 py-0" style="border: none!important;">:</td> 
                                                     <td class="my-0 py-0" style="border: none!important; text-align: end;">
-                                                        <strong>{{ numberFormat(0,2) }}</strong>
+                                                        <strong>{{ numberFormat($paid,2) }}</strong>
                                                     </td>
                                                 </tr>
                                                 <tr style="border: none!important;">
                                                     <td class="my-0 py-0" style="border: none!important;">Total Due</td>
                                                     <td class="my-0 py-0" style="border: none!important;">:</td> 
                                                     <td class="my-0 py-0" style="border: none!important; text-align: end;">
-                                                        <strong>{{ numberFormat(0,2) }}</strong>
+                                                        <strong>{{ numberFormat($previousDue+$sales-$paid,2) }}</strong>
                                                     </td>
                                                 </tr>
                                             </table>

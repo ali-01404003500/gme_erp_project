@@ -31,6 +31,7 @@ use Modules\HRMS\Models\Employee;
 use Modules\Services\Models\Service;
 use App\Models\SmsInfo;
 use Carbon\Carbon;
+use Modules\Account\Models\Collections\Collection;
 
 class SalesOrderController extends Controller
 {
@@ -297,6 +298,65 @@ class SalesOrderController extends Controller
     {
         $data['salesOrder'] = $this->service->show($id);
         $data['company_info'] = CompanyInfo::first();
+
+        // Current Invoice
+        $invoiceDate = Carbon::parse($data['salesOrder']->invoice_date)->format('Y-m-d');
+
+        // =====================================================
+        // 1. LAST COLLECTION DATE
+        // Current invoice date এর আগের সর্বশেষ collection
+        // =====================================================
+
+       $lastCollection = Collection::where('collection_from_id', $data['salesOrder']->customer_id)
+            ->whereDate('collection_date', '<', $data['salesOrder']->invoice_date)
+            ->latest('collection_date')
+            ->first();
+
+        $lastCollectionDate = $lastCollection?->collection_date ? Carbon::parse($lastCollection->collection_date)->format('d-M-Y').' ('.$lastCollection->total_amount.')' : '-'; 
+        $data['lastCollectionDate'] =  $lastCollectionDate;
+
+        // =====================================================
+        // 2. PREVIOUS DUE
+        // Current Invoice Date এর ঠিক আগ পর্যন্ত Due
+        // =====================================================
+
+        // Current invoice এর আগের সব Sales
+        $previousSales = SalesOrder::where('customer_id', $data['salesOrder']->customer_id)
+            ->whereDate('invoice_date', '<', $invoiceDate)
+            ->sum('total_amount');
+
+
+        // Current invoice এর আগের সব Paid Collection
+        $previousPaid = Collection::where('collection_from_id', $data['salesOrder']->customer_id)
+            ->whereDate('collection_date', '<', $invoiceDate)
+            ->where('status', 'approved') // actual status
+            ->sum('total_amount');
+
+
+        // Previous Due
+        $data['previousDue']  = $previousSales - $previousPaid; 
+
+
+        // =====================================================
+        // 3. CURRENT INVOICE SALES
+        // শুধু এই invoice-এর amount
+        // =====================================================
+
+        $data['sales'] = $data['salesOrder']->net_amount ?? 0;
+
+
+        // =====================================================
+        // 4. CURRENT INVOICE PAID
+        // এই invoice-এর against এ collection
+        // এবং status অনুযায়ী
+        // =====================================================
+
+        $currentCollections = Collection::where('collection_from_id', $data['salesOrder']->customer_id)
+            ->where('source_id', $data['salesOrder']->id) 
+            ->get();
+
+        $data['paid'] = $currentCollections->sum('total_amount');
+
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
