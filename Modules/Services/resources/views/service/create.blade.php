@@ -481,11 +481,23 @@
                 },
             });*/
 
-            $('#product_catalog_id').on('change', function() {
+
+            const serialSelect = new TomSelect("#serial_number", {
+                valueField: "id",
+                labelField: "name",
+                searchField: "name",
+            });
+
+
+            
+
+            $('#product_catalog_id').on('change', function () {
+
                 let productId = $(this).val();
                 let customerId = $('#customer_id').val();
 
                 if (productId && customerId) {
+
                     $.ajax({
                         type: "GET",
                         url: "{{ route('services.service-get-serial-ids') }}",
@@ -493,24 +505,26 @@
                             product_id: productId,
                             customer_id: customerId
                         },
-                        success: function(data) {
-                            serialSelect.clearOptions();
+                        success: function (data) { 
+                            let options = '<option value="">Select Serial No</option>';
 
-                            data.forEach(item => {
-                                serialSelect.addOption({
-                                    id: item.dongle_id,
-                                    name: item.dongle_id
-                                });
+                            $.each(data, function (index, item) {
+                                options += `
+                                    <option value="${item.dongle_id}">
+                                        ${item.dongle_id}
+                                    </option>`;
                             });
 
-                            serialSelect.refreshOptions();
+                            $('#serial_number').html(options);
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error("Error loading serial numbers", xhr);
                         }
                     });
+
                 }
             });
+
         });
     </script>
 
@@ -728,8 +742,9 @@
                             product_id: productId,
                             _token: csrfToken
                         },
-                        success: function(res) {
-                            // Set Invoice ID using TomSelect
+                        success: function(res) {  
+                            // Set Invoice ID using TomSelect 
+                            //alert(res.expire_date);
                             if ($('#sales_order_id')[0]?.tomselect) {
                                 $('#sales_order_id')[0].tomselect.setValue(res.sales_order_id);
                             } else {
@@ -738,11 +753,16 @@
 
                             // Set Invoice Date using Flatpickr
                             if ($('#invoice_date').prop('_flatpickr')) {
-                                $('#invoice_date').prop('_flatpickr').setDate(res.invoice_date);
+                                $('#invoice_date').prop('_flatpickr').setDate(res.invoice_date); 
                             } else {
-                                $('#invoice_date').val(res.invoice_date);
+                                $('#invoice_date').val(res.invoice_date); 
+                                
                             }
-                            updateWarrantyExpiry(productId, customerId, res.invoice_date);
+
+
+                            $('#expire_date').val(res.expire_date);
+
+                            //updateWarrantyExpiry(productId, customerId, res.invoice_date);
 
                         },
                         error: function() {

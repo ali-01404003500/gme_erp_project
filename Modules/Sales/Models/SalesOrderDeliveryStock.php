@@ -29,4 +29,6 @@ class SalesOrderDeliveryStock extends StockModel
     {
         return $this->belongsTo(ProductCatalog::class, 'product_catalog_id');
     }
+
+ 
 }

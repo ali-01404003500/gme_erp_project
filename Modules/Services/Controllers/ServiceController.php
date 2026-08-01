@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\DB;
 use Mpdf\Mpdf;
 use Mpdf\MpdfException;
 use Modules\CRM\Models\Customer\Customer;
+use Modules\Sales\Models\DeliveryStock;
+use Modules\Sales\Models\SalesOrderDeliveryStock;
 
 class ServiceController extends Controller
 {
@@ -336,34 +338,44 @@ class ServiceController extends Controller
         $data = $this->service->getInvoices($request->customer_id);
         return response()->json($data);
     }
-        public function getInvoiceBySerial(Request $request)
-        {
-            // dd($request->all());
-            $invoice = SalesOrder::where('customer_id', $request->customer_id)
-                ->where('status', 'delivered')
-                ->whereHas('delivery', function($query) use ($request) {
-                    $query->whereHas('deliveryDetails', function($query) use ($request) {
-                        $query->whereHas('deliveryStocks', function($query) use ($request) {
-                            $query->where('product_catalog_id', $request->product_id)
-                                ->where('serial_no', $request->serial_number);
-                        });
+
+    public function getInvoiceBySerial(Request $request)
+    {
+        // dd($request->all());
+        $invoice = SalesOrder::where('customer_id', $request->customer_id)
+            ->where('status', 'delivered')
+            ->whereHas('delivery', function($query) use ($request) {
+                $query->whereHas('deliveryDetails', function($query) use ($request) {
+                    $query->whereHas('deliveryStocks', function($query) use ($request) {
+                        $query->where('product_catalog_id', $request->product_id)
+                            ->where('serial_no', $request->serial_number);
                     });
-                })
-                ->with('customer') // optional
-                ->first();
+                });
+            }) 
+            ->first(); 
+ 
+        $stock = DeliveryStock::where('serial_no', $request->serial_number)
+            ->where('product_catalog_id', $request->product_id)
+            ->first();
 
-            if ($invoice) {
-                $invoiceDate = Carbon::parse($invoice->invoice_date);
+        $warrantyDate = $stock?->warranty_date;
+        //dd($warrantyDate);
 
-                return response()->json([
-                    'sales_order_id' => $invoice->id,
-                    'sales_order_code' => $invoice->sales_order_id,
-                    'invoice_date' => $invoiceDate->toDateString(),
-                ]);
-            }
+   
+ 
+        if ($invoice) {
+            $invoiceDate = Carbon::parse($invoice->invoice_date);
+            
 
-            return response()->json(['message' => 'Invoice not found'], 404);
+            return response()->json([ 
+                'sales_order_id' => $invoice->sales_order_id,
+                'invoice_date' => $invoiceDate->toDateString(),
+                'expire_date' => $warrantyDate,
+            ]);
         }
+
+        return response()->json(['message' => 'Invoice not found'], 404);
+    }
 
 
 
