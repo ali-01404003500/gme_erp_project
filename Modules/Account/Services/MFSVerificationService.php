@@ -2,6 +2,9 @@
 
 namespace Modules\Account\Services;
 
+use App\Models\AccessControl\SmsTemplate;
+use App\Models\AccessControl\TriggerName;
+use App\Models\SmsInfo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -78,8 +81,64 @@ class MFSVerificationService
             DB::beginTransaction(); // dd($data);
             $entry->update($data);
 
+            //dd($entry);
             if($entry->status === 'approved') { 
                 $this->makeDummyTransaction($entry);
+  
+                /*Create:: sms send for mfs collection*/ 
+                if ($entry->amount > 0) {
+ 
+                    $triggerName = TriggerName::where('code', 'T02')->where('status', 1)->first();
+                    $sms = SmsTemplate::where('code_name', "TEM002")->first(); 
+                    $smsTemplate = $sms->template_body;
+
+                    $customerInfo = Customer::where('id', $entry->customer_id)->first(); 
+
+                    $phone =   $customerInfo->contact_for_sms; 
+                    $customerName = $customerInfo->company_name; 
+                    $customerPreBalance = Customer::find($entry->customer_id)->getAccount()->balance;
+                    $collectionAmount = $entry->amount; 
+                    $receivedDate = $entry->date ? Carbon::parse($entry->date)->format('d-m-Y') : now()->format('d-m-Y'); 
+                    $customerBalance =  $customerPreBalance + $collectionAmount - $entry->charge;
+                    
+                    $smsData = [
+                        'customer_name' => $customerName,
+                        'customer_pre_balance ' => $customerPreBalance,
+                        'collection_amount' => $collectionAmount,
+                        'received_date' => $receivedDate,
+                        'charge_amount' => $entry->charge, 
+                        'customer_current_balance ' => $customerBalance
+                    ];   
+
+                
+                    foreach ($smsData as $key => $value) {
+                        $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                    } 
+
+                    $time = Carbon::parse(now()); 
+                    $newTime = $time->addMinutes($triggerName->after_send_time);
+
+                    if (!empty($phone)) {
+                        SmsInfo::updateOrCreate(
+                            [
+                                'sms_reference' => $entry->source_id,
+                                'sms_mem_id' => $entry->customer_id,
+                                'sms_status' => 'pending', // condition
+                                'trigger_name' => 'T02', 
+                                
+                            ],
+                            [
+                                'sms_send_time' => $newTime,
+                                'sms_to' => $phone,
+                                'sms_text' => $smsTemplate, 
+                            ]
+                        );
+                    }
+
+                    
+                    // dd($smsTemplate);  
+                }
+        
             }
                
             DB::commit();
@@ -154,7 +213,7 @@ class MFSVerificationService
             ]);
  
             //credit  
-            $bankChargeAccount = Account::where('account_number', '201401')->first()->id; // Bank Charge Expense account
+            $bankChargeAccount = Account::where('account_number', '506402')->first()->id; // Bank Charge Expense account
             $mFSVerification->transactions()->create([
                 'account_id' => $bankChargeAccount,
                 'balance_type' => 'credit',

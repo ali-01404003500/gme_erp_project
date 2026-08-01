@@ -222,7 +222,7 @@
                                         </td>
                                         <td><input type="text" name="manufacture_no[]" class="form-control"></td>
                                         <td><input type="text" name="lot_no[]" class="form-control" required></td>
-                                        <td><input type="date" name="expired_date[]" class="form-control"
+                                        <td><input type="text" name="expired_date[]" class="form-control flatdate"
                                                 required></td>
                                         <td><input type="text" name="quantity[]" class="form-control" required>
                                         </td>
@@ -290,7 +290,7 @@
 
                                         </td>
                                         <td><input type="text" name="dongle_no[]" class="form-control"></td>
-                                        <td><input type="date" name="manufacture_date[]" class="form-control"
+                                        <td><input type="text" name="manufacture_date[]" class="form-control flatdate"
                                                 value="{{ date('Y-m-d') }}" required>
                                         </td>
                                         <td><input type="file" name="image[]" class="file-control form-control"
@@ -317,6 +317,24 @@
 
 @section('page_scripts')
 <script>
+
+    $(document).ready(function () {
+
+        // Manufacture Date
+        $(document).on('focus', 'input[name="manufacture_date[]"]', function () {
+
+            if (!this._flatpickr) {
+                flatpickr(this, {
+                    dateFormat: "Y-m-d",
+                    allowInput: true
+                });
+            }
+
+        });
+
+    });
+
+
     // Batch Modal Handling
     $('#createModal').on('show.bs.modal', function(event) {
         var button = $(event.relatedTarget);
@@ -352,7 +370,7 @@
                             </td>
                             <td><input type="text" name="manufacture_no[]" class="form-control" value="${batch.manufacture_no}"></td>
                             <td><input type="text" name="lot_no[]" class="form-control" required value="${batch.lot_no}"></td>
-                            <td><input type="date" name="expired_date[]" class="form-control" required value="${batch.expired_date}"></td>
+                            <td><input type="text" name="expired_date[]" class="form-control flatdate" required value="${batch.expired_date}"></td>
                             <td><input type="number" name="quantity[]" class="form-control" required value="${batch.quantity}"></td>
                             <td>
                                 <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
@@ -373,7 +391,7 @@
                         </td>
                         <td><input type="text" name="manufacture_no[]" class="form-control"></td>
                         <td><input type="text" name="lot_no[]" class="form-control" required></td>
-                        <td><input type="date" name="expired_date[]" class="form-control" required></td>
+                        <td><input type="text" name="expired_date[]" class="form-control flatdate" required></td>
                         <td><input type="number" name="quantity[]" class="form-control" required></td>
                         <td>
                             <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
@@ -382,6 +400,7 @@
                         </td>
                     </tr>`);
                 updateSerialNumbers();
+                initFlatpickr(modal);
             }
         });
     });
@@ -399,7 +418,7 @@
                 </td>
                 <td><input type="text" name="manufacture_no[]" class="form-control"></td>
                 <td><input type="text" name="lot_no[]" class="form-control" required></td>
-                <td><input type="date" name="expired_date[]" class="form-control" required></td>
+                <td><input type="text" name="expired_date[]" class="form-control flatdate" required></td>
                 <td><input type="number" name="quantity[]" class="form-control" required></td>
                 <td>
                     <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">
@@ -412,6 +431,7 @@
         // Append the new row to the table body
         $('#batch_table_body').append(newRow);
         updateSerialNumbers();
+        initFlatpickr('#batch_table_body');
     });
 
     // Serial Modal Handling
@@ -447,8 +467,8 @@
                                 <input type="text" name="serial_no[]" class="form-control" value="${serial.serial_no}" required>
                             </td>
                             <td><input type="text" name="dongle_no[]" class="form-control" value="${serial.dongle_no == null ? '' : serial.dongle_no || ''}">
-</td>
-                            <td><input type="date" name="manufacture_date[]" class="form-control" value="${serial.manufacture_date}" required></td>
+                            </td>
+                            <td><input type="text" name="manufacture_date[]" class="form-control flatdate" value="${serial.manufacture_date}" required></td>
                             <td>
                                 ${serial.image ? `<a href="${serial.image}" target="_blank"><img src="${serial.image}" style="max-width: 50px; max-height: 50px;" /></a>` : ''}
                                 <input type="file" name="image[]" value="${serial.image}" class="file-control form-control"
@@ -470,7 +490,7 @@
                                 <input type="text" name="serial_no[]" class="form-control" required>
                             </td>
                             <td><input type="text" name="dongle_no[]" class="form-control"></td>
-                            <td><input type="date" name="manufacture_date[]" class="form-control" value="{{ date('Y-m-d') }}" required></td>
+                            <td><input type="text" name="manufacture_date[]" class="form-control flatdate" value="{{ date('Y-m-d') }}" required></td>
                             <td><input type="file" name="image[]" class="file-control form-control"
                                                     data-preview-element="front-image-preview"></td>
                             <td><input type="text" name="quantity[]" value="1" class="form-control text-center" readonly></td>
@@ -491,6 +511,7 @@
     window.removeRow = function(row) {
         $(row).closest('tr').remove();
         updateSerialNumbers();
+        initFlatpickr(modal);
     }
 
     // Batch Form Submission
@@ -552,6 +573,25 @@
             toastr.error(`Duplicate ${this.name.includes('serial') ? 'serial' : 'dongle'} number found`);
         }
     });
+
+
+    function initFlatpickr(container) {
+        $(container).find('.flatdate').each(function () {
+
+            // যদি আগে থেকেই initialized থাকে, আবার initialize করবে না
+            if (this._flatpickr) {
+                return;
+            }
+
+            flatpickr(this, {
+                dateFormat: "Y-m-d",
+                allowInput: true,
+                appendTo: document.body
+            });
+        });
+    }
+
+
 </script>
 
 @endsection

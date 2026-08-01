@@ -84,7 +84,11 @@
                                     </td>
                                     <td class="text-center d-none">{{ optional($stock->source)->batch_no }}</td>
                                     <td class="text-center d-none">{{ optional($stock->source)->manufacture_no }}</td>
-                                    <td class="text-center"> {{ date('Y-m-d', strtotime(optional($stock->source)->expired_date)) }}</td>
+                                    <td class="text-center"> 
+                                        {{ date('Y-m-d', strtotime(optional($stock->source)->expired_date)) }}
+                                        <input type="hidden" class="expire_date" value="{{ date('Y-m-d', strtotime(optional($stock->source)->expired_date)) }}">
+
+                                    </td>
                                     <td class="text-center">{{ $stock->stock }}
                                         <input type="hidden" name="available_stock" value="{{ $stock->stock }}">
                                     </td>

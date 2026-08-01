@@ -166,6 +166,16 @@
                                                                         value="{{ $value }}">
                                                                 @endforeach
                                                             @endif
+
+                                                            @if (old('expire_date')[$detail->product_id] ?? null)
+                                                                @foreach (old('expire_date')[$detail->product_id] as $value)
+                                                                    <input type="hidden"
+                                                                        name="expire_date[{{ $detail->product_id }}][]"
+                                                                        value="{{ $value }}">
+                                                                @endforeach
+                                                            @endif
+
+
                                                             @if (old('lots_quantity')[$detail->product_id] ?? null)
                                                                 @foreach (old('lots_quantity')[$detail->product_id] as $value)
                                                                     <input type="hidden"
@@ -345,6 +355,7 @@
                     var serial_no = [];
 
                     var lot_no = [];
+                    var expire_date = [];
                     var quantities = [];
                     var product_ids = [];
                     if (selectedProducts.length != 0) {
@@ -358,6 +369,7 @@
                             if ($(this).val() != 0) {
                                 product_ids.push($(this).closest('tr').find('input.product_id').val());
                                 lot_no.push($(this).closest('tr').find('input.lot_no').val());
+                                expire_date.push($(this).closest('tr').find('input.expire_date').val());
                                 quantities.push(Number($(this).val()));
                             }
                         });
@@ -375,6 +387,10 @@
                         .remove();
                     $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="lot_no"]')
                         .remove();
+
+                    $(`#productTable tr#product_${product_ids[0]} td:first`).find('input[name^="expire_date"]')
+                        .remove();
+
                     $(`#productTable tr#product_${product_ids[0]} td:first`).find(
                         'input[name^="lots_quantity"]').remove();
                     if (selectedProducts.length != 0) {
@@ -394,6 +410,10 @@
                             $(`#productTable tr#product_${product_id} td:first`).append(
                                 `<input type="hidden" name="lot_no[${product_id}][]" value="${lot_no[index]}">`
                             );
+                            $(`#productTable tr#product_${product_id} td:first`).append(
+                                `<input type="hidden" name="expire_date[${product_id}][]" value="${expire_date[index]}">`
+                            );
+
                             $(`#productTable tr#product_${product_id} td:first`).append(
                                 `<input type="hidden" name="lots_quantity[${product_id}][]" value="${quantities[index]}">`
                             );

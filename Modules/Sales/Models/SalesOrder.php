@@ -153,4 +153,6 @@ class SalesOrder extends BaseModel
         return $this->accounts->where('account_subsidiary_id', 1005)->first();
     }
 
+  
+
 }

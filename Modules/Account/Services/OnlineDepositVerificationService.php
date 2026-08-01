@@ -2,10 +2,14 @@
 
 namespace Modules\Account\Services;
 
+use App\Models\AccessControl\SmsTemplate;
+use App\Models\AccessControl\TriggerName;
+use App\Models\SmsInfo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Account;
 use Modules\Account\Models\OnlineDepositVerification;
+use Modules\CRM\Models\Customer\Customer;
 
 class OnlineDepositVerificationService
 {
@@ -73,6 +77,64 @@ class OnlineDepositVerificationService
 
             if($entry->status === 'approved') { 
                 $this->makeDummyTransaction($entry);
+
+
+                /*Create:: sms send for mfs collection*/ 
+                if ($entry->amount > 0) {
+ 
+                    $triggerName = TriggerName::where('code', 'T04')->where('status', 1)->first();
+                    $sms = SmsTemplate::where('code_name', "TEM004")->first(); 
+                    $smsTemplate = $sms->template_body;
+
+                    $customerInfo = Customer::where('id', $entry->customer_id)->first(); 
+
+                    $phone =   $customerInfo->contact_for_sms; 
+                    $customerName = $customerInfo->company_name; 
+                    $customerPreBalance = Customer::find($entry->customer_id)->getAccount()->balance;
+                    $collectionAmount = $entry->amount; 
+                    $receivedDate = $entry->date ? Carbon::parse($entry->date)->format('d-m-Y') : now()->format('d-m-Y'); 
+                    $customerBalance =  $customerPreBalance + $collectionAmount - $entry->charge;
+                    $bankName = $entry->bankAccount->bank->name;
+
+                    $smsData = [
+                        'customer_name' => $customerName,
+                        'customer_pre_balance ' => $customerPreBalance,
+                        'collection_amount' => $collectionAmount,
+                        'received_date' => $receivedDate,
+                        'bank_name' => $bankName,
+                        'charge_amount' => $entry->charge, 
+                        'customer_current_balance ' => $customerBalance
+                    ];   
+
+                
+                    foreach ($smsData as $key => $value) {
+                        $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                    } 
+
+                    $time = Carbon::parse(now()); 
+                    $newTime = $time->addMinutes($triggerName->after_send_time);
+
+                    if (!empty($phone)) {
+                        SmsInfo::updateOrCreate(
+                            [
+                                'sms_reference' => $entry->source_id,
+                                'sms_mem_id' => $entry->customer_id,
+                                'sms_status' => 'pending', // condition
+                                'trigger_name' => 'T04', 
+                                
+                            ],
+                            [
+                                'sms_send_time' => $newTime,
+                                'sms_to' => $phone,
+                                'sms_text' => $smsTemplate, 
+                            ]
+                        );
+                    }
+
+                    
+                    // dd($smsTemplate);  
+                }
+
             }
                
             DB::commit();
@@ -146,7 +208,7 @@ class OnlineDepositVerificationService
             ]);
  
             //credit
-            $bankChargeAccount = Account::where('account_number', '201401')->first()->id; // Bank Charge Expense account
+            $bankChargeAccount = Account::where('account_number', '506401')->first()->id; // Bank Charge Expense account
             $onlineDepositVerification->transactions()->create([
                 'account_id' => $bankChargeAccount,
                 'balance_type' => 'credit',

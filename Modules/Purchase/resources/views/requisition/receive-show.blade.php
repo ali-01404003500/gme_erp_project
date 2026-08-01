@@ -150,8 +150,7 @@
 
                             <header>
                                 <h1>Global Medical Engineering (BD) Ltd.</h1>
-                                <p>Provider of Medical Equipment & Solutions for Hospitals, Clinics And HealthCare
-                                    Institutes.</p>
+                                <p>Provider of Medical Equipment & Solutions for Hospitals, Diagnostic, Clinics And HealthCare Institutes.</p>
                                 <p>Address : 17/2 (1st & 2nd Floor), Topkhana Road, Dhaka-1000</p>
                                 <p>Hotline : +88 09678 020555 Mobile : +8801404003500</p>
                                 <p>e-mail : <a href="mailto:info@gmebd.com">info@gmebd.com</a> web: <a

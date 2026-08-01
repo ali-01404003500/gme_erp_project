@@ -259,7 +259,6 @@
                                         <tr>
                                             <th>SN</th>
                                             <th>Product Name</th>
-                                            <th>Product Description</th>
                                             <th>Price</th>
                                             <th>Sales Price</th>
                                             <th>Quantity</th>
@@ -272,12 +271,34 @@
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>
-                                                {{ $item->product->name }} <br>
-                                                {{ $item->product->model }}-{{ $item->product->brand->name }}
+                                                {{ $item->product->withoutModelSuffix()->name }} <br>
+                                                <mute>
+                                                    Model: {{ $item->product->model }} <br>
+                                                    Brand: {{ $item->product->brand->name }}
+                                                </mute>
+                                                <br> <br> 
+                                                {{-- Batch / Lot Information --}}
+                                                @if ($item->product->is_expire_date == 'yes')
+                                                    @foreach ($requisition->receiveBatches->where('product_id', $item->product_id) as $batch)
+                                                        <small>
+                                                            Lot: {{ $batch->lot_no }} <br> 
+                                                            Expiry Date: {{ $batch->expired_date }}<br>
+                                                        </small>
+                                                        <br>
+                                                    @endforeach
+                                                @endif
 
-                                            </td>
-                                            <td>
-                                                {{ $requisition->description }}
+                                                {{-- Serial Information --}}
+                                                @if ($item->product->is_serial == 'yes')
+                                                    @foreach ($requisition->receiveSerials->where('product_id', $item->product_id) as $serial)
+                                                        <small>
+                                                            Serial No: {{ $serial->serial_no }}<br>
+                                                            M. Date: {{ $serial->manufacture_date }} <br>
+                                                        </small>
+                                                        <br>
+                                                    @endforeach
+                                                @endif
+
                                             </td>
                                             <td>
                                                 {{ $item->price }}

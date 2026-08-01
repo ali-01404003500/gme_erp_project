@@ -138,6 +138,7 @@ class DeliveryController extends Controller
             'lot_no.*.*' => 'nullable|string',
             'lots_quantity.*.*' => 'nullable|numeric',
             'serial_no.*.*' => 'nullable|string',
+            'expire_date.*.*' => 'nullable|date',
         ]);
 
         $this->service->update($delivery,  $validate, $deliveryDetails, $deliveryStockDetails);

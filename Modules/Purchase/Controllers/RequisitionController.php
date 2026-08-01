@@ -303,6 +303,7 @@ class RequisitionController extends Controller
     {
         $requisition = $this->service->show($id);
 
+        // dd($requisition->receiveSerials);
 
         $data = [
             'requisition' => $requisition,

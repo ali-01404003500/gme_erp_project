@@ -9,9 +9,12 @@ use Modules\Sales\Models\DeliveryDetail;
 use Modules\Sales\Models\DeliveryStock;
 use Modules\Inventory\Services\StockService;
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Account;
 use Modules\CRM\Models\Customer\Customer;
+use Modules\Inventory\Models\ProductCatalog;
+use Modules\Inventory\Models\Stock;
 use Modules\Sales\Models\BackupChallan;
 use Modules\Purchase\Models\RequisitionReceiveBatch;
 use Modules\Purchase\Models\RequisitionReceiveSerial;
@@ -189,7 +192,9 @@ class DeliveryService
             // Handle Lot No
             if (!empty($deliveryStockDetails['lot_no'][$product_id])) {
                 foreach ($deliveryStockDetails['lot_no'][$product_id] as $key2 => $lotNo) {
-                    $lotQuantity = $deliveryStockDetails['lots_quantity'][$product_id][$key2] ?? 0;
+                    $lotQuantity = $deliveryStockDetails['lots_quantity'][$product_id][$key2] ?? 0; 
+                    $expireDate = $deliveryStockDetails['expire_date'][$product_id][$key2] ?? 0;
+                    
                     if (empty($lotQuantity) || $lotQuantity <= 0) {
                         continue;
                     }
@@ -198,6 +203,7 @@ class DeliveryService
                         'product_catalog_id' => $product_id,
                         'quantity' => $lotQuantity,
                         'lot_no' => $lotNo,
+                        'expire_date' => $expireDate,  
                     ]);
                     $this->stockOut($deliveryStock);
                     $result['deliveryStock'][$deliveryDetail->id][] = $deliveryStock;
@@ -207,6 +213,23 @@ class DeliveryService
             // Handle Serial No
             if (!empty($deliveryStockDetails['serial_no'][$product_id])) {
                 foreach ($deliveryStockDetails['serial_no'][$product_id] as $key2 => $serialNo) {
+                    $product = ProductCatalog::find($product_id);
+                    $warrantyDate = null;
+
+                    if ($product && $product->is_warranty == 'yes') {
+
+                        $warrantyValue = (int) $product->warranty_period_input;
+
+                        if ($warrantyValue > 0) { 
+                            $warrantyDate = match (strtoupper($product->warranty_period)) {
+                                'DAY'   => Carbon::today()->addDays($warrantyValue)->subDay()->format('Y-m-d'),
+                                'MONTH' => Carbon::today()->addMonths($warrantyValue)->subDay()->format('Y-m-d'),
+                                'YEAR'  => Carbon::today()->addYears($warrantyValue)->subDay()->format('Y-m-d'),
+                                default => null,
+                            };
+                        }
+                    }
+
                     if (empty($serialNo)) {
                         continue;
                     }
@@ -214,6 +237,7 @@ class DeliveryService
                         'delivery_detail_id' => $deliveryDetail->id,
                         'product_catalog_id' => $product_id,
                         'serial_no' => $serialNo,
+                        'warranty_date' => $warrantyDate,
                         'quantity' => 1,
                     ]);
                     $this->stockOut($deliveryStock);

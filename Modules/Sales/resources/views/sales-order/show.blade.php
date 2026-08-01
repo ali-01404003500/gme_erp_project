@@ -716,11 +716,67 @@
                                         </tr>
                                         <tbody>
                                             {{-- @dd($salesOrder->salesOrderDetails) --}}
+                                               {{-- @dd($salesOrder->salesOrderDeliveries) --}}
                                             @foreach ($salesOrder->salesOrderDetails as $salesOrderDetail)
                                                 <tr>
                                                     <td style="width: 15px;">{{ $loop->iteration }}</td>
-                                                    <td>{{ $salesOrderDetail->product->name }} <span
-                                                            class="text-success">{{ $salesOrderDetail->is_offers_product === 2? '(Clearance Product)' :($salesOrderDetail->is_offers_product? '(Offer Product)' : '') }}</span>
+                                                    <td> 
+                                                        {{ $salesOrderDetail->product->withoutModelSuffix()->name }} <br>
+                                                        <small>
+                                                            Model: {{ $salesOrderDetail->product->model }}  
+                                                        </small> 
+
+                                                     
+                                                        {{-- Delivery Stock Information --}}
+                                                        @foreach ($salesOrder->delivery?->deliveryDetails ?? [] as $deliveryDetail)
+
+                                                                @if ($deliveryDetail->product_id == $salesOrderDetail->product_id)
+
+                                                                    @php
+                                                                        $lotNumbers = $deliveryDetail->deliveryStocks
+                                                                            ->map(function ($stock) {
+                                                                                return collect([
+                                                                                    $stock->lot_no,
+                                                                                    $stock->expire_date,
+                                                                                ])->filter()->implode(', ');
+                                                                            })
+                                                                            ->filter()
+                                                                            ->unique()
+                                                                            ->implode(' | '); 
+
+                                                                        $serialNumbers = $deliveryDetail->deliveryStocks
+                                                                            ->map(function ($stock) {
+                                                                                return collect([
+                                                                                    $stock->serial_no,
+                                                                                    $stock->warranty_date,
+                                                                                ])->filter()->implode(', ');
+                                                                            })
+                                                                            ->filter()
+                                                                            ->unique()
+                                                                            ->implode(' | ');
+                                                                    @endphp
+
+                                                                    @if ($lotNumbers)
+                                                                        <br>
+                                                                        <small>
+                                                                            <strong>Lot & Expiry:</strong> {{ $lotNumbers }}
+                                                                        </small>
+                                                                    @endif
+
+                                                                    @if ($serialNumbers)
+                                                                        <br>
+                                                                        <small>
+                                                                            <strong>Serial & Warranty:</strong> {{ $serialNumbers }}
+                                                                        </small>
+                                                                    @endif
+
+                                                                @endif
+
+                                                            @endforeach
+
+                                                        
+
+                                                        <span class="text-success">{{ $salesOrderDetail->is_offers_product === 2? '(Clearance Product)' :($salesOrderDetail->is_offers_product? '(Offer Product)' : '') }}</span>
                                                     </td>
                                                     <td class="text-center">{{ numberFormat($salesOrderDetail->quantity) }}</td>
                                                     <td class="text-end">{{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->price,2) }}

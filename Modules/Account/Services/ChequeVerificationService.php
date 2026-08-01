@@ -2,6 +2,9 @@
 
 namespace Modules\Account\Services;
 
+use App\Models\AccessControl\SmsTemplate;
+use App\Models\AccessControl\TriggerName;
+use App\Models\SmsInfo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Modules\Account\Models\Account;
@@ -10,6 +13,7 @@ use Modules\Account\Models\AdvanceChequeEntry;
 use Modules\Account\Models\AdvanceChequeEntryDetail;
 use Modules\Account\Models\ChequeDishonorSummary;
 use Modules\Account\Models\ChequeVerification;
+use Modules\CRM\Models\Customer\Customer;
 
 class ChequeVerificationService
 {
@@ -101,6 +105,66 @@ class ChequeVerificationService
                 ]);
 
                 $entry->dishonored_by = auth()->id();
+
+                /*Create:: sms send for cheque dishonor*/ 
+                if ($entry->amount > 0) {
+ 
+                    $triggerName = TriggerName::where('code', 'T04')->where('status', 1)->first();
+                    $sms = SmsTemplate::where('code_name', "TEM004")->first(); 
+                    $smsTemplate = $sms->template_body;
+
+                    $customerInfo = Customer::where('id', $entry->customer_id)->first(); 
+
+                    $phone =   $customerInfo->contact_for_sms; 
+                    $customerName = $customerInfo->company_name; 
+                    $customerPreBalance = Customer::find($entry->customer_id)->getAccount()->balance;
+                    $collectionAmount = $entry->amount; 
+                    $receivedDate = $entry->date ? Carbon::parse($entry->date)->format('d-m-Y') : now()->format('d-m-Y'); 
+                    $bankName = $entry->bankAccount->bank->name;
+                    $customerBalance =  $customerPreBalance + $collectionAmount - $entry->charge;
+                   
+                    $smsData = [
+                        'customer_name' => $customerName,
+                        'customer_pre_balance ' => $customerPreBalance,
+                        'collection_amount' => $collectionAmount,
+                        'received_date' => $receivedDate,
+                        'bank_name' => $bankName,
+                        'charge_amount' => $entry->charge, 
+                        'cheque_no' => $entry->cheque_no,  
+                        'customer_bank' => $entry->bank->name,  
+                        'customer_current_balance ' => $customerBalance
+                    ];   
+
+                
+                    foreach ($smsData as $key => $value) {
+                        $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                    } 
+
+                    $time = Carbon::parse(now()); 
+                    $newTime = $time->addMinutes($triggerName->after_send_time);
+
+                    if (!empty($phone)) {
+                        SmsInfo::updateOrCreate(
+                            [
+                                'sms_reference' => $entry->source_id,
+                                'sms_mem_id' => $entry->customer_id,
+                                'sms_status' => 'pending', // condition
+                                'trigger_name' => 'T04', 
+                                
+                            ],
+                            [
+                                'sms_send_time' => $newTime,
+                                'sms_to' => $phone,
+                                'sms_text' => $smsTemplate, 
+                            ]
+                        );
+                    }
+
+                    
+                    // dd($smsTemplate);  
+                }
+
+
             }
 
             if ($data['status'] === 'honored') {
@@ -125,6 +189,66 @@ class ChequeVerificationService
                             'receipt_no' => $advanceChequeEntry->advanceChequeEntry->receipt_no
                         ]);
                     }
+                }
+
+
+
+                /*Create:: sms send for cheque honnor*/ 
+                if ($entry->amount > 0) {
+ 
+                    $triggerName = TriggerName::where('code', 'T05')->where('status', 1)->first();
+                    $sms = SmsTemplate::where('code_name', "TEM005")->first(); 
+                    $smsTemplate = $sms->template_body;
+
+                    $customerInfo = Customer::where('id', $entry->customer_id)->first(); 
+
+                    $phone =   $customerInfo->contact_for_sms; 
+                    $customerName = $customerInfo->company_name; 
+                    $customerPreBalance = Customer::find($entry->customer_id)->getAccount()->balance;
+                    $collectionAmount = $entry->amount; 
+                    $receivedDate = $entry->date ? Carbon::parse($entry->date)->format('d-m-Y') : now()->format('d-m-Y'); 
+                    $bankName = $entry->bankAccount->bank->name;
+                    $customerBalance =  $customerPreBalance + $collectionAmount - $entry->charge;
+                   
+                    $smsData = [
+                        'customer_name' => $customerName,
+                        'customer_pre_balance ' => $customerPreBalance,
+                        'collection_amount' => $collectionAmount,
+                        'received_date' => $receivedDate,
+                        'bank_name' => $bankName,
+                        'charge_amount' => $entry->charge, 
+                        'cheque_no' => $entry->cheque_no,  
+                        'customer_bank' => $entry->bank->name,  
+                        'customer_current_balance ' => $customerBalance
+                    ];   
+ 
+                
+                    foreach ($smsData as $key => $value) {
+                        $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+                    } 
+
+                    $time = Carbon::parse(now()); 
+                    $newTime = $time->addMinutes($triggerName->after_send_time);
+
+                    if (!empty($phone)) {
+                        SmsInfo::updateOrCreate(
+                            [
+                                'sms_reference' => $entry->source_id,
+                                'sms_mem_id' => $entry->customer_id,
+                                'sms_status' => 'pending', // condition
+                                'trigger_name' => 'T05', 
+                                
+                            ],
+                            [
+                                'sms_send_time' => $newTime,
+                                'sms_to' => $phone,
+                                'sms_text' => $smsTemplate, 
+                            ]
+                        );
+                    }
+
+                    
+                    // dd($smsTemplate);  
                 }
             }
            
@@ -246,7 +370,7 @@ class ChequeVerificationService
 
             
             // Bank charge entry
-            $bankChargeAccount =  Account::where('account_number', '201402')->first()->id; // Bank Charge Expense account
+            $bankChargeAccount =  Account::where('account_number', '506401')->first()->id; // Bank Charge Expense account
             $chequeVerification->transactions()->create([
                 'account_id' => $bankChargeAccount,
                 'balance_type' => 'credit',
