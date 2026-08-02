@@ -104,8 +104,8 @@
                                                  <small class="text-muted"><i class="las la-map-marker me-1"></i>  {{ $value->customer->area?->area }}</small> 
                                             </td>
                                             <td>
-                                                {{ $value->product->withoutModelSuffix()->name }}<br>
-                                                <small class="text-muted">Model: {{ $value->product->model }}</small> 
+                                                {{ optional(optional($value->dongles->product)->withoutModelSuffix())->name }}<br>
+                                                <small class="text-muted">Model: {{ optional($value->dongles->product)->model ?? 'N/A' }}</small> 
                                             </td> 
                                             <td>{{ $value->dongles->dongle_id }}</td>
                                             <td>{{ date('Y-m-d', strtotime($value->created_at)) }}</td>

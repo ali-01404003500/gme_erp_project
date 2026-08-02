@@ -88,7 +88,7 @@ class CBCLicenseRequisitionController extends Controller
     public function getDongleIds(Request $request)
     {
         $customer_id = $request->input('customer_id');
-        $data['dongles'] = DongleOrSerialEntry::where('customer_id', $customer_id)->where('product_type', 'Hematology Analyzer')->with('product')->get();
+        $data['dongles'] = DongleOrSerialEntry::where('customer_id', $customer_id)->where('product_type', 'CBC')->with('product')->get();
         return response()->json($data);
     }
     public function getNotes(Request $request)

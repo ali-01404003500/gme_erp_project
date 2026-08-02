@@ -27,7 +27,7 @@
         <tr>
             <td colspan="5">
                 <label for="description_{{ $serviceToken->id }}">Description</label>
-                <textarea name="pending_descriptions[{{ $serviceToken->id }}]" id="description_{{ $serviceToken->id }}" class="form-control" rows="3">{{ old('pending_descriptions.' . $serviceToken->id, $serviceMyTask?->pendingServiceTokens?->firstWhere('service_token_id', $serviceToken->id)?->description ?? '') }}</textarea>
+                <textarea name="pending_descriptions[{{ $serviceToken->id }}]" id="description_{{ $serviceToken->id }}" class="form-control" rows="3"     minlength="100" required >{{ old('pending_descriptions.' . $serviceToken->id, $serviceMyTask?->pendingServiceTokens?->firstWhere('service_token_id', $serviceToken->id)?->description ?? '') }}</textarea>
             </td>
         </tr>
 

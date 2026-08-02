@@ -35,11 +35,7 @@ class CBCSmsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $serviceName = ServiceName::where('code', 'cbc_sms')->where('status', 1)->first();
-        $triggerName = TriggerName::where('code', 'T02')->where('status', 1)->first();
-        $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first();
-
+    {   
         $validate = $request->validate([
             'customer_id' => 'required|integer|exists:customers,id',
             'address' => 'nullable',
@@ -58,34 +54,63 @@ class CBCSmsController extends Controller
             'software_version' => 'nullable',
         ]);
 
-        $template = $sms->template_body;
+        $serviceName = ServiceName::where('code', 'S01')->where('status', 1)->first(); 
+        if ( ($request->valid_period == 1 && strtolower($request->valid_period_type) === 'years') || ($request->valid_period == 365 && strtolower($request->valid_period_type) === 'days') || strtolower($request->valid_period_type) === 'unlimited'  ) 
+        {
+            $triggerName = TriggerName::where('code', 'T27')->where('status', 1)->first();
 
-        $placeholders = array_map(fn($key) => '$' . $key, array_keys($validate));
- 
-        $values = [];
-        foreach ($validate as $key => $value) {
-            switch ($key) {
-                case 'customer_id':
-                    $customer = Customer::find($value);
-                    $values[] = $customer ? $customer->company_name : 'N/A';
-                    break;
-                case 'dongle_id':
-                    $dongle = DongleOrSerialEntry::find($value);
-                    $values[] = $dongle ? $dongle->dongle_id : 'N/A';
-                    break;
-                case 'valid_period_type':
-                    $values[] = ucfirst($value);
-                    break;
-                default:
-                    $values[] = $value;
-            }
+            $sms = SmsTemplate::where('code_name', 'TEM027')->first();
+            $smsTemplate = $sms->template_body;
+
+            $customerInfo = Customer::where('id', $request->customer_id)->first(); 
+
+            $customerName = $customerInfo->company_name;
+            $productName = $request->product_model;
+            $dongleId = $request->dongle_id;
+            $licenseKey = $request->license_key;
+
+            $smsdata = [
+                'customerName' =>  $customerName,
+                'productName' => $productName,
+                'dongleId' =>  $dongleId,
+                'licenseKey' => $licenseKey
+            ];  
+
+            foreach ($smsdata as $key => $value) {
+                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            } 
+    
+            
+        } 
+        else 
+        {
+            $triggerName = TriggerName::where('code', 'T01')->where('status', 1)->first();
+            $sms = SmsTemplate::where('code_name', 'TEM026')->first(); 
+            $smsTemplate = $sms->template_body;
+
+            $customerInfo = Customer::where('id', $request->customer_id)->first(); 
+
+            $customerName = $customerInfo->company_name;
+            $productName = $request->product_model;
+            $dongleId = $request->dongle_id;
+            $active_and_expired_info = 'Activation: ' . $request->valid_period . ' ' . ucfirst($request->valid_period_type) . '. Valid Until: ' . date('d-M-Y', strtotime($request->expired_date)) . '.';
+            $licenseKey = $request->license_key;
+
+            $smsdata = [
+                'customerName' =>  $customerName,
+                'productName' => $productName,
+                'dongleId' =>  $dongleId,
+                'active_and_expired_info' => $active_and_expired_info,
+                'licenseKey' => $licenseKey
+            ];  
+
+            foreach ($smsdata as $key => $value) {
+                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            } 
         }
-
-        $processedTemplate = str_replace($placeholders, $values, $template);
-
-
+   
         // Assign the processed template to the 'sms' key in the validate array
-        $validate['sms'] = $processedTemplate;
+        $validate['sms'] = $smsTemplate;
 
         $phone = $request->validate([
             'multiple_phone_nos' => 'nullable|array',

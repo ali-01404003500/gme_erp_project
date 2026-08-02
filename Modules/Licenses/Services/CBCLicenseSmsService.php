@@ -35,14 +35,24 @@ class CBCLicenseSmsService
     {
         // Create SMS record
         $requisition = CbcSms::create($data);
-
+ 
         // Create phone records
         $phones = collect($phones['multiple_phone_nos'])->map(function ($phone) use ($requisition) {
             return $requisition->phones()->create(['multiple_phone_no' => $phone]);
         });
+        
 
         // Get the license requisition
         $cbcLicenseRequisition = CBCLicenseRequisition::find($data['c_b_c_license_requisition_id']);
+
+        $cbcLicenseRequisition->phones()->delete();
+        
+        foreach ($phones['multiple_phone_nos'] as $phone) {
+            $cbcLicenseRequisition->phones()->create([
+                'multiple_phone_no' => $phone,
+            ]);
+        }
+
 
         if ($data['status'] == 'Send') {
             // Update license requisition status

@@ -48,7 +48,8 @@ class USGOrOPGLicenseRequisitionController extends Controller
     public function getDongleIds(Request $request)
     {
         $customer_id = $request->input('customer_id');
-        $data['dongles'] = DongleOrSerialEntry::where('customer_id', $customer_id)->where('product_type', 'Imaging/Radiology Product')->with('product')->get();
+        $data['dongles'] = DongleOrSerialEntry::where('customer_id', $customer_id)->whereIn('product_type', ['USG',  'OPG', 'X-Ray', 'C-ARM' ])->with('product')->get(); 
+
         return response()->json($data);
     }
     public function getNotes(Request $request)

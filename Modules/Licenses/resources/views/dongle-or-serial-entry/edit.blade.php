@@ -70,9 +70,11 @@
                                         <div class="form-group">
                                             <label for="product_type">Product Type</label>
                                             <select name="product_type" id="product_type" class="form-control" >
-                                                <option value="Imaging/Radiology Product" {{ old('product_type', $dongleOrSerialEntry->product_type) == 'Imaging/Radiology Product' ? 'selected' : '' }}>Imaging/Radiology Product</option>
-                                                <option value="Hematology Analyzer" @if (old('product_type', $dongleOrSerialEntry->product_type) == 'Hematology Analyzer') selected @endif>Hematology Analyzer</option>
-
+                                                <option value="USG" {{ old('product_type', $dongleOrSerialEntry->product_type) == 'USG' ? 'selected' : '' }}>USG</option>
+                                                <option value="OPG" @if (old('product_type', $dongleOrSerialEntry->product_type) == 'OPG') selected @endif>OPG</option>
+                                                <option value="X-Ray" {{ old('product_type', $dongleOrSerialEntry->product_type) == 'X-Ray' ? 'selected' : '' }}>X-Ray</option>
+                                                <option value="C-ARM" @if (old('product_type', $dongleOrSerialEntry->product_type) == 'C-ARM') selected @endif>C-ARM</option>
+                                                <option value="CBC" {{ old('product_type', $dongleOrSerialEntry->product_type) == 'CBC' ? 'selected' : '' }}>CBC</option>  
                                             </select>
                                         </div>
                                     </div>
@@ -87,8 +89,41 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="software_version">Software Version</label>
-                                            <input type="text" name="software_version" class="form-control" value="{{ optional($dongleOrSerialEntry)->software_version }}"
-                                                id="software_version" placeholder="Software Version">
+                                            <select name="software_version" id="software_version" class="form-control">
+                                                <option value="">-- Select Software Version --</option>
+
+                                                <option value="Old Software Version" @selected(optional($dongleOrSerialEntry)->software_version == 'Old Software Version')>
+                                                    Old Software Version
+                                                </option>
+
+                                                <option value="New Software Version" @selected(optional($dongleOrSerialEntry)->software_version == 'New Software Version')>
+                                                    New Software Version
+                                                </option>
+
+                                                <option value="G-55 Power & Smart" @selected(optional($dongleOrSerialEntry)->software_version == 'G-55 Power & Smart')>
+                                                    G-55 Power & Smart
+                                                </option>
+
+                                                <option value="MAC Id" @selected(optional($dongleOrSerialEntry)->software_version == 'MAC Id')>
+                                                    MAC Id
+                                                </option>
+
+                                                <option value="Loading" @selected(optional($dongleOrSerialEntry)->software_version == 'Loading')>
+                                                    Loading
+                                                </option>
+
+                                                <option value="Device Id-12 Digit" @selected(optional($dongleOrSerialEntry)->software_version == 'Device Id-12 Digit')>
+                                                    Device Id-12 Digit
+                                                </option>
+
+                                                <option value="Device Id-16 Digit" @selected(optional($dongleOrSerialEntry)->software_version == 'Device Id-16 Digit')>
+                                                    Device Id-16 Digit
+                                                </option>
+
+                                                <option value="Others" @selected(optional($dongleOrSerialEntry)->software_version == 'Others')>
+                                                    Others
+                                                </option>
+                                            </select>
                                             
                                         </div>
                                     </div>

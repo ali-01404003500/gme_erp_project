@@ -65,8 +65,11 @@
                                         <div class="form-group">
                                             <label for="product_type">Product Type</label>
                                             <select name="product_type" id="product_type" class="form-control" >
-                                                <option value="Imaging/Radiology Product" @if (old('product_type') == 'Imaging/Radiology Product') selected @endif>Imaging/Radiology Product</option>
-                                                <option value="Hematology Analyzer" @if (old('product_type') == 'Hematology Analyzer') selected @endif>Hematology Analyzer</option>
+                                                <option value="USG" @if (old('product_type') == 'USG') selected @endif>USG</option>
+                                                <option value="OPG" @if (old('product_type') == 'OPG') selected @endif>OPG</option>
+                                                <option value="X-Ray" @if (old('product_type') == 'X-Ray') selected @endif>X-Ray</option>
+                                                <option value="C-ARM" @if (old('product_type') == 'C-ARM') selected @endif>C-ARM</option>
+                                                <option value="CBC" @if (old('product_type') == 'CBC') selected @endif>CBC</option> 
                                             </select>
                                         </div>
                                     </div>
@@ -81,9 +84,18 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="software_version">Software Version</label>
-                                            <input type="text" name="software_version" class="form-control" value="{{ old('software_version') }}"
-                                                id="software_version" placeholder="Software Version">
-                                            
+                                            <select name="software_version" id="software_version" class="form-control">
+                                                <option value="">--Select Software Version--</option>
+                                                <option value="Old Software Version">Old Software Version</option>
+                                                <option value="New Software Version">New Software Version</option>
+                                                <option value="G-55 Power & Smart">G-55 Power & Smart</option>
+                                                <option value="MAC Id">MAC Id</option>
+                                                <option value="Loading">Loading</option>
+                                                <option value="Device Id-12 Digit">Device Id-12 Digit</option>
+                                                <option value="Device Id-16 Digit">Device Id-16 Digit</option>
+                                                <option value="Others">Others</option>
+                                            </select>
+
                                         </div>
                                     </div>
  

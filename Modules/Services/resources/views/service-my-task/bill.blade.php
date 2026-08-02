@@ -557,7 +557,8 @@
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
-                    customer_id: '{{ optional($serviceToken)->customer_id }}'
+                    customer_id: '{{ optional($serviceToken)->customer_id }}',
+                    bill_amount: $("#net_amount_bill").val()
                 },
                 success: function(response) {
                     if (response.success) {

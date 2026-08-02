@@ -212,19 +212,20 @@
                     @endif
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td colspan="5" style="text-align: right; font-weight: bold;">Total</td>
-                        <td>
-                            <input type="text" class="form-control text-center" id="net_amount_bill"
-                                name="bill_net_amount" readonly>
-                        </td>
-                        <td></td>
-                    </tr>
+                   
                     <tr>
                         <td colspan="5" style="text-align: right; font-weight: bold;">Total Discount</td>
                         <td>
                             <input type="text" class="form-control text-center" id="discount_amount_bill"
                                 name="bill_discount_amount" readonly>
+                        </td>
+                        <td></td>
+                    </tr>
+                     <tr>
+                        <td colspan="5" style="text-align: right; font-weight: bold;">Total</td>
+                        <td>
+                            <input type="text" class="form-control text-center" id="net_amount_bill"
+                                name="bill_net_amount" readonly>
                         </td>
                         <td></td>
                     </tr>

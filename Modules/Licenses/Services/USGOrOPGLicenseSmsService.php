@@ -31,9 +31,18 @@ class USGOrOPGLicenseSmsService
     
     public function store(array $data, array $phones)
     {
+        //dd($phones);
         
         $requisition = UsgOrOpgSms::create($data);
         
+        $requisition->phones()->delete(); 
+
+        foreach ($phones['multiple_phone_nos'] as $phone) {
+            $requisition->phones()->create([
+                'multiple_phone_no' => $phone,
+            ]);
+        }
+  
         $phones = collect($phones['multiple_phone_nos'])->map(function ($phone) use ($requisition) {
             return $requisition->phones()->create(['multiple_phone_no' => $phone]);
         });

@@ -216,9 +216,9 @@
    <script>
     $(document).ready(function() {
 
-        $('#customer_id').on('change', function() {
+            $('#customer_id').on('change', function() {
                 var customerId = $(this).val();
-                if (customerId) {
+                if (customerId) { 
                     $.ajax({
                         type: "GET",
                         url: "{{ route('licenses.usg-opg.getDongleIds') }}",

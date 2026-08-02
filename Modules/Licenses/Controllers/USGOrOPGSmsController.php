@@ -33,10 +33,7 @@ class USGOrOPGSmsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $serviceName = ServiceName::where('code', 'usg_or_opg_sms')->where('status', 1)->first();
-        $triggerName = TriggerName::where('code', 'T01')->where('status', 1)->first();
-        $sms = SmsTemplate::where('service_name_id', $serviceName->id)->where('trigger_name_id', $triggerName->id)->first();
+    { 
 
         $validatedData = $request->validate([
             'customer_id' => 'required|integer|exists:customers,id',
@@ -56,54 +53,63 @@ class USGOrOPGSmsController extends Controller
             'software_version' => 'nullable',
         ]);
 
-        $template = $sms->template_body ?? '';
+        $serviceName = ServiceName::where('code', 'S01')->where('status', 1)->first(); 
+        if ( ($request->valid_period == 1 && strtolower($request->valid_period_type) === 'years') || ($request->valid_period == 365 && strtolower($request->valid_period_type) === 'days') || strtolower($request->valid_period_type) === 'unlimited'  ) 
+        {
+            $triggerName = TriggerName::where('code', 'T27')->where('status', 1)->first();
 
-        // Build replacements
-        $replacements = [];
-        // dd($validatedData);
-        foreach ($validatedData as $key => $value) {
-            switch ($key) {
-                case 'customer_id':
-                    $customer = Customer::find($value);
-                    $replacements['$' . $key] = $customer ? $customer->company_name : 'N/A';
-                    break;
+            $sms = SmsTemplate::where('code_name', 'TEM027')->first();
+            $smsTemplate = $sms->template_body;
 
-                case 'dongle_id':
-                    $dongle = DongleOrSerialEntry::find($value);
-                    $replacements['$' . $key] = $dongle ? $dongle->dongle_id : 'N/A';
-                    break;
+            $customerInfo = Customer::where('id', $request->customer_id)->first(); 
 
-                case 'valid_period_type':
-                    // combine with valid_period and handle plural
-                    $periodCount = isset($validatedData['valid_period']) ? (int) $validatedData['valid_period'] : null;
-                    $unit = $value; // days / months / years
+            $customerName = $customerInfo->company_name;
+            $productName = $request->product_model;
+            $dongleId = $request->dongle_id;
+            $licenseKey = $request->license_key;
 
-                    if ($periodCount === 1) {
-                        $unit = rtrim($unit, 's'); // singular (Month, Day, Year)
-                    }
+            $smsdata = [
+                'customerName' =>  $customerName,
+                'productName' => $productName,
+                'dongleId' =>  $dongleId,
+                'licenseKey' => $licenseKey
+            ];  
 
-                    $combined = trim(($periodCount !== null ? $periodCount : '') . ' ' . ucfirst($unit));
-                    $replacements['$' . $key] = $combined;
+            foreach ($smsdata as $key => $value) {
+                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            } 
+    
+            
+        } 
+        else 
+        {
+            $triggerName = TriggerName::where('code', 'T01')->where('status', 1)->first();
+            $sms = SmsTemplate::where('code_name', 'TEM026')->first(); 
+            $smsTemplate = $sms->template_body;
 
-                    // prevent $valid_period from showing separately
-                    $replacements['$valid_period'] = '';
-                    break;
+            $customerInfo = Customer::where('id', $request->customer_id)->first(); 
 
-                case 'valid_period':
-                    if (!isset($replacements['$valid_period'])) {
-                        $replacements['$' . $key] = (string) $value;
-                    }
-                    break;
+            $customerName = $customerInfo->company_name;
+            $productName = $request->product_model;
+            $dongleId = $request->dongle_id;
+            $active_and_expired_info = 'Activation: ' . $request->valid_period . ' ' . ucfirst($request->valid_period_type) . '. Valid Until: ' . date('d-M-Y', strtotime($request->expired_date)) . '.';
+            $licenseKey = $request->license_key;
 
-                default:
-                    $replacements['$' . $key] = (string) $value;
-            }
+            $smsdata = [
+                'customerName' =>  $customerName,
+                'productName' => $productName,
+                'dongleId' =>  $dongleId,
+                'active_and_expired_info' => $active_and_expired_info,
+                'licenseKey' => $licenseKey
+            ];  
+
+            foreach ($smsdata as $key => $value) {
+                $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+            } 
         }
-
-        // Safe replacement
-        $processedTemplate = strtr($template, $replacements);
-
-        $validatedData['sms'] = $processedTemplate;
+   
+        // Assign the processed template to the 'sms' key in the validate array
+        $validatedData['sms'] = $smsTemplate;
 
         $phone = $request->validate([
             'multiple_phone_nos' => 'nullable|array',

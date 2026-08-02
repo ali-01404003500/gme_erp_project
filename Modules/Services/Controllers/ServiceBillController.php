@@ -4,6 +4,9 @@ namespace Modules\Services\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\AccessControl\ServiceName;
+use App\Models\AccessControl\SmsTemplate;
+use App\Models\AccessControl\TriggerName;
 use App\Services\SmsService;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Services\Models\Service;
@@ -165,12 +168,31 @@ class ServiceBillController extends Controller
         if (substr($customerPhone, 0, 2) === '01') {
             $customerPhone = '88' . $customerPhone;
         }
-        //$customerPhone="8801404003500";
+     
+        $serviceName = ServiceName::where('code', 'S05')->where('status', 1)->first(); 
+        $triggerName = TriggerName::where('code', 'T16')->where('status', 1)->first();
+        $sms = SmsTemplate::where('code_name', 'TEM014')->first(); 
+        $smsTemplate = $sms->template_body;
 
-        $message = "Your service is successfully completed. If you are satisfied with the service, please share your pin code. Pin Code is {$otp}.";
+  
+        $customerName = $customer->company_name;
+        $billAmount = $request->bill_amount;
+        $otpCode = $otp;
+         
+        $smsdata = [
+            'customer_name' =>  $customerName,
+            'Bill_amt' => $billAmount,
+            'Otp_code' =>  $otpCode
+        ];  
+
+        foreach ($smsdata as $key => $value) {
+            $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);
+        }   
+   
+        //  $customerPhone = '8801516199031';
 
         try {
-            $sent = $this->smsService->send($customerPhone, $message);
+            $sent = $this->smsService->send($customerPhone, $smsTemplate);
 
             if ($sent) {
                 return response()->json([
