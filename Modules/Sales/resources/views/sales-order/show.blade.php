@@ -782,13 +782,13 @@
                                                     <td class="text-end">{{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->price,2) }}
                                                     </td>
                                                     <td class="discount_col text-end">
-                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->total_discount,2) }}
+                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->unit_discount,2) }}
                                                     </td>
                                                      <td class="discount_col text-end">
-                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->price - $salesOrderDetail->total_discount,2) }}
+                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->price - $salesOrderDetail->unit_discount,2) }}
                                                     </td>
                                                     <td class="text-end">
-                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->quantity * ($salesOrderDetail->amount - $salesOrderDetail->total_discount),2) }}
+                                                        {{ $isFree ? numberFormat(0,2) : numberFormat($salesOrderDetail->quantity * ($salesOrderDetail->price - $salesOrderDetail->unit_discount),2) }}
                                                     </td>
                                                 </tr>
                                             @endforeach
