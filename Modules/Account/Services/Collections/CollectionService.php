@@ -271,9 +271,12 @@ class CollectionService
                             'cheque_no' => $payment->transaction_id,
                             'cheque_date' => $payment->date,
                             'amount' => $payment->amount,
-                            'document' => is_array($payment->attachments) ? json_encode($payment->attachments)  : json_encode([$payment->attachments]),
+                           'document' => !empty($payment->attachments) ? json_encode(  is_array($payment->attachments) ? $payment->attachments : [$payment->attachments]  )  : null,
                             "remarks" => $payment->remarks,
                         ]);
+
+                        
+
                         $payment->load('chequeVerification');
                         // dd($payment->chequeVerification,  $cheqye, get_class($payment), $payment);
                     }
@@ -295,7 +298,7 @@ class CollectionService
                             'head_id' => $payment->bank_id,  
                             'deposit_date' => $payment->date,
                             'amount' => $payment->amount,
-                            'document' => is_array($payment->attachments) ? json_encode($payment->attachments)  : json_encode([$payment->attachments]),
+                            'document' => !empty($payment->attachments) ? json_encode(  is_array($payment->attachments) ? $payment->attachments : [$payment->attachments]  )  : null,
                             "remarks" => $payment->remarks,
                         ]);
                         $payment->load('onlineDepositVerification');
