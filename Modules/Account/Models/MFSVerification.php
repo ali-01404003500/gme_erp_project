@@ -20,7 +20,10 @@ class MFSVerification extends BaseModel
     protected $guarded = [
         'document' => 'array',
     ];
-
+    
+    protected $casts = [
+        'document' => 'array',
+    ];
 
     public function customer()
     {
