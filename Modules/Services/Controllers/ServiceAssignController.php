@@ -33,7 +33,7 @@ class ServiceAssignController extends Controller
      */
     public function index(Request $request)
     {
-        $data['serviceTokens'] = ServiceToken::whereNot('action', 'Live')
+        $data['serviceTokens'] = ServiceToken::whereNotIn('action', ['Live', 'Done'])
             ->paginate(20);
 
         $department_id = Department::whereIn('name', ['Sales & Service', 'Sales & Marketing'])

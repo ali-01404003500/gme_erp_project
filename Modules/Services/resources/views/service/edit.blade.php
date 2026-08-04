@@ -908,6 +908,7 @@
         </tr>`;
 
             $('#service_table tbody').append(row);
+            $("#problem_details").val('');
 
             $('#customer_id').prop('disabled', true).trigger('change');
             $('#customer_id').prop('tomselect')?.lock();

@@ -195,7 +195,7 @@
                                                                 data-remarks="{{ $entry->remarks }}"
                                                                 data-charge="{{ $entry->charge }}"
                                                                 data-amount="{{ $entry->amount }}"
-                                                                data-status="denied">
+                                                                data-status="pending">
                                                                 <i class="fas fa-times-circle"></i> Deny
                                                             </button>
                                                         @endif
@@ -294,20 +294,49 @@
         $("#charge").val(charge);
  
         // change modal title + button based on status
-        if (status === "verified" || status === "approved") {
+        
+
+        if (status === "approved" || status === "verified") {
+
+            // Approve
             $("#statusModalTitle").html(
-                '<i class="fas fa-check-circle text-primary"></i> Confirm bKash Verification'
+                '<i class="fas fa-check-circle text-primary"></i> Confirm Online Deposit Approval'
             );
-            $("#statusSubmitBtn").removeClass("btn-danger").addClass("btn-primary").html(
-                '<i class="fas fa-check"></i> Confirm bKash Verification'
+
+            $("#statusSubmitBtn")
+                .removeClass("btn-danger")
+                .addClass("btn-primary")
+                .html(
+                    '<i class="fas fa-check"></i> Approve Verification'
+                );
+
+        } else if (status === "pending") {
+
+            // Deny → Move back to Pending
+            $("#statusModalTitle").html(
+                '<i class="fas fa-exclamation-triangle text-warning"></i> Deny Verification'
             );
+
+            $("#statusSubmitBtn")
+                .removeClass("btn-primary")
+                .addClass("btn-danger")
+                .html(
+                    '<i class="fas fa-times"></i> Deny & Move to Pending'
+                );
+
         } else {
+
+            // Other status
             $("#statusModalTitle").html(
-                '<i class="fas fa-times-circle text-danger"></i> Confirm bKash Deny'
+                '<i class="fas fa-times-circle text-danger"></i> Confirm Online Deposit Deny'
             );
-            $("#statusSubmitBtn").removeClass("btn-primary").addClass("btn-danger").html(
-                '<i class="fas fa-times"></i> Confirm bKash Deny'
-            );
+
+            $("#statusSubmitBtn")
+                .removeClass("btn-primary")
+                .addClass("btn-danger")
+                .html(
+                    '<i class="fas fa-times"></i> Confirm Deny'
+                );
         }
 
         // dynamic form action

@@ -8,6 +8,7 @@ use Modules\Sales\Services\SalesOrderService;
 use Modules\Sales\Models\SalesOrder;
 use Modules\Services\Models\Service;
 use Modules\Services\Models\ServiceMyTask;
+use Modules\Services\Models\ServiceToken;
 
 class ServiceMyTaskService
 {
@@ -53,6 +54,16 @@ class ServiceMyTaskService
             $serviceMyTask->payments()->delete(); // assuming relation name is `payments()`
 
             $result['serviceMyTask'] = $serviceMyTask;
+
+            $serviceTokenIds = collect([
+            $serviceMyTask->service_token_id,
+            ])
+            ->merge($pendingServiceToken['pending_token_ids'] ?? [])
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
 
             // Save pending service tokens
             foreach ($pendingServiceToken['pending_token_ids'] ?? [] as $pendingServiceTokenId) {
@@ -125,29 +136,47 @@ class ServiceMyTaskService
             // dd($serviceMyTask->serviceToken);
 
             switch ($serviceMyTask->status) {
+
                 case 'pending':
                     break;
 
                 case 'approved':
-                    $serviceMyTask->serviceToken->update(['action' => 'Done']); 
-                    Service::whereKey($serviceMyTask->id)->update(['status' => 'Done']); 
 
-                    $result = $this->storeToSalesOrders($serviceMyTask); 
+                    // Update main + all pending service tokens
+                    ServiceToken::whereIn('id', $serviceTokenIds)
+                        ->update(['action' => 'Done']);
+
+                    Service::whereKey($serviceMyTask->id)
+                        ->update(['status' => 'Done']);
+
+                    $result = $this->storeToSalesOrders($serviceMyTask);
+
                     $salesOrderId = $result->id ?? $result['id'] ?? null;
 
                     if ($paymentAmount >= $salesAmount && $salesOrderId) {
-                        SalesOrder::whereKey($salesOrderId)->update(['paid_status' => 'paid']);
+                        SalesOrder::whereKey($salesOrderId)
+                            ->update(['paid_status' => 'paid']);
                     }
+
                     break;
 
                 case 'rejected':
                 case 'cancelled':
-                    $serviceMyTask->serviceToken->update(['action' => 'Failed']);
+
+                    // Update main + all pending service tokens
+                    ServiceToken::whereIn('id', $serviceTokenIds)
+                        ->update(['action' => 'Failed']);
+
                     break;
 
                 case 'live':
-                    $serviceMyTask->serviceToken->update(['action' => 'Started']);
+
+                    // Update main + all pending service tokens
+                    ServiceToken::whereIn('id', $serviceTokenIds)
+                        ->update(['action' => 'Started']);
+
                     break;
+
                 default:
                     break;
             }
