@@ -333,6 +333,21 @@
 @section('page_scripts')
     @section('page_scripts')
 <script>
+
+ $('#imagePreviewModal-document').on('hidden.bs.modal', function () {
+
+    // Body scrolling বন্ধ রাখুন
+    $('body').addClass('modal-open');
+
+        // Parent modal যদি hide হয়ে যায় তাহলে আবার show করুন
+        const depositModal = bootstrap.Modal.getOrCreateInstance(
+            document.getElementById('depositModal')
+        );
+
+        depositModal.show();
+    });
+
+
     // 🚨 validate Deposit Form (document required)
     $(document).on("submit", "#depositForm", function(e) {
         const uploader = document.getElementById('document');

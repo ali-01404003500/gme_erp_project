@@ -120,7 +120,7 @@ class ChequeVerificationService
                     $customerPreBalance = Customer::find($entry->customer_id)->getAccount()->balance;
                     $collectionAmount = $entry->amount; 
                     $receivedDate = $entry->date ? Carbon::parse($entry->date)->format('d-m-Y') : now()->format('d-m-Y'); 
-                    $bankName = $entry->bankAccount->bank->name;
+                    $bankName = $entry->account->accountable->account_name;
                     $customerBalance =  $customerPreBalance + $collectionAmount - $entry->charge;
                    
                     $smsData = [
@@ -207,7 +207,7 @@ class ChequeVerificationService
                     $customerPreBalance = Customer::find($entry->customer_id)->getAccount()->balance;
                     $collectionAmount = $entry->amount; 
                     $receivedDate = $entry->date ? Carbon::parse($entry->date)->format('d-m-Y') : now()->format('d-m-Y'); 
-                    $bankName = $entry->bankAccount->bank->name;
+                    $bankName = $entry->account->accountable->account_name;
                     $customerBalance =  $customerPreBalance + $collectionAmount - $entry->charge;
                    
                     $smsData = [
