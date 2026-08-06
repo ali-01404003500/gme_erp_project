@@ -173,15 +173,21 @@
                                                                 data-document='@json($entry->document)'>
                                                                 <i class="fas fa-university"></i> Deposit
                                                             </button>
-                                                          <form action="{{ route('account.cheque-verifications.cash', $entry->id) }}" method="POST" style="display:inline;">
-                                                            @csrf
-                                                            <button type="submit"
-                                                                class="btn btn-sm btn-info"
-                                                                title="Collect as Cash">
-                                                                <i class="fas fa-money-bill-wave"></i> Cash 
-                                                            </button>
-                                                        </form>
-                                                            <a href="{{ route('account.cheque-verifications.return', $entry->id) }}" class="btn btn-danger"><i class="fa fa-undo"></i>Return</a>
+                                                     
+                                                            <form action="{{ route('account.cheque-verifications.cash', $entry->id) }}" method="POST" class="cash-form d-inline">
+                                                                @csrf
+                                                                <button type="submit"
+                                                                        class="btn btn-sm btn-info"
+                                                                        title="Collect as Cash">
+                                                                    <i class="fas fa-money-bill-wave"></i> Cash
+                                                                </button>
+                                                            </form>
+
+                                                            <a href="{{ route('account.cheque-verifications.return', $entry->id) }}"  class="btn btn-danger return-btn">
+                                                                <i class="fa fa-undo"></i> Return
+                                                            </a>
+
+
                                                         @endif
                                                     @elseif($entry->status == 'deposited')
                                                         @if (hasPermission('account.cheque-verifications.check'))
@@ -333,6 +339,52 @@
 @section('page_scripts')
     @section('page_scripts')
 <script>
+
+    // Cash Confirmation
+    $(document).on('submit', '.cash-form', function (e) {
+        e.preventDefault();
+
+        let form = this;
+
+        Swal.fire({
+            title: 'Collect as Cash?',
+            text: "Are you sure you want to collect this cheque to cash?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#0d6efd',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Continue',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
+    // Return Confirmation
+    $(document).on('click', '.return-btn', function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr('href');
+
+        Swal.fire({
+            title: 'Return Cheque?',
+            text: "Are you sure you want to return this cheque?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Return',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    });
+
+
 
  $('#imagePreviewModal-document').on('hidden.bs.modal', function () {
 

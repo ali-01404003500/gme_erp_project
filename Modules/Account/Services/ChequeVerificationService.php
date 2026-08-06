@@ -307,7 +307,7 @@ class ChequeVerificationService
 
         $data['status'] = 'return';
         $chequeVerification->update($data);
-        $chequeVerification->source->update(['status'=>'Pending']);
+        $chequeVerification->source->update(['verified'=>'-1']);
          
         DB::commit();
 
