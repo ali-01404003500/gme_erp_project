@@ -91,7 +91,7 @@
                                             </div>
 
                                         </div>
-
+                                      
                                         {{-- @dd($collection->payments) --}}
                                         <div class="row">
                                             <div class="col-md-12 mt-3 mb-3">

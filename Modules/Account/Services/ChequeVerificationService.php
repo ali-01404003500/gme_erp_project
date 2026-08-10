@@ -186,7 +186,7 @@ class ChequeVerificationService
                     if ($advanceChequeEntry) {
                         $advanceChequeEntry->emiEntryDetail()->update([
                             'status' => 'paid',
-                            'receipt_no' => $advanceChequeEntry->advanceChequeEntry->receipt_no
+                            'receipt_no' => json_encode($advanceChequeEntry->advanceChequeEntry->receipt_no),
                         ]);
                     }
                 }

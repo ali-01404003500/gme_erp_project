@@ -162,69 +162,109 @@ class EMIEntryService
         $count = EMIEntryDetail::whereDate('created_at', $today)->count();
         return $count + 1;
     }
+
     public function collectionStore(array $validated)
     {
         DB::beginTransaction();
-        $receipt_no = $this->getReceiptNo();
-        $paymentAmount = 0;
 
-        $emiEntry = EMIEntryDetail::findOrFail($validated['emi_detail_id']);
+        try {
+            $receipt_no = $this->getReceiptNo();
+            $paymentAmount = 0;
 
-        /*$emiEntry->update([
-            'status' => 'processing',
-            'receipt_no' => $receipt_no,
-        ]);*/
- 
-        $existingReceipts = $emiEntry->receipt_no ?? [];
+            $emiEntry = EMIEntryDetail::findOrFail($validated['emi_detail_id']);
 
-        if (!is_array($existingReceipts)) {
-            $existingReceipts = json_decode($existingReceipts, true) ?? [];
-        }
+            /*
+            |--------------------------------------------------------------------------
+            | Receipt No
+            |--------------------------------------------------------------------------
+            */
 
-        // add new receipt
-        $existingReceipts[] = $receipt_no;
+            $existingReceipts = $emiEntry->receipt_no ?? [];
 
-        // optional: remove duplicates
-        $existingReceipts = array_values(array_unique($existingReceipts));
+            if (!is_array($existingReceipts)) {
+                $existingReceipts = json_decode($existingReceipts, true) ?? [];
+            }
 
-        $emiEntry->update([
-            'status' => 'processing',
-            'receipt_no' => $existingReceipts,
-        ]);
+            $existingReceipts[] = $receipt_no;
 
+            $existingReceipts = array_values(
+                array_unique($existingReceipts)
+            );
 
-
-        $emiEntry->payments()->delete();
-        foreach ($validated['payments'] as $payment) {
-            $paymentAmount += $payment['amount'];
-            $emiEntry->payments()->create([
-                'pay_mode' => $payment['pay_mode'],
-                'bank_id' => $payment['bank_id'] ?? null,
-                'branch_id' => $payment['branch_id'] ?? null,
-                'transaction_id' => $payment['transaction_id'] ?? null,
-                'date' => $payment['date'],
-                'amount' => $payment['amount'],
-                'attachments' => $payment['attachments'] ?? null,
-                'remarks' => $payment['remark'],
+            $emiEntry->update([
+                'status' => 'processing',
+                'receipt_no' => $existingReceipts,
             ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Add New Payments
+            |--------------------------------------------------------------------------
+            */
+
+            // IMPORTANT:
+            // Do NOT delete previous payments.
+            // $emiEntry->payments()->delete();
+
+            $currentPayments = new \Illuminate\Database\Eloquent\Collection();;
+
+            foreach ($validated['payments'] as $payment) {
+
+                $paymentAmount += $payment['amount'];
+
+                $newPayment = $emiEntry->payments()->create([
+                    'pay_mode' => $payment['pay_mode'],
+                    'bank_id' => $payment['bank_id'] ?? null,
+                    'branch_id' => $payment['branch_id'] ?? null,
+                    'transaction_id' => $payment['transaction_id'] ?? null,
+                    'date' => $payment['date'],
+                    'amount' => $payment['amount'],
+                    'attachments' => $payment['attachments'] ?? null,
+                    'remarks' => $payment['remark'],
+                ]);
+
+                $currentPayments->push($newPayment);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update Total Paid Amount
+            |--------------------------------------------------------------------------
+            */
+
+            $emiEntry->update([
+                'paid_amount' => $emiEntry->paid_amount + $paymentAmount,
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Collection
+            |--------------------------------------------------------------------------
+            */
+
+            $collectionData = [
+                'payments_total_amount' => $validated['payments_total_amount'],
+                'payments_advance_amount' => $validated['payments_advance_amount'],
+                'collection_type' => 'customer',
+                'collection_from' => $emiEntry->emiEntry->customer_id,
+            ];
+
+            $this->collectionService->storeForSales(
+                $collectionData,
+                $currentPayments,
+                $emiEntry
+            );
+
+            DB::commit();
+
+            return $emiEntry;
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            throw $e;
         }
-        $emiEntry->update([ 
-            'paid_amount' => $emiEntry->paid_amount + $paymentAmount,
-        ]);
-
-
-        $collectionData = [
-            'payments_total_amount' => $validated['payments_total_amount'],
-            'payments_advance_amount' => $validated['payments_advance_amount'],
-            'collection_type' => 'customer',
-            'collection_from' => $emiEntry->emiEntry->customer_id,
-        ];
-
-            $this->collectionService->storeForSales($collectionData, $emiEntry->payments, $emiEntry);
-
-        DB::commit();
-
-        return $emiEntry;
     }
     public function settlementCollectionStore(array $validated)
     {

@@ -145,7 +145,7 @@ class CollectionService
      *
      * @return Collection The stored collection.
      */
-    public function storeForSales(array $data, EloquentCollection $payments, $salesOrder)
+    /*public function storeForSales(array $data, EloquentCollection $payments, $salesOrder)
     {
         DB::beginTransaction();
         // dd($data, $payments);
@@ -220,6 +220,61 @@ class CollectionService
         // dd( $result);
         DB::commit();
         return $collection;
+    }*/
+
+    public function storeForSales(array $data, EloquentCollection $payments, $salesOrder)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $attributes = [
+                'source_id' => $salesOrder->id,
+                'source_type' => get_class($salesOrder),
+                'collection_id' => $this->getCollectionId(),
+                'total_amount' => $data['payments_total_amount'],
+                'advance_amount' => $data['payments_advance_amount'],
+                'status' => 'pending',
+            ];
+
+            if (!empty($data['collection_date'])) {
+                $attributes['collection_date'] = $data['collection_date'];
+            }
+
+            // Every partial collection gets a NEW collection record
+            $collection = Collection::create($attributes);
+
+            $from = match ($data['collection_type']) {
+                'customer' => Customer::find($data['collection_from']),
+                'vendor' => Vendor::find($data['collection_from']),
+                default => null,
+            };
+
+            $collection->collectionFrom()->associate($from);
+            $collection->save();
+
+            
+            // Attach only current collection's payments
+            foreach ($payments as $payment) {
+                $payment->update([
+                    'collection_id' => $collection->id,
+                ]);
+            }
+
+            if ($collection->status == 'approved') {
+                $this->makeDummyTransaction($collection);
+            }
+
+            DB::commit();
+
+            return $collection;
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            throw $e;
+        }
     }
 
     /**

@@ -128,6 +128,7 @@ class CollectionController extends Controller
      */
     public function edit(Collection $collection)
     {
+        ///dd($collection);
         $data['collection'] = $collection;
         // dd($data['collection']->payments->bank);
         $data['customers'] = Customer::select('id', 'company_name as name')->get();

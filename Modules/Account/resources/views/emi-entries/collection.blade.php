@@ -682,20 +682,23 @@
         // Make Collection button click
         $(document).on('click', '.make-collection-btn', function () {
             const row = $(this).closest('tr');
-            const emiAmount = parseFloat(row.find('td:eq(4)').text().replace(/[৳,]/g, '')) || 0;
+            const emiAmount = parseFloat(row.find('td:eq(4)').text().replace(/[৳,]/g, '')) || 0; 
+            const paidAmount = parseFloat(row.find('td:eq(5)').text().replace(/[৳,]/g, '')) || 0;
+            const remainingAmount = emiAmount - paidAmount;
+
             const emiDate = row.find('td:eq(1)').text();
             const serialNo = row.find('td:eq(0)').text();
 
             currentEmiDetail = {
                 id: $(this).data('emi-detail-id'),
-                amount: emiAmount,
+                amount: remainingAmount,
                 date: emiDate,
                 serialNo: serialNo
             };
 
             $('#modal-emi-detail-id').val(currentEmiDetail.id);
-            $('#modal-emi-amount').val(emiAmount);
-            updatePayable(emiAmount);
+            $('#modal-emi-amount').val(remainingAmount);
+            updatePayable(remainingAmount);
             resetModalInputs('');
         });
 
