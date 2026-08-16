@@ -38,7 +38,14 @@ class PaymentVerificationService
         }
          
         if($data['verified'] == '-1' || $data['verified'] == '-2') {
-            if($paymentVerification->paymentable_type === MakePayment::class) {
+            if($paymentVerification->paymentable_type === Loan::class) { 
+                $paymentVerification->paymentable->update(['status' => 'deny']);
+                $loan = Loan::find($paymentVerification->paymentable_id);  
+                $loan->update([
+                    'status' => 'verify deny'
+                ]);
+            } 
+            else if($paymentVerification->paymentable_type === MakePayment::class) {
                 $paymentVerification->paymentable->update(['status' => 'deny']);
             }
             else if($paymentVerification->paymentable_type === InvoiceWisePayment::class) {

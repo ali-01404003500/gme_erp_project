@@ -104,6 +104,10 @@
                                                     <span class="badge badge-round  badge-warning">Pending</span>
                                                 @elseif ($loan->status == 'approved')
                                                     <span class="badge badge-round  badge-success">Approved</span>
+                                                @elseif ($loan->status == 'processing')
+                                                    <span class="badge badge-round  badge-success">Processing</span>
+                                                @elseif ($loan->status == 'verify deny')
+                                                    <span class="badge badge-round  badge-danger">Verify Deny</span>
                                                 @elseif ($loan->status == 'deny')
                                                     <span class="badge badge-round badge-danger">Denied</span>
                                                 @elseif ($loan->status == 'paid')
