@@ -46,6 +46,7 @@ class LoanPaymentController extends Controller
 
         $loan->update([ 
             'payment_date' =>  now(),
+            'status' => 'processing',
         ]);
 
         $cashAccount = auth()->user()->employee->getCashAccount();

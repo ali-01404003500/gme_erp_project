@@ -66,6 +66,7 @@
                         @php $earlySettlementShown = true; @endphp
                     @endif
                 @else
+                {{-- @dd($detail->id) --}}
                     <td>
                         @if ($detail->status == 'due')
                             <button type="button" class="btn btn-success btn-sm make-collection-btn" 
@@ -93,11 +94,20 @@
                                     data-emi-detail-id="{{ $detail->id }}">
                                     Make Collection
                                 </button>
+                                    <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}" 
+                                        target="_blank" class="btn btn-info btn-sm">
+                                            Money Receipt
+                                    </a>
 
-                                <a href="{{ route('account.emi-collections.showMoneyReceipt', $detail->id)}}?emientrydetail_id={{ $detail->id }}" 
-                                target="_blank" class="btn btn-info btn-sm">
-                                    Money Receipt
-                                </a>
+                                {{-- @if ($detail && $detail->payments->isNotEmpty())
+                                     
+                                    @foreach ($detail->payments as $key => $paydetail) 
+                                        <a href="{{ route('account.emi-collections.showMoneyReceipt', $paydetail->id)}}?emientrydetail_id={{ $detail->id }}&payment_id={{ $paydetail->id }}" 
+                                        target="_blank" class="btn btn-info btn-sm">
+                                            Money Receipt
+                                        </a>
+                                    @endforeach
+                                @endif --}}
 
                             </div>
 

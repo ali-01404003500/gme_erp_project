@@ -20,7 +20,7 @@ class LoanService
         ->searchByFields([
                 'employee_id' => 'employee_id',
             ])
-        ->whereIn('status',['approved','paid'])
+        ->whereIn('status',['approved','paid','processing'])
         ->paginate($limit);
     }
 

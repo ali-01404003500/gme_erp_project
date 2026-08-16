@@ -292,7 +292,7 @@
 
                         <section class="requisition-info">
                             <div class="left" style="width: 50%; float: left;">
-                                <p style="font-size: 10px;">IN WORD :                                             {{ convert_number($emiEntryDetail->emi_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('emi_amount')) }} Taka Only</p>
+                                <p style="font-size: 10px;">IN WORD : {{ convert_number($emiEntryDetail->emi_amount ?? $emiEntry->emiDetails->where('status', 'early_settlement_paid')->sum('emi_amount')) }} Taka Only</p>
                             </div>
                             <div class="right" style="width: 50%; float: right;">
                                 <table style="border: none!important; width: 50%; float: right;">
