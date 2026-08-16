@@ -26,6 +26,18 @@
         #transactionModal .table th {
             background: #f5f5f5;
         }
+        #transactionModal .modal-dialog {
+            width: 40%;
+            max-width: 40%;
+            margin: 30px auto;
+        }
+
+        @media (max-width: 768px) {
+            #transactionModal .modal-dialog {
+                width: 95%;
+                max-width: 95%;
+            }
+        }
     </style>
 @endsection
 
@@ -187,7 +199,7 @@
                 <hr>
 
                 <!-- Transaction Table -->
-                <div class="table-responsive">
+                <div style="width: 100%; overflow-x: hidden;">
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
