@@ -2,6 +2,7 @@
 
 namespace Modules\HRMS\Services;
 
+use Modules\Account\Models\Account;
 use Modules\HRMS\Models\Loan;
 
 class LoanService
@@ -51,10 +52,11 @@ class LoanService
         $loan->transactions()->delete();
  
         $cashAccount = $loan->paymentDetails->first()->bank;
-
-
+ 
+        $account = Account::where('accountable_id', $cashAccount->id)->first();
+        
         $loan->transactions()->create([
-            'account_id' => $cashAccount->id,
+            'account_id' => $account->id,
             'balance_type' => 'credit',
             'invoice_no' => $loan->id,
             'amount' => $loan->amount,
@@ -62,7 +64,7 @@ class LoanService
             'credit_amount' => $loan->amount,
             'description' => 'Employee Salary Advance',
         ]);
-
+ 
         $loan->transactions()->create([
             'account_id' => $loan->employee->getStaffLoanAccount()->id,
             'balance_type' => 'debit',
@@ -72,6 +74,7 @@ class LoanService
             'credit_amount' => 0,
             'description' => 'Employee Salary Advance',
         ]);
+        
     }
 
     
