@@ -644,12 +644,8 @@ public function vendorLedgerReport(Request $request)
             $account = $employee->getAccount();
 
             // Get account transactions
-            $transactions = $account
-                ? $account->transactions()
-                    ->orderBy('created_at', 'asc')
-                    ->get()
-                : collect();
-
+            $transactions = $account ? $account->transactions()->with('transactionable')->orderBy('created_at', 'asc')->get() : collect();
+ 
             // Running balance
             $runningBalance = 0;
 
@@ -657,7 +653,6 @@ public function vendorLedgerReport(Request $request)
             $transactionDetails = $transactions->map(function ($transaction) use (&$runningBalance) {
 
                 $amount = (float) $transaction->amount;
-
                 if ($transaction->balance_type === 'credit') {
                     $runningBalance += $amount;
                 } else {
@@ -666,13 +661,13 @@ public function vendorLedgerReport(Request $request)
 
                 return [
                     'id'            => $transaction->id,
-                    'date'          => $transaction->created_at
-                        ? $transaction->created_at->format('d-m-Y H:i:s')
-                        : '',
+                    'date'          => $transaction->created_at ? $transaction->created_at->format('d-m-Y H:i:s') : '',
                     'invoice_no'    => $transaction->invoice_no,
                     'balance_type'  => $transaction->balance_type,
                     'amount'        => $amount,
                     'balance'       => $runningBalance,
+                    'transactionable_type' => $transaction->transactionable_type,
+                    'transactionable_id'   => $transaction->transactionable_id,
                 ];
             })->values()->toArray();
 
