@@ -22,6 +22,7 @@ use Modules\Account\Services\ChequeVerificationService;
 use Modules\CRM\Models\Customer\Broker;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\HRMS\Models\Employee;
+use Modules\Purchase\Models\Supplier as ModelsSupplier;
 use Modules\Purchase\Models\Vendor;
 use Modules\Sales\Models\SalesOrder;
 
@@ -29,14 +30,36 @@ class CollectionService
 {
     public function getAll(int $limit = 20)
     {
-        return Collection::query()->with(["collectionFrom"])->filterByDateRange('created_at')
-            ->when(request()->filled('customer_id'), function ($query) {
-                $query->where('collection_from_type', Customer::class)->where('collection_from_id', request('customer_id'));
-            })
+        return Collection::query()
+            ->with(['collectionFrom'])
+            ->filterByDateRange('created_at')
+
+            ->when(
+                request()->filled('collection_type') &&
+                request()->filled('collection_from'),
+                function ($query) {
+
+                    $types = [
+                        'customer' => Customer::class,
+                        'vendor'   => Vendor::class,
+                        'supplier' => Supplier::class,
+                        'broker'   => Broker::class,
+                        'employee' => Employee::class,
+                    ];
+
+                    $type = $types[request('collection_type')] ?? null;
+
+                    if ($type) {
+                        $query->where('collection_from_type', $type)
+                            ->where('collection_from_id', request('collection_from'));
+                    }
+                }
+            )
+
             ->when(request()->filled('status'), function ($query) {
                 $query->where('status', request('status'));
             })
-            
+
             ->likeSearch('collection_id')
             ->paginate($limit);
     }
@@ -89,7 +112,7 @@ class CollectionService
                 $from = Vendor::find($data['collection_from']);
                 break;
             case 'supplier':
-                $from = Supplier::find($data['collection_from']);
+                $from = ModelsSupplier::find($data['collection_from']);
                 break;
             case 'broker':
                 $from = Broker::find($data['collection_from']);
@@ -246,7 +269,10 @@ class CollectionService
 
             $from = match ($data['collection_type']) {
                 'customer' => Customer::find($data['collection_from']),
-                'vendor' => Vendor::find($data['collection_from']),
+                'vendor' => Vendor::find($data['collection_from']), 
+                'supplier' => Supplier::find($data['collection_from']),
+                'broker'   => Broker::find($data['collection_from']),
+                'employee' => Employee::find($data['collection_from']),
                 default => null,
             };
 
@@ -536,6 +562,15 @@ class CollectionService
             case 'vendor':
                 $from = Vendor::find($data['collection_from']);
                 break;
+            case 'supplier':
+                $from = ModelsSupplier::find($data['collection_from']);
+                break;
+            case 'broker':
+                $from = Broker::find($data['collection_from']);
+                break;
+            case 'employee':
+                $from = Employee::find($data['collection_from']);
+                break;
             default:
                 break;
         }
@@ -573,7 +608,7 @@ class CollectionService
             }
  
 
-            if($payMode === "Cash" && $collection->status == 'approved')
+            if($payMode === "Cash" && $collection->status == 'approved' && $data['collection_type'] == 'customer')
             { 
                 /*Create:: sms send for cash collection*/ 
                 if ($payments['payments_amount'][$key] > 0) {

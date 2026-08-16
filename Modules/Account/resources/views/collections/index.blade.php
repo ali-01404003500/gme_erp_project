@@ -45,17 +45,6 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <td class="text-center">
-                                                <select name="customer_id" id="customer_id" class="form-control tom-select"
-                                                    data-placeholder="Select Customer">
-                                                    <option value=""></option>
-                                                    @foreach ($customers as $key => $value)
-                                                        <option {{ request('customer_id') == $value->id ? 'selected' : '' }}
-                                                            value="{{ $value->id }}">
-                                                            {{ $value->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="text-center">
                                                 <input type="text" class="form-control" name="collection_id"
                                                     value="{{ request('collection_id') }}" autocomplete="off"
                                                     placeholder="Search by Voucher No">
@@ -101,7 +90,7 @@
                                     <th>Collection Type</th>
                                     <th>Voucher No</th>
                                     <th>Date</th>
-                                    <th>Collection from</th>
+                                    <th>Collection From</th>
                                     <th>Payment Type</th>
                                     <th>Amount</th>
                                     <th>Prepared By</th>
@@ -121,9 +110,16 @@
                                         <td>{{ $collection->collection_id }}</td>
                                         <td>{{ \Carbon\Carbon::parse($collection->collection_date)->format('d-m-Y') }}</td>
                                         <td>
-                                            <a class="text-dark fw-500"
-                                                href="{{ route('account.collections.collections.show', $collection->id) }}">
-                                                {{ $collection->collectionFrom->company_name ?? 'N/A' }}</i>
+                                            <a class="text-dark fw-500" href="{{ route('account.collections.collections.show', $collection->id) }}">
+                                                @if($collection->collection_from_type === "Modules\HRMS\Models\Employee")
+                                                    {{ $collection->collectionFrom->full_name ?? 'N/A' }}
+                                                @elseif($collection->collection_from_type === "Modules\CRM\Models\Customer\Broker")
+                                                    {{ $collection->collectionFrom->broker_name ?? 'N/A' }}
+                                                @else
+                                                    {{ $collection->collectionFrom->company_name ?? 'N/A' }}
+                                                @endif
+
+                                             
                                             </a>
                                         </td>
                                         <td>{{ $collection->payments->pluck('pay_mode')->unique()->join(', ') }}</td>

@@ -8,6 +8,7 @@ use App\Services\AutocompleteService;
 use Modules\Account\Models\Collections\Collection;
 use Modules\Account\Services\Collections\CollectionService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Modules\CRM\Models\Customer\Broker;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\HRMS\Models\Employee;
@@ -35,8 +36,7 @@ class CollectionController extends Controller
      */
     public function index()
     {
-        $data['collections'] = $this->service->getAll();
-        $data['customers'] = Customer::select('id', 'company_name as name')->get();
+        $data['collections'] = $this->service->getAll(); 
 
         return view("Account::collections.index", $data);
     }
@@ -55,11 +55,24 @@ class CollectionController extends Controller
      */
     public function store(Request $request)
     {
-    
+ 
         $validate = $request->validate([
             'voucher_type' => 'required|string|in:Collection',
-            'collection_type' => 'required|string|in:customer',
-            'collection_from' => 'required|integer|exists:customers,id',
+            'collection_type' => 'required|string|in:customer,vendor,supplier,broker,employee',
+            'collection_from' => [
+                'required',
+                'integer',
+                Rule::exists(
+                    match ($request->collection_type) {
+                        'customer' => 'customers',
+                        'vendor' => 'vendors',
+                        'supplier' => 'suppliers',
+                        'broker' => 'brokers',
+                        'employee' => 'employees',
+                    },
+                    'id'
+                ),
+            ],
             'payments_total_amount' => 'required|numeric|min:0',
             'payments_payable_amount' => 'required|numeric',
             'payments_due_amount' => 'required|numeric|min:0',
@@ -129,10 +142,8 @@ class CollectionController extends Controller
     public function edit(Collection $collection)
     {
         ///dd($collection);
-        $data['collection'] = $collection;
-        // dd($data['collection']->payments->bank);
-        $data['customers'] = Customer::select('id', 'company_name as name')->get();
-        //
+        $data['collection'] = $collection; 
+
         return view("Account::collections.edit", $data);
     }
 
@@ -143,8 +154,21 @@ class CollectionController extends Controller
     {
         $validate = $request->validate([
             'voucher_type' => 'required|string|in:Collection',
-            'collection_type' => 'required|string|in:customer',
-            'collection_from' => 'required|integer|exists:customers,id',
+            'collection_type' => 'required|string|in:customer,vendor,supplier,broker,employee',
+            'collection_from' => [
+                'required',
+                'integer',
+                Rule::exists(
+                    match ($request->collection_type) {
+                        'customer' => 'customers',
+                        'vendor' => 'vendors',
+                        'supplier' => 'suppliers',
+                        'broker' => 'brokers',
+                        'employee' => 'employees',
+                    },
+                    'id'
+                ),
+            ],
             'payments_total_amount' => 'required|numeric|min:0',
             'payments_payable_amount' => 'required|numeric',
             'payments_due_amount' => 'required|numeric|min:0',

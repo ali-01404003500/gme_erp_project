@@ -50,14 +50,25 @@
                                             <!-- Collection Type -->
                                             <div class="col-sm-4 my-1">
                                                 <div class="input-group">
-                                                    <span class="input-group-text">Collection Type</span>
-                                                    <select name="collection_type" id="collectionType" class="form-control">
-                                                        <option value="">-- Select Type --</option>
-                                                        <option value="customer">Customer Account</option>
-                                                        <option value="vendor">Vendor Account</option>
-                                                        <option value="supplier">Supplier Account</option>
-                                                        <option value="broker">Broker Account</option>
-                                                        <option value="employee">Employee Account</option>
+                                                    <span class="input-group-text">Collection Type</span> 
+                                                    <select name="collection_type" id="collectionType" class="form-control"> 
+                                                        <option value="">-- Select Type --</option> 
+                                                        <option value="customer"  {{ old('collection_type') == 'customer' ? 'selected' : '' }}>
+                                                            Customer Account
+                                                        </option>
+                                                        <option value="vendor"  {{ old('collection_type') == 'vendor' ? 'selected' : '' }}>
+                                                            Vendor Account
+                                                        </option>
+                                                        <option value="supplier"  {{ old('collection_type') == 'supplier' ? 'selected' : '' }}>
+                                                            Supplier Account
+                                                        </option>
+                                                        <option value="broker"  {{ old('collection_type') == 'broker' ? 'selected' : '' }}>
+                                                            Broker Account
+                                                        </option>
+                                                        <option value="employee"  {{ old('collection_type') == 'employee' ? 'selected' : '' }}>
+                                                            Employee Account
+                                                        </option>
+
                                                     </select>
                                                 </div>
                                             </div>

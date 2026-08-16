@@ -57,9 +57,10 @@
                                                     @php
                                                         $collection_type = match ($collection->collection_from_type) {
                                                             "Modules\CRM\Models\Customer\Customer" => "customer",
-                                                            // "Modules\CRM\Models\Vendor\Vendor" => "Vendor",
-                                                            // "Modules\CRM\Models\Supplier\Supplier" => "Supplier",
-                                                            // "Modules\CRM\Models\Employee\Employee" =>  "Employee",
+                                                            "Modules\Purchase\Models\Vendor" => "vendor",
+                                                            "Modules\Purchase\Models\Supplier" => "supplier", 
+                                                            "Modules\CRM\Models\Customer\Broker" =>  "broker",
+                                                            "Modules\HRMS\Models\Employee" =>  "employee",
                                                             default => "",
                                                         };
                                                     @endphp
@@ -78,9 +79,19 @@
                                             <div class="col-sm-4 my-1">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Collected From</span>
-                                                    <select name="collection_from" id="collectionFrom" class="form-control"
-                                                        data-placeholder="Select Account">
-                                                        <option value="{{ $collection->collectionFrom->id ?? '' }}">{{ $collection->collectionFrom->name ?? '' }}</option>
+                                                    <select name="collection_from" id="collectionFrom" class="form-control" data-placeholder="Select Account">
+
+                                                        <option value="{{ $collection->collectionFrom->id ?? '' }}" selected>
+                                                            @if($collection->collection_from_type === "Modules\HRMS\Models\Employee")
+                                                                {{ $collection->collectionFrom->full_name ?? 'N/A' }}
+                                                            @elseif($collection->collection_from_type === "Modules\CRM\Models\Customer\Broker")
+                                                                {{ $collection->collectionFrom->broker_name ?? 'N/A' }}
+                                                            @else
+                                                                {{ $collection->collectionFrom->company_name ?? 'N/A' }}
+                                                            @endif
+                                                        </option>
+
+
                                                     </select>
                                                 </div>
                                             </div>
