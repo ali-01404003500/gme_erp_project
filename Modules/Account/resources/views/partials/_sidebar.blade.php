@@ -376,6 +376,18 @@
                             </li>
                         @endif
 
+                        @if (hasPermission('account.loan-collections.index'))
+                            <li>
+                                <a href="{{ route('account.loan-collections.index') }}"
+                                    class="{{ request()->routeIs('account.loan-collections.index') ? 'active' : '' }}">
+                                    <span class="nav-icon fas fa-coins"></span>
+                                    {{ t_('menu.loan collection') }}
+                                </a>
+                            </li>
+                        @endif
+ 
+
+
                     </ul>
                 </li>
             @endif

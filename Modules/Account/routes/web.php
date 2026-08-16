@@ -48,6 +48,8 @@ use Modules\Account\Controllers\VendorBill\VendorBillSettingController;
 use Modules\Account\Models\Payments\CustomerPayment;
 use Modules\Account\Controllers\Payments\LoanPaymentController;
 use Modules\Account\Controllers\PaymentVerificationController;
+ use Modules\Account\Controllers\LoanCollectionController;
+
 use Modules\Account\Models\MFSVerification;
 use Modules\Account\Models\OnlineDepositVerification;
 
@@ -83,6 +85,14 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
         Route::resource('default-payable-receivables', DefaultPayableReceivableController::class);
     });
 
+
+    Route::prefix('loan-collection')->name('loan-collections.')->group(function () {
+        Route::get( '/',[LoanCollectionController::class, 'index'])->name('index');
+        Route::post('/{loanPayment}/collect',[LoanCollectionController::class, 'collect'])->name('collect');
+        Route::post('/{loanPayment}/check',[LoanCollectionController::class, 'check'])->name('check');
+        Route::post('/{loanPayment}/approve',[LoanCollectionController::class, 'approve'])->name('approve');
+        Route::post('/{loanPayment}/reject',[LoanCollectionController::class, 'reject'])->name('reject');
+    });
 
 
     Route::group(['prefix' => 'collections', 'as' => 'collections.'], function () {

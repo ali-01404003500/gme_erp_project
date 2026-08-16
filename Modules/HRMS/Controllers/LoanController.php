@@ -127,6 +127,7 @@ class LoanController extends Controller
             'remarks' => 'required', 
         ]);
         $this->service->update($loan, $validate);
+       
 
         return redirect()->route('hrm.loans.index')->with('success', 'Loan updated successfully.');
     }
@@ -146,6 +147,7 @@ class LoanController extends Controller
         $plan->approved_by = auth()->user()->id;
         $plan->status = 'approved'; // Assuming 1 is for approved
         $plan->save();
+        $plan->generatePaymentSchedule();
 
         return redirect()->route('hrm.loans.index')->with('success', 'Loan approved successfully.');
     }

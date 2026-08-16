@@ -3,6 +3,7 @@ namespace Modules\HRMS\Models;
 
 use App\Models\AccessControl\Branch;
 use App\Models\BaseModel;
+use Modules\HRMS\Models\LoanPayment;
 use App\Models\User;
 use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -428,5 +429,10 @@ class Employee extends BaseModel
         return $this->hasOne(SalarySignatory::class, 'employee_id');
     }
 
+
+    public function loanPayments()
+    {
+        return $this->hasMany(LoanPayment::class);
+    }
 
 }
