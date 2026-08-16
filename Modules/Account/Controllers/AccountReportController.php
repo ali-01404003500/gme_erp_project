@@ -651,11 +651,13 @@ public function vendorLedgerReport(Request $request)
 
             // Prepare transaction details
             $transactionDetails = $transactions->map(function ($transaction) use (&$runningBalance) {
-
-                $amount = (float) $transaction->amount;
+ 
+               
                 if ($transaction->balance_type === 'credit') {
+                    $amount = (float) $transaction->credit_amount;
                     $runningBalance -= $amount;
                 } else {
+                     $amount = (float) $transaction->debit_amount;
                     $runningBalance += $amount;
                 }
 
