@@ -196,6 +196,7 @@
                                 <th> Reference </th>
                                 <th> Type </th>
                                 <th class="text-right"> Amount </th>
+                                <th class="text-right"> Balance </th>
                             </tr>
                         </thead>
                         <tbody id="transaction_table_body"></tbody>
@@ -203,6 +204,7 @@
                             <tr>
                                 <th colspan="4" class="text-right"> Total</th>
                                 <th class="text-right" id="modal_total_amount"> 0.00 </th>
+                                <th class="text-right"></th>
                             </tr>
                         </tfoot>
                     </table>
@@ -281,7 +283,7 @@ $(document).on('click', '.employee-balance', function () {
     if (!transactions || transactions.length === 0) {
         $('#transaction_table_body').html(`
             <tr>
-                <td colspan="5" class="text-center">
+                <td colspan="6" class="text-center">
                     No transaction found.
                 </td>
             </tr>
@@ -329,6 +331,12 @@ $(document).on('click', '.employee-balance', function () {
                 </td>
                 <td class="text-right">
                     ${amount.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })}
+                </td>
+                <td class="text-right">
+                    ${runningBalance.toLocaleString('en-US', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     })}

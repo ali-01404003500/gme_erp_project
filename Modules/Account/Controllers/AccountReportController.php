@@ -654,9 +654,9 @@ public function vendorLedgerReport(Request $request)
 
                 $amount = (float) $transaction->amount;
                 if ($transaction->balance_type === 'credit') {
-                    $runningBalance += $amount;
-                } else {
                     $runningBalance -= $amount;
+                } else {
+                    $runningBalance += $amount;
                 }
 
                 return [
