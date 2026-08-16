@@ -575,22 +575,123 @@ public function vendorLedgerReport(Request $request)
 
 
 
-    public function employeeCashHandlingReport()
-    { 
+    // public function employeeCashHandlingReport()
+    // { 
+    //     $employees = Employee::where('status', '1')->get();
+
+    //     $data = $employees->map(function ($employee) {
+    //         $account = $employee->getAccount(); 
+
+    //         return [
+    //             'name' => $employee->full_name,
+    //             'balance' => $account ? $account->balance : 0,
+    //         ];
+    //     })->toArray();
+
+    //     return view('Account::reports.employee-cash-handling.index', ['data' => $data]);
+    // }
+
+
+    // public function employeeCashHandlingReport(Request $request)
+    // {
+    //     $employees = Employee::where('status', '1')->get();
+
+    //     $query = Employee::where('status', '1');
+
+    //     // Employee filter
+    //     if ($request->filled('employee_id')) {
+    //         $query->where('id', $request->employee_id);
+    //     }
+
+    //     $data = $query->get()->map(function ($employee) {
+
+    //         $account = $employee->getAccount();
+
+    //         return [
+    //             'id'      => $employee->id,
+    //             'name'    => $employee->full_name,
+    //             'balance' => $account ? $account->balance : 0,
+    //         ];
+
+    //     })->toArray();
+
+    //     return view(
+    //         'Account::reports.employee-cash-handling.index',
+    //         [
+    //             'data'      => $data,
+    //             'employees' => $employees,
+    //         ]
+    //     );
+    // }
+
+    public function employeeCashHandlingReport(Request $request)
+    {
+        // Get all active employees for dropdown
         $employees = Employee::where('status', '1')->get();
 
-        $data = $employees->map(function ($employee) {
-            $account = $employee->getAccount(); 
+        // Employee query
+        $query = Employee::where('status', '1');
+
+        // Filter by employee
+        if ($request->filled('employee_id')) {
+            $query->where('id', $request->employee_id);
+        }
+
+        // Prepare report data
+        $data = $query->get()->map(function ($employee) {
+
+            // Get employee account
+            $account = $employee->getAccount();
+
+            // Get account transactions
+            $transactions = $account
+                ? $account->transactions()
+                    ->orderBy('created_at', 'asc')
+                    ->get()
+                : collect();
+
+            // Running balance
+            $runningBalance = 0;
+
+            // Prepare transaction details
+            $transactionDetails = $transactions->map(function ($transaction) use (&$runningBalance) {
+
+                $amount = (float) $transaction->amount;
+
+                if ($transaction->balance_type === 'credit') {
+                    $runningBalance += $amount;
+                } else {
+                    $runningBalance -= $amount;
+                }
+
+                return [
+                    'id'            => $transaction->id,
+                    'date'          => $transaction->created_at
+                        ? $transaction->created_at->format('d-m-Y H:i:s')
+                        : '',
+                    'invoice_no'    => $transaction->invoice_no,
+                    'balance_type'  => $transaction->balance_type,
+                    'amount'        => $amount,
+                    'balance'       => $runningBalance,
+                ];
+            })->values()->toArray();
 
             return [
-                'name' => $employee->full_name,
-                'balance' => $account ? $account->balance : 0,
+                'id'           => $employee->id,
+                'name'         => $employee->full_name,
+                'balance'      => $account ? (float) $account->balance : 0,
+                'transactions' => $transactionDetails,
             ];
-        })->toArray();
+        })->values()->toArray();
 
-        return view('Account::reports.employee-cash-handling.index', ['data' => $data]);
+        return view(
+            'Account::reports.employee-cash-handling.index',
+            [
+                'data'      => $data,
+                'employees' => $employees,
+            ]
+        );
     }
-
 
 
     /*
