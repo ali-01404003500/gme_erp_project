@@ -9,10 +9,23 @@ use Modules\HRMS\Models\Employee;
 use Modules\HRMS\Models\LoanPayment;
 
 use App\Http\Controllers\Controller;
-
+use Modules\Account\Services\Collections\CollectionService;
 
 class LoanCollectionController extends Controller
 {
+
+    /**
+     * Undocumented variable
+     *
+     * @var  CollectionService
+     */
+    private $collectionService;
+
+    public function __construct(CollectionService $collectionService)
+    {
+        $this->collectionService = $collectionService;
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Collection Dashboard
@@ -28,15 +41,18 @@ class LoanCollectionController extends Controller
             'employee',
         ]);
 
-        // Month filter
-        $query->whereYear('due_date', substr($month, 0, 4))
-            ->whereMonth('due_date', substr($month, 5, 2));
-
         // Employee filter
         if ($request->filled('employee_id')) {
-            $query->where('employee_id', $request->employee_id);
-        }
 
+            // Employee selected হলে শুধু employee filter
+            $query->where('employee_id', $request->employee_id);
+
+        } else {
+
+            // Employee selected না থাকলে month filter
+            $query->whereYear('due_date', substr($month, 0, 4))
+                ->whereMonth('due_date', substr($month, 5, 2));
+        }
         // Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -88,41 +104,204 @@ class LoanCollectionController extends Controller
     | Submit Collection
     |--------------------------------------------------------------------------
     */
+ 
 
-    public function collect(  Request $request, LoanPayment $loanPayment) {
+    public function collect( Request $request, LoanPayment $loanPayment) 
+    {
+         
 
-        $request->validate([
-            'paid_amount' => [ 'required','numeric','min:0.01','max:' . $loanPayment->amount,],
-            'payment_method' => ['required','string',],
-            'reference_no' => ['nullable','string','max:255',],
-            'payment_date' => ['required','date',],
-            'remarks' => ['nullable','string',],
+
+        $validated = $request->validate([
+            // Loan Details
+            'loan_payment_id' => 'required|exists:loan_payments,id',
+            'due_amount' => 'required|numeric|min:0',
+            'payments_total_amount' => 'required|numeric|min:0',
+            'payments_payable_amount' => 'required|numeric',
+            'payments_due_amount' => 'required|numeric|min:0',
+            'payments_advance_amount' => 'required|numeric|min:0',
+
+            // Payments (nested array validation)
+            'payments' => 'required|array|min:1',
+            'payments.*.pay_mode' => 'required|in:Cash,Cheque,Online Deposit,bKash,Nagad,Rocket,Card,EMI,Card Payment',
+            'payments.*.bank_id' => 'nullable|integer',
+            'payments.*.branch_id' => 'nullable|integer',
+            'payments.*.transaction_id' => 'nullable|string',
+            'payments.*.date' => 'required|date',
+            'payments.*.amount' => 'required|numeric|min:0',
+            'payments.*.attachments' => 'nullable|string',
+            'payments.*.remark' => 'required|string',
         ]);
 
-        if ($loanPayment->status !== 'pending') {
-            return back()->with(
-                'error',
-                'This installment is already submitted.'
+
+
+        DB::beginTransaction();
+
+        try {    
+            $receipt_no = $this->getReceiptNo();
+          
+          
+            $loanPayment = LoanPayment::findOrFail($validated['loan_payment_id']);
+
+      
+
+            if ($loanPayment->status !== 'pending') {
+                return back()->with(
+                    'error',
+                    'This installment is already submitted.'
+                );
+
+            }
+ 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Receipt No
+            |--------------------------------------------------------------------------
+            */
+
+            $existingReceipts = $loanPayment->receipt_no ?? [];
+
+            if (!is_array($existingReceipts)) {
+                $existingReceipts = json_decode($existingReceipts, true) ?? [];
+            }
+
+            $existingReceipts[] = $receipt_no;
+
+            $existingReceipts = array_values(
+                array_unique($existingReceipts)
             );
 
+            
+            /*
+            |--------------------------------------------------------------------------
+            | Add New Payments
+            |--------------------------------------------------------------------------
+            */
+
+           
+            $currentPayments = new \Illuminate\Database\Eloquent\Collection();;
+            $paymentAmount = 0;
+            foreach ($validated['payments'] as $payment) {
+
+                $paymentAmount += $payment['amount'];
+
+                $newPayment = $loanPayment->payments()->create([
+                    'pay_mode' => $payment['pay_mode'],
+                    'bank_id' => $payment['bank_id'] ?? null,
+                    'branch_id' => $payment['branch_id'] ?? null,
+                    'transaction_id' => $payment['transaction_id'] ?? null,
+                    'date' => $payment['date'],
+                    'amount' => $payment['amount'],
+                    'attachments' => $payment['attachments'] ?? null,
+                    'remarks' => $payment['remark'],
+                ]);
+
+                $currentPayments->push($newPayment);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update Total Paid Amount
+            |--------------------------------------------------------------------------
+            */
+
+
+            $loanPayment->update([
+                'paid_amount' => $loanPayment->paid_amount + $paymentAmount, 
+                'status' => 'submitted',
+                'receipt_no' => $existingReceipts, 
+                'updated_by' => auth()->id(),
+            ]);
+          
+            
+
+            /*
+            |--------------------------------------------------------------------------
+            | Collection
+            |--------------------------------------------------------------------------
+            */
+            
+
+            $collectionData = [
+                'payments_total_amount' => $validated['payments_total_amount'],
+                'payments_advance_amount' => $validated['payments_advance_amount'],
+                'collection_type' => 'employee',
+                'collection_from' => $loanPayment->employee_id,
+            ];
+
+            $this->collectionService->storeForSales(
+                $collectionData,
+                $currentPayments,
+                $loanPayment
+            );
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan collection submitted successfully.'
+            ]);
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-
-        $loanPayment->update([
-            'paid_amount' => $request->paid_amount,
-            'payment_date' => $request->payment_date,
-            'payment_method' => $request->payment_method,
-            'reference_no' => $request->reference_no,
-            'remarks' => $request->remarks,
-            'status' => 'submitted',
-            'updated_by' => auth()->id(),
-        ]);
-
-        return back()->with(
-            'success',
-            'Loan collection submitted successfully.'
-        );
     }
+
+    protected function getSequence(string $prefix, string $today)
+    {
+        $count = LoanPayment::whereDate('created_at', $today)->count();
+        return $count + 1;
+    }
+
+    public function getReceiptNo()
+    {
+        $authUser = auth()->user()->id;
+        $today = date('Ymd');
+        $prefix = 'PR-';
+        $sequence = $this->getSequence($prefix, $today);
+        return sprintf('%s%s-USR-%05d-%06d', $prefix, $today, $sequence, $authUser, $sequence);
+    }
+    
+    // public function collect(  Request $request, LoanPayment $loanPayment) {
+
+    //     $request->validate([
+    //         'paid_amount' => [ 'required','numeric','min:0.01','max:' . $loanPayment->amount,],
+    //         'payment_method' => ['required','string',],
+    //         'reference_no' => ['nullable','string','max:255',],
+    //         'payment_date' => ['required','date',],
+    //         'remarks' => ['nullable','string',],
+    //     ]);
+
+    //     if ($loanPayment->status !== 'pending') {
+    //         return back()->with(
+    //             'error',
+    //             'This installment is already submitted.'
+    //         );
+
+    //     }
+
+
+    //     $loanPayment->update([
+    //         'paid_amount' => $request->paid_amount,
+    //         'payment_date' => $request->payment_date,
+    //         'payment_method' => $request->payment_method,
+    //         'reference_no' => $request->reference_no,
+    //         'remarks' => $request->remarks,
+    //         'status' => 'submitted',
+    //         'updated_by' => auth()->id(),
+    //     ]);
+
+    //     return back()->with(
+    //         'success',
+    //         'Loan collection submitted successfully.'
+    //     );
+    // }
 
 
     /*

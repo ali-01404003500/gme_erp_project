@@ -22,6 +22,7 @@ use Modules\Account\Services\ChequeVerificationService;
 use Modules\CRM\Models\Customer\Broker;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\HRMS\Models\Employee;
+use Modules\HRMS\Models\LoanPayment;
 use Modules\Purchase\Models\Supplier as ModelsSupplier;
 use Modules\Purchase\Models\Vendor;
 use Modules\Sales\Models\SalesOrder;
@@ -438,6 +439,7 @@ class CollectionService
         // accounts
         $customerReceivableAccount = $collection->collectionFrom->getAccount();
         //debit
+       
 
         // dd($collection->payments);
         foreach ($collection->payments as $payment) {
@@ -503,16 +505,35 @@ class CollectionService
                 ]);
             }
         }
-        $collection->transactions()->create([
-            'account_id' => $customerReceivableAccount->id,
-            'balance_type' => 'credit',
-            'invoice_no' => $collection->collection_id,
-            'amount' => $receivableCreditAmount,
-            'debit_amount' => 0,
-            'credit_amount' => $receivableCreditAmount,
-            'description' => 'Collection Created',
-            'transaction_date' => $collection->collection_date,
-        ]);
+        if(  $collection->payments->first()->paymentable_type == LoanPayment::class)
+        {
+            // loan colleciton hoile
+          
+            $collection->transactions()->create([
+                'account_id' =>  $collection->collectionFrom->getStaffLoanAccount()->id,
+                'balance_type' => 'credit',
+                'invoice_no' => $collection->collection_id,
+                'amount' => $receivableCreditAmount,
+                'debit_amount' => 0,
+                'credit_amount' => $receivableCreditAmount,
+                'description' => 'Collection Created',
+                'transaction_date' => $collection->collection_date,
+            ]);
+        }
+        else
+        {
+            $collection->transactions()->create([
+                'account_id' => $customerReceivableAccount->id,
+                'balance_type' => 'credit',
+                'invoice_no' => $collection->collection_id,
+                'amount' => $receivableCreditAmount,
+                'debit_amount' => 0,
+                'credit_amount' => $receivableCreditAmount,
+                'description' => 'Collection Created',
+                'transaction_date' => $collection->collection_date,
+            ]);
+        }
+        
 
         // $collection->transactions()->create([
         //         'account_id'            => Account::where('account_code', '1000')->first()->id,
@@ -689,6 +710,15 @@ class CollectionService
                         ]);
                 }
             }
+
+            if ($collection->source_type == LoanPayment::class) {
+                $loanPayment = LoanPayment::find($collection->source_id);
+                if ($loanPayment) {
+                    $loanPayment->update([
+                        'status' => 'pending',
+                    ]);
+                }
+            }
         }
 
         if ($collection->status == 'approved') {
@@ -722,6 +752,17 @@ class CollectionService
                         ]);
                 }
             }
+
+            
+            if ($collection->source_type == LoanPayment::class) {
+                $loanPayment = LoanPayment::find($collection->source_id);
+                if ($loanPayment) {
+                    $loanPayment->update([
+                        'status' => 'paid',
+                    ]);
+                }
+            }
+
 
             $this->makeDummyTransaction($collection);
 

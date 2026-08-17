@@ -148,7 +148,7 @@ class EMIEntryService
             throw $e;
         }
     }
-     public function getReceiptNo()
+    public function getReceiptNo()
     {
         $authUser = auth()->user()->id;
         $today = date('Ymd');

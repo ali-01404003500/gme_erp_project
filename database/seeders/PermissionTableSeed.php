@@ -4212,6 +4212,23 @@ class PermissionTableSeed extends Seeder
                 'key' => 'account.collections.invoice-wise-collections'
             ],
 
+
+            //Loan Colleciton 
+            [
+                'name' => 'Loan Collections List',
+                'slug' => 'account.collections.loan-collections.index',
+                'description' => 'Loan Collections list permission',
+                'key' => 'account.collections.loan-collections'
+            ],
+
+            [
+                'name' => 'Create Loan Collections',
+                'slug' => 'account.collections.loan-collections.create',
+                'description' => 'Loan Collections create permission',
+                'key' => 'account.collections.loan-collections'
+            ],
+ 
+
             //supplier payments
             [
                 'name' => 'Payments List',

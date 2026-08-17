@@ -186,27 +186,7 @@
         }
     }
 
-    /* Toast message */
-    .toast-message {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        min-width: 300px;
-        padding: 15px 20px;
-        border-radius: 8px;
-        animation: slideIn 0.3s ease-out;
-    }
-
-    .toast-error {
-        background: #dc3545;
-        color: #fff;
-    }
-
-    .toast-success {
-        background: #28a745;
-        color: #fff;
-    }
+   
 
     @keyframes slideIn {
         from {

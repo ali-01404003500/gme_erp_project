@@ -152,6 +152,7 @@ class CollectionController extends Controller
      */
     public function update(Request $request, Collection $collection)
     {
+      
         $validate = $request->validate([
             'voucher_type' => 'required|string|in:Collection',
             'collection_type' => 'required|string|in:customer,vendor,supplier,broker,employee',

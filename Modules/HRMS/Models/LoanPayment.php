@@ -5,6 +5,7 @@ use App\Models\BaseModel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Account\Models\Payment;
 use Modules\Account\Models\Transaction;
 
 class LoanPayment extends BaseModel
@@ -21,14 +22,10 @@ class LoanPayment extends BaseModel
 
         'amount',
         'paid_amount',
-
-        'payment_date',
-
-        'payment_method',
-        'reference_no',
-        'remarks',
-
+ 
         'status',
+
+        'receipt_no',
 
         'checked_by',
         'checked_at',
@@ -54,6 +51,8 @@ class LoanPayment extends BaseModel
 
         'amount'       => 'decimal:2',
         'paid_amount'  => 'decimal:2',
+
+        'receipt_no' => 'array',
 
     ];
 
@@ -140,4 +139,12 @@ class LoanPayment extends BaseModel
             (float) $this->amount - (float) $this->paid_amount
         );
     }
+
+
+    public function payments()
+    {
+        return $this->morphMany(Payment::class, 'paymentable');
+    }
+
+    
 }
