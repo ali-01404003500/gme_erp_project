@@ -58,7 +58,6 @@ class BillsAndAllowanceService
         $result['generalExpense'] = [];
     
         // Transport Expenses
-        
         $transportCount = count($request->input('date_of_expense', []));
         for ($i = 0; $i < $transportCount; $i++) {
             $date = $request->input("date_of_expense.$i");
@@ -84,7 +83,7 @@ class BillsAndAllowanceService
                 $fileName = time().'_receipt_'.$i.'.'.$file->getClientOriginalExtension();
 
                 $receiptsPath = $file->storeAs(
-                    '/files/commons',
+                    'transport/receipts',
                     $fileName,
                     'public'
                 );
@@ -99,7 +98,7 @@ class BillsAndAllowanceService
                 $fileName = time().'_support_'.$i.'.'.$file->getClientOriginalExtension();
 
                 $supportingPath = $file->storeAs(
-                    'general/supporting',
+                    'transport/supporting',
                     $fileName,
                     'public'
                 );
@@ -115,8 +114,8 @@ class BillsAndAllowanceService
                     "distance.$i" => 'nullable|integer',
                     "expense_description.$i" => 'required|string',
                     "transport_amount.$i" => 'required|numeric|min:1', 
-                    "receipts_invoices_$i" => 'nullable|string',
-                    "supporting_documents_$i" => 'nullable|string',
+                    "receipts_invoices_$i" => 'nullable|file',
+                    "supporting_documents_$i" => 'nullable|file',
                 ])->validate();
                  
                 $result['transportExpense'][] = TransportExpense::create([
@@ -150,7 +149,7 @@ class BillsAndAllowanceService
                 $fileName = time().'_general_receipt_'.$i.'.'.$file->getClientOriginalExtension();
 
                 $receiptsPath = $file->storeAs(
-                    '/files/commons',
+                    'general/receipts',
                     $fileName,
                     'public'
                 );
@@ -178,8 +177,8 @@ class BillsAndAllowanceService
                     "expense_type.$i" => 'required|string',
                     "general_expense_description.$i" => 'required|string',
                     "general_amount.$i" => 'required|numeric|min:0.01',
-                    "receipts_invoices.$i" => 'nullable|string',
-                    "supporting_documents.$i" => 'nullable|string',
+                    "receipts_invoices.$i" => 'nullable|file',
+                    "supporting_documents.$i" => 'nullable|file',
                 ])->validate();
     
                 $result['generalExpense'][] = GeneralExpense::create([
@@ -252,7 +251,7 @@ class BillsAndAllowanceService
                 $fileName = time().'_receipt_'.$i.'.'.$file->getClientOriginalExtension();
 
                 $receiptsPath = $file->storeAs(
-                    '/files/commons',
+                    'transport/receipts',  
                     $fileName,
                     'public'
                 ); 
@@ -270,7 +269,7 @@ class BillsAndAllowanceService
                 $fileName = time().'_support_'.$i.'.'.$file->getClientOriginalExtension();
 
                 $supportingPath = $file->storeAs(
-                    'general/supporting',
+                    'transport/supporting',
                     $fileName,
                     'public'
                 );
@@ -322,7 +321,7 @@ class BillsAndAllowanceService
                 $fileName = time().'_general_receipt_'.$i.'.'.$file->getClientOriginalExtension();
 
                 $receiptsPath = $file->storeAs(
-                    '/files/commons',
+                    'general/receipts',
                     $fileName,
                     'public'
                 );

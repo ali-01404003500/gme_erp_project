@@ -119,13 +119,13 @@
                                             </td>
                                             <td class="text-center">
                                                 @if ($transport->receipts_invoices)
-                                                    <a href="{{ $transport->receipts_invoices }}" target="_blank" 
+                                                    <a href="{{ asset('storage/'.$transport->receipts_invoices) }}" target="_blank" 
                                                        class="btn btn-sm btn-outline-primary" title="View Receipt/Invoice">
                                                         <i class="fa fa-file"></i>
                                                     </a>
                                                 @endif
                                                 @if ($transport->supporting_documents)
-                                                    <a href="{{ $transport->supporting_documents }}" target="_blank" 
+                                                    <a href="{{ asset('storage/'.$transport->supporting_documents) }}" target="_blank" 
                                                        class="btn btn-sm btn-outline-success" title="View Supporting Document">
                                                         <i class="fa fa-file-alt"></i>
                                                     </a>
@@ -177,13 +177,13 @@
                                             </td>
                                             <td class="text-center">
                                                 @if ($general->receipts_invoices)
-                                                    <a href="{{ $general->receipts_invoices }}" target="_blank" 
+                                                    <a href="{{ asset('storage/'.$general->receipts_invoices) }}" target="_blank" 
                                                        class="btn btn-sm btn-outline-primary" title="View Receipt/Invoice">
                                                         <i class="fa fa-file"></i>
                                                     </a>
                                                 @endif
                                                 @if ($general->supporting_documents)
-                                                    <a href="{{ $general->supporting_documents }}" target="_blank" 
+                                                    <a href="{{ asset('storage/'.$general->supporting_documents) }}" target="_blank" 
                                                        class="btn btn-sm btn-outline-success" title="View Supporting Document">
                                                         <i class="fa fa-file-alt"></i>
                                                     </a>

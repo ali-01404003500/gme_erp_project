@@ -291,7 +291,7 @@
 
 
                                                                 @if(!empty($transportExpense->receipts_invoices))
-                                                                <a href="{{ $transportExpense->receipts_invoices }}" target="_blank"
+                                                                <a href="{{ asset('storage/' . $transportExpense->receipts_invoices) }}" target="_blank"
                                                                     class="btn btn-outline-primary"
                                                                     data-bs-toggle="tooltip" 
                                                                     title="View Attachment">
@@ -299,7 +299,7 @@
                                                                 </a> 
                                                                 @endif
                                                                 @if(!empty($transportExpense->supporting_documents))
-                                                                <a href="{{ $transportExpense->supporting_documents }}" target="_blank"
+                                                                <a href="{{ asset('storage/' . $transportExpense->supporting_documents) }}" target="_blank"
                                                                     class="btn btn-outline-primary"
                                                                     data-bs-toggle="tooltip"
                                                                     title="View Attachment">
@@ -428,7 +428,7 @@
                                                                 @endif
 
                                                                 @if(!empty($generalExpense->receipts_invoices))
-                                                                <a href="{{ $generalExpense->receipts_invoices }}" target="_blank"
+                                                                <a href="{{ asset('storage/' . $generalExpense->receipts_invoices) }}" target="_blank"
                                                                     class="btn btn-outline-primary"
                                                                     data-bs-toggle="tooltip"
                                                                     title="View Attachment">
@@ -437,7 +437,7 @@
                                                                
                                                                 @endif
                                                                 @if(!empty($generalExpense->supporting_documents))
-                                                                <a href="{{ $generalExpense->supporting_documents }}" target="_blank"
+                                                                <a href="{{ asset('storage/' . $generalExpense->supporting_documents) }}" target="_blank"
                                                                     class="btn btn-outline-primary"
                                                                     data-bs-toggle="tooltip"
                                                                     title="View Attachment">
