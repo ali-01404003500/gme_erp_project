@@ -40,46 +40,53 @@
     </ul>
 </li>
 @endif --}}
-
-@if (hasPermission('sales_target.*'))
+ @if (
+    hasPermission('sales_target.perfomence.index') ||
+    hasPermission('sales_target.settings.target.index') ||
+    hasPermission('sales_target.settings.incentives.index')
+)
     <li class="has-child {{ request()->routeIs('sales_target.*') ? 'open' : '' }}">
         <a href="#" class="{{ request()->routeIs('sales_target.*') ? 'active' : '' }}">
             <span class="nav-icon fas fa-chart-line"></span>
             <span class="menu-text">{{ t_('menu.sales_target') }}</span>
             <span class="toggle-icon"></span>
         </a>
+
         <ul>
-            {{-- Achievement List - High Priority --}}
-            @if (hasPermission('sales_target.perfomence.achievement'))
+
+            {{-- Achievement List --}}
+            @if (hasPermission('sales_target.perfomence.index'))
                 <li>
                     <a href="{{ route('sales_target.perfomence.achievement') }}"
-                        class="{{ request()->routeIs('sales_target.perfomence.achievement') ? 'active' : '' }}">
+                       class="{{ request()->routeIs('sales_target.perfomence.achievement') ? 'active' : '' }}">
                         <span class="fas fa-trophy" style="margin-right: 20px;"></span>
                         {{ t_('menu.Target Achievement List') }}
                     </a>
                 </li>
             @endif
 
-       
+            {{-- Sales Target Setup --}}
             @if (hasPermission('sales_target.settings.target.index'))
                 <li>
                     <a href="{{ route('sales_target.settings.target.index') }}"
-                        class="{{ request()->routeIs('sales_target.settings.target.index') ? 'active' : '' }}">
+                       class="{{ request()->routeIs('sales_target.settings.target.index') ? 'active' : '' }}">
                         <span class="fas fa-list" style="margin-right: 20px;"></span>
                         {{ t_('menu.Sales Target Setup') }}
                     </a>
                 </li>
             @endif
- 
-            @if (hasPermission('sales_target.settings.incentives.index'))
+
+            {{-- Sales Incentive Setup --}}
+            @if (hasPermission('sales_target.salesIncentives.incentives.index'))
                 <li>
-                    <a href="{{ route('sales_target.settings.incentives.index') }}"
-                        class="{{ request()->routeIs('sales_target.settings.incentives.index') ? 'active' : '' }}">
+                    <a href="{{ route('sales_target.salesIncentives.incentives.index') }}"
+                       class="{{ request()->routeIs('sales_target.salesIncentives.incentives.index') ? 'active' : '' }}">
                         <span class="fas fa-table" style="margin-right: 20px;"></span>
                         {{ t_('menu.Sales Incentive Setup') }}
                     </a>
                 </li>
-            @endif 
+            @endif
+
         </ul>
     </li>
 @endif
