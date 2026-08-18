@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Modules\Account\Models\Collections\Collection;
 use Modules\Account\Models\Payments\BrokerPayment;
 use Modules\Account\Models\Payments\MakePayment;
@@ -45,6 +46,40 @@ class Transaction extends Model
             );
         });
     }
+
+    // protected static function booted()
+    // {
+    //     static::creating(function ($transaction) {
+
+    //         $account = $transaction->account ?? $transaction->account()->first();
+
+    //         if (!$account) {
+
+    //             Log::error('Account not found for transaction', [
+    //                 'transaction_data' => $transaction->toArray(),
+    //                 'account_id' => $transaction->account_id,
+    //                 'payment_id' => $transaction->petty_cash_payment_id ?? null,
+    //             ]);
+
+    //             throw new \Exception(
+    //                 "Account not found for transaction. Account ID: " .
+    //                 ($transaction->account_id ?? 'NULL')
+    //             );
+    //         }
+
+    //         $accountType = $account->accountGroup->name;
+
+    //         $amount = $transaction->debit_amount > 0
+    //             ? $transaction->debit_amount
+    //             : $transaction->credit_amount;
+
+    //         $transaction->amount = self::applySignConvention(
+    //             $accountType,
+    //             strtolower($transaction->balance_type),
+    //             $amount,
+    //         );
+    //     });
+    // }
 
     public static function applySignConvention($accountType, $balanceType, $amount)
     {

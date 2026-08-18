@@ -270,82 +270,85 @@ class PettyCashPaymentService
     { 
         DB::beginTransaction(); 
         try { 
-                
-                $totalAmount = 0;
- 
-                $expenseEntries = []; 
-                $result = [];
+            
+            $totalAmount = 0;
 
-                foreach($PettyCashPayment->bills as $bill) {  
+            $expenseEntries = []; 
+            $result = [];
 
-                    // Validate bill status
-                    if ($bill->status !== 'unpaid') {
-                        throw new \Exception('Only unpaid bills can be paid');
-                    }
-  
-                    // Generate invoice numbers for Step 2A and 2B
-                    // FIXED: Generate base invoice number once, then increment for Step 2B
-                    $invoiceNo2A = $this->generateInvoiceNumber();
-                    $invoiceNo2B = $this->incrementInvoiceNumber($invoiceNo2A);
+            foreach($PettyCashPayment->bills as $bill) {  
 
-                    
-                    // Process transport expenses
-                    foreach ($bill->transportExpenses->groupBy('account_head_id') as $accountHeadId => $expenses) {
-                        $PettyCashPayment->transactions()->create([
-                            'account_id' => $accountHeadId,
-                            'balance_type' => 'debit',
-                            'invoice_no' => $invoiceNo2A,
-                            'debit_amount' => $expenses->sum('final_approved_amount'),
-                            'credit_amount' => 0,
-                            'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
-                            'transaction_date' => $PettyCashPayment->created_at,
-                        ]); 
-                    }
+                // Validate bill status
+                if ($bill->status !== 'unpaid') {
+                    throw new \Exception('Only unpaid bills can be paid');
+                }
 
-                    // Process general expenses
-                    foreach ($bill->generalExpenses->groupBy('account_head_id') as $accountHeadId => $expenses) {
-                        $PettyCashPayment->transactions()->create([
-                            'account_id' => $accountHeadId,
-                            'balance_type' => 'debit',
-                            'invoice_no' => $invoiceNo2A,
-                            'debit_amount' => $expenses->sum('final_approved_amount'),
-                            'credit_amount' => 0,
-                            'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
-                            'transaction_date' => $PettyCashPayment->created_at,
-                        ]); 
-                    }
- 
-                    // Update bill status
-                    $bill->update([
-                        'status' => 'paid', 
+                // Generate invoice numbers for Step 2A and 2B
+                // FIXED: Generate base invoice number once, then increment for Step 2B
+                $invoiceNo2A = $this->generateInvoiceNumber();
+                $invoiceNo2B = $this->incrementInvoiceNumber($invoiceNo2A);
+
+            
+                // Process transport expenses
+                foreach ($bill->transportExpenses->groupBy('account_head_id') as $accountHeadId => $expenses) {    
+                    $PettyCashPayment->transactions()->create([
+                        'account_id' => $accountHeadId,
+                        'balance_type' => 'debit',
+                        'invoice_no' => $invoiceNo2A,
+                        'debit_amount' => $expenses->sum('final_approved_amount'),
+                        'credit_amount' => 0,
+                        'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
+                        'transaction_date' => $PettyCashPayment->created_at,
                     ]); 
+                }
 
-                    $result[] = [
-                        'bill_id' => $bill->id,
-                        'total_amount' => $totalAmount,
-                        'invoice_no_step2a' => $invoiceNo2A,
-                        'invoice_no_step2b' => $invoiceNo2B
-                    ];
-                }  
-                $cashAccountHeadId = $PettyCashPayment->createdBy->employee->getCashAccount()->id ?? null;
-                $PettyCashPayment->transactions()->create([
-                    'account_id' => $cashAccountHeadId,
-                    'balance_type' => 'credit',
-                    'invoice_no' => $invoiceNo2B,
-                    'debit_amount' => 0,
-                    'credit_amount' => $PettyCashPayment->amount,
-                    'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
-                    'transaction_date' => $PettyCashPayment->created_at,
-                ]);
-                
-                DB::commit();
+                // Process general expenses
+                foreach ($bill->generalExpenses->groupBy('account_head_id') as $accountHeadId => $expenses) {     
+                    $PettyCashPayment->transactions()->create([
+                        'account_id' => $accountHeadId,
+                        'balance_type' => 'debit',
+                        'invoice_no' => $invoiceNo2A,
+                        'debit_amount' => $expenses->sum('final_approved_amount'),
+                        'credit_amount' => 0,
+                        'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
+                        'transaction_date' => $PettyCashPayment->created_at,
+                    ]); 
+                }
 
-                return $result;
+                // Update bill status
+                $bill->update([
+                    'status' => 'paid', 
+                ]); 
+
+                $result[] = [
+                    'bill_id' => $bill->id,
+                    'total_amount' => $totalAmount,
+                    'invoice_no_step2a' => $invoiceNo2A,
+                    'invoice_no_step2b' => $invoiceNo2B
+                ];
             } 
-            catch (\Exception $e) {
-                DB::rollBack();
-                throw $e;
-            }
+           
+            $cashAccount = $PettyCashPayment->createdBy->employee->getCashAccount()->id;
+            $account = Account::where('accountable_id', $cashAccount)->first() ?? null;
+
+            $PettyCashPayment->transactions()->create([
+                'account_id' => $account->id,
+                'balance_type' => 'credit',
+                'invoice_no' => $invoiceNo2B,
+                'debit_amount' => 0,
+                'credit_amount' => $PettyCashPayment->amount,
+                'description' => "TA/DA Expenses for Bill #{$PettyCashPayment->id}",
+                'transaction_date' => $PettyCashPayment->created_at,
+            ]);
+            
+            DB::commit();
+
+            return $result;
+        } 
+        catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
     public function processPaymentForImport($id, array $data)
     {
