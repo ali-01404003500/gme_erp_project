@@ -660,7 +660,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Sales Target Setup',
                 'description' => "Permission of Add, Remove, Update, Delete Sales Target Setup",
-                'key' => 'sales_target.target',
+                'key' => 'sales_target.settings.target',
                 'parent_key' => 'sales_target',
             ],
             
@@ -676,7 +676,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Sales Incentive Setup',
                 'description' => "Permission of Add, Remove, Update, Delete Sales Incentive Setup",
-                'key' => 'sales_target.incentives',
+                'key' => 'sales_target.salesIncentives.incentives',
                 'parent_key' => 'sales_target',
             ],
 
@@ -993,9 +993,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'legal',
             ],
 
-
-            
-            
+ 
             //Accounts
             [
                 'title' => 'Accounts',

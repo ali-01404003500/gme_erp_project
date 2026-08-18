@@ -376,7 +376,7 @@
                             </li>
                         @endif
 
-                        @if (hasPermission('account.loan-collections.index'))
+                        @if (hasPermission('account.collections.loan-collections.index'))
                             <li>
                                 <a href="{{ route('account.loan-collections.index') }}"
                                     class="{{ request()->routeIs('account.loan-collections.index') ? 'active' : '' }}">
@@ -384,14 +384,13 @@
                                     {{ t_('menu.loan collection') }}
                                 </a>
                             </li>
-                        @endif
- 
-
-
+                        @endif 
                     </ul>
                 </li>
             @endif
 
+
+            
 
             @if (hasPermission('account.payments.make-payments.index'))
                 <li

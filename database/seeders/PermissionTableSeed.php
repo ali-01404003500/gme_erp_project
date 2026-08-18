@@ -2497,76 +2497,69 @@ class PermissionTableSeed extends Seeder
                 'name' => 'Sales Target Acheivement List Details',
                 'description' => 'Permission to view sales target acheivement details',
                 'slug' => 'sales_target.target.show',
-                'key' => 'sales_target.target',
+                'key' => 'sales_target.perfomence',
             ],
 
 
 
             //sales target setup
             [
-                'name' => 'Sales Target Setup',
+                'name' => 'Sales Target Setup List',
                 'description' => 'Permission to view sales target setup',
-                'slug' => 'sales_target.target.index',
-                'key' => 'sales_target.target',
+                'slug' => 'sales_target.settings.target.index',
+                'key' => 'sales_target.settings.target',
             ],
+
             [
                 'name' => 'Sales Target Setup Create',
                 'description' => 'Permission to create sales target setup',
-                'slug' => 'sales_target.target.create',
-                'key' => 'sales_target.target',
+                'slug' => 'sales_target.settings.target.create',
+                'key' => 'sales_target.settings.target',
             ],
+
             [
                 'name' => 'Sales Target Setup Update',
                 'description' => 'Permission to update sales target setup',
-                'slug' => 'sales_target.target.update',
-                'key' => 'sales_target.target',
+                'slug' => 'sales_target.settings.target.update',
+                'key' => 'sales_target.settings.target',
             ],
+
             [
                 'name' => 'Sales Target Setup Delete',
                 'description' => 'Permission to delete sales target setup',
-                'slug' => 'sales_target.target.destroy',
-                'key' => 'sales_target.target',
-            ],
-            [
-                'name' => 'Sales Target Setup Details',
-                'description' => 'Permission to view sales target setup details',
-                'slug' => 'sales_target.target.show',
-                'key' => 'sales_target.target',
+                'slug' => 'sales_target.settings.target.destroy',
+                'key' => 'sales_target.settings.target',
             ],
 
 
             //sales incentive setup
             [
-                'name' => 'Sales Incentive Setup',
+                'name' => 'Sales Incentive Setup List',
                 'description' => 'Permission to view sales incentive setup',
-                'slug' => 'sales_target.incentives.index',
-                'key' => 'sales_target.incentives',
+                'slug' => 'sales_target.salesIncentives.incentives.index',
+                'key' => 'sales_target.salesIncentives.incentives',
             ],
+
             [
                 'name' => 'Sales Incentive Setup Create',
                 'description' => 'Permission to create sales incentive setup',
-                'slug' => 'sales_target.incentives.create',
-                'key' => 'sales_target.incentives',
+                'slug' => 'sales_target.salesIncentives.incentives.create',
+                'key' => 'sales_target.salesIncentives.incentives',
             ],
+
             [
                 'name' => 'Sales Incentive Setup Update',
                 'description' => 'Permission to update sales incentive setup',
-                'slug' => 'sales_target.incentives.update',
-                'key' => 'sales_target.incentives',
+                'slug' => 'sales_target.salesIncentives.incentives.update',
+                'key' => 'sales_target.salesIncentives.incentives',
             ],
+
             [
                 'name' => 'Sales Incentive Setup Delete',
                 'description' => 'Permission to delete sales incentive setup',
-                'slug' => 'sales_target.incentives.destroy',
-                'key' => 'sales_target.incentives',
+                'slug' => 'sales_target.salesIncentives.incentives.destroy',
+                'key' => 'sales_target.salesIncentives.incentives',
             ],
-            [
-                'name' => 'Sales Incentive Setup Details',
-                'description' => 'Permission to view sales incentive setup details',
-                'slug' => 'sales_target.incentives.show',
-                'key' => 'sales_target.incentives',
-            ],
-           
 
             //product-catalogs
             [
