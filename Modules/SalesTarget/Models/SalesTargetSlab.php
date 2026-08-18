@@ -1,5 +1,4 @@
 <?php
-
 namespace Modules\SalesTarget\Models;
 
 use App\Models\User;
