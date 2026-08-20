@@ -2468,98 +2468,135 @@ class PermissionTableSeed extends Seeder
             ],
 
 
-            //Sales Target Acheivement List
-            [
-                'name' => 'Sales Target Acheivement List',
-                'description' => 'Permission to view sales target acheivement',
-                'slug' => 'sales_target.perfomence.index',
-                'key' => 'sales_target.perfomence',
-            ],
-            [
-                'name' => 'Sales Target Acheivement List Create',
-                'description' => 'Permission to create sales target acheivement',
-                'slug' => 'sales_target.perfomence.create',
-                'key' => 'sales_target.perfomence',
-            ],
-            [
-                'name' => 'Sales Target Acheivement List Update',
-                'description' => 'Permission to update sales target acheivement',
-                'slug' => 'sales_target.perfomence.update',
-                'key' => 'sales_target.perfomence',
-            ],
-            [
-                'name' => 'Sales Target Acheivement List Delete',
-                'description' => 'Permission to delete sales target acheivement',
-                'slug' => 'sales_target.perfomence.destroy',
-                'key' => 'sales_target.perfomence',
-            ],
-            [
-                'name' => 'Sales Target Acheivement List Details',
-                'description' => 'Permission to view sales target acheivement details',
-                'slug' => 'sales_target.target.show',
-                'key' => 'sales_target.perfomence',
-            ],
-
-
-
             //sales target setup
             [
                 'name' => 'Sales Target Setup List',
                 'description' => 'Permission to view sales target setup',
-                'slug' => 'sales_target.settings.target.index',
-                'key' => 'sales_target.settings.target',
+                'slug' => 'sales_target.sales-targets.index',
+                'key' => 'sales_target.sales-targets',
             ],
 
             [
                 'name' => 'Sales Target Setup Create',
                 'description' => 'Permission to create sales target setup',
-                'slug' => 'sales_target.settings.target.create',
-                'key' => 'sales_target.settings.target',
+                'slug' => 'sales_target.sales-targets.create',
+                'key' => 'sales_target.sales-targets',
             ],
 
             [
                 'name' => 'Sales Target Setup Update',
                 'description' => 'Permission to update sales target setup',
-                'slug' => 'sales_target.settings.target.update',
-                'key' => 'sales_target.settings.target',
+                'slug' => 'sales_target.sales-targets.update',
+                'key' => 'sales_target.sales-targets',
             ],
 
             [
                 'name' => 'Sales Target Setup Delete',
                 'description' => 'Permission to delete sales target setup',
-                'slug' => 'sales_target.settings.target.destroy',
-                'key' => 'sales_target.settings.target',
+                'slug' => 'sales_target.sales-targets.destroy',
+                'key' => 'sales_target.sales-targets',
             ],
 
-
-            //sales incentive setup
             [
-                'name' => 'Sales Incentive Setup List',
+                'name' => 'Sales Target Full-honor',
+                'description' => 'Permission to update sales target setup',
+                'slug' => 'sales_target.sales-targets.full-honor',
+                'key' => 'sales_target.sales-targets',
+            ],
+
+            [
+                'name' => 'Sales Target Lock',
+                'description' => 'Permission to delete sales target setup',
+                'slug' => 'sales_target.sales-targets.lock',
+                'key' => 'sales_target.sales-targets',
+            ],
+
+ 
+
+
+            //sales target slabs setup
+            [
+                'name' => 'Sales Target Slabs Setup List',
                 'description' => 'Permission to view sales incentive setup',
-                'slug' => 'sales_target.salesIncentives.incentives.index',
-                'key' => 'sales_target.salesIncentives.incentives',
+                'slug' => 'sales_target.sales-target-slabs.index',
+                'key' => 'sales_target.sales-target-slabs',
             ],
 
             [
-                'name' => 'Sales Incentive Setup Create',
+                'name' => 'Sales Target Slabs Setup Create',
                 'description' => 'Permission to create sales incentive setup',
-                'slug' => 'sales_target.salesIncentives.incentives.create',
-                'key' => 'sales_target.salesIncentives.incentives',
+                'slug' => 'sales_target.sales-target-slabs.create',
+                'key' => 'sales_target.sales-target-slabs',
             ],
 
             [
-                'name' => 'Sales Incentive Setup Update',
+                'name' => 'Sales Target Slabs Setup Update',
                 'description' => 'Permission to update sales incentive setup',
-                'slug' => 'sales_target.salesIncentives.incentives.update',
-                'key' => 'sales_target.salesIncentives.incentives',
+                'slug' => 'sales_target.sales-target-slabs.update',
+                'key' => 'sales_target.sales-target-slabs',
             ],
 
             [
-                'name' => 'Sales Incentive Setup Delete',
+                'name' => 'Sales Target Slabs Setup Delete',
                 'description' => 'Permission to delete sales incentive setup',
-                'slug' => 'sales_target.salesIncentives.incentives.destroy',
-                'key' => 'sales_target.salesIncentives.incentives',
+                'slug' => 'sales_target.sales-target-slabs.destroy',
+                'key' => 'sales_target.sales-target-slabs',
             ],
+
+
+            //Sales Incentive Slabs List
+            [
+                'name' => 'Sales Incentive Slabs List',
+                'description' => 'Permission to view sales target acheivement',
+                'slug' => 'sales_target.sales-incentive-slabs.index',
+                'key' => 'sales_target.sales-incentive-slabs',
+            ],
+            [
+                'name' => 'Sales Incentive Slabs List Create',
+                'description' => 'Permission to create sales target acheivement',
+                'slug' => 'sales_target.sales-incentive-slabs.create',
+                'key' => 'sales_target.sales-incentive-slabs',
+            ],
+            [
+                'name' => 'Sales Incentive Slabs List Update',
+                'description' => 'Permission to update sales target acheivement',
+                'slug' => 'sales_target.sales-incentive-slabs.update',
+                'key' => 'sales_target.sales-incentive-slabs',
+            ],
+            [
+                'name' => 'Sales Incentive Slabs List Delete',
+                'description' => 'Permission to delete sales target acheivement',
+                'slug' => 'sales_target.sales-incentive-slabs.destroy',
+                'key' => 'sales_target.sales-incentive-slabs',
+            ],
+         
+
+            //Performance Base Salary Slab List
+            [
+                'name' => 'Sales Performance Base Salary Slabs List',
+                'description' => 'Permission to view sales target acheivement',
+                'slug' => 'sales_target.sales-salary-brackets.index',
+                'key' => 'sales_target.sales-salary-brackets',
+            ],
+            [
+                'name' => 'Sales Performance Base Salary Slabs List Create',
+                'description' => 'Permission to create sales target acheivement',
+                'slug' => 'sales_target.sales-salary-brackets.create',
+                'key' => 'sales_target.sales-salary-brackets',
+            ],
+            [
+                'name' => 'Sales Performance Base Salary Slabs List Update',
+                'description' => 'Permission to update sales target acheivement',
+                'slug' => 'sales_target.sales-salary-brackets.update',
+                'key' => 'sales_target.sales-salary-brackets',
+            ],
+            [
+                'name' => 'Sales Performance Base Salary Slabs List Delete',
+                'description' => 'Permission to delete sales target acheivement',
+                'slug' => 'sales_target.sales-salary-brackets.destroy',
+                'key' => 'sales_target.sales-salary-brackets',
+            ],
+
 
             //product-catalogs
             [

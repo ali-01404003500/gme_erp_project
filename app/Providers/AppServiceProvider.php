@@ -30,6 +30,6 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
-
+        SalesOrder::observe(OrderObserver::class);
     }
 }

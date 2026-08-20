@@ -21,7 +21,7 @@ use Modules\SalesTarget\Models\SalesTargetSlab;
 
 class SalesTargetService
 {
-    // ---------- 1. Slab খোঁজা ----------
+    // ---------- 1. Slab search ----------
     public function findSlabBySalary(float $salary): ?SalesTargetSlab
     {
         return SalesTargetSlab::where('is_active', true)
@@ -33,25 +33,74 @@ class SalesTargetService
     // ---------- 2. Target Assign (existing employee salary table theke fetch) ----------
     public function assignTarget(int $employeeId, int $month, int $year, string $salaryBasis = 'basic'): SalesTarget
     {
-        // ⚠️ column name গুলো আপনার actual employee/users table অনুযায়ী বদলান
-        $employee = User::findOrFail($employeeId);
-        $basicSalary = $employee->basic_salary;
-        $ta = $employee->ta ?? 0;
-        $da = $employee->da ?? 0;
-        $grossSalary = $basicSalary + $ta + $da;
+        $employeeSalary = $employeeSalary = EmployeeSalary::where('employee_id', $employeeId)->where('status', 1)->firstOrFail();
+      
 
-        $salaryForSlab = $salaryBasis === 'gross' ? $grossSalary : $basicSalary;
+        $query = DB::table('bills_and_allowances as ba')
+                ->join('transport_expenses as te', 'ba.id', '=', 'te.bills_and_allowance_id')
+                ->where('ba.status', '!=', 'deny')
+                ->select(
+                    DB::raw("
+                        SUM(
+                            CASE
+                                WHEN te.final_approved_amount > 0
+                                    THEN te.final_approved_amount
+                                WHEN te.accounts_approved_amount > 0
+                                    THEN te.accounts_approved_amount
+                                WHEN te.team_leader_approved_amount > 0
+                                    THEN te.team_leader_approved_amount
+                                ELSE te.amount
+                            END
+                        ) AS ta_amount
+                    ")
+                )
+                ->first();
+        $taAmount = $query->ta_amount ?? 0;
+
+        $query = DB::table('bills_and_allowances as ba')
+                ->join('general_expenses as ge', 'ba.id', '=', 'ge.bills_and_allowance_id')
+                ->where('ba.status', '!=', 'deny')
+                ->select(
+                    DB::raw("
+                        SUM(
+                            CASE
+                                WHEN ge.final_approved_amount > 0
+                                    THEN ge.final_approved_amount
+                                WHEN ge.accounts_approved_amount > 0
+                                    THEN ge.accounts_approved_amount
+                                WHEN ge.team_leader_approved_amount > 0
+                                    THEN ge.team_leader_approved_amount
+                                ELSE ge.amount
+                            END
+                        ) AS da_amount
+                    ")
+                )
+                ->first();
+        $daAmount = $query->da_amount ?? 0; 
+      
+        $basicSalary = $employeeSalary->basic; 
+        $grossSalary = $employeeSalary->gross;
+        $taDa = $taAmount + $daAmount;    
+
+        $allExpensesSalary = $grossSalary + $taDa;
+
+        $salaryForSlab = match ($salaryBasis) {
+            'gross' => $grossSalary,
+            'allexpenses' => $allExpensesSalary,
+            default => $basicSalary,
+        };
+
         $slab = $this->findSlabBySalary($salaryForSlab);
 
         if (!$slab) {
-            throw new Exception("এই salary ({$salaryForSlab}) এর জন্য কোনো slab পাওয়া যায়নি।");
+            throw new Exception("No slab was found for this salary ({$salaryForSlab}).");
         }
 
-        $target = SalesTarget::where('employee_id', $employeeId)
+        $existing = SalesTarget::where('employee_id', $employeeId)
             ->where('period_month', $month)->where('period_year', $year)->first();
 
-        if ($target && $target->is_locked) {
-            throw new Exception("এই মাসের target lock করা আছে, পরিবর্তন করা যাবে না।");
+        if ($existing && $existing->is_locked) {
+            throw new Exception("The target for this month is locked and cannot be modified.");
         }
 
         return SalesTarget::updateOrCreate(
@@ -60,9 +109,12 @@ class SalesTargetService
                 'sales_target_slab_id' => $slab->id,
                 'salary_basis' => $salaryBasis,
                 'salary_at_assign' => $basicSalary,
+                'ta_da_at_assign' => $taDa,
                 'gross_salary_at_assign' => $grossSalary,
+                'all_expenses_salary_at_assign' => $allExpensesSalary,
                 'target_amount' => $slab->calculateTargetFor($salaryForSlab),
                 'status' => 'pending',
+                'created_by' => auth()->id(),
             ]
         );
     }
@@ -116,7 +168,6 @@ class SalesTargetService
     public function recalculateIncentive(SalesTarget $target): SalesTarget
     {
         if ($target->is_full_honor_override) {
-            // Manual override thakle bracket calculation bypass hobe
             return $target;
         }
 
@@ -124,20 +175,19 @@ class SalesTargetService
         $rawIncentive = $rateTier ? round($target->achieved_amount * ($rateTier->rate_percent / 100), 2) : 0;
 
         $bracket = $this->findSalaryBracket($target->achievement_percent);
-        $payoutPercent = $bracket ? $bracket->payout_percent : 0;
+        $payoutPercent = $bracket ? $bracket->resolvePayoutPercent($target->achievement_percent) : 0;
 
         $finalIncentive = round($rawIncentive * ($payoutPercent / 100), 2);
 
         $target->update([
             'incentive_rate_applied' => $rateTier->rate_percent ?? null,
             'raw_incentive_amount' => $rawIncentive,
-            'payout_percent_applied' => $payoutPercent,
+            'payout_percent_applied' => $payoutPercent, // এখানে resolve হওয়া actual % সেভ হবে
             'final_incentive_amount' => $finalIncentive,
         ]);
 
         return $target->fresh();
     }
-
     // ---------- 7. Manual "Full Honor" Override ----------
     public function fullHonorOverride(int $employeeId, int $month, int $year, int $byUserId): SalesTarget
     {
@@ -182,7 +232,7 @@ class SalesTargetService
         if (!$target) return 0;
 
         if (!$target->is_locked) {
-            throw new Exception("Target lock করা হয়নি — payroll generate করার আগে lock করুন।");
+            throw new Exception("The target has not been locked. Please lock the target before generating payroll.");
         }
 
         return $target->final_incentive_amount;

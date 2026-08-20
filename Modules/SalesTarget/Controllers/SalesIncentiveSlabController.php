@@ -11,7 +11,7 @@ class SalesIncentiveSlabController extends Controller
     public function index()
     {
         $tiers = SalesTargetRateTier::orderBy('min_percent')->get();
-        return view('sales-incentive-slabs.index', compact('tiers'));
+        return view('SalesTarget::sales-incentive-slabs.index', compact('tiers'));
     }
 
     public function store(Request $request)

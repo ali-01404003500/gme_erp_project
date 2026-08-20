@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Modules\HRMS\Models\Employee;
 use App\Services\SmsService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Modules\Account\Models\AccountSetup\BankAccount;
 
 class IOURequisitionEntryController extends Controller
@@ -103,8 +104,19 @@ class IOURequisitionEntryController extends Controller
             'type' => 'required|in:Expense,Advance',
             // 'employee_id' => 'required|exists:employees,id',
             'request_amount' => 'required|numeric|min:1',
-            'verify_amount' => 'nullable|numeric|min:0',
-            'approved_amount' => 'nullable|numeric|min:0',
+            
+            'verify_amount' => [
+                $request->status === 'verified' ? 'required' : 'nullable',
+                'numeric',
+                $request->status === 'verified' ? 'min:1' : 'min:0',
+            ],
+
+            'approved_amount' => [
+                $request->status === 'approved' ? 'required' : 'nullable',
+                'numeric',
+                $request->status === 'approved' ? 'min:1' : 'min:0',
+            ],
+
             'remarks' => 'required|string|max:255',
             'status' => 'required|string',
         ]);

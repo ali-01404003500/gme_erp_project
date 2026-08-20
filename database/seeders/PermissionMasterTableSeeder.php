@@ -656,27 +656,35 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'sales_target',
             ],
 
-            //Sales Target Setup
+            //Sales Target List
             [
                 'title' => 'Sales Target Setup',
-                'description' => "Permission of Add, Remove, Update, Delete Sales Target Setup",
-                'key' => 'sales_target.settings.target',
-                'parent_key' => 'sales_target',
-            ],
-            
-            //Sales Target Acheivement List
-            [
-                'title' => 'Sales Target Acheivement List',
-                'description' => "Permission of Add, Remove, Update, Delete Sales Target Acheivement List",
-                'key' => 'sales_target.perfomence',
+                'description' => "Permission of Add, Remove, Update, Delete Sales Target List",
+                'key' => 'sales_target.sales-targets',
                 'parent_key' => 'sales_target',
             ],
 
-            //Sales Incentive Setup
+            //Sales Target Slabs
             [
-                'title' => 'Sales Incentive Setup',
-                'description' => "Permission of Add, Remove, Update, Delete Sales Incentive Setup",
-                'key' => 'sales_target.salesIncentives.incentives',
+                'title' => 'Sales Target Slabs',
+                'description' => "Permission of Add, Remove, Update, Delete Sales Target Slabs List",
+                'key' => 'sales_target.sales-target-slabs',
+                'parent_key' => 'sales_target',
+            ],
+
+            //Sales Incentive Slabs 
+            [
+                'title' => 'Sales Incentive Slabs',
+                'description' => "Permission of Add, Remove, Update, Delete Sales Incentive Slabs List",
+                'key' => 'sales_target.sales-incentive-slabs',
+                'parent_key' => 'sales_target',
+            ],
+
+            //Performance Base Salary Slab
+            [
+                'title' => 'Performance Base Salary',
+                'description' => "Permission of Add, Remove, Update, Delete Performance Base Salary List",
+                'key' => 'sales_target.sales-salary-brackets',
                 'parent_key' => 'sales_target',
             ],
 

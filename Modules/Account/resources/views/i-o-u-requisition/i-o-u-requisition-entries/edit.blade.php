@@ -71,7 +71,7 @@
                                 </div>
 
                                 <!-- Verified Amount -->
-                                @if(hasPermission('account.collections.collections.verify'))
+                                @if(hasPermission('account.collections.collections.verify') && $iOURequisitionEntry->status === 'pending')
                                 <div class="col-4">
                                     <label for="verify_amount" class="form-label">Verified Amount</label>
                                     <input type="number" step="0.01" name="verify_amount" id="verify_amount" class="form-control" value="{{ old('verify_amount', $iOURequisitionEntry->verify_amount) }}" >
@@ -80,7 +80,7 @@
                                     
 
                                 <!-- Approved Amount -->
-                                @if(hasPermission('account.collections.collections.approve'))
+                                @if(hasPermission('account.collections.collections.approve') && $iOURequisitionEntry->status === 'verified')
                                 <div class="col-4">
                                     <label for="approved_amount" class="form-label">Approved Amount</label>
                                     <input type="number" step="0.01" name="approved_amount" id="approved_amount" class="form-control" value="{{ old('approved_amount', $iOURequisitionEntry->approved_amount) }}" >
@@ -98,16 +98,17 @@
                                 <div class="btn-group">
 
                                     <input type="hidden" name="status" id="status" value="{{ $iOURequisitionEntry->status?? 'pending' }}">
-
+                                    @if($iOURequisitionEntry->status === 'pending' )
                                     <button type="submit" class="btn btn-sm btn-primary save-btn" >
                                         <i class="fa fa-save"></i>Update
                                     </button>
-                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.verify') )
+                                    @endif
+                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.verify') && $iOURequisitionEntry->status === 'pending' )
                                         <button type="submit" class="btn btn-sm btn-warning save-btn" id="action_verify">
                                             <i class="fa fa-check"></i>Update & Verify
                                         </button>
                                     @endif
-                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.approve'))
+                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.approve')  && $iOURequisitionEntry->status === 'verified' )
                                         <button type="submit" class="btn btn-sm btn-success save-btn" id="action_approve">
                                             <i class="fa fa-check"></i>Update & Approve
                                         </button>
