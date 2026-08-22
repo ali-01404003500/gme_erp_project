@@ -96,7 +96,7 @@
                                                     {{ $isSelected ? 'checked' : '' }}>
                                                 <input type="hidden" name="invoice_types[]" value="{{ $invoice->invoice_type }}">
                                             </td>
-                                            <td>{{ $invoice->date }}</td>
+                                            <td>{{ $invoice->date ?? $invoice->invoice_date }}</td>
                                             <td>{{ $invoice->invoice_no ?? $invoice->requisition_no }}</td>
                                             <td>৳ {{ number_format($invoice->net_amount) }}</td>
                                             <td>৳ {{ number_format($invoice->paid_amount) }}</td>

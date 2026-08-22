@@ -48,6 +48,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="payment_type">{{ trans('Payment Type') }} *</label>
+                                      
                                         @php
                                             $payment_type = match ($makePayment->payment_to_type) {
                                                 "Modules\Purchase\Models\Supplier" => 'supplier',
@@ -106,11 +107,21 @@
                                     ])
                                 </div>
 
-                                <div class="col-md-12 mt-4">
-                                    <input type="hidden" name="status" id="status">
+                                <div class="col-md-12 mt-4"> 
+                                    <input type="hidden" name="status" id="status" value="{{ $makePayment->status }}">
                                     <div class="form-group gap-2 d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary" id="save">{{ trans('Save') }}</button>
-                                       
+                                        @if($makePayment->status == 'pending'  && request('form_type') == '' && hasPermission('account.payments.make-payments.update'))
+                                            <button type="submit" class="btn btn-primary" id="save">{{ trans('Update') }}</button> 
+
+                                        @elseif($makePayment->status == 'pending' && request('form_type') == 'verify' && hasPermission('account.payments.make-payments.update'))
+                                                <button type="submit" class="btn btn-warning" id="save-verify">{{ trans('Verify') }}</button>
+                                                <button type="submit" class="btn btn-danger" id="save-denied">{{ trans('Deny') }}</button>
+
+                                        @elseif($makePayment->status == 'verified' && request('form_type') == 'approve' && hasPermission('account.payments.make-payments.verify'))
+                                                <button type="submit" class="btn btn-success" id="save-approved">{{ trans('Approve') }}</button>
+                                                <button type="submit" class="btn btn-danger" id="save-denied">{{ trans('Deny') }}</button> 
+                                        @endif
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -141,6 +152,8 @@
             $('#save-denied').click(function () {
                 $("#status").val("denied");
             });
+
+            
 
             // Load payment options
             function loadPaymentOptions(payment_type, selected_value = null) {

@@ -132,6 +132,7 @@ class MakePaymentController extends Controller
      */
     public function update(Request $request, MakePayment $makePayment)
     {
+        
         $validate = $request->validate([
             //validate rules
             'payment_to_type' => 'required|in:supplier,vendor,broker,petty_cash_expense,withdrawal,equipment,loan_payment',

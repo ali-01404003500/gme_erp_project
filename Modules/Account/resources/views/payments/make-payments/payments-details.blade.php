@@ -128,11 +128,72 @@
                                 value="{{ $payment->amount ?? '' }}"></td>
                         <td>
                             <span class="file_name">
-                                @if($payment->attachments)
+                                {{-- @if($payment->attachments)
                                     <button type="button" onclick="showFiles('{{ $payment->attachments }}')"
                                         class="btn btn-outline-primary btn-sm download-file"><i class="fa fa-eye"></i>
                                         preview</button>
-                                @endif
+                                @endif --}}
+
+                                @php
+                                    $attachments = $payment->attachments;
+
+                                    // JSON decode
+                                    if (is_string($attachments)) {
+                                        $attachments = json_decode($attachments, true);
+                                    }
+
+                                    // Double encoded JSON হলে আবার decode
+                                    if (is_string($attachments)) {
+                                        $attachments = json_decode($attachments, true);
+                                    }
+
+                                    // Null / invalid হলে empty array
+                                    if (!is_array($attachments)) {
+                                        $attachments = !empty($attachments) ? [$attachments] : [];
+                                    }
+                                @endphp
+
+
+                                @foreach($attachments as $attachment)
+
+                                    @php
+                                        $files = $attachment;
+
+                                        // Attachment নিজেও JSON string হলে decode
+                                        if (is_string($files)) {
+                                            $decoded = json_decode($files, true);
+
+                                            if (json_last_error() === JSON_ERROR_NONE) {
+                                                $files = $decoded;
+                                            }
+                                        }
+
+                                        // Double encoded হলে আবার decode
+                                        if (is_string($files)) {
+                                            $decoded = json_decode($files, true);
+
+                                            if (json_last_error() === JSON_ERROR_NONE) {
+                                                $files = $decoded;
+                                            }
+                                        }
+
+                                        // Single file হলে array বানানো
+                                        if (!is_array($files)) {
+                                            $files = !empty($files) ? [$files] : [];
+                                        }
+                                    @endphp
+
+                                    @foreach($files as $file)
+                                        @if(!empty($file))
+                                            <a href="{{ url($file) }}"
+                                            target="_blank"
+                                            class="btn btn-sm btn-outline-info mb-1">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        @endif
+                                    @endforeach
+
+                                @endforeach
                             </span>
                             <div class="spinner-border spinner-border-sm" style="display: none;" role="status"></div>
                             <input type="hidden" name="payments_attachments[]" class="attachments"

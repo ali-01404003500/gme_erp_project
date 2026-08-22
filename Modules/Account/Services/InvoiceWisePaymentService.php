@@ -210,7 +210,7 @@ class InvoiceWisePaymentService
      */
     public function makeDummyTransaction(InvoiceWisePayment $invoiceWisePayment)
     {
-        dd($invoiceWisePayment);
+        //dd($invoiceWisePayment);
         // Delete existing transactions
         $invoiceWisePayment->transactions()->delete();
         

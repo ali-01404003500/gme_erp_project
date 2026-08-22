@@ -60,7 +60,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($payments as $payment)
+                                 
+                                    @foreach ($payments as $payment)   
                                         <tr>
                                             <td>{{ ($payments->currentPage() - 1) * $payments->perPage() + $loop->iteration }}
                                             </td>
@@ -99,13 +100,45 @@
                                             <td>{{ $payment->verifiedBy->name ?? 'N/A' }}</td>
                                             <td>{{ $payment->approvedBy->name ?? 'N/A' }}</td>
                                             <td>
-                                                @foreach($payment->payments as $pay)
-                                                    @if($pay->attachments)
-                                                        <a href="{{ asset($pay->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
+                                        
+                                              
+                                                @foreach($payment->payments as $detail)
+                                                    @if(!empty($detail->attachments))
+                                                        @php
+                                                            $files = $detail->attachments;
+
+                                                            // First decode
+                                                            if (is_string($files)) {
+                                                                $files = json_decode($files, true);
+                                                            }
+
+                                                            // Double encoded হলে second decode
+                                                            if (is_string($files)) {
+                                                                $files = json_decode($files, true);
+                                                            }
+
+                                                            // Single file হলে array বানানো
+                                                            if (!is_array($files)) {
+                                                                $files = [$files];
+                                                            }
+                                                        @endphp
+
+                                                        @foreach($files as $file)
+                                                            @if(!empty($file))
+                                                                <a href="{{ url($file) }}"
+                                                                target="_blank"
+                                                                class="btn btn-sm btn-outline-info mb-1">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            @endif
+                                                        @endforeach
                                                     @endif
                                                 @endforeach
+
+ 
                                             </td>
                                             <td>
+                                                
                                                 <div class="btn-group btn-group-sm" role="group">
                                                     @if (
                                                         !in_array($payment->status, ['approved', 'denied']) &&

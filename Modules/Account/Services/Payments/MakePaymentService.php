@@ -198,32 +198,32 @@ class MakePaymentService
             $advanceAccount = method_exists($paymentTo, 'getAdvanceAccount') ? $paymentTo->getAdvanceAccount() : null;
         }
 
-        //debit
-        if ($payableAccount) {
-            $makePayment->transactions()->create([
-                'account_id' => $payableAccount->id,
-                'balance_type' => "debit",
-                'invoice_no' => $makePayment->payment_id,
-                'debit_amount' => $makePayment->amount - $makePayment->advance_amount,
-                'credit_amount' => 0,
-                'description' => "Payment Created. #" . $makePayment->payment_id,
-                'transaction_date' => $makePayment->date
-            ]);
-        }
-
+        //debit 
         if ($makePayment->advance_amount > 0 && $advanceAccount) {
-            $makePayment->transactions()->create([
-                'account_id' => $advanceAccount->id,
-                'balance_type' => "debit",
-                'invoice_no' => $makePayment->payment_id,
-                'debit_amount' => $makePayment->advance_amount,
-                'credit_amount' => 0,
-                'description' => "Payment Created. #" . $makePayment->payment_id,
-                'transaction_date' => $makePayment->date
-
-            ]);
+            $payableAccountId = $advanceAccount->id;
+            $payableAmount = $makePayment->advance_amount;
+        }
+        else
+        {
+            $payableAccountId = $payableAccount->id;
+            $payableAmount = $makePayment->amount - $makePayment->advance_amount;
         }
 
+        $payableAccountId = $payableAccount->id;
+        $payableAmount = $makePayment->amount;
+
+        $makePayment->transactions()->create([
+            'account_id' => $payableAccountId,
+            'balance_type' => "debit",
+            'invoice_no' => $makePayment->payment_id,
+            'debit_amount' => $payableAmount,
+            'credit_amount' => 0,
+            'description' => "Payment Created. #" . $makePayment->payment_id,
+            'transaction_date' => $makePayment->date
+
+        ]);
+
+        
         //credit
         foreach ($makePayment->paymentDetails as $payment) {
             if (in_array($payment->pay_mode, ['AIT', 'Waiver', 'Waiver Bad Debt'])) {
@@ -261,6 +261,7 @@ class MakePaymentService
 
     public function update(MakePayment $makePayment, array $data, $payments = [])
     {
+       
         DB::beginTransaction();
 
         $payment_to = match ($data['payment_to_type']) {
@@ -313,9 +314,9 @@ class MakePaymentService
 
         $makePayment->refresh();
 
-        /*if ($makePayment->status === 'approved') {
+        if ($makePayment->status === 'approved') {
             $this->makeDummyTransaction($makePayment);
-        }*/
+        }
 
         DB::commit();
         return $makePayment;

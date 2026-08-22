@@ -127,32 +127,38 @@
                                                         <a href="{{ url($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info"><i class="fa fa-eye"></i></a>
                                                     @endif
                                                 @endforeach --}}
-
-
                                                 @foreach($payment->paymentDetails as $detail)
-
-                                                    @if($detail->attachments)
-
+                                                    @if(!empty($detail->attachments))
                                                         @php
-                                                            $files = json_decode($detail->attachments, true);
+                                                            $files = $detail->attachments;
+
+                                                            // First decode
+                                                            if (is_string($files)) {
+                                                                $files = json_decode($files, true);
+                                                            }
+
+                                                            // Double encoded হলে second decode
+                                                            if (is_string($files)) {
+                                                                $files = json_decode($files, true);
+                                                            }
+
+                                                            // Single file হলে array বানানো
+                                                            if (!is_array($files)) {
+                                                                $files = [$files];
+                                                            }
                                                         @endphp
 
-                                                        @if(is_array($files))
-                                                            @foreach($files as $file)
-                                                                <a href="{{ url($file) }}" target="_blank" class="btn btn-sm btn-outline-info mb-1">
+                                                        @foreach($files as $file)
+                                                            @if(!empty($file))
+                                                                <a href="{{ url($file) }}"
+                                                                target="_blank"
+                                                                class="btn btn-sm btn-outline-info mb-1">
                                                                     <i class="fa fa-eye"></i>
                                                                 </a>
-                                                            @endforeach
-                                                        @else
-                                                            <a href="{{ url($detail->attachments) }}" target="_blank" class="btn btn-sm btn-outline-info">
-                                                                <i class="fa fa-eye"></i>
-                                                            </a>
-                                                        @endif
-
+                                                            @endif
+                                                        @endforeach
                                                     @endif
-
                                                 @endforeach
-
                                             </td>
 
 
@@ -212,6 +218,14 @@
                                                             <i class="fas fa-user-check"></i>
                                                         </a>
                                                     @endif
+
+                                                    @if ($payment->status == 'verified' && hasPermission('account.payments.make-payments.approve'))
+                                                        <a class="btn btn-outline-success"
+                                                            href="{{ route('account.payments.make-payments.edit', $payment->id) }}?form_type=approve">
+                                                            <i class="fas fa-check-circle"></i>
+                                                        </a>
+                                                    @endif
+
  
                                                     @if (hasPermission('account.payments.make-payments.show'))
                                                         <a class="btn btn-outline-primary"
