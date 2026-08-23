@@ -14,6 +14,8 @@ use Modules\Sales\Models\SalesOrder;
  
 use Exception;
 use Carbon\Carbon;
+use Modules\SalesTarget\Models\SalesOrderAchievementLedger;
+use Modules\SalesTarget\Models\SalesOrderEmployeeSplit;
 use Modules\SalesTarget\Models\SalesSalaryBracket;
 use Modules\SalesTarget\Models\SalesTarget;
 use Modules\SalesTarget\Models\SalesTargetRateTier;
@@ -33,54 +35,61 @@ class SalesTargetService
     // ---------- 2. Target Assign (existing employee salary table theke fetch) ----------
     public function assignTarget(int $employeeId, int $month, int $year, string $salaryBasis = 'basic'): SalesTarget
     {
-        $employeeSalary = $employeeSalary = EmployeeSalary::where('employee_id', $employeeId)->where('status', 1)->firstOrFail();
-      
+        $employeeSalary = EmployeeSalary::where('employee_id', $employeeId)->where('status', 1)->firstOrFail();
 
-        $query = DB::table('bills_and_allowances as ba')
-                ->join('transport_expenses as te', 'ba.id', '=', 'te.bills_and_allowance_id')
-                ->where('ba.status', '!=', 'deny')
-                ->select(
-                    DB::raw("
-                        SUM(
-                            CASE
-                                WHEN te.final_approved_amount > 0
-                                    THEN te.final_approved_amount
-                                WHEN te.accounts_approved_amount > 0
-                                    THEN te.accounts_approved_amount
-                                WHEN te.team_leader_approved_amount > 0
-                                    THEN te.team_leader_approved_amount
-                                ELSE te.amount
-                            END
-                        ) AS ta_amount
-                    ")
-                )
-                ->first();
-        $taAmount = $query->ta_amount ?? 0;
+        // ---------- TA Amount (শুধু এই employee, শুধু এই month/year) ----------
+        $taQuery = DB::table('bills_and_allowances as ba')
+            ->join('transport_expenses as te', 'ba.id', '=', 'te.bills_and_allowance_id')
+            ->where('ba.status', '!=', 'deny')
+            ->where('ba.employee_id', $employeeId)          // ⚠️ actual column name confirm করুন
+            ->whereMonth('ba.created_at', $month)            // ⚠️ actual period column confirm করুন
+            ->whereYear('ba.created_at', $year)
+            ->select(
+                DB::raw("
+                    SUM(
+                        CASE
+                            WHEN te.final_approved_amount > 0
+                                THEN te.final_approved_amount
+                            WHEN te.accounts_approved_amount > 0
+                                THEN te.accounts_approved_amount
+                            WHEN te.team_leader_approved_amount > 0
+                                THEN te.team_leader_approved_amount
+                            ELSE te.amount
+                        END
+                    ) AS ta_amount
+                ")
+            )
+            ->first();
+        $taAmount = $taQuery->ta_amount ?? 0;
 
-        $query = DB::table('bills_and_allowances as ba')
-                ->join('general_expenses as ge', 'ba.id', '=', 'ge.bills_and_allowance_id')
-                ->where('ba.status', '!=', 'deny')
-                ->select(
-                    DB::raw("
-                        SUM(
-                            CASE
-                                WHEN ge.final_approved_amount > 0
-                                    THEN ge.final_approved_amount
-                                WHEN ge.accounts_approved_amount > 0
-                                    THEN ge.accounts_approved_amount
-                                WHEN ge.team_leader_approved_amount > 0
-                                    THEN ge.team_leader_approved_amount
-                                ELSE ge.amount
-                            END
-                        ) AS da_amount
-                    ")
-                )
-                ->first();
-        $daAmount = $query->da_amount ?? 0; 
-      
-        $basicSalary = $employeeSalary->basic; 
+        // ---------- DA Amount (শুধু এই employee, শুধু এই month/year) ----------
+        $daQuery = DB::table('bills_and_allowances as ba')
+            ->join('general_expenses as ge', 'ba.id', '=', 'ge.bills_and_allowance_id')
+            ->where('ba.status', '!=', 'deny')
+            ->where('ba.employee_id', $employeeId)          // ⚠️ actual column name confirm করুন
+            ->whereMonth('ba.created_at', $month)            // ⚠️ actual period column confirm করুন
+            ->whereYear('ba.created_at', $year)
+            ->select(
+                DB::raw("
+                    SUM(
+                        CASE
+                            WHEN ge.final_approved_amount > 0
+                                THEN ge.final_approved_amount
+                            WHEN ge.accounts_approved_amount > 0
+                                THEN ge.accounts_approved_amount
+                            WHEN ge.team_leader_approved_amount > 0
+                                THEN ge.team_leader_approved_amount
+                            ELSE ge.amount
+                        END
+                    ) AS da_amount
+                ")
+            )
+            ->first();
+        $daAmount = $daQuery->da_amount ?? 0;
+
+        $basicSalary = $employeeSalary->basic;
         $grossSalary = $employeeSalary->gross;
-        $taDa = $taAmount + $daAmount;    
+        $taDa = $taAmount + $daAmount;
 
         $allExpensesSalary = $grossSalary + $taDa;
 
@@ -236,5 +245,66 @@ class SalesTargetService
         }
 
         return $target->final_incentive_amount;
+    }
+
+    // ---------- 10. Core Sync Method ----------
+    public function syncOrderAchievement(SalesOrder $order, bool $forceEmpty = false): void
+    {
+        $periodMonth = $order->created_at->month;
+        $periodYear = $order->created_at->year;
+
+        $isApproved = $order->status === 'approved' && !$forceEmpty;
+
+        // ---------- বর্তমানে কার কত পাওয়া উচিত সেটা বের করা ----------
+        $targetContributions = [];
+
+        if ($isApproved) {
+            $splits = SalesOrderEmployeeSplit::where('sales_order_id', $order->id)->get();
+
+            if ($splits->isNotEmpty()) {
+                // Split আছে - percentage অনুযায়ী ভাগ হবে
+                foreach ($splits as $split) {
+                    $amount = round($order->total_amount * ($split->percentage / 100), 2);
+                    $targetContributions[$split->employee_id] =
+                        ($targetContributions[$split->employee_id] ?? 0) + $amount;
+                }
+            } elseif ($order->user_ref_id) {
+                // Split নেই - normal single employee
+                $targetContributions[$order->user_ref_id] = $order->total_amount;
+            }
+        }
+
+        // ---------- আগে ledger-এ কী ছিল সেটা বের করা ----------
+        $existingLedger = SalesOrderAchievementLedger::where('sales_order_id', $order->id)
+            ->get()->keyBy('employee_id');
+
+        $allEmployeeIds = collect(array_keys($targetContributions))
+            ->merge($existingLedger->keys())
+            ->unique();
+
+        // ---------- প্রতিটা employee-র জন্য difference apply করা ----------
+        foreach ($allEmployeeIds as $employeeId) {
+            $newAmount = $targetContributions[$employeeId] ?? 0;
+            $oldAmount = (float) ($existingLedger[$employeeId]->amount_applied ?? 0);
+            $diff = $newAmount - $oldAmount;
+
+            if ($diff != 0) {
+                $this->recordAchievement(
+                    $employeeId,
+                    $diff,
+                    \Carbon\Carbon::create($periodYear, $periodMonth, 1)
+                );
+            }
+
+            if ($newAmount == 0) {
+                SalesOrderAchievementLedger::where('sales_order_id', $order->id)
+                    ->where('employee_id', $employeeId)->delete();
+            } else {
+                SalesOrderAchievementLedger::updateOrCreate(
+                    ['sales_order_id' => $order->id, 'employee_id' => $employeeId],
+                    ['amount_applied' => $newAmount, 'period_month' => $periodMonth, 'period_year' => $periodYear]
+                );
+            }
+        }
     }
 }

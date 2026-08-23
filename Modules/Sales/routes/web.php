@@ -1,5 +1,5 @@
 <?php
-
+ 
 use Modules\Sales\Controllers\BrandSupplierSalesReportController;
 use Illuminate\Support\Facades\Route;
 use Modules\Account\Controllers\CustomerController;
@@ -24,7 +24,7 @@ use Modules\Sales\Controllers\SalesRequisitionController;
 use Modules\Sales\Controllers\SalesReturnController;
 use Modules\Sales\Controllers\ShipmentExplorerReportController;
 use Modules\Sales\Controllers\ShipmentVerifyController;
- 
+use Modules\Sales\Controllers\SalesOrderEmployeeSplitController;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], function () {
 
@@ -39,6 +39,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], fu
     Route::get('sales-orders-autocomplete-customers', [SalesOrderController::class, 'customerAutocomplete']) ->name('sales-orders-autocomplete.customers');
     Route::get('sales-orders-autocomplete-products', [SalesOrderController::class, 'productAutocomplete']) ->name('sales-orders-autocomplete.products');
     Route::get('sales-orders-references', [SalesOrderController::class, 'getReferences'])->name('sales-orders.references');
+
+    
+    Route::prefix('sales-orders/{order}/splits')->name('sales-orders.splits.')->group(function () {
+        Route::get('/', [SalesOrderEmployeeSplitController::class, 'show'])->name('show');
+        Route::post('/', [SalesOrderEmployeeSplitController::class, 'store'])->name('store');
+        Route::delete('/', [SalesOrderEmployeeSplitController::class, 'destroy'])->name('destroy');
+    });
+
+    
+
 
     // Sales Order Import Routes
     Route::group(['prefix' => 'sales-order-import'], function () {

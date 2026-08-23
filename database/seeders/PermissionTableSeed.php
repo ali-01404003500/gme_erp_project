@@ -1970,6 +1970,14 @@ class PermissionTableSeed extends Seeder
                 'key' => 'sales.sales-orders'
             ],
 
+            [
+                'name' => 'Sales Orders Employee Splits',
+                'slug' => 'sales.sales-orders.splits',
+                'description' => 'Sales Orders Employee Splits permission',
+                'key' => 'sales.sales-orders'
+            ],
+
+         
             //  [
             //     'name'=> 'Sales Orders Receive',
             //     'slug'=> 'sales.sales-orders.receive',
@@ -4958,6 +4966,14 @@ class PermissionTableSeed extends Seeder
                 'name' => 'Employee Import',
                 'slug' => 'hrm.employees.import',
                 'description' => 'Employee import permission',
+                'key' => 'hrm.employees',
+            ],
+
+            // Employee Salary Setup
+            [
+                'name' => 'Employee Salary Setting',
+                'slug' => 'hrm.employee-salarys.create',
+                'description' => 'Employee Salary Setting permission',
                 'key' => 'hrm.employees',
             ],
  

@@ -196,7 +196,6 @@
                                                 @endif
                                                 @if (hasPermission('hrm.employee-salarys.create'))
                                                 <a class="btn btn-outline-success" href="{{ route('hrm.employee-salarys.create') }}?employee_id={{ $employee->id }}"><i class="fas fa-money-bill"></i></a>
-
                                                 @endif
 
                                             </div>

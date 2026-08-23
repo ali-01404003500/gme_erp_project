@@ -270,6 +270,14 @@
                                                     @endif
 
 
+                                                    @if (hasPermission('sales.sales-orders.splits'))
+                                                        <button type="button" class="btn btn-sm btn-outline-primary"
+                                                                onclick="openSplitModal({{ $salesOrder->id }})">
+                                                        <i class="fas fa-random"></i>
+                                                        </button>
+                                                    @endif
+
+
                                                 </div>
 
                                             </td>
@@ -289,6 +297,48 @@
             </div>
         </div>
     </div>
+ 
+        
+    {{-- Split Modal --}}
+    <div class="modal fade" id="splitModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sales Split - Employee wise Ratio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="splitAlert" class="alert alert-danger d-none"></div>
+
+                    <div id="splitRows">
+                        {{-- JS দিয়ে row add হবে এখানে --}}
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="addSplitRow()">
+                        + Add Employee
+                    </button>
+
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total:</strong>
+                        <strong id="splitTotal">0</strong>%
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger me-auto"  onclick="confirmRemoveSplit()">
+                        Remove Split
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary"  onclick="confirmSaveSplit()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .swal2-container {
+            z-index: 99999 !important;
+        }
+    </style>
 @endsection
 @section('page_scripts')
     <script>
@@ -297,6 +347,38 @@
             autoclose: true
         });
 
+
+        function confirmRemoveSplit() {
+            Swal.fire({
+                title: 'Remove Split?',
+                text: 'Split will be removed and the order will revert to a single employee.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Remove',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    removeSplit();
+                }
+            });
+        }
+
+        function confirmSaveSplit() {
+            Swal.fire({
+                title: 'Save Split?',
+                text: 'Are you sure you want to save this employee-wise split?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Save',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    saveSplit();
+                }
+            });
+        }
 
         $(document).ready(function () {
             const companySelect = new TomSelect("#customer_id", {
@@ -330,5 +412,153 @@
                 companySelect.setValue("{{ request('customer_id') }}");
             @endif
         }); 
+    </script>
+    <script> 
+        let currentOrderId = null;
+        const employeeList = @json(\Modules\Hrms\Models\Employee::select('id', 'full_name')->where('status', 1)->get());
+        let rowCounter = 0; // প্রতিটা row-কে ইউনিক id দেওয়ার জন্য
+
+        function employeeOptionsHtml(selectedId = null) {
+            return employeeList.map(e =>
+                `<option value="${e.id}" ${e.id == selectedId ? 'selected' : ''}>${e.full_name}</option>`
+            ).join('');
+        }
+
+        function addSplitRow(employeeId = '', percentage = '') {
+            rowCounter++;
+            const rowId = `split-employee-${rowCounter}`;
+
+            const rowHtml = `
+                <div class="row g-2 mb-2 split-row">
+                    <div class="col-7">
+                        <select class="form-control split-employee" id="${rowId}">
+                            <option value="">-- Select Employee --</option>
+                            ${employeeOptionsHtml(employeeId)}
+                        </select>
+                    </div>
+                    <div class="col-3">
+                        <input type="number" step="0.01" class="form-control split-percentage" value="${percentage}" placeholder="%">
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100 remove-split-row">✕</button>
+                    </div>
+                </div>
+            `;
+
+            const $row = $(rowHtml);
+            $('#splitRows').append($row);
+
+            // TomSelect init করা হচ্ছে
+            const tomSelectInstance = new TomSelect(`#${rowId}`, {
+                placeholder: 'Employee Search',
+                maxItems: 1,
+                allowEmptyOption: true,
+            });
+
+            $row.find('.split-percentage').on('input', updateTotal);
+
+            $row.find('.remove-split-row').on('click', function () {
+                tomSelectInstance.destroy(); // TomSelect instance destroy করে দিতে হবে
+                $(this).closest('.split-row').remove();
+                updateTotal();
+            });
+
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            $('.split-percentage').each(function () {
+                total += parseFloat($(this).val()) || 0;
+            });
+            $('#splitTotal').text(total.toFixed(2));
+            $('#splitTotal').attr('class', total == 100 ? 'text-success' : 'text-danger');
+        }
+
+        function openSplitModal(orderId) {
+            currentOrderId = orderId;
+
+            // পুরনো সব TomSelect instance destroy করে দিন
+            $('#splitRows .split-employee').each(function () {
+                if (this.tomselect) {
+                    this.tomselect.destroy();
+                }
+            });
+
+            $('#splitRows').empty();
+            $('#splitAlert').addClass('d-none');
+            rowCounter = 0;
+
+            $.ajax({
+                url: `{{ url('sales/sales-orders') }}/${orderId}/splits`,
+                method: 'GET',
+                success: function (data) {
+                    if (data.splits && data.splits.length > 0) {
+                        data.splits.forEach(s => addSplitRow(s.employee_id, s.percentage));
+                    } else {
+                        addSplitRow();
+                        addSplitRow();
+                    }
+                    $('#splitModal').modal('show');
+                },
+                error: function (xhr) {
+                    console.log('Status:', xhr.status);
+                    console.log('Response:', xhr.responseText);
+                }
+            });
+        }
+        function saveSplit() {
+            const splits = [];
+            $('.split-row').each(function () {
+                const employeeId = $(this).find('.split-employee').val();
+                const percentage = $(this).find('.split-percentage').val();
+                if (employeeId && percentage) {
+                    splits.push({ employee_id: employeeId, percentage: percentage });
+                }
+            });
+
+            $.ajax({
+                url: `{{ url('sales/sales-orders') }}/${currentOrderId}/splits`,
+                method: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                data: JSON.stringify({ splits: splits }),
+                success: function () {
+                    $('#splitModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    const message = xhr.responseJSON?.message || 'কোনো একটা সমস্যা হয়েছে।';
+                    $('#splitAlert').text(message).removeClass('d-none');
+                }
+            });
+        }
+
+        function removeSplit() {
+            if (!confirm('Split মুছে দিলে এই order আবার single employee (user_ref_id) এর হিসেবে ফিরে যাবে। নিশ্চিত?')) return;
+
+            $.ajax({
+                url: `{{ url('sales/sales-orders') }}/${currentOrderId}/splits`,
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                success: function () {
+                    $('#splitModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr) {
+                    console.error('Split delete failed', xhr);
+                }
+            });
+        }
+
+        // বাটন ক্লিক event delegation দিয়ে (dynamically loaded row হলেও কাজ করবে)
+        $(document).on('click', '.open-split-modal-btn', function () {
+            const orderId = $(this).data('order-id');
+            openSplitModal(orderId);
+        });
     </script>
 @endSection

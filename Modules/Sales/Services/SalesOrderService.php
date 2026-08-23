@@ -144,6 +144,8 @@ class SalesOrderService
             $result['salesOrderDetails'][] = $result['salesOrder']->salesOrderDetails()->create($detailData);
         }
 
+        
+
         // dd($salesOrderShipments);
         // Handle shipment if available
         if (isset($data['is_shipment']) && $data['is_shipment'] == 1) {
@@ -1315,7 +1317,7 @@ class SalesOrderService
             $data['sales_order_id'] = $this->getSalesOrderId($data['customer_id']);
         }
         $data['sales_type'] = $data['sales_type'] ?? 'general_sales';
-
+        $data['user_ref_id'] = Customer::find($data['customer_id'])->user_ref_id;
         $result['salesOrder']->update($data);
         $result['salesOrder']->salesOrderDetails()->whereNotIn('id', $salesOrderDetails['sales_order_detail_id'])->delete();
         $result['salesOrderDetails'] = [];
