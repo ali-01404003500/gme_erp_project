@@ -306,30 +306,39 @@ class IOURequisitionEntryController extends Controller
     /**
      * Process IOU bill return
      */
+
     public function returnBill(Request $request)
     {
         $request->validate([
             'entry_id' => 'required|exists:i_o_u_requisition_entries,id',
             'bank_account_id' => 'required|exists:bank_accounts,id',
+            'return_amount' => 'required|numeric|min:1',
             'remarks' => 'nullable|string|max:255',
         ]);
 
         $entry = IOURequisitionEntry::findOrFail($request->entry_id);
 
-        // Check if entry is in paid status
-        if ($entry->status !== 'paid') {
+        if (!in_array($entry->status, ['paid', 'partially_returned'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Only paid entries can be returned'
+                'message' => 'Only paid or partially returned entries can be returned'
             ]);
         }
 
-        // Process the return
-        $this->service->processReturn($entry, $request->bank_account_id, $request->remarks);
+        try {
+            $iouReturn = $this->service->processReturn( $entry, $request->bank_account_id,  $request->return_amount, $request->remarks);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'IOU return processed successfully'
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'IOU return processed successfully',
+                'data' => $iouReturn
+            ]);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
     }
 }

@@ -76,6 +76,14 @@
                                 <td>৳{{ number_format($iOURequisitionEntry->approved_amount) }}</td>
                             </tr>
                             <tr>
+                                <td><strong>Return Amount</strong></td>
+                                <td>৳{{ number_format($iOURequisitionEntry->returns->sum('amount') ?? 0) }}</td>
+                            </tr>
+                              <tr>
+                                <td><strong>Remaining Amount</strong></td>
+                                <td>৳{{ number_format( $iOURequisitionEntry->request_amount - ($iOURequisitionEntry->returns->sum('amount') ?? 0)) }}</td>
+                            </tr>
+                            <tr>
                                 <td><strong>Remarks</strong></td>
                                 <td>{{ $iOURequisitionEntry->remarks ?: '—' }}</td>
                             </tr>

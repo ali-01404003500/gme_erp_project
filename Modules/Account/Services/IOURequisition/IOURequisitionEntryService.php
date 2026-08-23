@@ -11,12 +11,14 @@ use Illuminate\Support\Str;
 
 class IOURequisitionEntryService
 {
-    
-    public function getAll(int $limit = 20) {
+     
+    public function getAll(int $limit = 20)
+    {
         return IOURequisitionEntry::query()
-                ->searchByFields(['type', 'status'])
+            ->with('returns')
+            ->searchByFields(['type', 'status'])
             ->filterByDateRange('date')
-                ->paginate($limit);
+            ->paginate($limit);
     }
 
     
@@ -52,7 +54,7 @@ class IOURequisitionEntryService
 
     public function show($id)
     {
-        return IOURequisitionEntry::with('employee')->findOrFail($id);
+        return IOURequisitionEntry::with('employee','returns')->findOrFail($id);
     }
 
     public function markAsPaid(IOURequisitionEntry $entry): bool
@@ -67,26 +69,63 @@ class IOURequisitionEntryService
         return true;
     }
 
-    public function processReturn(IOURequisitionEntry $entry, $bankAccountId, $remarks = null)
+ 
+    public function processReturn( IOURequisitionEntry $entry,   $bankAccountId,    $returnAmount, $remarks = null ) 
     {
         DB::beginTransaction();
 
-        $iouReturn = IOUReturn::create([
-            'entry_id' => $entry->id,
-            'bank_account_id' => $bankAccountId,
-            'remarks' => $remarks,
-            'amount' => $entry->request_amount,
-        ]);
+        try {
 
-        $entry->update([
-            'status' => 'returned',
-        ]);
+            // Already returned amount
+            $alreadyReturned = $entry->returns()->sum('amount');
 
-        $this->makeDummyTransactionForReturn($iouReturn);
+            // Remaining amount
+            $remainingAmount = $entry->request_amount - $alreadyReturned;
 
-        DB::commit();
-        return $iouReturn;
+            if ($returnAmount > $remainingAmount) {
+                throw new \Exception(
+                    'Return amount cannot be greater than remaining amount: ' .
+                    number_format($remainingAmount, 2)
+                );
+            }
+
+            $iouReturn = IOUReturn::create([
+                'entry_id'        => $entry->id,
+                'bank_account_id' => $bankAccountId,
+                'remarks'         => $remarks,
+                'amount'          => $returnAmount,
+            ]);
+
+            // Total returned after this transaction
+            $totalReturned = $alreadyReturned + $returnAmount;
+
+            // Determine status
+            if ($totalReturned >= $entry->request_amount) {
+                $entry->update([
+                    'status' => 'returned',
+                ]);
+            } else {
+                $entry->update([
+                    'status' => 'partially_returned',
+                ]);
+            }
+
+            // Accounting transaction
+            $this->makeDummyTransactionForReturn($iouReturn);
+
+            DB::commit();
+
+            return $iouReturn;
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            throw $e;
+        }
     }
+
+
 
     public function makeDummyTransaction(IOURequisitionEntry $entry)
     {

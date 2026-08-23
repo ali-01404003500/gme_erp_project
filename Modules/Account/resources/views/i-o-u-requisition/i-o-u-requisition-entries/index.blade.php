@@ -138,21 +138,23 @@
                                         <td>
                                             <span class="badge badge-round badge-{{
                                                 match($entry->status){
+                                                    'partially_returned' => 'warning',
                                                     'pending' => 'warning',
                                                     'approved' => 'success',
                                                     'verified' => 'info',
                                                     'denied' => 'danger',
                                                     default => 'secondary',
-                                                } }} badge-lg">
-                                                {{ $entry->status }}
+                                                } }} badge-lg"> 
+                                                {{ ucwords(str_replace('_', ' ', $entry->status)) }}
                                             </span>
+                                            
                                         </td>
 
                                         {{-- Actions --}}
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group"
                                                 aria-label="Small button group">
-                                                @if ($entry->status != 'approved' && $entry->status != 'paid' && $entry->status != 'returned' && hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.update'))
+                                                @if ($entry->status != 'approved' && $entry->status != 'paid' && $entry->status != 'returned' && $entry->status != 'partially_returned'  && hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.update'))
                                                     <a class="btn btn-outline-warning"
                                                         href="{{ route('account.i-o-u-requisition.i-o-u-requisition-entries.edit', $entry->id) }}"
                                                         data-bs-toggle="tooltip" title="Update">
@@ -184,7 +186,7 @@
                                                     </a>
                                                 @endif
 
-                                                @if ($entry->status != 'approved' && $entry->status != 'paid' && $entry->status != 'returned' && hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.destroy'))
+                                                @if ($entry->status != 'approved' && $entry->status != 'paid' && $entry->status != 'returned' && $entry->status != 'partially_returned' && hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.destroy'))
                                                     <button type="button"
                                                         data-action="{{ route('account.i-o-u-requisition.i-o-u-requisition-entries.destroy', $entry->id) }}"
                                                         class="btn btn-outline-danger delete-confirm"
@@ -199,18 +201,20 @@
                                                             data-id="{{ $entry->id }}"
                                                             data-employee-name="{{ $entry->employee->full_name }}"
                                                             data-amount="{{ $entry->approved_amount }}"
+                                                            data-return-amount="{{ number_format($entry->returns->sum('amount'), 2) }}"
                                                             data-employee-id="{{ $entry->employee_id }}"
                                                             data-bs-toggle="tooltip" title="Pay">
                                                         <i class="fa fa-money-bill-wave"></i>
                                                     </button>
                                                 @endif
 
-                                                @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.return') && $entry->status === 'paid')
+                                                @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.return') && ($entry->status === 'paid' || $entry->status === 'partially_returned'))
                                                     <button type="button"
                                                             class="btn btn-outline-danger return-button"
                                                             data-id="{{ $entry->id }}"
                                                             data-employee-name="{{ $entry->employee->full_name }}"
                                                             data-amount="{{ $entry->approved_amount }}"
+                                                            data-return-amount="{{ number_format($entry->returns->sum('amount'), 2) }}"
                                                             data-employee-id="{{ $entry->employee_id }}"
                                                             data-bs-toggle="tooltip" title="Return">
                                                         <i class="fa fa-undo"></i>
@@ -340,12 +344,14 @@
                             <tr>
                                 <th>Employee Name</th>
                                 <th>Amount</th>
+                                <th>Return Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td><span id="returnEmployeeName"></span></td>
                                 <td>৳<span id="returnAmount"></span></td>
+                                <td>৳<span id="alreadyReturnAmount"></span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -362,6 +368,10 @@
                                 </option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Return Amount</label>
+                        <input type="number" name="return_amount" id="return_amount" class="form-control" min="1"  step="1"  required>
                     </div>
 
                     <div class="form-group mb-3">
@@ -599,20 +609,30 @@ $(document).ready(function() {
 
     // Handle return button click
     $('.return-button').on('click', function() {
+
         currentReturnEntryId = $(this).data('id');
+
         const employeeName = $(this).data('employee-name');
-        const amount = $(this).data('amount');
+        const amount = parseFloat($(this).data('amount'));
+        const rAmount = parseFloat($(this).data('return-amount'));
 
         $('#returnEmployeeName').text(employeeName);
-        $('#returnAmount').text(amount);
+        $('#returnAmount').text(amount.toFixed(2));
+        $('#alreadyReturnAmount').text(rAmount.toFixed(2));
+
         $('#returnEntryId').val(currentReturnEntryId);
+
+        $('#return_amount') .attr('max', amount).val('');
 
         $('#returnModal').modal('show');
     });
 
+
+
     // Handle confirm return button
     $('#confirmReturnBtn').on('click', function() {
-        const bankAccountId = $('#returnBankAccount').val();
+        const bankAccountId = $('#returnBankAccount').val(); 
+        const returnAmount = $('#return_amount').val();
         const remarks = $('#returnRemarks').val();
 
         if (!bankAccountId) {
@@ -628,6 +648,7 @@ $(document).ready(function() {
             data: {
                 entry_id: currentReturnEntryId,
                 bank_account_id: bankAccountId,
+                return_amount: returnAmount,
                 remarks: remarks,
                 _token: '{{ csrf_token() }}'
             },
