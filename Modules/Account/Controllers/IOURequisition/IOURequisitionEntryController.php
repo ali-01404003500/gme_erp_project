@@ -177,6 +177,7 @@ class IOURequisitionEntryController extends Controller
 
         // Generate OTP
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $amount = $entry->approved_amount;
 
         // Store OTP in session with expiration
         session()->put('payment_otp_' . $entry->id, [
@@ -192,8 +193,8 @@ class IOURequisitionEntryController extends Controller
             $employeeContact = '880' . substr($employeeContact, 1);
         }
 
-        // Send OTP via SMS
-        $message = "Your OTP for payment verification is: {$otp}. This OTP will expire in 5 minutes.";
+        // Send OTP via SMS  
+        $message = "Your OTP for confirming the IOU payment of BDT {$amount} is {$otp}. Please enter this OTP to complete the payment process. For security purposes, do not share this OTP with anyone. This OTP will expire in 5 minutes.";
 
         try {
             $sent = $this->smsService->send($employeeContact, $message);
