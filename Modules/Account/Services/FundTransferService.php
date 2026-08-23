@@ -57,9 +57,9 @@ class FundTransferService
 
  
 
-        // Debit Receiver Bank
+        // Debit sender account
         $fundTransfer->transactions()->create([
-            'account_id' => $toAccount->id,
+            'account_id' => $fromAccount->id,
             'debit_amount' => $amount,
             'credit_amount' => 0,
             'balance_type' => 'debit',
@@ -79,17 +79,15 @@ class FundTransferService
             ]);
         }
 
-
-        // Credit Sender Bank (amount + charge)
+        // Credit receiver Bank (amount + charge)
         $fundTransfer->transactions()->create([
-            'account_id' => $fromAccount->id,
+            'account_id' => $toAccount->id,
             'debit_amount' => 0,
             'credit_amount' => $amount + $charge,
             'balance_type' => 'credit',
             'transaction_date' => $fundTransfer->transfer_date,
             'description' => 'Fund Transfer from ' . $fundTransfer->transferFromBankAccount->account_name . " to " . $fundTransfer->transferFromBankAccount->account_name,
         ]);
-
-       
+   
     }
 }
