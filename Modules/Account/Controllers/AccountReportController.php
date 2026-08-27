@@ -466,7 +466,8 @@ public function customerLedgerReport(Request $request)
                             'cheque_date' => $entry->collection_date,
                             'cheque_no' => $detail->cheque_no,
                             'amount' => $detail->amount,
-                            'cheque_type' => $entry->cheque_type,
+                            'cheque_type' => $detail->is_security_cheque === 1 ? 'Security' : 'Installment',
+                            'cheque_status' => $detail->status,
                             'document' => $detail->document,
                         ];
                     });

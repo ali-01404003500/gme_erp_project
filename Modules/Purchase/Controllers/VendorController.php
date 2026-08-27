@@ -22,7 +22,7 @@ class VendorController extends Controller
     function __construct(VendorService $service)
     {
         $this->service = $service;
-        $this->middleware('permited')->except('convertImageToBase64');
+        $this->middleware('permited')->except('convertImageToBase64','getAllVendors');
 
     }
     
@@ -245,7 +245,9 @@ class VendorController extends Controller
 
     
     public function getAllVendors(){
-        $data['vendors'] = Vendor::select('id', 'company_name as name')->get();
-        return response()->json($data);
+        $vendors = Vendor::select('id', 'company_name as name')->get(); 
+        return response()->json([
+            'data' => $vendors
+        ]);
     }
 }

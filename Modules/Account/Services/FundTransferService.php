@@ -25,7 +25,7 @@ class FundTransferService
     {
         $fundTransfer->update($data);
         if($data['status']=='approved'){
-            $fundTransfer->update(['approve_by'=>auth()->user()->id,'approve_date'=>now()]);
+            $fundTransfer->update(['status'=> 'approved','approve_by'=>auth()->user()->id,'approve_date'=>now()]);
             $this->postJournalEntry($fundTransfer);
         } 
         // if($data['status']=='verified'){
@@ -48,7 +48,7 @@ class FundTransferService
     {
         $fromAccount = $fundTransfer->transferFromBankAccount->getAccount();
         $toAccount = $fundTransfer->transferToBankAccount->getAccount();
-        $chargeAccount = Account::where('name', 'Bank Transaction Charge Expense')->first()->id; // expense account 
+        $chargeAccount = Account::where('account_number', '506401')->first()->id; // Bank Charge Expense account 
 
         $fundTransfer->transactions()->delete();
 

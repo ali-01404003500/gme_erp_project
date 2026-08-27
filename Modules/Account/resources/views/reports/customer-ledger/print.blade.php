@@ -390,6 +390,7 @@
                             <th>Cheque No.</th>
                             <th class="text-right">Cheque Amount</th>
                             <th>Cheque Type</th>
+                            <th>Cheque Status</th>
                             <th class="text-center">Attachment</th>
                         </tr>
                     </thead>
@@ -402,6 +403,7 @@
                             <td>{{ $cheque['cheque_no'] }}</td>
                             <td class="text-right">{{ number_format($cheque['amount']) }}</td>
                             <td>{{ ucfirst($cheque['cheque_type']) }}</td>
+                            <td>{{ ucfirst($cheque['cheque_status']) }}</td>
                             <td class="text-center">
                                 @if(isset($cheque['attachment']) && $cheque['attachment'])
                                 <a href="{{ asset($cheque['attachment']) }}" target="_blank" title="View Attachment">
@@ -415,7 +417,7 @@
                         @endforeach
                         @else
                         <tr>
-                            <td colspan="6" class="text-center text-muted">No cheques found</td>
+                            <td colspan="7" class="text-center text-muted">No cheques found</td>
                         </tr>
                         @endif
                     </tbody>

@@ -374,11 +374,12 @@
                         <table class="table table-bordered table-hover">
                             <thead class="bg-primary text-white">
                                 <tr>
-                                    <th style="width: 8%;">Sl. No.</th>
+                                    <th style="width: 2%;">Sl. No.</th>
                                     <th style="width: 15%;">Cheque Date</th>
-                                    <th style="width: 17%;">Cheque No.</th>
+                                    <th style="width: 10%;">Cheque No.</th>
                                     <th class="text-right" style="width: 15%;">Cheque Amount</th>
                                     <th style="width: 15%;">Cheque Type</th>
+                                    <th style="width: 15%;">Status</th>
                                     <th class="text-center" style="width: 10%;">Attachment</th>
                                 </tr>
                             </thead>
@@ -391,8 +392,27 @@
                                     <td>{{ $cheque['cheque_no'] }}</td>
                                     <td class="text-right">
                                         <span class="badge badge-round badge-success p-2">{{ number_format($cheque['amount']) }}</span>
+                                    </td>  
+                                    <td>{{ ucfirst($cheque['cheque_type']) }}</td>
+                                    <td>
+                                        @if($cheque['cheque_status'] == 'Deposited')
+                                            <span class="badge badge-round badge-primary p-2">
+                                                {{ ucfirst($cheque['cheque_status']) }}
+                                            </span>
+                                        @elseif($cheque['cheque_status'] == 'paid')
+                                            <span class="badge badge-round badge-success p-2">
+                                                {{ ucfirst($cheque['cheque_status']) }}
+                                            </span>
+                                        @elseif($cheque['cheque_status'] == 'Pending')
+                                            <span class="badge badge-round badge-warning p-2">
+                                                {{ ucfirst($cheque['cheque_status']) }}
+                                            </span>
+                                        @else
+                                            <span class="badge badge-round badge-danger p-2">
+                                                {{ ucfirst($cheque['cheque_status']) }}
+                                            </span>
+                                        @endif
                                     </td>
-                                    <td>{{ $cheque['cheque_type'] }}</td>
                                     <td class="text-center">
                                         @php
                                             $documents = is_string($cheque['document']) ? json_decode($cheque['document'], true) : $cheque['document'];
@@ -415,7 +435,7 @@
                                 @endforeach
                                 @else
                                 <tr>
-                                    <td colspan="6" class="text-center">No cheque data available</td>
+                                    <td colspan="7" class="text-center">No cheque data available</td>
                                 </tr>
                                 @endif
                             </tbody>

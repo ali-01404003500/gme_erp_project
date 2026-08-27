@@ -184,85 +184,134 @@
             }
 
             // Initialize TomSelect with maxOptions: null to allow searching all items
-            const tomSelectElements = document.querySelectorAll('.tom-select');
-            tomSelectElements.forEach(select => {
-                if (!select.tomselect) {
-                    new TomSelect(select, {
+            const tomSelectElements = document.querySelectorAll('select.tom-select, input.tom-select');
+
+            tomSelectElements.forEach(element => {
+
+                if (!element.tomselect) {
+
+                    new TomSelect(element, {
                         maxOptions: null,
                         allowEmptyOption: true
                     });
+
                 }
+
             });
 
-            const $holderType = $('#holder_type');
-            const $relatedSelect = $('#vendorSearch');
+            const holderSelect = document.querySelector('#holder_type');
+            const relatedSelect = document.querySelector('#vendorSearch');
 
-            // Clear and reload options based on holder type
+            const holderTomSelect = holderSelect.tomselect;
+            const relatedTomSelect = relatedSelect.tomselect;
+
             function loadRelatedEntities() {
-                const holderType = $holderType.val();
 
-                // Ensure TomSelect is initialized
-                if (!$relatedSelect[0].tomselect) return;
-
-                const $tomSelect = $relatedSelect[0].tomselect;
+                const holderType = holderTomSelect.getValue();
 
                 if (!holderType || holderType === 'others') {
-                    $tomSelect.clearOptions();
-                    $tomSelect.addOption({ value: 'others', text: 'Others (Manual Entry)' });
-                    $tomSelect.setValue('others');
+
+                    relatedTomSelect.clear(true);
+                    relatedTomSelect.clearOptions();
+
+                    relatedTomSelect.addOption({
+                        value: 'others',
+                        text: 'Others (Manual Entry)'
+                    });
+
+                    relatedTomSelect.setValue('others');
+
                     return;
                 }
 
-                let url, label;
+                let url;
+                let label = 'name';
 
                 switch (holderType) {
+
                     case 'vendor':
                         url = "{{ route('purchase.get-vendors') }}";
-                        label = 'name';
                         break;
+
                     case 'employee':
                         url = "{{ route('hrm.get-employees') }}";
-                        label = 'name';
                         break;
+
                     case 'client':
                         url = "{{ route('crm.get-customers') }}";
-                        label = 'name';
                         break;
+
+                    default:
+                        return;
                 }
 
-                // Show loading state
-                $tomSelect.clearOptions();
-                $tomSelect.addOption({ value: '', text: `-- Loading ${holderType}... --` });
-                $tomSelect.setValue('');
+                // Clear previous options
+                relatedTomSelect.clear(true);
+                relatedTomSelect.clearOptions();
 
-                $.get(url, function (response) {
-                    const data = response.data || response.vendors || response || [];
+                relatedTomSelect.addOption({
+                    value: '',
+                    text: `Loading ${holderType}...`
+                });
 
-                    $tomSelect.clearOptions();
-                    $tomSelect.addOption({ value: '', text: `-- Select ${holderType.charAt(0).toUpperCase() + holderType.slice(1)} --` });
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (response) {
 
-                    data.forEach(item => {
-                        $tomSelect.addOption({
-                            value: item.id,
-                            text: item[label] || 'N/A'
+                        console.log(response);
+
+                        const data = response.data || response.vendors || response || [];
+
+                        relatedTomSelect.clear(true);
+                        relatedTomSelect.clearOptions();
+
+                        relatedTomSelect.addOption({
+                            value: '',
+                            text: `-- Select ${holderType.charAt(0).toUpperCase() + holderType.slice(1)} --`
                         });
-                    });
-                }).fail(function () {
-                    $tomSelect.clearOptions();
-                    $tomSelect.addOption({ value: '', text: `-- Error loading ${holderType}s --` });
-                    $tomSelect.setValue('');
-                    alert(`Failed to load ${holderType}s. Please try again.`);
+
+                        data.forEach(item => {
+
+                            relatedTomSelect.addOption({
+                                value: item.id,
+                                text: item.name || 'N/A'
+                            });
+
+                        });
+
+                        relatedTomSelect.refreshOptions(false);
+                    },
+
+                    error: function (xhr) {
+
+                        console.error(xhr);
+
+                        relatedTomSelect.clear(true);
+                        relatedTomSelect.clearOptions();
+
+                        relatedTomSelect.addOption({
+                            value: '',
+                            text: `Error loading ${holderType}s`
+                        });
+
+                        relatedTomSelect.refreshOptions(false);
+
+                        alert(`Failed to load ${holderType}s. Please try again.`);
+                    }
                 });
             }
 
-            // Load initial data if holder_type has a value
-            if ($holderType.val()) {
+            // TomSelect event
+            holderTomSelect.on('change', function () {
+                loadRelatedEntities();
+            });
+
+
+            // Initial load
+            if (holderTomSelect.getValue()) {
                 loadRelatedEntities();
             }
-
-            // Reload on change
-            $holderType.on('change', loadRelatedEntities);
-
             // Handle Schedule Type (disable value for Static)
             $('#schedule_type').on('change', function () {
                 // Logic for Static removed
