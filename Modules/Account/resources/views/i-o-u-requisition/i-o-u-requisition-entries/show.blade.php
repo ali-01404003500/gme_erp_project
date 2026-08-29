@@ -57,6 +57,7 @@
                                 <td><strong>Type</strong></td>
                                 <td><span class="badge badge-round bg-primary">{{ $iOURequisitionEntry->type }}</span></td>
                             </tr>
+                            
                             <tr>
                                 <td><strong>Employee Name</strong></td>
                                 <td>{{ $iOURequisitionEntry->employee->full_name }}</td>
@@ -72,7 +73,7 @@
                             </tr>
                              
                             <tr>
-                                <td><strong>Approved Amount</strong></td>
+                                <td><strong>Approved & Payment Amount</strong></td>
                                 <td>৳{{ number_format($iOURequisitionEntry->approved_amount) }}</td>
                             </tr>
                             <tr>
@@ -81,7 +82,11 @@
                             </tr>
                               <tr>
                                 <td><strong>Remaining Amount</strong></td>
-                                <td>৳{{ number_format( $iOURequisitionEntry->request_amount - ($iOURequisitionEntry->returns->sum('amount') ?? 0)) }}</td>
+                                <td>৳{{ number_format( $iOURequisitionEntry->approved_amount - ($iOURequisitionEntry->returns->sum('amount') ?? 0)) }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status</strong></td>
+                                <td><span class="badge badge-round bg-success">{{ $iOURequisitionEntry->status }}</span></td>
                             </tr>
                             <tr>
                                 <td><strong>Remarks</strong></td>
