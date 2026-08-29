@@ -80,7 +80,7 @@ class IOURequisitionEntryService
             $alreadyReturned = $entry->returns()->sum('amount');
 
             // Remaining amount
-            $remainingAmount = $entry->request_amount - $alreadyReturned;
+            $remainingAmount = $entry->approved_amount - $alreadyReturned;
 
             if ($returnAmount > $remainingAmount) {
                 throw new \Exception(
@@ -100,7 +100,7 @@ class IOURequisitionEntryService
             $totalReturned = $alreadyReturned + $returnAmount;
 
             // Determine status
-            if ($totalReturned >= $entry->request_amount) {
+            if ($totalReturned >= $entry->approved_amount) {
                 $entry->update([
                     'status' => 'returned',
                 ]);
