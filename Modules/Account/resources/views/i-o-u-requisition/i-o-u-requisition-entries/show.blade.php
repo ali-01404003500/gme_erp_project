@@ -86,7 +86,7 @@
                             </tr>
                             <tr>
                                 <td><strong>Status</strong></td>
-                                <td><span class="badge badge-round bg-success">{{ $iOURequisitionEntry->status }}</span></td>
+                                <td><span class="badge badge-round bg-success">   {{ ucwords(str_replace('_', ' ', $iOURequisitionEntry->status)) }}</span></td>
                             </tr>
                             <tr>
                                 <td><strong>Remarks</strong></td>
