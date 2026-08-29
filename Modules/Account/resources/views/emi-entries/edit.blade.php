@@ -356,10 +356,10 @@
 
         let balance = P;
         let html = '';
+        const scheduledDate = $('#start_date').val();
 
         for (let i = 0; i < tenureNo; i++) {
-            const dt = new Date($('#start_date').val());
-            dt.setMonth(dt.getMonth() + (gap * (i + 1)));
+            const paymentDate = addMonthsSafely(scheduledDate, index + 1);
             const interest = balance * r;
             const principal = fixedEmi - interest;
             balance -= principal;
@@ -367,7 +367,7 @@
             html += `
             <tr>
                 <td>${i + 1}</td>
-                <td><input type="text" name="emi_date[]" value="${dt.toISOString().split('T')[0]}" class="form-control form-control-sm flatdate"></td>
+                <td><input type="text" name="emi_date[]" value="${paymentDate}"  class="form-control form-control-sm flatdate"></td>
                 <td>${interest.toFixed()}<input type="hidden" name="interest_amount[]" value="${interest.toFixed()}"></td>
                 <td>${principal.toFixed()}<input type="hidden" name="principal_amount[]" value="${principal.toFixed()}"></td>
                 <td><input type="number" step="any" name="emi_amount[]" value="${fixedEmi.toFixed(0)}" class="form-control form-control-sm emi-input"></td>
@@ -383,6 +383,27 @@
         fixedTotalAmount = 0; // reset before recalc
         recalculateSchedule();
     });
+
+
+    function addMonthsSafely(dateString, monthsToAdd) {
+        const [year, month, day] = dateString.split('-').map(Number);
+
+        const targetMonth = month - 1 + monthsToAdd;
+        const targetYear = year + Math.floor(targetMonth / 12);
+        const normalizedMonth = ((targetMonth % 12) + 12) % 12;
+
+        // Target month-এর last date
+        const lastDay = new Date(
+            targetYear,
+            normalizedMonth + 1,
+            0
+        ).getDate();
+
+        // Original day অথবা target month-এর last day
+        const targetDay = Math.min(day, lastDay);
+
+        return `${targetYear}-${String(normalizedMonth + 1).padStart(2, '0')}-${String(targetDay).padStart(2, '0')}`;
+    }
 
     // Adjust last EMI when any EMI changes
     $(document).on('input', '.emi-input', function() {

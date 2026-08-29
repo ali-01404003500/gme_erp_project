@@ -137,9 +137,9 @@ class IOURequisitionEntryService
             'account_id' => $cashAccount->id,
             'balance_type' => 'credit',
             'invoice_no' => $entry->id,
-            'amount' => $entry->request_amount,
+            'amount' => $entry->approved_amount,
             'debit_amount' => 0,
-            'credit_amount' => $entry->request_amount,
+            'credit_amount' => $entry->approved_amount,
             'description' => 'Staff Advance Given',
         ]);
 
@@ -147,8 +147,8 @@ class IOURequisitionEntryService
             'account_id' => $entry->employee->getStaffAdvanceAccount()->id,
             'balance_type' => 'debit',
             'invoice_no' => $entry->id,
-            'amount' => -$entry->request_amount,
-            'debit_amount' => $entry->request_amount,
+            'amount' => -$entry->approved_amount,
+            'debit_amount' => $entry->approved_amount,
             'credit_amount' => 0,
             'description' => 'Staff Advance Given',
         ]);
