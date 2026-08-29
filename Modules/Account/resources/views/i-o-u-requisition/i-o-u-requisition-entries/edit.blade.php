@@ -46,12 +46,17 @@
                             @method('PUT')
 
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-4">
+                                    <label class="form-label">Employee Name</label>
+                                    <input type="text"  class="form-control" value="{{ $iOURequisitionEntry->employee->full_name }}" readonly>
+                                </div>
+
+                                <div class="col-md-4">
                                     <label for="date" class="form-label">Date</label>
                                     <input type="text" name="date" class="form-control flatdate" value="{{ old('date', $iOURequisitionEntry->date->format('Y-m-d')) }}" required readonly>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label for="type" class="form-label">Type</label>
                                     <select name="type" class="form-control tom-select" required>
                                         <option value="Expense" {{ $iOURequisitionEntry->type === 'Expense' ? 'selected' : '' }}>Expense</option>
@@ -59,11 +64,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-12">
-                                    <label class="form-label">Employee Name</label>
-                                    <p class="form-control-plaintext"><strong>{{ $iOURequisitionEntry->employee->full_name }}</strong></p>
-                                </div>
-
+                           
                                 <!--Request Amount -->
                                 <div class="col-4">
                                     <label for="request_amount" class="form-label">Request Amount</label>
@@ -71,7 +72,7 @@
                                 </div>
 
                                 <!-- Verified Amount -->
-                                @if(hasPermission('account.collections.collections.verify') && $iOURequisitionEntry->status === 'pending')
+                                @if(hasPermission('account.collections.collections.verify') && $iOURequisitionEntry->status === 'pending' && request()->filled('form_type') !='')
                                 <div class="col-4">
                                     <label for="verify_amount" class="form-label">Verified Amount</label>
                                     <input type="number" step="0.01" name="verify_amount" id="verify_amount" class="form-control" value="{{ old('verify_amount', $iOURequisitionEntry->verify_amount) }}" >
@@ -80,7 +81,7 @@
                                     
 
                                 <!-- Approved Amount -->
-                                @if(hasPermission('account.collections.collections.approve') && $iOURequisitionEntry->status === 'verified')
+                                @if(hasPermission('account.collections.collections.approve') && $iOURequisitionEntry->status === 'verified' && request()->filled('form_type') !='')
                                 <div class="col-4">
                                     <label for="approved_amount" class="form-label">Approved Amount</label>
                                     <input type="number" step="0.01" name="approved_amount" id="approved_amount" class="form-control" value="{{ old('approved_amount', $iOURequisitionEntry->approved_amount) }}" >
@@ -103,12 +104,12 @@
                                         <i class="fa fa-save"></i>Update
                                     </button>
                                     @endif
-                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.verify') && $iOURequisitionEntry->status === 'pending' )
+                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.verify') && $iOURequisitionEntry->status === 'pending' && request()->filled('form_type') !='' )
                                         <button type="submit" class="btn btn-sm btn-warning save-btn" id="action_verify">
                                             <i class="fa fa-check"></i>Update & Verify
                                         </button>
                                     @endif
-                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.approve')  && $iOURequisitionEntry->status === 'verified' )
+                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.approve')  && $iOURequisitionEntry->status === 'verified'  && request()->filled('form_type') !='')
                                         <button type="submit" class="btn btn-sm btn-success save-btn" id="action_approve">
                                             <i class="fa fa-check"></i>Update & Approve
                                         </button>

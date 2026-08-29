@@ -57,7 +57,7 @@
                                 </div>
 
                                 <!-- Employee Name -->
-                                <div class="col-12">
+                                <div class="col-8">
                                     <label class="form-label">Employee Name</label>
                                     <select name="employee_id" id="employee_id" class="form-control tom-select" required>
                                         <option value="">Select Employee</option>
@@ -75,7 +75,7 @@
 
                                 <!-- Verified Amount -->
                                 @if(hasPermission('account.collections.collections.verify'))
-                                <div class="col-4">
+                                <div class="col-4 d-none">
                                     <label for="verify_amount" class="form-label">Verified Amount</label>
                                     <input type="number" step="0.01" name="verify_amount" id="verify_amount" class="form-control" value="{{ old('verify_amount') }}" >
                                 </div>
@@ -84,7 +84,7 @@
 
                                 <!-- Approved Amount -->
                                 @if(hasPermission('account.collections.collections.approve'))
-                                <div class="col-4">
+                                <div class="col-4  d-none">
                                     <label for="approved_amount" class="form-label">Approved Amount</label>
                                     <input type="number" step="0.01" name="approved_amount" id="approved_amount" class="form-control" value="{{ old('approved_amount') }}" >
                                 </div>

@@ -300,7 +300,7 @@
         const scheduledDate = $('#start_date').val();
 
         for (let i = 0; i < tenureNo; i++) {
-            const paymentDate = addMonthsSafely(scheduledDate, index + 1);
+            const paymentDate = addMonthsSafely(scheduledDate, i + 1);
             const interest = balance * r;
             const principal = fixedEmi - interest;
             balance -= principal;
