@@ -45,81 +45,156 @@
                             @csrf
                             @method('PUT')
 
+                            @php
+                                $status = $iOURequisitionEntry->status ?? 'pending';
+                                $formType = request('form_type');
+
+                                $isEditMode = $status === 'pending' && empty($formType);
+                                $isVerifyMode = $status === 'pending' && $formType === 'verify';
+                                $isApproveMode = $status === 'verified' && $formType === 'approve';
+
+                                $canVerify = hasPermission(
+                                    'account.i-o-u-requisition.i-o-u-requisition-entries.verify'
+                                );
+
+                                $canApprove = hasPermission(
+                                    'account.i-o-u-requisition.i-o-u-requisition-entries.approve'
+                                );
+
+                                $isActionMode = $isVerifyMode || $isApproveMode;
+                            @endphp
+
+
                             <div class="row g-3">
-                                <div class="col-4">
+
+                                {{-- Employee Name --}}
+                                <div class="col-md-4">
                                     <label class="form-label">Employee Name</label>
-                                    <input type="text"  class="form-control" value="{{ $iOURequisitionEntry->employee->full_name }}" readonly>
+                                    <input type="text" class="form-control" value="{{ $iOURequisitionEntry->employee->full_name }}" readonly>
                                 </div>
 
+
+                                {{-- Date --}}
                                 <div class="col-md-4">
                                     <label for="date" class="form-label">Date</label>
-                                    <input type="text" name="date" class="form-control flatdate" value="{{ old('date', $iOURequisitionEntry->date->format('Y-m-d')) }}" required readonly>
+                                    <input type="text" name="date" id="date" class="form-control flatdate" value="{{ old('date', $iOURequisitionEntry->date->format('Y-m-d')) }}" readonly >
                                 </div>
 
+
+                                {{-- Type --}}
                                 <div class="col-md-4">
                                     <label for="type" class="form-label">Type</label>
-                                    <select name="type" class="form-control tom-select" required>
-                                        <option value="Expense" {{ $iOURequisitionEntry->type === 'Expense' ? 'selected' : '' }}>Expense</option>
-                                        <option value="Advance" {{ $iOURequisitionEntry->type === 'Advance' ? 'selected' : '' }}>Advance</option>
+
+                                    <select name="type"  id="type"  class="form-control tom-select" required @if($isActionMode) disabled @endif>
+                                        <option value="Expense" {{ $iOURequisitionEntry->type === 'Expense' ? 'selected' : '' }} >
+                                            Expense
+                                        </option>
+
+                                        <option value="Advance" {{ $iOURequisitionEntry->type === 'Advance' ? 'selected' : '' }} >
+                                            Advance
+                                        </option>
                                     </select>
+
+                                    {{-- Disabled select value submit হয় না --}}
+                                    @if($isActionMode)
+                                        <input type="hidden"name="type"value="{{ $iOURequisitionEntry->type }}" >
+                                    @endif
                                 </div>
 
-                           
-                                <!--Request Amount -->
-                                <div class="col-4">
-                                    <label for="request_amount" class="form-label">Request Amount</label>
-                                    <input type="number" step="0.01" name="request_amount" class="form-control" value="{{ old('request_amount', $iOURequisitionEntry->request_amount) }}" required>
+
+                                {{-- Request Amount --}}
+                                <div class="col-md-4">
+                                    <label for="request_amount" class="form-label">
+                                        Request Amount
+                                    </label>
+
+                                    <input type="number"  step="0.01" name="request_amount"  id="request_amount" class="form-control" value="{{ old('request_amount', $iOURequisitionEntry->request_amount) }}"
+                                        @if($isVerifyMode || $isApproveMode) readonly @endif required >
                                 </div>
 
-                                <!-- Verified Amount -->
-                                @if(hasPermission('account.collections.collections.verify') && $iOURequisitionEntry->status === 'pending' && request()->filled('form_type') !='')
-                                <div class="col-4">
-                                    <label for="verify_amount" class="form-label">Verified Amount</label>
-                                    <input type="number" step="0.01" name="verify_amount" id="verify_amount" class="form-control" value="{{ old('verify_amount', $iOURequisitionEntry->verify_amount) }}" >
-                                </div>
+
+                                {{-- Verified Amount --}}
+                                @if($isVerifyMode || $isApproveMode)
+                                    <div class="col-md-4">
+                                        <label for="verify_amount" class="form-label">
+                                            Verified Amount
+                                        </label>
+
+                                        <input type="number" step="0.01" name="verify_amount" id="verify_amount" class="form-control" value="{{ old('verify_amount', $iOURequisitionEntry->verify_amount) }}" 
+                                        @if($isApproveMode) readonly @endif  required>
+                                    </div>
                                 @endif
-                                    
 
-                                <!-- Approved Amount -->
-                                @if(hasPermission('account.collections.collections.approve') && $iOURequisitionEntry->status === 'verified' && request()->filled('form_type') !='')
-                                <div class="col-4">
-                                    <label for="approved_amount" class="form-label">Approved Amount</label>
-                                    <input type="number" step="0.01" name="approved_amount" id="approved_amount" class="form-control" value="{{ old('approved_amount', $iOURequisitionEntry->approved_amount) }}" >
-                                </div>
+
+                                {{-- Approved Amount --}}
+                                @if($isApproveMode)
+                                    <div class="col-md-4">
+                                        <label for="approved_amount" class="form-label">
+                                            Approved Amount
+                                        </label>
+
+                                        <input type="number"  step="0.01" name="approved_amount"id="approved_amount"   class="form-control" value="{{ old('approved_amount', $iOURequisitionEntry->approved_amount) }}" required >
+                                    </div>
                                 @endif
 
+
+                                {{-- Remarks --}}
                                 <div class="col-12">
-                                    <label for="remarks" class="form-label">Remarks</label>
-                                    <textarea name="remarks" class="form-control" rows="3">{{ old('remarks', $iOURequisitionEntry->remarks) }}</textarea>
+                                    <label for="remarks" class="form-label">
+                                        Remarks
+                                    </label>
+
+                                    <textarea name="remarks"   id="remarks" class="form-control"  rows="3"  @if($isActionMode) readonly @endif>{{ old('remarks', $iOURequisitionEntry->remarks) }}</textarea>
                                 </div>
+
                             </div>
 
-                            <!-- Action Buttons -->
-                             <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+
+                            {{-- Action Buttons --}}
+                            <div class="button-group d-flex pt-25 justify-content-md-end justify-content-start">
+
                                 <div class="btn-group">
 
-                                    <input type="hidden" name="status" id="status" value="{{ $iOURequisitionEntry->status?? 'pending' }}">
-                                    @if($iOURequisitionEntry->status === 'pending' )
-                                    <button type="submit" class="btn btn-sm btn-primary save-btn" >
-                                        <i class="fa fa-save"></i>Update
-                                    </button>
+                                    <input type="hidden" name="status" id="status" value="{{ $status }}">
+
+
+                                    {{-- Normal Update --}}
+                                    @if($isEditMode)
+                                        <button type="submit" class="btn btn-sm btn-primary save-btn">
+                                            <i class="fa fa-save"></i>
+                                            Update
+                                        </button>
                                     @endif
-                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.verify') && $iOURequisitionEntry->status === 'pending' && request()->filled('form_type') !='' )
+
+
+                                    {{-- Verify --}}
+                                    @if($isVerifyMode && $canVerify)
                                         <button type="submit" class="btn btn-sm btn-warning save-btn" id="action_verify">
-                                            <i class="fa fa-check"></i>Update & Verify
+                                            <i class="fa fa-check"></i>
+                                            Update & Verify
                                         </button>
                                     @endif
-                                    @if(hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.approve')  && $iOURequisitionEntry->status === 'verified'  && request()->filled('form_type') !='')
-                                        <button type="submit" class="btn btn-sm btn-success save-btn" id="action_approve">
-                                            <i class="fa fa-check"></i>Update & Approve
+
+
+                                    {{-- Approve --}}
+                                    @if($isApproveMode && $canApprove)
+                                        <button type="submit"  class="btn btn-sm btn-success save-btn"id="action_approve">
+                                            <i class="fa fa-check"></i>
+                                            Update & Approve
                                         </button>
                                     @endif
-                                    @if((hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.verify') || hasPermission('account.i-o-u-requisition.i-o-u-requisition-entries.approve') ) && request()->filled('form_type'))
-                                        <button type="submit" class="btn btn-sm btn-danger save-btn" id="action_deny">
-                                            <i class="fa fa-times"></i>Update & Deny
+
+
+                                    {{-- Deny --}}
+                                    @if( $formType && ( ($isVerifyMode && $canVerify) || ($isApproveMode && $canApprove)))
+                                        <button type="submit" class="btn btn-sm btn-danger save-btn" id="action_deny"  >
+                                            <i class="fa fa-times"></i>
+                                            Update & Deny
                                         </button>
                                     @endif
+
                                 </div>
+
                             </div>
                         </form>
                     </div>
