@@ -297,6 +297,7 @@ class ChequeVerificationService
             DB::commit();
             return $chequeVerification;
         } catch (\Throwable $th) {
+            DB::rollBack();
             $th->getMessage();
         }
     }
@@ -405,11 +406,14 @@ class ChequeVerificationService
     {
         // Delete any existing transactions to prevent duplicates
         $chequeVerification->transactions()->delete();
-
+   
         // 1. Accounts
         $customerAccount = $chequeVerification->customer->getAccount(); // A/R
-        $cashAccount = BankAccount::where('payment_mode', 'Cash')->first()->getAccount(); // Cash/Bank
+       // $cashAccount = BankAccount::where('payment_mode', 'Cash')->first()->getAccount(); // Cash/Bank
 
+        $cashAccount = $chequeVerification->depositedEmpBy->getAccount();
+ 
+ 
         if (!$cashAccount) {
             throw new \Exception('Cash account not found. Please configure it.');
         }

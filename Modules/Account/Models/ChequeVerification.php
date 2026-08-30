@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Account\Models\Setup\Bank;
 use Modules\Account\Models\Setup\BankBranch;
 use Modules\CRM\Models\Customer\Customer;
+use Modules\HRMS\Models\Employee;
 
 class ChequeVerification extends BaseModel
 {
@@ -52,6 +53,12 @@ class ChequeVerification extends BaseModel
     public function depositedBy()
     {
         return $this->belongsTo(User::class, 'deposited_by');
+
+    }
+
+    public function depositedEmpBy()
+    {
+        return $this->belongsTo(Employee::class, 'deposited_by');
 
     }
 
