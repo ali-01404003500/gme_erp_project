@@ -60,6 +60,9 @@ Route::group(['middleware' => 'auth', 'prefix' => 'account', 'as' => 'account.']
         Route::get('account-setups', [AccountSetupController::class, 'index'])->name('account-setups.index');
         Route::get('account-groups', [AccountGroupController::class, 'index'])->name('account-groups.index');
 
+        Route::get('account-controls/{groupId}', [AccountController::class, 'getAccountControls'])->name('account.controls');
+        Route::get('account-subsidiaries/{controlId}', [AccountController::class, 'getAccountSubsidiaries'])->name('account.subsidiaries');
+
 
         Route::resource('accounts', AccountController::class);
         Route::resource('account-controls', AccountControlController::class);

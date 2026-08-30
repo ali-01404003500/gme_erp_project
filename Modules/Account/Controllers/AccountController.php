@@ -47,6 +47,26 @@ class AccountController extends Controller
         return view("Account::setup.accounts.index", $data);
     }
 
+    public function getAccountControls($groupId)
+    {
+        $accountControls = AccountControl::where('account_group_id', $groupId)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($accountControls);
+    }
+
+
+    public function getAccountSubsidiaries($controlId)
+    {
+        $accountSubsidiaries = AccountSubsidiary::where('account_control_id', $controlId)
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return response()->json($accountSubsidiaries);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
