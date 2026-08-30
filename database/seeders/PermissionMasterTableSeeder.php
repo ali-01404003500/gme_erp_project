@@ -457,6 +457,19 @@ class PermissionMasterTableSeeder extends Seeder
                 'parent_key' => 'hrm.settings',
             ],
             
+            //Import
+            [
+                'title' => 'Import',
+                'description' => 'Permission of Add, Remove, Update, Delete Import',
+                'key' => 'import',
+            ],
+            //purchase orders
+            [
+                'title' => 'Orders',
+                'description' => 'Permission of Add, Remove, Update, Delete Purchase Orders',
+                'key' => 'import.orders',
+                'parent_key' => 'import',
+            ],
 
             //purchase
             [

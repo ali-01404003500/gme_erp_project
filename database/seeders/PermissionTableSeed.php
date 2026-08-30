@@ -1654,7 +1654,60 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Transport type delete permission',
                 'key' => 'hrm.settings.transport-types',
             ],
-//Requisition
+
+            //Import
+            //Orders
+            [
+                'name' => 'Orders Create',
+                'slug' => 'import.orders.create',
+                'description' => 'Orders create permission',
+                'key' => 'import.orders'
+            ],
+
+            [
+                'name' => 'Orders List',
+                'slug' => 'import.orders.index',
+                'description' => 'Orders list permission',
+                'key' => 'import.orders'
+            ],
+
+            [
+                'name' => 'Orders View',
+                'slug' => 'import.orders.show',
+                'description' => 'Orders show permission',
+                'key' => 'import.orders'
+            ],
+
+            [
+                'name' => 'Orders Update',
+                'slug' => 'import.orders.update',
+                'description' => 'Orders update permission',
+                'key' => 'import.orders'
+            ],
+
+            [
+                'name' => 'Orders Delete',
+                'slug' => 'import.orders.destroy',
+                'description' => 'Orders delete permission',
+                'key' => 'import.orders'
+            ],
+
+            [
+                'name' => 'Orders Approval',
+                'slug' => 'import.orders.approve',
+                'description' => 'Orders approval permission',
+                'key' => 'import.orders'
+            ],
+
+            [
+                'name' => 'Orders Receive',
+                'slug' => 'import.orders.receive',
+                'description' => 'Orders Receive permission',
+                'key' => 'import.orders'
+            ],
+
+
+            //Requisition
             [
                 'name' => 'Requisition Create',
                 'slug' => 'purchase.requisitions.create',
@@ -1704,55 +1757,6 @@ class PermissionTableSeed extends Seeder
                 'key' => 'purchase.requisitions'
             ],
 
-            //Orders
-            [
-                'name' => 'Orders Create',
-                'slug' => 'purchase.orders.create',
-                'description' => 'Orders create permission',
-                'key' => 'purchase.orders'
-            ],
-
-            [
-                'name' => 'Orders List',
-                'slug' => 'purchase.orders.index',
-                'description' => 'Orders list permission',
-                'key' => 'purchase.orders'
-            ],
-
-            [
-                'name' => 'Orders View',
-                'slug' => 'purchase.orders.show',
-                'description' => 'Orders show permission',
-                'key' => 'purchase.orders'
-            ],
-
-            [
-                'name' => 'Orders Update',
-                'slug' => 'purchase.orders.update',
-                'description' => 'Orders update permission',
-                'key' => 'purchase.orders'
-            ],
-
-            [
-                'name' => 'Orders Delete',
-                'slug' => 'purchase.orders.destroy',
-                'description' => 'Orders delete permission',
-                'key' => 'purchase.orders'
-            ],
-
-            [
-                'name' => 'Orders Approval',
-                'slug' => 'purchase.orders.approve',
-                'description' => 'Orders approval permission',
-                'key' => 'purchase.orders'
-            ],
-
-            [
-                'name' => 'Orders Receive',
-                'slug' => 'purchase.orders.receive',
-                'description' => 'Orders Receive permission',
-                'key' => 'purchase.orders'
-            ],
 
             //Purchase Return
             [
