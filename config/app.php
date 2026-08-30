@@ -176,6 +176,7 @@ return [
         Modules\CRM\Providers\CRMServiceProvider::class,
         Modules\HRMS\Providers\HRMSServiceProvider::class,
         Modules\Purchase\Providers\PurchaseServiceProvider::class,
+        Modules\Import\Providers\ImportServiceProvider::class,
         Modules\Sales\Providers\SalesServiceProvider::class,
         Modules\Inventory\Providers\InventoryServiceProvider::class,
         Modules\LocationManager\Providers\LocationManagerServiceProvider::class,

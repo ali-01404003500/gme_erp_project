@@ -1,53 +1,64 @@
 <?php
+
 namespace Modules\Import\Providers;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 
-class ImportServiceProvider  extends ServiceProvider
+class ImportServiceProvider extends ServiceProvider
 {
+    /**
+     * Register application services.
+     */
+    public function register(): void
+    {
+        //
+    }
 
     /**
-     * Register any application services.
-     *
-     * @return void
+     * Bootstrap application services.
      */
-    public function moduleRegister()
-    {
-        // Define global variables
-        $modules = app('modules');
-        array_push($modules, [
-            'name' => 'Import',
-            'description' => 'Import Module',
-            'path' => 'Modules/Import',
-            'sidebarView' => 'Import::partials._sidebar',
-        ]);
-        app()->instance('modules', $modules);
-        
-    }
-
-
-    public function boot()
+    public function boot(): void
     {
         $this->moduleRegister();
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'Import');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->registerRoutes();
+
+        // Views
+        $this->loadViewsFrom(
+            __DIR__ . '/../resources/views',
+            'Import'
+        );
+
+        // Migrations
+        $this->loadMigrationsFrom(
+            __DIR__ . '/../database/migrations'
+        );
+
+        // Routes
+        $this->loadRoutesFrom(
+            __DIR__ . '/../routes/web.php'
+        );
     }
 
-    protected function registerRoutes()
+    /**
+     * Register module in global modules array.
+     */
+    public function moduleRegister(): void
     {
-        $this->routes(function () {
+        $modules = app('modules');
 
-            Route::middleware(['web'])
-                ->namespace($this->namespace)
-                ->group(__DIR__.'/../routes/web.php');
-
-            Route::prefix('api')
-                ->as('api.')
-                ->namespace($this->namespace)
-                ->middleware('api')
-                ->group(__DIR__.'/../routes/api.php');
+        // Prevent duplicate module registration
+        $exists = collect($modules)->contains(function ($module) {
+            return ($module['name'] ?? null) === 'Import';
         });
+
+        if (! $exists) {
+            $modules[] = [
+                'name' => 'Import',
+                'description' => 'Import Module',
+                'path' => 'Modules/Import',
+                'sidebarView' => 'Import::partials._sidebar',
+            ];
+
+            app()->instance('modules', $modules);
+        }
     }
 }

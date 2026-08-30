@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Purchase\Models;
+namespace Modules\Import\Models;
 
 use App\Models\BaseModel;
 use Modules\Inventory\Models\Product\Settings\Brand;
@@ -9,6 +9,7 @@ use App\Traits\AutoCreateUpdateAndHistory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\CRM\Models\Customer\Customer;
+use Modules\Purchase\Models\Supplier;
 
 class PurchaseOrder extends BaseModel
 {
