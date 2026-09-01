@@ -41,26 +41,33 @@
                             <div class="form-group" >
                                 <label for="name">Name</label>
                                 <input type="text" class="form-control" id="name" name="name" value="{{ request('name') }}">
-                            </div>
+                            </div> 
 
                             <div class="form-group">
-                                <label for="account_group_id">Account Group</label>
-                                <select class="form-control tom-select" id="account_group_id" name="account_group_id">
+                                <label for="filter_account_group_id">Account Group</label>
+
+                                <select class="form-control tom-select" id="filter_account_group_id" name="account_group_id">
                                     <option value="">Select Account Group</option>
-                                    @foreach ($accountGroups as $key => $accountGroup)
-                                        <option value="{{ $accountGroup->id }}" @if (request('account_group_id') == $accountGroup->id) selected @endif>{{ $accountGroup->name }}</option>
+                                    @foreach ($accountGroups as $accountGroup)
+                                        <option value="{{ $accountGroup->id }}"
+                                            @if(request('account_group_id') == $accountGroup->id) selected @endif>
+                                            {{ $accountGroup->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
+
+
                             <div class="form-group">
-                                <label for="account_group_id">Account Control</label>
-                                <select class="form-control tom-select" id="account_control_id" name="account_control_id">
+                                <label for="filter_account_control_id">Account Control</label>
+                                <select class="form-control tom-select"   id="filter_account_control_id"   name="account_control_id">
                                     <option value="">Select Account Control</option>
                                     @foreach ($accountControls as $key => $accountControl)
                                         <option value="{{ $accountControl->id }}" @if (request('account_control_id') == $accountControl->id) selected @endif>{{ $accountControl->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            
                         </x-table-filter-component>
                         <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $accountSubsidiaries])' style="width:100%">
                             <thead>
@@ -135,8 +142,8 @@
                     <form action="{{ route('account.account-setup.account-subsidiaries.store') }}" method="post" id="createForm">
                         @csrf
                         <div class="form-group">
-                            <label for="account_group_id">Account Group</label>
-                            <select class="form-control tom-select" id="account_group_id" name="account_group_id" required>
+                            <label for="create_account_group_id">Account Group</label>
+                            <select class="form-control tom-select" id="create_account_group_id" name="account_group_id" required>
                                 <option value="">Select Account Group</option>
                                 @foreach ($accountGroups as $key => $accountGroup)
                                     <option value="{{ $accountGroup->id }}">{{ $accountGroup->name }}</option>
@@ -145,8 +152,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="account_control_id">Account Control</label>
-                            <select class="form-control tom-select" id="account_control_id" name="account_control_id" required>
+                            <label for="create_account_control_id">Account Control</label>
+                            <select class="form-control tom-select" id="create_account_control_id" name="account_control_id" required>
                                 <option value="">Select Account Control</option>
                                 @foreach ($accountControls as $key => $accountControl)
                                     <option value="{{ $accountControl->id }}">{{ $accountControl->name }}</option>
@@ -166,7 +173,7 @@
         </div>
     </div>
 
-
+    <!-- Edit Modal -->
     <div class="modal fade inputForm-modal" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-md" role="document">
@@ -182,8 +189,8 @@
                     <div class="modal-body">
 
                         <div class="form-group">
-                            <label for="account_group_id">Account Group</label>
-                            <select class="form-control tom-select" id="account_group_id" name="account_group_id" required>
+                            <label for="edit_account_group_id">Account Group</label>
+                            <select class="form-control tom-select" id="edit_account_group_id" name="account_group_id" required>
                                 <option value="">Select Account Group</option>
                                 @foreach ($accountGroups as $key => $accountGroup)
                                     <option value="{{ $accountGroup->id }}">{{ $accountGroup->name }}</option>
@@ -192,8 +199,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="account_control_id">Account Control</label>
-                            <select class="form-control tom-select" id="account_control_id" name="account_control_id" required>
+                            <label for="edit_account_control_id">Account Control</label>
+                            <select class="form-control tom-select" id="edit_account_control_id" name="account_control_id" required>
                                 <option value="">Select Account Control</option>
                                 @foreach ($accountControls as $key => $accountControl)
                                     <option value="{{ $accountControl->id }}">{{ $accountControl->name }}</option>
@@ -225,20 +232,165 @@
 @section('page_scripts')
 
     <script>
-        $(document).ready(function(e) {
-            $(document).on('click', '.btn-edit', function() {
-                const data = $(this).data('data');
-                //loop through data object
-                $.each(data, function(key, value) {
-                    $('#editModal input[name="' + key + '"]').val(value);
+    $(document).ready(function () {
+        /*
+        |--------------------------------------------------------------------------
+        | Load Account Controls
+        |--------------------------------------------------------------------------
+        */
 
-                    $('#editModal select[name="' + key + '"]').val(value);
-                    $('#editModal select[name="' + key + '"]').prop('tomselect')?.setValue(value);
-                    
-                    // console.log();
-                })
-                $("#editFrom").attr("action", $(this).data('action'));
+        function loadAccountControls(groupId, controlSelectId, selectedControlId = null) {
+            let controlElement = $(controlSelectId)[0];
+            if (!controlElement || !controlElement.tomselect) {
+                console.error('TomSelect not found:', controlSelectId);
+                return;
+            }
+            let controlSelect = controlElement.tomselect;
+            // Clear old values
+            controlSelect.clear();
+            controlSelect.clearOptions();
+
+            // Default option
+            // controlSelect.addOption({
+            //     value: '',
+            //     text: 'Select Account Control'
+            // });
+
+            if (!groupId) {
+                controlSelect.refreshOptions(false);
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('account.account-setup.account.controls', ':id') }}".replace(':id', groupId),
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    $.each(response, function (key, accountControl) {
+                        controlSelect.addOption({
+                            value: accountControl.id,
+                            text: accountControl.name
+                        });
+
+                    });
+                    controlSelect.refreshOptions(false);
+                    // For Edit / Filter selected value
+                    if (selectedControlId) {
+                        controlSelect.setValue(selectedControlId, true);
+                    }
+                },
+                error: function (xhr) {
+                    console.error(
+                        'Account Control Error:',
+                        xhr.responseText
+                    );
+                }
             });
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER
+        |--------------------------------------------------------------------------
+        */
+
+        $('#filter_account_group_id').on('change', function () {
+            loadAccountControls(
+                $(this).val(),
+                '#filter_account_control_id'
+            );
+
         });
-    </script>
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CREATE
+        |--------------------------------------------------------------------------
+        */
+
+        $('#create_account_group_id').on('change', function () {
+            loadAccountControls(
+                $(this).val(),
+                '#create_account_control_id'
+            );
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT GROUP CHANGE
+        |--------------------------------------------------------------------------
+        */
+
+        $('#edit_account_group_id').on('change', function () {
+            loadAccountControls(
+                $(this).val(),
+                '#edit_account_control_id'
+            );
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | EDIT BUTTON
+        |--------------------------------------------------------------------------
+        */
+
+        $(document).on('click', '.btn-edit', function () {
+            const data = $(this).data('data');
+            let groupId = data.account_group_id;
+            let controlId = data.account_control_id;
+
+            // Set other inputs
+            $('#editModal input[name="name"]').val(data.name);
+
+            // Set Group
+            let groupElement = $('#edit_account_group_id')[0];
+            if (groupElement && groupElement.tomselect) {
+
+                // true = silent, avoids triggering change event
+                groupElement.tomselect.setValue(groupId, true);
+
+                // Load controls then select existing control
+                loadAccountControls(
+                    groupId,
+                    '#edit_account_control_id',
+                    controlId
+                );
+            }
+
+            // Set form action
+            $("#editFrom").attr(
+                "action",
+                $(this).data('action')
+            );
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER PAGE RELOAD
+        |--------------------------------------------------------------------------
+        */
+
+        let selectedGroupId = "{{ request('account_group_id') }}";
+        let selectedControlId = "{{ request('account_control_id') }}";
+
+        if (selectedGroupId) {
+            loadAccountControls(
+                selectedGroupId,
+                '#filter_account_control_id',
+                selectedControlId
+            );
+
+        }
+
+    });
+</script> 
 @endsection
+
