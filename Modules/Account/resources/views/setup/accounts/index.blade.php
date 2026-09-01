@@ -432,7 +432,7 @@
                                     required>
 
                                 <option value="">
-                                    Select Account Control
+                                    Account Subsidiaries blade a filter kaj korechi
                                 </option>
 
                             </select>
