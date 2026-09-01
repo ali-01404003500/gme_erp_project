@@ -181,9 +181,7 @@
                                     Account Subsidiary
                                 </label>
 
-                                <select class="form-control tom-select"
-                                        id="filter_account_subsidiary_id"
-                                        name="account_subsidiary_id">
+                                <select class="form-control tom-select"  id="filter_account_subsidiary_id" name="account_subsidiary_id">
 
                                     <option value="">
                                         Select Account Subsidiary
@@ -383,115 +381,67 @@
 
                 <div class="modal-body">
 
-                    <form action="{{ route('account.account-setup.accounts.store') }}"
-                          method="post"
-                          id="createForm">
-
+                    <form action="{{ route('account.account-setup.accounts.store') }}"  method="post"  id="createForm">
                         @csrf
-
 
                         {{-- Create Account Group --}}
                         <div class="form-group">
-
                             <label for="create_account_group_id">
                                 Account Group
                             </label>
-
-                            <select class="form-control tom-select"
-                                    id="create_account_group_id"
-                                    name="account_group_id"
-                                    required>
-
+                            <select class="form-control tom-select" id="create_account_group_id" name="account_group_id" required>
                                 <option value="">
                                     Select Account Group
                                 </option>
-
                                 @foreach ($accountGroups as $accountGroup)
-
                                     <option value="{{ $accountGroup->id }}">
                                         {{ $accountGroup->name }}
                                     </option>
-
                                 @endforeach
-
                             </select>
-
                         </div>
 
 
                         {{-- Create Account Control --}}
                         <div class="form-group">
-
                             <label for="create_account_control_id">
                                 Account Control
                             </label>
-
-                            <select class="form-control tom-select"
-                                    id="create_account_control_id"
-                                    name="account_control_id"
-                                    required>
-
+                            <select class="form-control tom-select" id="create_account_control_id" name="account_control_id" required>
                                 <option value="">
-                                    Account Subsidiaries blade a filter kaj korechi
+                                    Select Account Control
                                 </option>
-
                             </select>
-
                         </div>
 
 
                         {{-- Create Account Subsidiary --}}
                         <div class="form-group">
-
                             <label for="create_account_subsidiary_id">
                                 Account Subsidiary
                             </label>
-
-                            <select class="form-control tom-select"
-                                    id="create_account_subsidiary_id"
-                                    name="account_subsidiary_id"
-                                    required>
-
+                            <select class="form-control tom-select" id="create_account_subsidiary_id" name="account_subsidiary_id" required>
                                 <option value="">
                                     Select Account Subsidiary
                                 </option>
-
                             </select>
-
                         </div>
-
 
                         {{-- Name --}}
                         <div class="form-group">
-
                             <label for="create_name">
                                 Name
                             </label>
-
-                            <input type="text"
-                                   class="form-control"
-                                   id="create_name"
-                                   name="name"
-                                   required>
-
+                            <input type="text" class="form-control" id="create_name" name="name"  required>
                         </div>
-
-
-                        <button type="submit"
-                                class="btn btn-primary">
-
+ 
+                        <button type="submit"  class="btn btn-primary">
                             Create
-
                         </button>
-
                     </form>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
 
@@ -928,6 +878,7 @@ $(document).ready(function () {
         );
 
     });
+
 
 
 

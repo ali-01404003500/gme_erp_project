@@ -84,16 +84,28 @@ class AccountController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+
         $validate = $request->validate([
             'name' => 'required|string|max:255',
-            'account_number' => 'required|numeric',
             'account_group_id' => 'required|exists:account_groups,id',
             'account_control_id' => 'required|exists:account_controls,id',
             'account_subsidiary_id' => 'required|exists:account_subsidiaries,id',
             'opening_balance' => 'nullable|numeric',
             'description' => 'nullable|string|max:255',
         ]);
+
+        // Selected Account Subsidiary ID
+        $accountSubsidiaryId = $validate['account_subsidiary_id'];
+
+        // Count existing accounts under this subsidiary
+        $accountCount = Account::where( 'account_subsidiary_id', $accountSubsidiaryId )->count();
+
+        // Generate account number
+        $validate['account_number'] = $validate['account_subsidiary_id'].$accountCount + 1;
+
+        // Store account
         $this->service->store($validate);
+
         return redirect()->route('account.account-setup.accounts.index')->with('success', 'Account created successfully.');
     }
 
