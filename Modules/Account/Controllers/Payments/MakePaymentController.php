@@ -62,7 +62,7 @@ class MakePaymentController extends Controller
 
         // dd($request->all());
         $validate = $request->validate([
-            'payment_to_type' => 'required|in:supplier,vendor,broker,petty_cash_expense,withdrawal,equipment,loan_payment',
+            'payment_to_type' => 'required|in:supplier,vendor,broker,petty_cash_expense,withdrawal,equipment,loan_payment,non_current_assets',
             'payment_to_id' => 'required|integer',
             'payments_total_amount' => 'required|numeric|min:0',
             'payments_due_amount' => 'required|numeric|min:0',
@@ -135,7 +135,7 @@ class MakePaymentController extends Controller
         
         $validate = $request->validate([
             //validate rules
-            'payment_to_type' => 'required|in:supplier,vendor,broker,petty_cash_expense,withdrawal,equipment,loan_payment',
+            'payment_to_type' => 'required|in:supplier,vendor,broker,petty_cash_expense,withdrawal,equipment,loan_payment,non_current_assets',
             'payment_to_id' => 'required|integer',
             'payments_total_amount' => 'required|numeric|min:0',
             'payments_due_amount' => 'required|numeric|min:0',
@@ -233,9 +233,15 @@ class MakePaymentController extends Controller
                 $data['accounts'] = Account::where('account_group_id', 1)->where('account_control_id', 1050)->where('account_subsidiary_id', 5109)->where('status', 1)->select('id', 'name')->get();
                 break;  
 
+            case 'non_current_assets':
+                $data['accounts'] = Account::where('account_group_id', 1)->whereIn('account_control_id', [5092])->where('status', 1)->select('id', 'name')->get();
+                break;  
+
             case 'loan_payment':
                 $data['accounts'] = Account::where('account_group_id', 2)->whereIn('account_control_id', [2010, 2030])->where('status', 1)->select('id', 'name')->get();
                 break;  
+
+                
             default:
                 break;
         }

@@ -11,6 +11,7 @@ use Modules\Purchase\Models\Supplier;
 use Modules\Purchase\Models\Vendor;
 use Modules\CRM\Models\Customer\Broker;
 use Modules\Account\Models\Account;
+use Modules\CRM\Models\Customer\Customer;
 
 class MakePaymentService
 {
@@ -62,11 +63,19 @@ class MakePaymentService
         $data['payment_id'] = $this->getPaymentIdForPayment();
 
         $payment_to = match ($data['payment_to_type']) {
+            'customer' => Customer::find($data['payment_to_id']),
             'supplier' => Supplier::find($data['payment_to_id']),
             'vendor' => Vendor::find($data['payment_to_id']),
             'broker' => Broker::find($data['payment_to_id']),
+
             'petty_cash_expense' => Account::find($data['payment_to_id']),
+            'withdrawal' => Account::find($data['payment_to_id']),
+            'equipment' => Account::find($data['payment_to_id']),
+            'non_current_assets' => Account::find($data['payment_to_id']),
+            'loan_payment' => Account::find($data['payment_to_id']),
+            default => null
         };
+
         // dd($data, $payments);
         $makePayment = MakePayment::create([
             'payment_id' => $data['payment_id'],
@@ -265,12 +274,19 @@ class MakePaymentService
         DB::beginTransaction();
 
         $payment_to = match ($data['payment_to_type']) {
+            'customer' => Customer::find($data['payment_to_id']),
             'supplier' => Supplier::find($data['payment_to_id']),
             'vendor' => Vendor::find($data['payment_to_id']),
+            'broker' => Broker::find($data['payment_to_id']),
+            
             'petty_cash_expense' => Account::find($data['payment_to_id']),
+            'withdrawal' => Account::find($data['payment_to_id']),
+            'equipment' => Account::find($data['payment_to_id']),
+            'non_current_assets' => Account::find($data['payment_to_id']),
+            'loan_payment' => Account::find($data['payment_to_id']),
             default => null
-
         };
+
         // dd($payment_to);
 
         $updateData = [

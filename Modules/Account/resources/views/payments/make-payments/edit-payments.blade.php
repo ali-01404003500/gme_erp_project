@@ -50,22 +50,40 @@
                                         <label for="payment_type">{{ trans('Payment Type') }} *</label>
                                       
                                         @php
+                                            // $payment_type = match ($makePayment->payment_to_type) {
+                                            //     "Modules\Purchase\Models\Supplier" => 'supplier',
+                                            //     "Modules\Purchase\Models\Vendor" => 'vendor',
+                                            //     "Modules\CRM\Models\Customer\Broker" => 'broker',
+                                            //     "Modules\Account\Models\Account" => 'petty_cash_expense',
+                                            //     default  => 'supplier',
+                                            // }
                                             $payment_type = match ($makePayment->payment_to_type) {
-                                                "Modules\Purchase\Models\Supplier" => 'supplier',
+
+                                                "Modules\Purchase\Models\Supplier", "Modules\Account\Models\Supplier"  => 'supplier',
                                                 "Modules\Purchase\Models\Vendor" => 'vendor',
-                                                "Modules\CRM\Models\Customer\Broker" => 'broker',
-                                                "Modules\Account\Models\Account" => 'petty_cash_expense',
-                                                default  => 'supplier',
-                                            }
+                                                "Modules\CRM\Models\Customer\Customer;" => 'customer',
+                                                "Modules\CRM\Models\Customer\Broker"   => 'broker', 
+                                                "Modules\Account\Models\Account" => match (trim($makePayment->paymentTo?->accountControl?->name ?? '')) 
+                                                    {
+                                                        'Petty Cash Expense' => 'petty_cash_expense',
+                                                        'Withdrawal' => 'withdrawal',
+                                                        'Non-Current Assets' => 'non_current_assets',
+                                                        'Loan Payment' => 'loan_payment',
+                                                        default => $makePayment->paymentTo?->accountControl?->name ?? $makePayment->paymentTo?->name  ?? 'Account',
+                                                    }, 
+
+                                                default => 'Unknown'
+                                            }; 
                                         @endphp
                                         <select name="payment_to_type" id="payment_type" class="form-control tom-select" required>
                                             <option value="">--{{ trans('Select Payment Type') }}--</option>
+                                            <option value="customer" {{ (old('payment_to_type', $payment_type  ?? '') == 'customer') ? 'selected' : '' }}>{{ trans('Customer Payment') }}</option>
                                             <option value="supplier" {{ (old('payment_to_type', $payment_type  ?? '') == 'supplier') ? 'selected' : '' }}>{{ trans('Supplier Payment') }}</option>
                                             <option value="vendor" {{ (old('payment_to_type', $payment_type ?? '') == 'vendor') ? 'selected' : '' }}>{{ trans('Vendor Payment') }}</option>
                                             <option value="broker" {{ (old('payment_to_type', $payment_type ?? '') == 'broker') ? 'selected' : '' }}>{{ trans('Broker') }}</option>
                                             <option value="petty_cash_expense" {{ (old('payment_to_type', $payment_type ?? '') == 'petty_cash_expense') ? 'selected' : '' }}>{{ trans('Petty Cash Expense') }}</option>
-                                            <option value="withdrawal" {{ (old('payment_to_type', $payment_type ?? '') == 'withdrawal') ? 'selected' : '' }}>{{ trans('Withdrawal [Equity]') }}</option>
-                                            <option value="equipment" {{ (old('payment_to_type', $payment_type ?? '') == 'equipment') ? 'selected' : '' }}>{{ trans('Equipment [Fixed Asset]') }}</option>
+                                            <option value="withdrawal" {{ (old('payment_to_type', $payment_type ?? '') == 'withdrawal') ? 'selected' : '' }}>{{ trans('Withdrawal [Equity]') }}</option> 
+                                            <option value="non_current_assets" {{ (old('payment_to_type', $payment_type ?? '') == 'non_current_assets') ? 'selected' : '' }}>{{ trans('Equipment [Non-Current Assets]') }}</option>
                                             <option value="loan_payment" {{ (old('payment_to_type', $payment_type ?? '') == 'loan_payment') ? 'selected' : '' }}>{{ trans('Loan Payment [Liabilites]') }}</option>
  
                                         </select>

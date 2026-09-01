@@ -122,9 +122,9 @@
                                 value="{{ $payment->bank_id ?? '' }}"></td>
                         <td>{{ $payment->transaction_id ?? '' }}<input type="hidden" name="payments_transaction_id[]"
                                 value="{{ $payment->transaction_id ?? '' }}"></td>
-                        <td>{{ $payment->date ?? '' }}<input type="hidden" name="payments_date[]"
+                        <td>{{ $payment->date ? \Carbon\Carbon::parse($payment->date)->format('Y-m-d') : '' }}<input type="hidden" name="payments_date[]"
                                 value="{{ $payment->date ?? '' }}"></td>
-                        <td class="amount-value">{{ $payment->amount ?? 0 }}<input type="hidden" name="payments_amount[]"
+                        <td class="amount-value">{{ number_format($payment->amount ?? 0, 2) }}<input type="hidden" name="payments_amount[]"
                                 value="{{ $payment->amount ?? '' }}"></td>
                         <td>
                             <span class="file_name">

@@ -97,13 +97,25 @@
                                             {{-- Payment Type --}}
                                             <td>
                                                 @php
+                                           
                                                     $paymentTypeLabel = match ($payment->payment_to_type) {
-                                                        "Modules\Purchase\Models\Supplier", "Modules\Account\Models\Supplier" => 'Supplier',
+
+                                                        "Modules\Purchase\Models\Supplier", "Modules\Account\Models\Supplier"  => 'Supplier',
                                                         "Modules\Purchase\Models\Vendor" => 'Vendor',
-                                                        "Modules\CRM\Models\Customer\Broker" => 'Broker',
-                                                        "Modules\Account\Models\Account" => 'Petty Cash Expense',
-                                                        default => ucfirst(str_replace(['Modules\\Account\\Models\\', 'Modules\\Purchase\\Models\\', 'Modules\\CRM\\Models\\Customer\\'], '', $payment->payment_to_type))
-                                                    }
+                                                        "Modules\CRM\Models\Customer\Customer;" => 'Customer',
+                                                        "Modules\CRM\Models\Customer\Broker"   => 'Broker', 
+                                                        "Modules\Account\Models\Account" => match (trim($payment->paymentTo?->accountControl?->name ?? '')) 
+                                                            {
+                                                                'Petty Cash Expense' => 'Petty Cash Expense',
+                                                                'Withdrawal' => 'Withdrawal [Equity]',
+                                                                'Non-Current Assets' => 'Equipment [Non-Current Assets]',
+                                                                'Loan Payment' => 'Loan Payment [Liabilities]',
+                                                                default => $payment->paymentTo?->accountControl?->name ?? $payment->paymentTo?->name  ?? 'Account',
+                                                            }, 
+
+                                                        default => 'Unknown'
+                                                    };
+                                                     
                                                 @endphp
                                                 {{ $paymentTypeLabel }}
                                             </td>
