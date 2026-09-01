@@ -9,14 +9,14 @@ use Modules\Inventory\Models\Product\Settings\Brand;
 use Modules\Inventory\Models\Product\Settings\ProductType;
 use Modules\Inventory\Models\ProductCatalog;
 use Modules\Inventory\Models\Settings\Unit;
-use Modules\Inventory\Models\warehouse; 
-use Modules\Purchase\Services\PurchaseOrderService;
+use Modules\Inventory\Models\warehouse;  
 use Illuminate\Http\Request;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\DB;
 use Modules\CRM\Models\Customer\Customer;
 use Modules\Import\Models\PurchaseOrder;
+use Modules\Import\Services\PurchaseOrderService;
 use Modules\Purchase\Models\Supplier;
 
 class PurchaseOrderController extends Controller
@@ -30,8 +30,7 @@ class PurchaseOrderController extends Controller
     private $service;
     function __construct(PurchaseOrderService $service)
     {
-        $this->service = $service;
-        $this->middleware('permited')->only('create', 'store', 'edit', 'update', 'destroy');
+        $this->service = $service; 
 
     }
 
@@ -40,12 +39,13 @@ class PurchaseOrderController extends Controller
      */
     public function index(Request $request)
     {
+         dd('IMPORT PURCHASE ORDER INDEX');
         $data['purchaseOrders'] = $this->service->getAll();
         $data['company_info'] = CompanyInfo::first();
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
-            $html = view('Purchase::order.indexView', $data)->render();
+            $html = view('Import::order.indexView', $data)->render();
 
             // Set Dompdf options
             $options = new Options();
@@ -75,7 +75,7 @@ class PurchaseOrderController extends Controller
         $data['brands'] = Brand::all();
         $data['suppliers'] = Supplier::query()->where('status', 1)->get();
         $data['customers'] = Customer::activeCustomers()->get();
-        return view('Purchase::order.create', $data);
+        return view('Import::order.create', $data);
     }
 
     public function getSupplierData(Request $request)
@@ -187,7 +187,7 @@ class PurchaseOrderController extends Controller
 
         if ($request->export == "pdf") {
             set_time_limit(1000);
-            $html = view('Purchase::order.view', $data)->render();
+            $html = view('Import::order.view', $data)->render();
 
             // Set Dompdf options
             $options = new Options();
@@ -202,7 +202,7 @@ class PurchaseOrderController extends Controller
             return $dompdf->stream('purchaseOrder_' . $data['purchaseOrder']->company_name . '.pdf', ['Attachment' => false]);
         }
 
-        return view("Purchase::order.show", $data);
+        return view("Import::order.show", $data);
 
     }
 
@@ -219,7 +219,7 @@ class PurchaseOrderController extends Controller
         $data['brands'] = Brand::all();
         $data['suppliers'] = Supplier::query()->where('status', 1)->get();
         $data['customers'] = Customer::activeCustomers()->get();
-        return view("Purchase::order.edit", $data);
+        return view("Import::order.edit", $data);
     }
 
     /**

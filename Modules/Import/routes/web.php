@@ -2,10 +2,24 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Import\Controllers\PurchaseOrderController;
+ Route::middleware(['auth'])
+    ->prefix('import')
+    ->name('import.')
+    ->group(function () {
 
+        Route::get('/purchase-orders-test', function () {
+            dd('IMPORT PURCHASE ORDER ROUTE OK');
+        })->name('purchase-orders.test');
+
+        Route::resource(
+            'purchase-orders',
+            PurchaseOrderController::class
+        );
+    });
 Route::middleware(['auth'])->prefix('import')->name('import.')->group(function () {
 
 Route::resource('purchase-orders', PurchaseOrderController::class);
+
 
 // Route::post('/purchase-orders/{purchaseOrder}/submit-for-approval', [PurchaseOrderController::class, 'submitForApproval'])
 //     ->name('purchase-orders.submit-for-approval');
