@@ -415,7 +415,7 @@
     </script>
     <script> 
         let currentOrderId = null;
-        const employeeList = @json(\Modules\Hrms\Models\Employee::select('id', 'full_name')->where('status', 1)->get());
+        const employeeList = @json(\Modules\HRMS\Models\Employee::select('id', 'full_name')->where('status', 1)->get());
         let rowCounter = 0; // প্রতিটা row-কে ইউনিক id দেওয়ার জন্য
 
         function employeeOptionsHtml(selectedId = null) {
