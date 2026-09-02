@@ -17,6 +17,10 @@ class DongleOrSerialEntry extends BaseModel
     use AutoCreateUpdateAndHistory;
     protected $guarded = [];
 
+    protected $casts = [
+        'file_upload' => 'array',
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

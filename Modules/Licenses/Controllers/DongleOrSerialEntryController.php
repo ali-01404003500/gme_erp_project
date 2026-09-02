@@ -86,8 +86,9 @@ class DongleOrSerialEntryController extends Controller
             'dongle_id' => 'required|string|unique:dongle_or_serial_entries,dongle_id,NULL,id,deleted_at,NULL',
             'software_version' => 'nullable|string',
             'status' => 'required|string',
-            'file_upload' => 'nullable',
-        ]);
+            'file_upload' => 'nullable|array',
+            
+        ]); 
         $this->service->store($validate);
         return redirect()->route('licenses.dongle-or-serial-entries.index')->with('success', 'DongleOrSerialEntry created successfully.');
     }
@@ -126,7 +127,7 @@ class DongleOrSerialEntryController extends Controller
             'dongle_id' => 'required|string|unique:dongle_or_serial_entries,dongle_id,' . $dongleOrSerialEntry->id,
             'software_version' => 'nullable|string',
             'status' => 'required|string',
-            'file_upload' => 'nullable',
+            'file_upload' => 'nullable|array',
         ]);
         $this->service->update($dongleOrSerialEntry, $validate);
 

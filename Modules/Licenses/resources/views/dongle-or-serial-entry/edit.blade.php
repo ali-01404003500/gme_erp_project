@@ -142,7 +142,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="file_up">File Up</label>
-                                              <x-file-uploader :value="$dongleOrSerialEntry->file_upload" name="file_upload"/>
+                                            <x-file-uploader multiple :value="$dongleOrSerialEntry->file_upload" name="file_upload"/> 
 
                                             {{-- <input type="file"
                                                 class="file-control form-control"

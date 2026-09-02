@@ -113,7 +113,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="file_upload">File Up</label>
-                                          <x-file-uploader  name="file_upload"/>
+                                            <x-file-uploader  name="file_upload" multiple/>
 
                                             {{-- <input type="file"
                                                 class="file-control form-control"

@@ -79,6 +79,7 @@
                                         <th>Product Name</th> 
                                         <th>Type</th>
                                         <th>File Status</th>
+                                        <th>Attachment</th>
                                         <th>Prepared By</th>
                                         <th>Status</th>
                                         <th class="no-content">Action</th>
@@ -108,6 +109,25 @@
                                                     <span class="badge badge-round badge-danger">Not Uploaded</span>
                                                 @endif
                                             </td>
+                                            <td class="text-center"> 
+                                                @php
+                                                    $attachments = $value->file_upload ?? [];
+
+                                                    if (is_string($attachments)) {
+                                                        $attachments = json_decode($attachments, true) ?? [];
+                                                    }
+
+                                                    $attachments = is_array($attachments) ? $attachments : [];
+                                                @endphp
+
+                                                @foreach($attachments as $file)
+                                                    @if(!empty($file)
+                                                        <i class="fa fa-eye  view-attachment"data-url="{{ url($file) }}"></i> 
+                                                    @endif
+                                                @endforeach
+                                                
+                                            </td>
+
                                             <td>{{ $value->createdBy->name }}</td>
                                             <td>
                                                 {{ $value->status }}
@@ -221,6 +241,27 @@
             </div>
         </div>
     </div>
+
+    <!-- Attachment Modal -->
+    <div class="modal fade" id="attachmentModal"   tabindex="-1"    aria-labelledby="attachmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">
+                        Attachment Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="attachmentPreview" src=""  width="100%"  height="600px"  style="border: none;">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ 
 @endsection
 @section('page_scripts')
  <script>
@@ -259,6 +300,20 @@
  
             
         });
+        $(document).on('click', '.view-attachment', function () {
+            var fileUrl = $(this).data('url');
+            $('#attachmentPreview').attr('src', fileUrl);
+            var attachmentModal = new bootstrap.Modal(
+                document.getElementById('attachmentModal')
+            );
+            attachmentModal.show();
+        });
+
+
+        $('#attachmentModal').on('hidden.bs.modal', function () {
+            $('#attachmentPreview').attr('src', '');
+        });
+
     </script>
 
 @endSection
