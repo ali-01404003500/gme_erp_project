@@ -374,16 +374,39 @@
 
                                                             <p class="mb-1"><strong>Pay Mode:</strong> {{ $payment->pay_mode }}</p>
                                                             <p class="mb-2"><strong>Amount:</strong> {{ number_format($payment->amount) }}</p>
-
+ 
                                                             {{-- Attachment --}} 
-                                                            @if($payment->attachments)
+                                                            {{-- @if($payment->attachments)
                                                                 <div class="d-flex justify-content-md-end">
                                                                     <a href="{{ asset($payment->attachments) }}" target="_blank"
                                                                     class="btn btn-sm btn-outline-info mb-2">
                                                                         <i class="fa fa-eye"></i>  
                                                                     </a>
                                                                 </div>
-                                                            @endif
+                                                            @endif --}}
+
+                                                            
+                                                            @php
+                                                                $attachments = $payment->attachments;
+ 
+                                                                if (is_string($attachments)) {
+                                                                    $attachments = json_decode($attachments, true);
+                                                                }
+ 
+                                                                if (!is_array($attachments)) {
+                                                                    $attachments = [];
+                                                                }
+                                                            @endphp
+
+                                                            @foreach($attachments as $file)   
+                                                                @if(!empty($file))
+                                                                    <a href="{{ url($file) }}"  target="_blank"  class="btn btn-sm btn-outline-info mb-1">
+                                                                        <i class="fa fa-eye"></i>
+                                                                    </a>
+                                                                @endif
+                                                               
+                                                            @endforeach
+                                                            
                                                             {{-- Actions --}}
                                                             <div class="d-flex justify-content-md-end gap-2 flex-wrap">
 
@@ -514,14 +537,26 @@
                                                             <div class="info-value">
                                                                 <div class="documents-area mb-2">
                                                                     {{-- Attachment --}} 
-                                                                    @if($payment->attachments)
-                                                                        <div class="d-flex justify-content-md-end">
-                                                                            <a href="{{ asset($payment->attachments) }}" target="_blank"
-                                                                            class="btn btn-sm btn-outline-info mb-2">
-                                                                                <i class="fa fa-eye"></i>  
+                                                                    @php
+                                                                        $attachments = $payment->attachments;
+        
+                                                                        if (is_string($attachments)) {
+                                                                            $attachments = json_decode($attachments, true);
+                                                                        }
+        
+                                                                        if (!is_array($attachments)) {
+                                                                            $attachments = [];
+                                                                        }
+                                                                    @endphp
+
+                                                                    @foreach($attachments as $file)   
+                                                                        @if(!empty($file))
+                                                                            <a href="{{ url($file) }}"  target="_blank"  class="btn btn-sm btn-outline-info mb-1">
+                                                                                <i class="fa fa-eye"></i>
                                                                             </a>
-                                                                        </div>
-                                                                    @endif
+                                                                        @endif
+                                                                    
+                                                                    @endforeach
                                                                 </div>
 
                                                                 @if($payment->remark)

@@ -108,6 +108,7 @@
                                                             {
                                                                 'Petty Cash Expense' => 'Petty Cash Expense',
                                                                 'Withdrawal' => 'Withdrawal [Equity]',
+                                                                'Owner Equity' => 'Withdrawal [Equity]',
                                                                 'Non-Current Assets' => 'Equipment [Non-Current Assets]',
                                                                 'Loan Payment' => 'Loan Payment [Liabilities]',
                                                                 default => $payment->paymentTo?->accountControl?->name ?? $payment->paymentTo?->name  ?? 'Account',

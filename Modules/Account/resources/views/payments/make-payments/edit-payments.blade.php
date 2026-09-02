@@ -57,6 +57,7 @@
                                             //     "Modules\Account\Models\Account" => 'petty_cash_expense',
                                             //     default  => 'supplier',
                                             // }
+                                           
                                             $payment_type = match ($makePayment->payment_to_type) {
 
                                                 "Modules\Purchase\Models\Supplier", "Modules\Account\Models\Supplier"  => 'supplier',
@@ -66,12 +67,13 @@
                                                 "Modules\Account\Models\Account" => match (trim($makePayment->paymentTo?->accountControl?->name ?? '')) 
                                                     {
                                                         'Petty Cash Expense' => 'petty_cash_expense',
-                                                        'Withdrawal' => 'withdrawal',
+                                                        'Withdrawal' => 'withdrawal', 
+                                                        'Owner Equity' => 'withdrawal', 
                                                         'Non-Current Assets' => 'non_current_assets',
                                                         'Loan Payment' => 'loan_payment',
                                                         default => $makePayment->paymentTo?->accountControl?->name ?? $makePayment->paymentTo?->name  ?? 'Account',
                                                     }, 
-
+                                
                                                 default => 'Unknown'
                                             }; 
                                         @endphp
