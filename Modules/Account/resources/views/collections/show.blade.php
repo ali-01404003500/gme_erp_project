@@ -202,9 +202,9 @@
                                             <td>{{ $collection->collection_id }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Customer Name</th>
-                                            <td>:</td>
-                                            <td>{{ $collection->collectionFrom->company_name ?? 'N/A' }}</td>
+                                            <th>Collection From</th>
+                                            <td>:</td> 
+                                            <td> {{ $collection->collectionFrom?->company_name ?? $collection->collectionFrom?->name  ?? $collection->collectionFrom?->broker_name ?? $collection->collectionFrom?->full_name  ?? 'N/A' }}</td> 
                                         </tr>
                                         <tr>
                                             <th>Address</th>
@@ -240,9 +240,11 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($collection->payments as $key => $payment)
+                                            {{-- @dd($payment) --}}
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
-                                                <td>{{ $payment->pay_mode }} <br>
+                                                <td>
+                                                {{ $payment->pay_mode  }} ({{ $payment->bank?->account_name ?? $payment->bank?->emi_number ?? $payment->bank?->name ?? '' }} - {{ $payment->branch->name ?? '' }}) <br>
                                                 {{ $payment->remarks }}</td>
                                                 <td>{{ number_format($payment->amount) }}</td>
                                             </tr>

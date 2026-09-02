@@ -196,9 +196,9 @@
                                             <td>{{ @$makePayment->payment_id }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Supplier/Vendor Name</th>
+                                            <th>Payment To</th>
                                             <td>:</td>
-                                            <td>{{ @$makePayment->paymentTo->company_name ?? 'N/A' }}</td>
+                                            <td> {{ $makePayment->paymentTo?->company_name ?? $makePayment->paymentTo?->name  ?? $makePayment->paymentTo?->broker_name ?? 'N/A' }}</td> 
                                         </tr>
                                         <tr>
                                             <th>Address</th>

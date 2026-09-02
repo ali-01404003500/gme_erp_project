@@ -86,7 +86,20 @@ class PaymentVerificationController extends Controller
         
         $this->service->update($makePaymentDetails, $validate); 
 
-        return redirect()->route('account.payments.payment-verifications.index')->with('success', 'Payment Verification updated successfully.');
+        $message = match ((int) $validate['verified']) {
+
+            1 => 'Payment verified successfully.',
+
+            2 => 'Payment approved successfully.',
+
+            -1 => 'Payment verification rejected successfully.',
+
+            -2 => 'Payment approval rejected successfully.',
+
+            default => 'Payment status updated successfully.',
+        };
+
+        return redirect()->route('account.payments.payment-verifications.index')->with('success', $message);
     }
 
     /**
