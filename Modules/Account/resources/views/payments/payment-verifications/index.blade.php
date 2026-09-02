@@ -411,27 +411,36 @@
                                                             <div class="d-flex justify-content-md-end gap-2 flex-wrap">
 
                                                                 @if ($payment->verified == '0' && hasPermission('account.payments.make-payments.verify'))
-                                                                    <button class="btn btn-sm btn-outline-info"  title="Verify" 
+
+                                                                    <button class="btn btn-sm btn-outline-info"
+                                                                            title="Verify"
                                                                             onclick="verifyPayment({{ $payment->id }})">
                                                                         Verify
                                                                     </button>
 
-                                                                    <button class="btn btn-sm btn-outline-danger"  title="Verify Rejected"
+                                                                    <button class="btn btn-sm btn-outline-danger"
+                                                                            title="Verify Rejected"
                                                                             onclick="denyPayment({{ $payment->id }}, -1)">
                                                                         Reject
                                                                     </button>
+
                                                                 @endif
 
+
                                                                 @if ($payment->verified == '1' && hasPermission('account.payments.make-payments.approve'))
-                                                                    <button class="btn btn-sm btn-outline-success" title="Approve"
+
+                                                                    <button class="btn btn-sm btn-outline-success"
+                                                                            title="Approve"
                                                                             onclick="approvePayment({{ $payment->id }})">
                                                                         Approve
                                                                     </button>
 
-                                                                    <button class="btn btn-sm btn-outline-danger"  title="Approval Rejected"
+                                                                    <button class="btn btn-sm btn-outline-danger"
+                                                                            title="Approval Rejected"
                                                                             onclick="denyPayment({{ $payment->id }}, -2)">
                                                                         Reject
                                                                     </button>
+
                                                                 @endif
 
                                                             </div>
@@ -590,31 +599,41 @@
                                                             </div>
                                                             <div class="info-value">
                                                               
-                                                                {{-- Actions --}}
+                                                                {{-- Actions --}} 
+
                                                                 <div class="d-flex justify-content-md-end gap-2 flex-wrap">
 
                                                                     @if ($payment->verified == '0' && hasPermission('account.payments.make-payments.verify'))
-                                                                        <button class="btn btn-sm btn-outline-info"  title="Verify" 
+
+                                                                        <button class="btn btn-sm btn-outline-info"
+                                                                                title="Verify"
                                                                                 onclick="verifyPayment({{ $payment->id }})">
                                                                             Verify
                                                                         </button>
 
-                                                                        <button class="btn btn-sm btn-outline-danger"  title="Verify Rejected"
+                                                                        <button class="btn btn-sm btn-outline-danger"
+                                                                                title="Verify Rejected"
                                                                                 onclick="denyPayment({{ $payment->id }}, -1)">
                                                                             Reject
                                                                         </button>
+
                                                                     @endif
 
+
                                                                     @if ($payment->verified == '1' && hasPermission('account.payments.make-payments.approve'))
-                                                                        <button class="btn btn-sm btn-outline-success" title="Approve"
+
+                                                                        <button class="btn btn-sm btn-outline-success"
+                                                                                title="Approve"
                                                                                 onclick="approvePayment({{ $payment->id }})">
                                                                             Approve
                                                                         </button>
 
-                                                                        <button class="btn btn-sm btn-outline-danger"  title="Approval Rejected"
+                                                                        <button class="btn btn-sm btn-outline-danger"
+                                                                                title="Approval Rejected"
                                                                                 onclick="denyPayment({{ $payment->id }}, -2)">
                                                                             Reject
                                                                         </button>
+
                                                                     @endif
 
                                                                 </div>
