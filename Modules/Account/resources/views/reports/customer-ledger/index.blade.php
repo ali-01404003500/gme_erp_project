@@ -76,6 +76,29 @@
         .bg-danger {
             background-color: #dc3545 !important;
         }
+        #oldStatementModal .modal-dialog {
+            width: 60%;
+            max-width: 60%;
+            width: 80%;
+            max-width: 80%;
+            margin: 2.5vh auto;
+        }
+
+        #oldStatementModal .modal-content {
+            height: 95vh;
+        }
+
+        #oldStatementModal .modal-body {
+            height: calc(95vh - 65px);
+            padding: 0 !important;
+        }
+
+        #oldStatementPreview {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
     </style>
 @endsection
 
@@ -213,14 +236,53 @@
                                 </div>
                             </div>
                         </div>
+                         <div class="row">
+                            <div class="col-md-8"> 
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-row"> 
+                                    @php
+                                   
+                                        $attachments = $selectedCustomer->customerSetting->first()->ledger_files ?? [];
+
+                                        if (is_string($attachments)) {
+                                            $attachments = json_decode($attachments, true) ?? [];
+                                        }
+
+                                        $attachments = is_array($attachments) ? $attachments : [];
+                                    @endphp
+                                    <span class="success-label">Statement Period: 04-Oct-2021</span>
+                                    <span class="success-label"> 
+                                        @foreach($attachments as $file)
+                                            @if(!empty($file))
+                                                <i class="text-success fa fa-eye  view-old-statement" data-url="{{ url($file) }}"   style="cursor: pointer;"></i> 
+                                                <i class="text-success fa fa-download download-old-statement" data-url="{{ url($file) }}"  data-customer-name="{{ $selectedCustomer->company_name }}" style="cursor: pointer;"  title="Download"></i>
+                                            @endif
+                                        @endforeach 
+                                    </span> 
+                                </div>
+                                <div class="info-row">  
+                                    <span class="success-label">Statement Period: 05-Oct-2021 to 05-Oct-2026</span>
+                                    <span class="success-label"> 
+                                        
+                                    </span> 
+                                </div>
+                                <div class="info-row">  
+                                    <span class="success-label">Agreement</span>
+                                    <span class="success-label"> 
+                                        
+                                    </span> 
+                                </div>
+                            </div>
+                        </div>
                         
                     </div>
                     @if(isset($deed_document))
-                    <div class="deed-icons"> Deed :
-                        <a href="{{ url($deed_document) }}" target="_blank" title="View Deed">
+                    <div class="deed-icons"> Agreement :
+                        <a href="{{ url($deed_document) }}" target="_blank" title="View Agreement">
                             <i class="fa fa-eye"></i>
                         </a>
-                        <a href="{{ url($deed_document) }}" download title="Download Deed">
+                        <a href="{{ url($deed_document) }}" download title="Download Agreement">
                             <i class="fa fa-download"></i>
                         </a>
                     </div>
@@ -583,6 +645,25 @@
     </div>
 </div>
 
+    <!-- Old Statement Modal -->
+    <div class="modal fade" id="oldStatementModal"   tabindex="-1"    aria-labelledby="oldStatementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="oldStatementModalLabel">
+                        Old Statement Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="oldStatementPreview" src=""  width="100%"  height="600px"  style="border: none;">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 <script type="text/javascript">
 // Pass PHP data to JavaScript
@@ -906,6 +987,54 @@ function printRefundedCheque() {
         printWindow.focus();
         printWindow.print();
     }, 1000);
-}
+} 
+    
 </script>
 @endsection
+
+
+
+@section('page_scripts')
+    <script>
+ 
+        $(document).on('click', '.view-old-statement', function () {
+            var fileUrl = $(this).data('url');
+            $('#oldStatementPreview').attr('src', fileUrl);
+            var oldStatementModal = new bootstrap.Modal(
+                document.getElementById('oldStatementModal')
+            );
+            oldStatementModal.show();
+        });
+
+
+        $('#oldStatementModal').on('hidden.bs.modal', function () {
+            $('#oldStatementPreview').attr('src', '');
+        });
+
+        $(document).on('click', '.download-old-statement', function () {
+
+            let url = $(this).data('url');
+            let customerName = $(this).data('customer-name');
+
+            // Space + invalid filename characters replace with _
+            customerName = customerName.replace(/\s+/g, '_');
+            customerName = customerName.replace(/[\\/:*?"<>|]/g, '_');
+
+            // Add Old Statement
+            let fileName = customerName + '_Old_Statement';
+
+            // Get extension
+            let extension = url.split('.').pop().split('?')[0];
+
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = fileName + '.' + extension;
+
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+    </script>
+
+@endSection
