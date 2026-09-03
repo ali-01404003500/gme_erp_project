@@ -486,10 +486,17 @@ public function customerLedgerReport(Request $request)
                 });
                 
                 // Get deed document
-                $deedEntry = AdvanceChequeEntry::where('customer_id', $customer->id)
+                 
+                $deedEntries = AdvanceChequeEntry::where('customer_id', $customer->id)
                     ->whereNotNull('document')
-                    ->first();
-                $data['deed_document'] = $deedEntry?->document;
+                    ->where('document', '!=', '')
+                    ->get();
+
+                foreach ($deedEntries as $deedEntry) {
+                $data['deed_document'][] = $deedEntry->document;
+                }
+
+                 
                 
                 // Get transactions
                 $data['transactions'] = Transaction::query()

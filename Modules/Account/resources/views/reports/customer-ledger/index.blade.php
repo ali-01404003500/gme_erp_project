@@ -255,8 +255,8 @@
                                     <span class="success-label"> 
                                         @foreach($attachments as $file)
                                             @if(!empty($file))
-                                                <i class="text-success fa fa-eye  view-old-statement" data-url="{{ url($file) }}"   style="cursor: pointer;"></i> 
-                                                <i class="text-success fa fa-download download-old-statement" data-url="{{ url($file) }}"  data-customer-name="{{ $selectedCustomer->company_name }}" style="cursor: pointer;"  title="Download"></i>
+                                                <i class="text-primary fa fa-eye  view-old-statement" data-url="{{ url($file) }}"   style="cursor: pointer;"></i> 
+                                                <i class="text-primary fa fa-download download-old-statement" data-url="{{ url($file) }}"  data-customer-name="{{ $selectedCustomer->company_name }}" style="cursor: pointer;"  title="Download"></i>
                                             @endif
                                         @endforeach 
                                     </span> 
@@ -267,26 +267,25 @@
                                         
                                     </span> 
                                 </div>
+                                 
                                 <div class="info-row">  
-                                    <span class="success-label">Agreement</span>
-                                    <span class="success-label"> 
-                                        
-                                    </span> 
+                                    <span class="success-label">Deed:</span>
+                                    <span class="success-label">
+                                        @foreach($deed_document as $file)
+                                            @if(!empty($file))
+                                                <i class="text-primary fa fa-eye view-old-statement" data-url="{{ url($file) }}" style="cursor: pointer;"  title="View"></i>
+                                                <i class="text-primary fa fa-download download-old-statement" data-url="{{ url($file) }}" data-customer-name="{{ $selectedCustomer->company_name }}" style="cursor: pointer;" title="Download"></i>
+                                            @endif
+                                        @endforeach
+                                    </span>
                                 </div>
+
+                                 
                             </div>
                         </div>
                         
                     </div>
-                    @if(isset($deed_document))
-                    <div class="deed-icons"> Agreement :
-                        <a href="{{ url($deed_document) }}" target="_blank" title="View Agreement">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="{{ url($deed_document) }}" download title="Download Agreement">
-                            <i class="fa fa-download"></i>
-                        </a>
-                    </div>
-                    @endif
+            
                 </div>
                 @endif
 
