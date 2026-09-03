@@ -486,14 +486,14 @@ public function customerLedgerReport(Request $request)
                 });
                 
                 // Get deed document
-                 
+                $data['deed_document'] = [];
                 $deedEntries = AdvanceChequeEntry::where('customer_id', $customer->id)
                     ->whereNotNull('document')
                     ->where('document', '!=', '')
                     ->get();
 
                 foreach ($deedEntries as $deedEntry) {
-                $data['deed_document'][] = $deedEntry->document;
+                    $data['deed_document'][] = $deedEntry->document;
                 }
 
                  
