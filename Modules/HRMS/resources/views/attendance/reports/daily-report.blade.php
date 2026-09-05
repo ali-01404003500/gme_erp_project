@@ -199,39 +199,39 @@
                                                 <td>{{ @$attendance->employee->full_name }}</td>
                                                 <td>{{ $attendance->employee->employementDetail->designation->name ?? '' }}</td>
                                                 <td> @if ($attendance->check_in_date && $attendance->check_in_time)
-                                                    {{ date('M. d, Y, g:i A', strtotime($attendance->check_in_date . ' ' . $attendance->check_in_time)) }}</td>
-                                                @else
-                                                    N/A
-                                                @endif</td>
-                                                <td>@if($attendance->check_out_date && $attendance->check_out_time)
-                                                    {{ date('M. d, Y, g:i A', strtotime($attendance->check_out_date . ' ' . $attendance->check_out_time)) }}
-                                                @else
-                                                    N/A
-                                                @endif</td>
+                                                        {{ date('M. d, Y, g:i A', strtotime($attendance->check_in_date . ' ' . $attendance->check_in_time)) }}</td>
+                                                    @else
+                                                        N/A
+                                                    @endif</td>
+                                                    <td>@if($attendance->check_out_date && $attendance->check_out_time)
+                                                        {{ date('M. d, Y, g:i A', strtotime($attendance->check_out_date . ' ' . $attendance->check_out_time)) }}
+                                                    @else
+                                                        N/A
+                                                    @endif</td>
                                                 <td>{{ $late }}</td>
                                                 <!-- Status Display (no changes needed) -->
-                                            <td>
-                                                @php
-                                                    $isLate = false;
-                                                    if ($attendance->check_in_time) {
-                                                        $shift = $attendance->shift ?? \Modules\HRMS\Models\Settings\Shift::find(10000);
-                                                        if ($shift) {
-                                                            $checkIn = \Carbon\Carbon::parse($attendance->check_in_time);
-                                                            $shiftInTime = \Carbon\Carbon::parse($shift->in_time);
-                                                            $graceTime = $shift->grace_time ?? 0;
-                                                            $isLate = $checkIn->diffInMinutes($shiftInTime) > $graceTime;
+                                                <td>
+                                                    @php
+                                                        $isLate = false;
+                                                        if ($attendance->check_in_time) {
+                                                            $shift = $attendance->shift ?? \Modules\HRMS\Models\Settings\Shift::find(10000);
+                                                            if ($shift) {
+                                                                $checkIn = \Carbon\Carbon::parse($attendance->check_in_time);
+                                                                $shiftInTime = \Carbon\Carbon::parse($shift->in_time);
+                                                                $graceTime = $shift->grace_time ?? 0;
+                                                                $isLate = $checkIn->diffInMinutes($shiftInTime) > $graceTime;
+                                                            }
                                                         }
-                                                    }
-                                                @endphp
-                                                
-                                                @if($isLate)
-                                                    <span class="badge badge-round badge-warning">Late</span>
-                                                @elseif ($attendance->attendance_type == 'Present')
-                                                    <span class="badge badge-round badge-success">{{ $attendance->attendance_type }}</span>
-                                                @else
-                                                    <span class="badge badge-round badge-{{ $attendance->attendance_type == 'Absent' ? 'danger' : ($attendance->attendance_type == 'Holiday' ? 'info' : ($attendance->attendance_type == 'Leave' ? 'primary' : ($attendance->attendance_type == 'Weekend' ? 'secondary' : 'dark'))) }}">{{ $attendance->attendance_type }}</span>
-                                                @endif
-                                            </td>
+                                                    @endphp
+                                                    
+                                                    @if($isLate)
+                                                        <span class="badge badge-round badge-warning">Late</span>
+                                                    @elseif ($attendance->attendance_type == 'Present')
+                                                        <span class="badge badge-round badge-success">{{ $attendance->attendance_type }}</span>
+                                                    @else
+                                                        <span class="badge badge-round badge-{{ $attendance->attendance_type == 'Absent' ? 'danger' : ($attendance->attendance_type == 'Holiday' ? 'info' : ($attendance->attendance_type == 'Leave' ? 'primary' : ($attendance->attendance_type == 'Weekend' ? 'secondary' : 'dark'))) }}">{{ $attendance->attendance_type }}</span>
+                                                    @endif
+                                                </td>
                                                 
                                                 <td>{{ @$attendance->entryBy->name }}</td>
                                                 <td>{{ $attendance->remarks }}</td>

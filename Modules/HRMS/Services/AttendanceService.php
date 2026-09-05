@@ -249,6 +249,7 @@ class AttendanceService
             ],
         ];
     }
+        
     public function calculateAttendanceStatus(array $data)
     {
         $policy = AttendancePolicy::where('effective_from', '<=', $data['date'])
@@ -257,32 +258,57 @@ class AttendanceService
             ->orderBy('id', 'desc')
             ->first();
 
-        $dayOfWeek      = Carbon::parse($data['date'])->format('l');
-        $policySettings = is_array($policy->day_wise_settings) ? $policy->day_wise_settings : json_decode($policy->day_wise_settings, true);
-
-        $todaySetting  = $policySettings[$dayOfWeek] ?? null;
-        $policyInTime  = $todaySetting['in_time'] ?? $policy->in_time;
-        $policyOutTime = $todaySetting['out_time'] ?? $policy->out_time;
-        $flag          = "";
-
-        $policyTime        = strtotime($policyInTime);
-        $delayBufferTime   = strtotime("+{$todaySetting['delay_buffer']} minutes", $policyTime);
-        $exDelayBufferTime = strtotime("+{$todaySetting['ex_delay_buffer']} minutes", $policyTime);
-
-        $checkIn = $data['check_in_time'];
-
-        if ($checkIn <= $policyInTime) {
-            $flag = "P";
-        } else if ($checkIn > $policyInTime && $checkIn <= $delayBufferTime) {
-            $flag = "D";
-        } else if ($checkIn > $policyInTime && $checkIn <= $exDelayBufferTime) {
-            $flag = "E";
-        } else {
-            $flag = "E";
+        if (!$policy) {
+            return null;
         }
 
-        return $flag;
+        $dayOfWeek = Carbon::parse($data['date'])->format('l');
+
+        $policySettings = is_array($policy->day_wise_settings) ? $policy->day_wise_settings : json_decode($policy->day_wise_settings, true);
+
+        $todaySetting = $policySettings[$dayOfWeek] ?? [];
+
+        $policyInTime = $todaySetting['in_time'] ?? $policy->in_time;
+
+        $delayBuffer = (int) ($todaySetting['delay_buffer'] ?? $policy->delay_buffer ?? 0);
+        $exDelayBuffer = (int) ($todaySetting['ex_delay_buffer'] ?? $policy->ex_delay_buffer ?? 0);
+
+        // Same date + same time
+        $policyTime = Carbon::parse(
+            $data['date'] . ' ' . $policyInTime
+        );
+
+        $checkIn = Carbon::parse(
+            $data['date'] . ' ' . $data['check_in_time']
+        );
+
+        $delayBufferTime = $policyTime->copy()->addMinutes($delayBuffer);
+
+        $exDelayBufferTime = $policyTime->copy()->addMinutes($exDelayBuffer);
+
+        // Before or exactly at 10:00
+        if ($checkIn->lte($policyTime)) {
+            return 'P';
+        }
+
+        // 10:01 - 10:05
+        if ($checkIn->lte($delayBufferTime)) {
+            return 'D';
+        }
+
+        // 10:06 - 10:10
+        if ($checkIn->lte($exDelayBufferTime)) {
+            return 'E';
+        }
+
+        if ($checkIn->lte($exDelayBufferTime)) {
+            return 'E';
+        }
+        
+        // After 10:10
+        return 'E';
     }
+
 
     public function store(array $data)
     {

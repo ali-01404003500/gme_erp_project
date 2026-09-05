@@ -340,7 +340,7 @@ class AttendanceController extends Controller
 
         $validate['attendance_type'] = 'Present';
         $validate['flag']            = $this->service->calculateAttendanceStatus($validate);
-
+ 
         try
         {
             $result = $this->service->update($attendance, $validate);
