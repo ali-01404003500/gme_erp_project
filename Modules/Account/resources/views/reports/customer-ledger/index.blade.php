@@ -475,22 +475,33 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
+
                                         @php
-                                            $documents = is_string($cheque['document']) ? json_decode($cheque['document'], true) : $cheque['document'];
+                                            $document = $cheque['document'] ?? null;
+
+                                            // JSON হলে decode
+                                            if (is_string($document)) {
+                                                $decoded = json_decode($document, true);
+                                                // Valid JSON হলে decoded value নিন
+                                                if (json_last_error() === JSON_ERROR_NONE) {
+                                                    $document = $decoded;
+                                                }
+                                            }
+
+                                            // Single document হলে array বানিয়ে নিচ্ছি
+                                            if (!is_array($document) && !empty($document)) {
+                                                $document = [$document];
+                                            }
+                                            $document = $document ?? [];
                                         @endphp
-                                        @if (!empty($documents) && is_array($documents))
-                                            @foreach ($documents as $doc)  
-                                                <a href="{{ url($doc) }}" target="_blank">  <i class="fa fa-image"></i>  </a>
-                                             
+
+                                        @if (!empty($document))
+                                            @foreach ($document as $doc)
+                                                @if (!empty($doc)) 
+                                                    <i class="fa fa-eye btn-xs btn-outline-primary view-cheque-image" data-url="{{ url($doc) }}" title="View Document"></i> 
+                                                @endif
                                             @endforeach
                                         @endif
-                                        {{-- @if($cheque['attachment'])
-                                        <a href="{{ $cheque['attachment'] }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                            <i class="fa fa-file-image"></i>
-                                        </a>
-                                        @else
-                                        <span class="text-muted">N/A</span>
-                                        @endif --}}
                                     </td>
                                 </tr>
                                 @endforeach
@@ -662,6 +673,23 @@
         </div>
     </div>
 
+    <div class="modal fade" id="chequeImageModal" tabindex="-1"  role="dialog" aria-labelledby="chequeImageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="chequeImageModalLabel">
+                        <i class="fa fa-image"></i>
+                        Cheque Document
+                    </h5>
+                    <button type="button" class="close"  data-dismiss="modal"  aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center" id="chequeImageContent">
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 <script type="text/javascript">
@@ -988,6 +1016,7 @@ function printRefundedCheque() {
     }, 1000);
 } 
     
+    
 </script>
 @endsection
 
@@ -996,6 +1025,58 @@ function printRefundedCheque() {
 @section('page_scripts')
     <script>
  
+        $(document).on('click', '.view-cheque-image', function () {
+            let url = $(this).attr('data-url');
+            if (!url) {
+                return;
+            }
+            $('#chequeImageContent').html(`
+                <div class="text-center py-5">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                    <p class="mt-2">Loading...</p>
+                </div>
+            `);
+            $('#chequeImageModal').modal('show');
+            let extension = url
+                .split('?')[0]
+                .split('.')
+                .pop()
+                .toLowerCase();
+            let html = '';
+
+            // Image
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+
+                html = `
+                    <div class="text-center">
+                        <img src="${url}" class="img-fluid" style="  max-height: 75vh; width: auto; object-fit: contain;" alt="Cheque Document">
+                    </div>
+                `;
+
+            } else if (extension === 'pdf') {
+                html = `
+                    <iframe src="${url}"  width="100%"  height="700" style="border: none;"> </iframe>
+                `;
+            } else {
+                html = `
+                    <div class="text-center py-5">
+                        <i class="fa fa-file-o fa-4x text-secondary"></i>
+                        <h5 class="mt-3">
+                            Document
+                        </h5>
+                        <a href="${url}" target="_blank" class="btn btn-primary">
+                            <i class="fa fa-external-link"></i>
+                            Open Document
+                        </a>
+
+                    </div>
+                `;
+            }
+
+            $('#chequeImageContent').html(html);
+
+        });
+        
         $(document).on('click', '.view-old-statement', function () {
             var fileUrl = $(this).data('url');
             $('#oldStatementPreview').attr('src', fileUrl);
@@ -1003,6 +1084,10 @@ function printRefundedCheque() {
                 document.getElementById('oldStatementModal')
             );
             oldStatementModal.show();
+        });
+
+        $(document).on('click', '#chequeImageModal .close', function () {
+            $('#chequeImageModal').modal('hide');
         });
 
 
