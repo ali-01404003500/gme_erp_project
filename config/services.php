@@ -37,4 +37,11 @@ return [
         'source' => env('SMS_SOURCE'),
     ],
 
+    'invoice_share' => [
+        'expiry_hours' => env('INVOICE_SHARE_EXPIRY_HOURS', 72),
+        'max_views' => env('INVOICE_SHARE_MAX_VIEWS', 5),
+        'base_url' => env('INVOICE_SHARE_BASE_URL'),
+    ],
+ 
+
 ];

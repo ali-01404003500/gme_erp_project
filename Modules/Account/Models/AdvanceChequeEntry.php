@@ -15,10 +15,7 @@ class AdvanceChequeEntry extends BaseModel
     use SoftDeletes;
     protected $guarded = [];
 
-    public function details()
-    {
-        return $this->hasMany(AdvanceChequeEntryDetail::class);
-    }
+ 
 
     public function customer()
     {
@@ -28,6 +25,10 @@ class AdvanceChequeEntry extends BaseModel
     public function reference()
     {
         return $this->belongsTo(EMIEntry::class);
+    }
+    public function details()
+    {
+        return $this->hasMany(AdvanceChequeEntryDetail::class, 'advance_cheque_entry_id');
     }
 
 }

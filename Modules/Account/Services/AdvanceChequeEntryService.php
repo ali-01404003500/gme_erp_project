@@ -11,16 +11,16 @@ use Modules\Account\Models\Setup\BankBranch;
 use Modules\CRM\Models\Customer\Customer;
 
 class AdvanceChequeEntryService
-{
+{ 
     public function getAll(int $limit = 20)
     {
         return AdvanceChequeEntry::query()
-        ->searchByFields(['receipt_no', 'customer_id'])
-        ->filterByDateRange('collection_date')
-        ->orderBy('created_at', 'desc')
-        ->paginate($limit);
+            ->with('details')
+            ->searchByFields(['receipt_no', 'customer_id'])
+            ->filterByDateRange('collection_date')
+            ->orderBy('created_at', 'desc')
+            ->paginate($limit);
     }
-
     public function store(array $data, array $details)
     {
         // dd($data, $details);

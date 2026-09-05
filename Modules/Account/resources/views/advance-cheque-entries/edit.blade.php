@@ -252,15 +252,30 @@
                                                                     {{ $detail->is_security_cheque ? 'readonly' : '' }}>
                                                             </td>
                                                             <td>
-                                                                <div class="dropdown dropdown-click">
-                                                                    <div class="btn-group dropleft">
+                                                                <div class="d-flex align-items-center gap-1">
+
+                                                                    {{-- Always visible Paperclip button --}}
+                                                                    <button type="button"
+                                                                        class="btn btn-xs btn-secondary attachments"
+                                                                        title="Add Attachment">
+                                                                        <i class="fa fa-paperclip"></i>
+                                                                    </button>
+
+                                                                    {{-- Existing attachment থাকলে Eye icon --}}
+                                                                    @if(!empty($detail->document))
                                                                         <button type="button"
-                                                                            class="btn btn-xs btn-secondary attachments">
-                                                                            <i class="fa fa-paperclip"></i>
+                                                                            class="btn btn-xs btn-success view-attachment"
+                                                                            data-url="{{ asset($detail->document) }}"
+                                                                            title="View Attachment">
+                                                                            <i class="fa fa-eye"></i>
                                                                         </button>
-                                                                    </div>
+                                                                    @endif
+
                                                                 </div>
-                                                                <input type="hidden" name="documents[]"
+
+                                                                {{-- Existing document value --}}
+                                                                <input type="hidden"
+                                                                    name="documents[]"
                                                                     value="{{ $detail->document }}"
                                                                     class="attachments_input">
                                                             </td>
@@ -292,6 +307,35 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="attachmentModal" tabindex="-1"
+        role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">
+                        Attachment
+                    </h5>
+
+                    <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body text-center" id="attachmentContent">
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    
 @endsection
 
 @section('page_scripts')
@@ -595,6 +639,75 @@
                 });
             });
         });
+
+        $(document).on('click', '.view-attachment', function () {
+
+            let url = $(this).data('url');
+
+            if (!url) {
+                return;
+            }
+
+            let extension = url.split('.').pop().toLowerCase();
+
+            let content = '';
+
+            // Image
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+
+                content = `
+                    <div class="text-center">
+                        <img src="${url}"
+                            class="img-fluid"
+                            style="max-height:75vh; object-fit:contain;"
+                            alt="Attachment">
+                    </div>
+                `;
+
+            }
+
+            // PDF
+            else if (extension === 'pdf') {
+
+                content = `
+                    <iframe
+                        src="${url}"
+                        width="100%"
+                        height="700px"
+                        style="border:none;">
+                    </iframe>
+                `;
+
+            }
+
+            // Other files
+            else {
+
+                content = `
+                    <div class="text-center py-5">
+
+                        <i class="fa fa-file fa-4x text-secondary"></i>
+
+                        <h5 class="mt-3">
+                            Attachment
+                        </h5>
+
+                        <a href="${url}"
+                        target="_blank"
+                        class="btn btn-primary">
+                            <i class="fa fa-external-link"></i>
+                            Open File
+                        </a>
+
+                    </div>
+                `;
+            }
+
+            $('#attachmentContent').html(content);
+
+            $('#attachmentModal').modal('show');
+        });
+
     </script>
 
     <style>

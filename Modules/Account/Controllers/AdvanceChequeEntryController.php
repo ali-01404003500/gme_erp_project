@@ -129,7 +129,7 @@ class AdvanceChequeEntryController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
+        //dd($request->all());
         $validate = $request->validate([
             'cheque_type' => 'required|string',
             'customer_id' => 'required',
@@ -139,24 +139,67 @@ class AdvanceChequeEntryController extends Controller
             'remarks' => 'nullable|string',
             'document' => 'nullable|string',
         ]);
-        $details = $request->validate([
-            'emi_detail_id' => 'nullable|array',
-            'emi_detail_id.*' => 'nullable|integer|exists:e_m_i_entry_details,id',
-            'bank_ids' => 'required|array',
-            'bank_ids.*' => 'required|integer',
-            'branch_ids' => 'required|array',
-            'branch_ids.*' => 'required|integer',
-            'cheque_no' => 'required|array',
-            'cheque_no.*' => 'required|string',
-            'cheque_date' => 'required|array',
-            'cheque_date.*' => 'required_if:is_security_cheque.*,"0"|nullable|date',
-            'amount' => 'required|array',
-            'amount.*' => 'required',
-            'documents' => 'nullable|array',
-            'documents.*' => 'nullable|string',
-            'is_security_cheque' => 'required|array',
-            'is_security_cheque.*' => 'nullable',
-        ]);
+
+        // Only Deed হলে cheque details লাগবে না
+        if ($request->cheque_type !== 'only_deed') {
+
+            $details = $request->validate([
+                'emi_detail_id' => 'nullable|array',
+                'emi_detail_id.*' => 'nullable|integer|exists:e_m_i_entry_details,id',
+
+                'bank_ids' => 'required|array',
+                'bank_ids.*' => 'required|integer',
+
+                'branch_ids' => 'required|array',
+                'branch_ids.*' => 'required|integer',
+
+                'cheque_no' => 'required|array',
+                'cheque_no.*' => 'required|string',
+
+                'cheque_date' => 'required|array',
+                'cheque_date.*' => 'nullable|date',
+
+                'amount' => 'required|array',
+                'amount.*' => 'required',
+
+                'documents' => 'nullable|array',
+                'documents.*' => 'nullable|string',
+
+                'is_security_cheque' => 'required|array',
+                'is_security_cheque.*' => 'nullable',
+            ]);
+              
+            // Security cheque হলে cheque_date nullable হবে
+            foreach ($details['is_security_cheque'] as $index => $securityCheque) {
+
+                if ((int) $securityCheque === 1) {
+                    $details['cheque_date'][$index] = null;
+                } else {
+                    if (
+                        empty($details['cheque_date'][$index])
+                    ) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            "cheque_date.$index" => "Cheque date is required.",
+                        ]);
+                    }
+                }
+            }
+
+
+        } else {
+
+            // Only Deed হলে empty details পাঠানো হবে
+            $details = [
+                'emi_detail_id'     => [],
+                'bank_ids'          => [],
+                'branch_ids'        => [],
+                'cheque_no'         => [],
+                'cheque_date'       => [],
+                'amount'            => [],
+                'documents'         => [],
+                'is_security_cheque'=> [],
+            ];
+        }
         $this->service->store($validate, $details);
         return redirect()->route('account.advance-cheque-entries.index')->with('success', 'Advance Cheque Entry created successfully.');
     }
@@ -217,23 +260,65 @@ class AdvanceChequeEntryController extends Controller
             'document' => 'nullable|string',
         ]);
 
-        $details = $request->validate([
-            'bank_ids' => 'required|array',
-            'bank_ids.*' => 'required|integer',
-            'branch_ids' => 'required|array',
-            'branch_ids.*' => 'required|integer',
-            'cheque_no' => 'required|array',
-            'cheque_no.*' => 'required|string',
-            'cheque_date' => 'required|array',
-            'cheque_date.*' => 'required_if:is_security_cheque.*,"0"|nullable|date',
-            'amount' => 'required|array',
-            'amount.*' => 'required',
-            'documents' => 'nullable|array',
-            'documents.*' => 'nullable|string',
-            'is_security_cheque' => 'required|array',
-            'is_security_cheque.*' => 'nullable',
-        ]);
+         
+        // Only Deed হলে cheque details লাগবে না
+        if ($request->cheque_type !== 'only_deed') {
 
+            $details = $request->validate([
+                'emi_detail_id' => 'nullable|array',
+                'emi_detail_id.*' => 'nullable|integer|exists:e_m_i_entry_details,id',
+
+                'bank_ids' => 'required|array',
+                'bank_ids.*' => 'required|integer',
+
+                'branch_ids' => 'required|array',
+                'branch_ids.*' => 'required|integer',
+
+                'cheque_no' => 'required|array',
+                'cheque_no.*' => 'required|string',
+
+                'cheque_date' => 'required|array',
+                'cheque_date.*' => 'nullable|date',
+
+                'amount' => 'required|array',
+                'amount.*' => 'required',
+
+                'documents' => 'nullable|array',
+                'documents.*' => 'nullable|string',
+
+                'is_security_cheque' => 'required|array',
+                'is_security_cheque.*' => 'nullable',
+            ]);
+            // Security cheque হলে cheque_date nullable হবে
+            foreach ($details['is_security_cheque'] as $index => $securityCheque) {
+
+                if ((int) $securityCheque === 1) {
+                    $details['cheque_date'][$index] = null;
+                } else {
+                    if (
+                        empty($details['cheque_date'][$index])
+                    ) {
+                        throw \Illuminate\Validation\ValidationException::withMessages([
+                            "cheque_date.$index" => "Cheque date is required.",
+                        ]);
+                    }
+                }
+            }
+
+        } else {
+
+            // Only Deed হলে empty details পাঠানো হবে
+            $details = [
+                'emi_detail_id'     => [],
+                'bank_ids'          => [],
+                'branch_ids'        => [],
+                'cheque_no'         => [],
+                'cheque_date'       => [],
+                'amount'            => [],
+                'documents'         => [],
+                'is_security_cheque'=> [],
+            ];
+        }
         $this->service->update($advanceChequeEntry, $validate, $details);
 
         return redirect()->route('account.advance-cheque-entries.index')->with('success', 'AdvanceChequeEntry updated successfully.');

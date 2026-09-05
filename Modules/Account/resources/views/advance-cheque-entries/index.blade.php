@@ -94,6 +94,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                   
                                     @foreach ($advanceChequeEntrys as $value)
                                         <tr>
                                             <td>{{ ($advanceChequeEntrys->currentPage() - 1) * $advanceChequeEntrys->perPage() + $loop->iteration }}
@@ -112,23 +113,36 @@
                                             <td>{{ $value->customer->address }}</td>
                                             <td>{{ $value->createdBy->name }}</td>
                                             <td>
+ 
                                                 @if ($value->document)
-                                                    <a href="{{ $value->document }}" target="_blank"><i
-                                                            class="fa fa-download"></i></a>
+                                                    <a href="{{ $value->document }}" target="_blank"><i class="fa fa-download"></i></a>
                                                 @endif
-                                                @foreach ($value->details as $key => $detail)
-                                                    @php
-                                                        $documents = is_string($detail->document)
-                                                            ? json_decode($detail->document, true)
-                                                            : $detail->document;
-                                                    @endphp
-                                                    @if (!empty($documents) && is_array($documents))
-                                                        @foreach ($documents as $doc)
-                                                            <a href="{{ $doc }}" target="_blank"><i
-                                                                    class="fa fa-image"></i></a>
-                                                        @endforeach
-                                                    @endif
-                                                @endforeach
+                                                
+                                                {{-- Prepare Cheque Details --}}
+                                                @php
+                                                    $chequeDocuments = $value->details
+                                                        ->map(function ($detail) {
+
+                                                            return [
+                                                                'cheque_no'   => $detail->cheque_no,
+                                                                'cheque_date' => $detail->cheque_date,
+                                                                'amount'      => $detail->amount,
+                                                                'document'    => $detail->document,
+                                                            ];
+
+                                                        })
+                                                        ->values()
+                                                        ->toArray();
+                                                @endphp
+
+
+                                                {{-- Eye - Show if any cheque/document exists --}}
+                                                @if($value->details->count() > 0)
+                                                 
+                                                        <i class="fa fa-eye   btn-xs btn-success view-cheque-document"  data-cheques='@json($chequeDocuments)' title="View Cheque Details"></i>
+                                              
+
+                                                @endif                         
                                             </td>
                                             <td>{{ $value->total_amount }}</td>
                                             <td>{{ $value->collection_date }}</td>
@@ -229,6 +243,71 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="chequeDocumentModal" tabindex="-1"   role="dialog" aria-labelledby="chequeDocumentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                {{-- Header --}}
+                <div class="modal-header">
+                    <h5 class="modal-title"  id="chequeDocumentModalLabel">
+                        <i class="fa fa-money"></i>
+                        Cheque Details
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal"  aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                {{-- Body --}}
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th width="5%" class="text-center">
+                                        #
+                                    </th>
+                                    <th>
+                                        Cheque No
+                                    </th>
+                                    <th>
+                                        Cheque Date
+                                    </th>
+                                    <th>
+                                        Amount
+                                    </th>
+                                    <th width="15%" class="text-center">
+                                        Documents
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="chequeDocumentsTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade"  id="documentPreviewModal"  tabindex="-1"  role="dialog"  aria-labelledby="documentPreviewModalLabel"  aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered"  role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"  id="documentPreviewModalLabel">
+                        <i class="fa fa-file"></i>
+                        Document Preview
+                    </h5>
+                    <button type="button"  class="close"   data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center"  id="documentPreviewContent">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('page_scripts')
@@ -321,6 +400,144 @@
             $(".checker-confirm-cheque").on("click", checkerConfirm);
             $(".approval-confirm-cheque").on("click", approvalConfirm);
             $(".reject-confirm-cheque").on("click", rejectConfirm);
+        });
+
+        $(document).on('click', '.view-document', function () {
+            let url = $(this).attr('data-url');
+            if (!url) {
+                return;
+            }
+            let extension = url
+                .split('?')[0]
+                .split('.')
+                .pop()
+                .toLowerCase();
+            let html = '';
+
+            // ==========================
+            // IMAGE
+            // ==========================
+
+            if (
+                ['jpg', 'jpeg', 'png', 'gif', 'webp']
+                    .includes(extension)
+            ) {
+                html = `
+                    <div class="text-center">
+                        <img src="${url}" class="img-fluid" style="max-height:75vh;  width:auto; object-fit:contain;" alt="Document">
+                    </div>
+                `;
+            }
+
+
+            // ==========================
+            // PDF
+            // ==========================
+
+            else if (extension === 'pdf') {
+                html = `
+                    <iframe  src="${url}"   width="100%"   height="700"   style="border:none;">
+                    </iframe>
+                `;
+            }
+
+
+            // ==========================
+            // OTHER FILE
+            // ==========================
+
+            else {
+
+                html = `
+                    <div class="text-center py-5">
+                        <i class="fa fa-file-o fa-4x text-secondary"></i>
+                        <h5 class="mt-3">
+                            Document
+                        </h5>
+                        <a href="${url}"
+                        target="_blank"
+                        class="btn btn-primary">
+                            <i class="fa fa-external-link"></i>
+                            Open Document
+                        </a>
+                    </div>
+                `;
+            }
+            $('#documentPreviewContent').html(html);
+            $('#documentPreviewModal').modal('show');
+        });
+
+    $(document).on('click', '.view-cheque-document', function () {
+        let cheques = $(this).attr('data-cheques');
+        try {
+            cheques = JSON.parse(cheques);
+        } catch (e) {
+            console.error('Invalid cheque JSON:', e);
+            cheques = [];
+        }
+
+        let html = '';
+        if (!cheques || cheques.length === 0) {
+            html = `
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        No cheque details found.
+                    </td>
+                </tr>
+            `;
+        } else {
+            $.each(cheques, function (index, cheque) {
+                let documentHtml = `
+                    <span class="text-muted">
+                        No document
+                    </span>
+                `;
+                // Document exists
+                if (cheque.document) {
+                    documentHtml = `
+                        <button type="button" class="btn btn-xs btn-success view-document" data-url="${cheque.document}" title="View Document">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    `;
+                }
+
+
+                html += `
+                    <tr>
+                        <td class="text-center">
+                            ${index + 1}
+                        </td>
+                        <td>
+                            <strong>
+                                ${cheque.cheque_no || '-'}
+                            </strong>
+                        </td>
+                        <td>
+                            ${cheque.cheque_date || '-'}
+                        </td>
+                        <td>
+                            <strong>
+                                ${cheque.amount || '-'}
+                            </strong>
+                        </td>
+                        <td class="text-center">
+                            ${documentHtml}
+                        </td>
+                    </tr>
+                `;
+            });
+
+        }
+        $('#chequeDocumentsTableBody').html(html);
+        $('#chequeDocumentModal').modal('show');
+
+    });
+
+        $(document).on('click', '#chequeDocumentModal .close', function () {
+            $('#chequeDocumentModal').modal('hide');
+        });
+        $(document).on('click', '#documentPreviewModal .close', function () {
+            $('#documentPreviewModal').modal('hide');
         });
     </script>
 @endsection
