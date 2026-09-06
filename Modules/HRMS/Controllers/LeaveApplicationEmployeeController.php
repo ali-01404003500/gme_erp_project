@@ -74,6 +74,8 @@ class LeaveApplicationEmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+
     public function store(Request $request)
     {
         $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
@@ -91,6 +93,27 @@ class LeaveApplicationEmployeeController extends Controller
         if (!$leaveStatus) {
             return redirect()->route('hrm.leave-application-employees.create')->with('error', 'Leave balance not configured for you.');
         }
+
+
+        // =====================================================
+        // Check existing pending leave application
+        // =====================================================
+
+        $pendingLeaveApplication = LeaveApplication::where('employee_id', $request->employee_id)
+            ->where('status', 'pending')
+            ->where('leave_year_id', $leaveYearId)
+            ->exists();
+
+        if ($pendingLeaveApplication) {
+            return redirect()
+                ->route('hrm.leave-application-employees.create')
+                ->with('error', 'You already have a pending leave application. Please wait until it is approved.');
+        }
+
+
+        // =====================================================
+        // Leave Balance
+        // =====================================================
 
         $leaveBalance = $leaveStatus->remaining_balance ?? 0;
         $continuous = $leaveStatus->continuous ?? 0;

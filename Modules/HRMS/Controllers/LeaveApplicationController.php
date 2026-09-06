@@ -170,7 +170,7 @@ class LeaveApplicationController extends Controller
         $request->merge(['from_date' => $from_date]);
         $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
         $request->merge(['to_date' => $to_date]);
-          $leaveYearId = LeaveYear::where('year', date('Y'))->value('id');
+        $leaveYearId = LeaveYear::where('year', date('Y'))->value('id');
 
         $leaveStatus = LeaveStatus::where('employee_id', $request->employee_id)
             ->where('leave_type', $request->leave_type_id)
@@ -181,6 +181,25 @@ class LeaveApplicationController extends Controller
         if (!$leaveStatus) {
             return redirect()->route('hrm.leave-application-employees.create')->with('error', 'Leave balance not configured for this employee.');
         }
+
+        // =====================================================
+        // Check existing pending leave application
+        // =====================================================
+
+        $pendingLeaveApplication = LeaveApplication::where('employee_id', $request->employee_id)
+            ->where('status', 'pending')
+            ->where('leave_year_id', $leaveYearId)
+            ->exists();
+
+        if ($pendingLeaveApplication) {
+            return redirect()
+                ->route('hrm.leave-application-employees.create')
+                ->with('error', 'You already have a pending leave application. Please wait until it is approved.');
+        }
+
+        // =====================================================
+        // Leave Balance
+        // ====================================================
 
         $leaveBalance = $leaveStatus->remaining_balance ?? 0;
         $continuous = $leaveStatus->continuous ?? 0;
