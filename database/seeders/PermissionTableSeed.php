@@ -751,7 +751,7 @@ class PermissionTableSeed extends Seeder
                 'key' => 'hrm.leave-years',
             ],
  
-            //Leave Approver Setup
+            //Leave Approver Setup permission
             [
                 'name' => 'Leave Approver Setup List',
                 'slug' => 'hrm.settings.leave-approvers.index',
