@@ -1,0 +1,16 @@
+{
+    "kalpurush": {
+        "normal": "kalpurush_normal_96f02f0cb96ace3a55722da3c777032f"
+    },
+    "noto sans bengali": {
+        "100": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_100_3dfa1960d3cc7d17162f7eee0a52dae4",
+        "200": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_200_f201194c853cff3dfefbec794e33c392",
+        "300": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_300_eefac888a4a9dc988f9c3254bbf9c9ce",
+        "normal": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_normal_542ec1ea18f225b6ade9a2ca3e1d19af",
+        "500": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_500_fdc7d86a17e827871e65b4d1a391d9df",
+        "600": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_600_aab783dbe1b7d8e15647f965725153f5",
+        "bold": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_bold_af66e0edcf4032410da861b5d5d294f6",
+        "800": "C:\\xampp\\htdocs\\project\\gme_erp_project\\public\\assets\/fonts\/noto_sans_bengali_800_7da9a0a82f9fbb256d9d4df02fa15a22",
+        "900": "noto_sans_bengali_900_181a1a0699873698c0346e9fbe15a496"
+    }
+}

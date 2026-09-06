@@ -75,11 +75,11 @@ class InvoicePdfService
         $options->setIsRemoteEnabled(true);
 
         $dompdf = new Dompdf($options);
+ 
+        $fontFile = public_path('assets/fonts/SolaimanLipi.ttf');
 
-        $fontDir = 'assets/fonts/';
-        $fontFile = $fontDir . 'SolaimanLipi.ttf';
-
-        $dompdf->getOptions()->set('isFontSubsettingEnabled', true);
+        //$dompdf->getOptions()->set('isFontSubsettingEnabled', true);
+        $dompdf->getOptions()->set('isFontSubsettingEnabled', false);
         $fontMetrics = $dompdf->getFontMetrics();
         $fontMetrics->get_font($fontFile, 'SolaimanLipi');
 
@@ -90,3 +90,4 @@ class InvoicePdfService
         return $dompdf->output();
     }
 }
+

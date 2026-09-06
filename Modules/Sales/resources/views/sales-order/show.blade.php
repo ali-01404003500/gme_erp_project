@@ -921,7 +921,7 @@
                                
 
 
-                                <div style="font-family: Arial" class="bangla-text">
+                                <div style="font-family: 'SolaimanLipi', Arial, sans-serif; Noto Sans Bengali", sans-serif!important;" class="bangla-text">
                                     <section>
                                         <p class="mb-0">১. সুপ্রিয় গ্রাহক, লেন-দেনের সময় রশিদ বুঝিয়া নিবেন। রশিদ ছাড়া কোন রকম অভিযোগ
                                             গ্রহণযোগ্য হবে না।</p>

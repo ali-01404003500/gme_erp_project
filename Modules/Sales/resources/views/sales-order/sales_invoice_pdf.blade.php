@@ -13,6 +13,7 @@
             line-height: 1.4;
             color: #000;
         }
+        
         .header-table { width: 100%; border: none; margin-bottom: 10px; }
         .header-table td { border: none; vertical-align: top; }
         .text-center { text-align: center; }
