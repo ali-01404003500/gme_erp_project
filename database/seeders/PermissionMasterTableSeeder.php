@@ -1338,6 +1338,30 @@ class PermissionMasterTableSeeder extends Seeder
                 'key' => 'verification',
             ],
 
+            //Sms Templates
+            [
+                'title' => 'SMS Templates',
+                'description' => 'Permission of Add, Remove, Update, Delete SMS Templates',
+                'key' => 'access_control.sms.templates',
+                'parent_key' => 'access_control',
+            ],
+
+            //Sms Services
+            [
+                'title' => 'SMS Services',
+                'description' => 'Permission of Add, Remove, Update, Delete SMS Services',
+                'key' => 'access_control.sms.service_names',
+                'parent_key' => 'access_control',
+            ],
+
+            //Sms Trigger 
+            [
+                'title' => 'SMS Trigger',
+                'description' => 'Permission of Add, Remove, Update, Delete SMS Trigger',
+                'key' => 'access_control.sms.trigger_names',
+                'parent_key' => 'access_control',
+            ],
+
             //branchs
             [
                 'title' => 'Branches',

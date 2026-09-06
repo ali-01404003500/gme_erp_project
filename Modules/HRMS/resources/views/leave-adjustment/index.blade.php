@@ -1,3 +1,5 @@
+@section('title', 'Leave Adjustment')
+@section('description', 'Leave Adjustment')
 @extends('layout.app')
 @section('content')
 

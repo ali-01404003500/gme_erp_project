@@ -4981,9 +4981,85 @@ class PermissionTableSeed extends Seeder
                 'key' => 'hrm.employees',
             ],
  
+            // SMS Templates
+            [
+                'name' => 'Create SMS Templates',
+                'slug' => 'access_control.sms.templates.create',
+                'description' => 'SMS templates create permission',
+                'key' => 'access_control.sms.templates'
+            ],
+            [
+                'name' => 'Edit SMS Templates',
+                'slug' => 'access_control.sms.templates.edit',
+                'description' => 'SMS templates edit permission',
+                'key' => 'access_control.sms.templates'
+            ],
+            [
+                'name' => 'Delete SMS Templates',
+                'slug' => 'access_control.sms.templates.delete',
+                'description' => 'SMS templates delete permission',
+                'key' => 'access_control.sms.templates'
+            ],
+             [
+                'name' => 'SMS Templates List',
+                'slug' => 'access_control.sms.templates.index',
+                'description' => 'SMS templates list permission',
+                'key' => 'access_control.sms.templates'
+            ],
 
-         
- 
+            // SMS Service Names
+            [
+                'name' => 'Create SMS Service Names',
+                'slug' => 'access_control.sms.service_names.create',
+                'description' => 'Service names create permission',
+                'key' => 'access_control.sms.service_names'
+            ],
+            [
+                'name' => 'Edit SMS Service Names',
+                'slug' => 'access_control.sms.service_names.edit',
+                'description' => 'Service names edit permission',
+                'key' => 'access_control.sms.service_names'
+            ],
+            [
+                'name' => 'Delete SMS Service Names',
+                'slug' => 'access_control.sms.service_names.delete',
+                'description' => 'Service names delete permission',
+                'key' => 'access_control.sms.service_names'
+            ],
+            [
+                'name' => 'SMS Service List',
+                'slug' => 'access_control.sms.service_names.index',
+                'description' => 'Service Name List permission',
+                'key' => 'access_control.sms.service_names'
+            ],
+
+            // SMS Trigger Names
+            [
+                'name' => 'Create SMS Trigger Names',
+                'slug' => 'access_control.sms.trigger_names.create',
+                'description' => 'Trigger names create permission',
+                'key' => 'access_control.sms.trigger_names'
+            ],
+            [
+                'name' => 'Edit SMS Trigger Names',
+                'slug' => 'access_control.sms.trigger_names.edit',
+                'description' => 'Trigger names edit permission',
+                'key' => 'access_control.sms.trigger_names'
+            ],
+            [
+                'name' => 'Delete SMS Trigger Names',
+                'slug' => 'access_control.sms.trigger_names.delete',
+                'description' => 'Trigger names delete permission',
+                'key' => 'access_control.sms.trigger_names'
+            ],
+            [
+                'name' => 'SMS Trigger List',
+                'slug' => 'access_control.sms.trigger_names.index',
+                'description' => 'SMS Trigger Name list permission',
+                'key' => 'access_control.sms.trigger_names'
+            ],
+
+
             //branchs
             //branchs
             [
