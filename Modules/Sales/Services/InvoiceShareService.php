@@ -1,9 +1,7 @@
 <?php
 
 namespace Modules\Sales\Services;
-
-use Modules\Sales\Models\Quotation;
-use Modules\Sales\Models\QuotationDetail;
+ 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -17,28 +15,34 @@ use Modules\Sales\Models\SalesOrder;
 
 class InvoiceShareService
 {
-    public function createShare(SalesOrder $invoice, ?string $customerPhone = null): InvoiceShare
-    {
-        // 1. PDF জেনারেট করো (তোমার existing PDF generation logic ব্যবহার করো)
-        $pdfContent = app(InvoicePdfService::class)->generate($invoice);
+    public function __construct(protected InvoicePdfService $pdfService) {}
 
-        // 2. Storage disk: production এ 's3' ব্যবহার করো, dev এ 'local'
-        $disk = config('filesystems.default'); // .env FILESYSTEM_DISK=s3
-        $path = 'invoice-shares/' . now()->format('Y/m') . '/' . uniqid() . '.pdf';
+    /**
+     * @param SalesOrder $order
+     * @param mixed $salesOrderService তোমার existing SalesOrderService instance
+     */
+    public function createShare(SalesOrder $order, $salesOrderService): InvoiceShare
+    {
+        $pdfContent = $this->pdfService->generate($order->id, $salesOrderService);
+
+        $disk = 'invoice_shares'; 
+        $path = 'invoice-shares/' . now()->format('Y/m') . '/' . uniqid('so_' . $order->id . '_') . '.pdf';
         Storage::disk($disk)->put($path, $pdfContent);
 
-        // 3. Share record তৈরি
+        $expiresAt = now()->addHours(config('services.invoice_share.expiry_hours'));
+        
         $share = InvoiceShare::create([
             'token' => InvoiceShare::generateToken(),
-            'invoice_id' => $invoice->id,
+            'sales_order_id' => $order->id,
             'pdf_path' => $path,
-            'customer_phone' => $customerPhone,
+            'customer_phone' => $order->resolvePhone(),
             'max_views' => config('services.invoice_share.max_views'),
-            'expires_at' => now()->addHours(config('services.invoice_share.expiry_hours')),
+            'expires_at' => $expiresAt,
         ]);
 
+    
         Log::info('Invoice share created', [
-            'invoice_id' => $invoice->id,
+            'sales_order_id' => $order->id,
             'token' => $share->token,
             'expires_at' => $share->expires_at,
         ]);

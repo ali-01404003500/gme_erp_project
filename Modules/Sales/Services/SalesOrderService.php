@@ -36,10 +36,11 @@ class SalesOrderService
     private $collectionService;
     private $smsService;
 
-    public function __construct(AccountTransactionService $transactionService, CollectionService $collectionService)
+    public function __construct(AccountTransactionService $transactionService, CollectionService $collectionService, protected InvoiceShareService $shareService )
     {
         $this->transactionService = $transactionService;
         $this->collectionService = $collectionService; 
+        $this->shareService = $shareService;
     }
 
  
@@ -278,9 +279,12 @@ class SalesOrderService
             $phone =   $customerInfo->contact_for_sms;
             $customerName = $customerInfo->company_name;
             $invoiceAmount = $result['salesOrder']->net_amount; 
+            $invoiceLink = $this->generateShareLink($result['salesOrder']->id)['link'];
+
             $smsdata = [
                 'customer_name' =>  $customerName,
-                'invoice_amount' => $invoiceAmount
+                'invoice_amount' => $invoiceAmount,
+                'invoice_link' => $invoiceLink
             ];  
 
             foreach ($smsdata as $key => $value) {
@@ -379,6 +383,21 @@ class SalesOrderService
         // dd( $result['salesOrder']->offers);
         DB::commit();
         return $result;
+    }
+
+    public function generateShareLink($id)
+    {
+        $order = SalesOrder::findOrFail($id);
+
+        $share = $this->shareService->createShare($order, $this);
+
+        $link = $this->shareService->getShareUrl($share);
+
+        return [
+            'success' => true,
+            'link' => $link,
+            'expires_at' => $share->expires_at,
+        ];
     }
 
     /**
@@ -1459,11 +1478,13 @@ class SalesOrderService
             $phone =   $customerInfo->contact_for_sms;
             $customerName = $customerInfo->company_name;
             $invoiceAmount = $salesOrder->net_amount;
-
+            $invoiceLink = $this->generateShareLink($result['salesOrder']->id)['link'];
+            
             $smsdata = [
                 'customer_name' =>  $customerName,
-                'invoice_amount' => $invoiceAmount
-            ];  
+                'invoice_amount' => $invoiceAmount,
+                'invoice_link' => $invoiceLink
+            ];    
 
             foreach ($smsdata as $key => $value) {
                 $smsTemplate = str_replace('$' . $key, $value, $smsTemplate);

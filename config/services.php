@@ -42,6 +42,5 @@ return [
         'max_views' => env('INVOICE_SHARE_MAX_VIEWS', 5),
         'base_url' => env('INVOICE_SHARE_BASE_URL'),
     ],
- 
 
 ];

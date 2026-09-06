@@ -46,6 +46,18 @@ class SalesOrder extends BaseModel
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    public function resolvePhone(): ?string
+    {
+        $customer = $this->customer;
+
+        if ($customer && !empty($customer->contact_for_sms)) {
+            return $customer->contact_for_sms;
+        }
+
+        // customer এ না পেলে fallback হিসেবে sales_orders এর phone
+        return $this->phone;
+    }
+
     public function salesOrderDeliveries(){
         return $this->hasMany(SalesOrderDelivery::class, 'sales_order_id');
     }

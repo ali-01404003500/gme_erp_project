@@ -10,6 +10,10 @@ use Modules\Sales\Models\SalesOrder;
 use Modules\SalesForce\Providers\SalesForceServiceProvider;
 use Modules\SalesTarget\Models\SalesOrderEmployeeSplit;
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -34,5 +38,13 @@ class AppServiceProvider extends ServiceProvider
         }
         SalesOrder::observe(OrderObserver::class); 
         SalesOrderEmployeeSplit::observe(SalesOrderEmployeeSplitObserver::class);
+
+        /** Eita customer der k invoice link share korar link */
+        RateLimiter::for('invoice-share', function (Request $request) {
+            return [
+                Limit::perMinute(20)->by($request->ip()),
+                Limit::perMinute(10)->by('token:' . $request->route('token')),
+            ];
+        });
     }
 }

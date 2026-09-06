@@ -35,6 +35,13 @@ return [
             'root' => storage_path('app'),
             'throw' => false,
         ],
+ 
+        'invoice_shares' => [
+            'driver' => 'local',
+            'root' => storage_path('app/invoice-shares'),
+            'serve' => true,
+            'throw' => false,
+        ],
 
         'public' => [
             'driver' => 'local',

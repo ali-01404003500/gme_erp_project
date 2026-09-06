@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 class InvoiceShare extends Model
 {
     protected $fillable = [
-        'token', 'invoice_id', 'pdf_path', 'customer_phone',
+        'token', 'sales_order_id', 'pdf_path', 'customer_phone',
         'max_views', 'view_count', 'expires_at',
         'last_viewed_at', 'last_viewed_ip', 'is_revoked',
     ];
@@ -27,9 +27,9 @@ class InvoiceShare extends Model
         'is_revoked' => 'boolean',
     ];
 
-    public function invoice()
+    public function salesOrder()
     {
-        return $this->belongsTo(SalesOrder::class);
+        return $this->belongsTo(SalesOrder::class, 'sales_order_id');
     }
 
     public function isExpired(): bool

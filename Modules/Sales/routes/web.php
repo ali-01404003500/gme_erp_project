@@ -14,6 +14,7 @@ use Modules\Sales\Controllers\DeliveryController;
 use Modules\Sales\Controllers\FakeInvoiceController;
 use Modules\Sales\Controllers\FakeSalesReportController;
 use Modules\Sales\Controllers\FreeSalesController;
+use Modules\Sales\Controllers\InvoiceShareController;
 use Modules\Sales\Controllers\QuotationController;
 use Modules\Sales\Controllers\SalesCommissionController;
 use Modules\Sales\Controllers\SalesOrderController;
@@ -25,6 +26,24 @@ use Modules\Sales\Controllers\SalesReturnController;
 use Modules\Sales\Controllers\ShipmentExplorerReportController;
 use Modules\Sales\Controllers\ShipmentVerifyController;
 use Modules\Sales\Controllers\SalesOrderEmployeeSplitController;
+
+ 
+// ⚠️ শুধু লোকাল টেস্টের জন্য — production এ deploy করার আগে অবশ্যই মুছে ফেলো
+Route::get('/test-generate-link/{id}', [SalesOrderController::class, 'generateLink']);
+
+// Internal — link generate করার জন্য (ERP ভেতরে, auth লাগবে)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::post('/sales-orders/{id}/generate-link', [SalesOrderController::class, 'generateLink'])
+        ->name('sales-order.generate-link');
+});
+
+// Public — customer লিংকে ক্লিক করে PDF দেখবে (auth লাগবে না)
+Route::middleware(['throttle:invoice-share'])->group(function () {
+    Route::get('/i/{token}', [InvoiceShareController::class, 'show'])
+        ->name('invoice.public.show')
+        ->where('token', '[0-9a-f\-]{36}');
+});
+
 
 Route::group(['middleware' => 'auth', 'prefix' => 'sales', 'as' => 'sales.'], function () {
 

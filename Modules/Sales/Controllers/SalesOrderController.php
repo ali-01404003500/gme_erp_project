@@ -32,6 +32,8 @@ use Modules\Services\Models\Service;
 use App\Models\SmsInfo;
 use Carbon\Carbon;
 use Modules\Account\Models\Collections\Collection;
+use Modules\Sales\Services\InvoicePdfService;
+use Modules\Sales\Services\InvoiceShareService;
 
 class SalesOrderController extends Controller
 {
@@ -50,11 +52,11 @@ class SalesOrderController extends Controller
     private $generalNotificationService;
 
     function __construct(SalesOrderService $service, GeneralNotificationService $generalNotificationService)
-    {
+    {   
         $this->service = $service;
         $this->generalNotificationService = $generalNotificationService;
 
-        $this->middleware('permited')->except(['getCustomerSetting', 'getSalesDiscount', 'countSalesOrder', 'countTotalSales', 'calculateDiscountForProducts','invoiceAutocomplete','employeeAutocomplete','productAutocomplete','customerAutocomplete']);
+        $this->middleware('permited')->except(['generateLink','getCustomerSetting', 'getSalesDiscount', 'countSalesOrder', 'countTotalSales', 'calculateDiscountForProducts','invoiceAutocomplete','employeeAutocomplete','productAutocomplete','customerAutocomplete']);
         $this->middleware('permitedSlug:dashboard')->only(['countSalesOrder', 'countTotalSales']);
 
     }
@@ -294,6 +296,7 @@ class SalesOrderController extends Controller
     /**
      * Display the specified resource.
      */
+    
     public function show($id, Request $request)
     {
         $data['salesOrder'] = $this->service->show($id);
@@ -387,6 +390,13 @@ class SalesOrderController extends Controller
         }
 
         return view("Sales::sales-order.show", $data);
+    }
+
+    // ---------------- নতুন মেথড: SMS এর জন্য link generate ----------------
+    public function generateLink($id)
+    {
+        $result = $this->service->generateShareLink($id);
+        return response()->json($result);
     }
 
     /**
