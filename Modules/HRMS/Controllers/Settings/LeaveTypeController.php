@@ -3,6 +3,7 @@ namespace Modules\HRMS\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Modules\HRMS\Models\Settings\LeaveType;
 use Modules\HRMS\Services\Settings\LeaveTypeService;
 
@@ -33,6 +34,16 @@ class LeaveTypeController extends Controller
             'is_maternity'         => 'nullable|boolean',
             'is_unpaid'            => 'nullable|boolean',
             'is_partially_balance' => 'nullable|boolean',
+            'leave_count_policy' => [
+            'required',
+            Rule::in([
+                'working_days_only',
+                'working_plus_between',
+                'working_plus_before',
+                'working_plus_after',
+                'working_plus_before_between_after',
+            ]),
+        ],
         ]);
 
         $validate['is_maternity']         = $request->has('is_maternity') ? 1 : 0;
@@ -58,6 +69,16 @@ class LeaveTypeController extends Controller
             'is_maternity'         => 'nullable|boolean',
             'is_unpaid'            => 'nullable|boolean',
             'is_partially_balance' => 'nullable|boolean',
+            'leave_count_policy' => [
+                'required',
+                Rule::in([
+                    'working_days_only',
+                    'working_plus_between',
+                    'working_plus_before',
+                    'working_plus_after',
+                    'working_plus_before_between_after',
+                ]),
+            ],
         ]);
 
         $validate['is_maternity']         = $request->has('is_maternity') ? 1 : 0;

@@ -83,16 +83,26 @@ class LeaveApplicationController extends Controller
         return view('HRMS::leave.create', $data);	
     }
 
-    public function getLeaveResponse(Request $request){
+    public function getLeaveResponse(Request $request)
+    {
         $employee   = $request->employee;
         $leave_type = $request->leave_type;
+
+        $leaveTypeWiseBalance = LeaveStatus::where('employee_id', $employee)
+            ->where('leave_type', $leave_type)
+            ->where('is_active', 1)
+            ->first();
+
+        $leaveTaken = LeaveApplication::query()
+            ->where('employee_id', $employee)
+            ->where('leave_type_id', $leave_type)
+            ->whereNotNull('approved_by')
+            ->sum('day_count');
+
+        $data['leaveTypeWiseBalance'] = $leaveTypeWiseBalance;
+
+        $data['leaveBalance'] = ($leaveTypeWiseBalance?->remaining_balance ?? 0) - ($leaveTaken ?? 0);
  
-        $leaveTypeWiseBalance = LeaveStatus::where('employee_id', $employee)->where('leave_type', $leave_type) ->where('is_active', 1)->first();
-        $leaveTaken =  LeaveApplication::query()->where('employee_id', $employee)->where('leave_type_id', $leave_type)->where('approved_by', '!=', null)->get()->sum('day_count');
-
-        $data['leaveTypeWiseBalance'] =  $leaveTypeWiseBalance;
-
-        $data['leaveBalance'] = $leaveTypeWiseBalance->remaining_balance - $leaveTaken??0;
 
         return response()->json($data);
     }

@@ -14,6 +14,19 @@ class LeaveType extends BaseModel
     public $deletePrevent = ['leaveApplications'];
 
     protected $guarded = [];
+    protected $fillable = [ 
+        'leave_type_name',
+        'flag',
+        'half_flag',
+        'total_day',
+        'simultaneously_limit',
+        'is_maternity',
+        'is_unpaid',
+        'payment_mode',
+        'is_partially_balance',
+        'leave_count_type',
+        'leave_count_policy',
+    ];
 
     // Boolean fields casting
     protected $casts = [

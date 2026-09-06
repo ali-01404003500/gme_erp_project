@@ -147,20 +147,53 @@
                                         id="par1">
                                     <label class="form-check-label" for="par1">Is Partially Balance Applicable?</label>
                                 </div>
+                            </div> 
+                        </div>
+                        <div class="row mt-3"> 
+ 
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Leave Count Type
+                                </label>
+
+                                <select name="leave_count_type" class="form-select">
+
+                                    <option value="day">Day Wise</option>
+                                    <option value="hour">Hour Wise</option>
+
+                                </select>
                             </div>
-                            <div class="col-md-5">
-                                <label class="d-block mb-2"><b>Leave Count Type</b></label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="leave_count_type" value="day"
-                                        id="day1" checked>
-                                    <label class="form-check-label" for="day1">Day Wise</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="leave_count_type" value="hour"
-                                        id="hour1">
-                                    <label class="form-check-label" for="hour1">Hour Wise</label>
-                                </div>
-                            </div>
+
+
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    Leave Day Calculation
+                                </label>
+
+                                <select name="leave_count_policy" id="leave_count_policy" class="form-select">
+
+                                    <option value="working_days_only">
+                                        Working Days Only
+                                    </option>
+
+                                    <option value="working_plus_between">
+                                        Working Days + Holiday/Weekend Between Leave
+                                    </option>
+
+                                    <option value="working_plus_before">
+                                        Working Days + Holiday/Weekend Before Leave
+                                    </option>
+
+                                    <option value="working_plus_after">
+                                        Working Days + Holiday/Weekend After Leave
+                                    </option>
+
+                                    <option value="working_plus_before_between_after">
+                                        Working Days + Holiday/Weekend Before, Between & After Leave
+                                    </option>
+
+                                </select>
+                            </div> 
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -223,18 +256,51 @@
                                     <label class="form-check-label" for="par2">Is Partially Balance Applicable?</label>
                                 </div>
                             </div>
-                            <div class="col-md-5">
-                                <label class="d-block mb-2"><b>Leave Count Type</b></label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="leave_count_type" value="day"
-                                        id="day2">
-                                    <label class="form-check-label" for="day2">Day Wise</label>
+                        </div>
+                        <div class="row">
+                            {{-- Dropdowns --}}
+                            <div class="col-md-6">
+                                {{-- Leave Count Type --}}
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Leave Count Type
+                                        <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select name="leave_count_type"   id="edit_leave_count_type" class="form-select"  required>
+                                        <option value="day">Day Wise  </option>
+                                        <option value="hour">   Hour Wise </option>
+                                    </select>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="leave_count_type" value="hour"
-                                        id="hour2">
-                                    <label class="form-check-label" for="hour2">Hour Wise</label>
-                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                {{-- Leave Day Calculation --}}
+                                <div class="mb-3">
+
+                                    <label class="form-label">
+                                        Leave Day Calculation
+                                        <span class="text-danger">*</span>
+                                    </label>
+
+                                    <select name="leave_count_policy"   id="edit_leave_count_policy"  class="form-select"  required>
+                                        <option value="working_days_only">
+                                            Working Days Only
+                                        </option>
+                                        <option value="working_plus_between">
+                                            Working Days + Holiday/Weekend Between Leave
+                                        </option>
+                                        <option value="working_plus_before">
+                                            Working Days + Holiday/Weekend Before Leave
+                                        </option>
+                                        <option value="working_plus_after">
+                                            Working Days + Holiday/Weekend After Leave
+                                        </option>
+                                        <option value="working_plus_before_between_after">
+                                            Working Days + Holiday/Weekend Before, Between & After Leave
+                                        </option>
+                                    </select>
+                                </div> 
                             </div>
                         </div>
                     </div>
@@ -278,9 +344,9 @@
             form.find('#unp2').prop('checked', Number(data.is_unpaid) === 1);
             form.find('#par2').prop('checked', Number(data.is_partially_balance) === 1);
 
-            // radio
-            form.find('input[name="leave_count_type"][value="'+data.leave_count_type+'"]').prop('checked', true);
-
+            // dropdowns
+            form.find('select[name="leave_count_type"]').val(data.leave_count_type || 'day' ); 
+            form.find('select[name="leave_count_policy"]').val(data.leave_count_policy || 'working_days_only' );
         });
 
     </script>

@@ -59,7 +59,8 @@
                                             <input type="hidden" name="halfDayLeave" id="halfDayLeave" value="0" >
                                             <input type="hidden" name="simultaneouslyLimit" id="simultaneouslyLimit" value="0" >
                                             <input type="hidden" name="leaveBalance" id="leaveBalance" value="0" >
-                                            <input type="hidden" id="holidays" value='@json($holidays)'>
+                                            <input type="hidden" id="holidays" value='@json($holidays)'> 
+                                            <input type="hidden" id="weekendDays" value='@json($weekendDays ?? [5])'> 
                                         </div>
 
                                         <div class="col-md-6">
@@ -68,7 +69,10 @@
                                                 <select name="leave_type_id" id="leave_type" onchange="loadResponse()" class="form-control tom-select required" required>
                                                     <option value="">Select Leave Type</option>
                                                     @foreach ($leaveTypes as $leave_type)
-                                                        <option value="{{ $leave_type->id }}">{{ $leave_type->leave_type_name }}
+                                                        <option value="{{ $leave_type->id }}"
+                                                                data-policy="{{ $leave_type->leave_count_policy ?? 'working_days_only' }}"
+                                                                data-count-type="{{ $leave_type->leave_count_type ?? 'day' }}">
+                                                            {{ $leave_type->leave_type_name }}
                                                         </option>
                                                     @endforeach
                                                 </select>
