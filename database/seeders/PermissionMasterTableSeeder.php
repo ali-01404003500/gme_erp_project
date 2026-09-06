@@ -221,7 +221,7 @@ class PermissionMasterTableSeeder extends Seeder
             [
                 'title' => 'Leave Approver Setup',
                 'description' => 'Permission of Add, Remove, Update, Delete Leave Approver Setup',
-                'key' => 'hrm.leave-approver-setups',
+                'key' => 'hrm.settings.leave-approvers',
                 'parent_key' => 'hrm',
             ],
 

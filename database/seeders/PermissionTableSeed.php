@@ -754,27 +754,27 @@ class PermissionTableSeed extends Seeder
             //Leave Approver Setup
             [
                 'name' => 'Leave Approver Setup List',
-                'slug' => 'hrm.leave-approver-setups.index',
+                'slug' => 'hrm.settings.leave-approvers.index',
                 'description' => 'Leave approver setup list permission',
-                'key' => 'hrm.leave-approver-setups',
+                'key' => 'hrm.settings.leave-approvers',
             ],
             [
                 'name' => 'Create Leave Approver Setup',
-                'slug' => 'hrm.leave-approver-setups.create',
+                'slug' => 'hrm.settings.leave-approvers.create',
                 'description' => 'Leave approver setup create permission',
-                'key' => 'hrm.leave-approver-setups',
+                'key' => 'hrm.settings.leave-approvers',
             ],
             [
                 'name' => 'Leave Approver Setup Update',
-                'slug' => 'hrm.leave-approver-setups.update',
+                'slug' => 'hrm.settings.leave-approvers.update',
                 'description' => 'Leave approver setup update permission',
-                'key' => 'hrm.leave-approver-setups',
+                'key' => 'hrm.settings.leave-approvers',
             ],
             [
                 'name' => 'Leave Approver Setup Delete',
-                'slug' => 'hrm.leave-approver-setups.destroy',
+                'slug' => 'hrm.settings.leave-approvers.destroy',
                 'description' => 'Leave approver setup delete permission',
-                'key' => 'hrm.leave-approver-setups',
+                'key' => 'hrm.settings.leave-approvers',
             ],
         
 
