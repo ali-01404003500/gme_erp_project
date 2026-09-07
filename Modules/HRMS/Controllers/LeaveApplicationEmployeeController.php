@@ -51,8 +51,6 @@ class LeaveApplicationEmployeeController extends Controller
         $data['company_info'] = CompanyInfo::first();
         
         
-       
-
         return view("HRMS::leave-application-employee.index", $data);
     }
 

@@ -83,17 +83,17 @@
                                 style="width:100%; ">
                                 <thead>
                                     <tr>
-                                        <th>Sl</th>
-                                        <th>Employee</th>
-                                        <th>From Date</th>
-                                        <th>To Date</th>
-                                        <th>Leave Days</th>
-                                        <th>Leave Type</th>
-                                        <th>Purpose</th>
-                                        <th>Documents</th>
-                                        <th>Status</th> 
-                                        <th>Approval Layers</th> 
-                                        <th class="no-content">Action</th>
+                                        <th width="2%">Sl</th>
+                                        <th width="18%">Employee</th>
+                                        <th width="8%">From Date</th>
+                                        <th width="8%">To Date</th>
+                                        <th width="5%">Leave Days</th>
+                                        <th width="5%">Leave Type</th>
+                                        <th width="10%">Purpose</th>
+                                        <th width="10%">Documents</th>
+                                        <th width="10%">Status</th> 
+                                        <th width="14%">Approval Layers</th> 
+                                        <th width="10%" class="no-content">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
