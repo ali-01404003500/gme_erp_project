@@ -99,7 +99,7 @@
                                 <thead>
                                     <tr>
                                         <th width="2%">Sl</th>
-                                        <th width="18%">Employee</th>
+                                        <th width="15%">Employee</th>
                                         <th width="8%">From Date</th>
                                         <th width="8%">To Date</th>
                                         <th width="5%">Leave Days</th>
@@ -107,7 +107,7 @@
                                         <th width="10%">Purpose</th>
                                         <th width="10%">Documents</th>
                                         <th width="10%">Status</th> 
-                                        <th width="14%">Approval Layers</th> 
+                                        <th width="17%">Approval Layers</th> 
                                         <th width="10%" class="no-content">Action</th>
                                     </tr>
                                 </thead>

@@ -10,6 +10,7 @@ use Modules\HRMS\Models\Settings\LeaveType;
 use Modules\HRMS\Services\LeaveApplicationService;
 use App\Services\Notifications\GeneralNotificationService;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
@@ -77,7 +78,37 @@ class LeaveApplicationController extends Controller
     public function create()
     {
         $data['employees'] = Employee::where('status', 1)->get();;
-        $data['holidays'] = [];
+        $startDate = Carbon::now()->startOfMonth()->startOfDay();
+        $endDate   = Carbon::now()->endOfMonth()->endOfDay();
+        $holidays = Holiday::query()
+            ->whereNull('deleted_at')
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('start_date', [$startDate, $endDate])
+                    ->orWhereBetween('end_date', [$startDate, $endDate])
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('start_date', '<=', $startDate)
+                            ->where('end_date', '>=', $endDate);
+                    });
+            })
+            ->get();
+            
+        $holidayDates = [];
+
+        foreach ($holidays as $holiday) {
+            $period = CarbonPeriod::create(
+                max(Carbon::parse($holiday->start_date), $startDate),
+                min(Carbon::parse($holiday->end_date), $endDate)
+            );
+
+            foreach ($period as $date) {
+                $holidayDates[] = $date->format('Y-m-d');
+            }
+        }
+
+        $holidayDates = array_values(array_unique($holidayDates));
+
+        $data['holidays'] = $holidayDates;
+        $data['weekendDays'] = [5]; 
         $data['leaveTypes'] = LeaveType::all();
         
         return view('HRMS::leave.create', $data);	
@@ -276,6 +307,37 @@ class LeaveApplicationController extends Controller
         $data['leave'] = $leaveApplication;
         $data['employees'] = Employee::all();
         $data['leaveTypes'] = LeaveType::all();
+        $startDate = Carbon::now()->startOfMonth()->startOfDay();
+        $endDate   = Carbon::now()->endOfMonth()->endOfDay();
+        $holidays = Holiday::query()
+            ->whereNull('deleted_at')
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('start_date', [$startDate, $endDate])
+                    ->orWhereBetween('end_date', [$startDate, $endDate])
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('start_date', '<=', $startDate)
+                            ->where('end_date', '>=', $endDate);
+                    });
+            })
+            ->get();
+            
+        $holidayDates = [];
+
+        foreach ($holidays as $holiday) {
+            $period = CarbonPeriod::create(
+                max(Carbon::parse($holiday->start_date), $startDate),
+                min(Carbon::parse($holiday->end_date), $endDate)
+            );
+
+            foreach ($period as $date) {
+                $holidayDates[] = $date->format('Y-m-d');
+            }
+        }
+
+        $holidayDates = array_values(array_unique($holidayDates));
+
+        $data['holidays'] = $holidayDates;
+        $data['weekendDays'] = [5]; 
         return view("HRMS::leave.edit", $data);
     }
 

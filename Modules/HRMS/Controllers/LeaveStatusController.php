@@ -99,7 +99,7 @@ class LeaveStatusController extends Controller
 
         try {
             $this->leaveStatusService->storeLeaveStatus($validate, $leaveBalanceDetails);
-            return redirect()->back()->with('success', 'Leave status assigned successfully.');
+            return redirect()->back()->with('success', 'Leave status assigned successfully.')->withInput();
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Operation failed: ' . $e->getMessage());
         }

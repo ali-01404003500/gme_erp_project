@@ -201,7 +201,8 @@
             let to_type = $('#to_date_leave_count').val();
 
             let holidays = JSON.parse($('#holidays').val() || '[]');
-
+            let weekenddays = JSON.parse($('#weekendDays').val() || '[]');
+            let leave_type = $('#leave_type option:selected').data('policy');
 
             if (start !== '' && end !== '') {
 
@@ -215,21 +216,139 @@
                 // Step: valid days calculate (holiday + friday বাদ)
                 let validDates = [];
 
+                let allDates = [];
+
                 let current = new Date(startDate);
+
                 while (current <= endDate) {
 
-                    let day = current.getDay(); // Friday = 5
-                    let dateStr = current.toISOString().split('T')[0];
+                    let date = new Date(current);
+                    let day = date.getDay(); // Friday = 5
+                    let dateStr = date.toISOString().split('T')[0];
 
-                    if (day !== 5 && !holidays.includes(dateStr)) {
-                        validDates.push(new Date(current));
-                    }
+                    let isFriday = day === 5;
+                    let isHoliday = holidays.includes(dateStr);
+                    let isOffDay = isFriday || isHoliday;
+
+                    allDates.push({
+                        date: date,
+                        dateStr: dateStr,
+                        isFriday: isFriday,
+                        isHoliday: isHoliday,
+                        isOffDay: isOffDay
+                    });
 
                     current.setDate(current.getDate() + 1);
                 }
 
-                let validDays = validDates.length;
 
+                /*
+                |--------------------------------------------------------------------------
+                | Leave Type অনুযায়ী কোন date count হবে
+                |--------------------------------------------------------------------------
+                */
+
+                if (leave_type === 'working_days_only') {
+
+                    // Friday + Holiday বাদ
+                    validDates = allDates
+                        .filter(item => !item.isOffDay)
+                        .map(item => item.date);
+
+                }
+
+                else if (leave_type === 'working_plus_between') {
+
+                    // প্রথম working day এবং শেষ working day-এর
+                    // মাঝখানের Friday/Holiday count হবে
+
+                    let firstWorkingIndex = allDates.findIndex(
+                        item => !item.isOffDay
+                    );
+
+                    let lastWorkingIndex = -1;
+
+                    for (let i = allDates.length - 1; i >= 0; i--) {
+
+                        if (!allDates[i].isOffDay) {
+                            lastWorkingIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (firstWorkingIndex !== -1 && lastWorkingIndex !== -1) {
+
+                        validDates = allDates
+                            .slice(firstWorkingIndex, lastWorkingIndex + 1)
+                            .map(item => item.date);
+                    }
+
+                }
+
+                else if (leave_type === 'working_plus_before') {
+
+                    // প্রথম working day-এর আগের Friday/Holiday count হবে
+
+                    let firstWorkingIndex = allDates.findIndex(
+                        item => !item.isOffDay
+                    );
+
+                    if (firstWorkingIndex !== -1) {
+
+                        validDates = allDates
+                            .slice(0, allDates.length)
+                            .filter((item, index) => {
+                                return index <= firstWorkingIndex;
+                            })
+                            .map(item => item.date);
+                    }
+
+                }
+
+                else if (leave_type === 'working_plus_after') {
+
+                    // শেষ working day-এর পরের Friday/Holiday count হবে
+
+                    let lastWorkingIndex = -1;
+
+                    for (let i = allDates.length - 1; i >= 0; i--) {
+
+                        if (!allDates[i].isOffDay) {
+                            lastWorkingIndex = i;
+                            break;
+                        }
+                    }
+
+                    if (lastWorkingIndex !== -1) {
+
+                        validDates = allDates
+                            .slice(lastWorkingIndex, allDates.length)
+                            .map(item => item.date);
+                    }
+
+                }
+
+                else if (
+                    leave_type === 'working_plus_before_between_after'
+                ) {
+
+                    // পুরো range-এর সব date count হবে
+                    // Working + Friday + Holiday
+
+                    validDates = allDates.map(item => item.date);
+
+                }
+
+                else {
+
+                    // Default: শুধু working days
+                    validDates = allDates
+                        .filter(item => !item.isOffDay)
+                        .map(item => item.date);
+                }
+
+
+                let validDays = validDates.length;
                 // Same Day (after filtering)
                 if (validDays === 1) {
 
@@ -330,6 +449,7 @@
                     $("#leaveBalance").val(res.leaveBalance);
                 });
             }
+            getTotalDays();
         }
         $(document).ready(function() { 
             $('select[name="leave_type"]').change(loadResponse).trigger('change')
