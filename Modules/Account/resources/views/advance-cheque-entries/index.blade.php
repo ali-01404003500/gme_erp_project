@@ -35,7 +35,7 @@
                     <div class="col-md-12 my-4">
                         <div class="card">
                             <div class="card-body">
-                                <form>
+                                <form method="GET" action="{{ route('account.advance-cheque-entries.index') }}">
                                     <div class="col-sm-12">
                                         <table class="table table-bordered">
                                             <tr>
@@ -43,13 +43,15 @@
                                                     <input type="text" name="receipt_no" class="form-control"
                                                         placeholder="Receipt No" value="{{ request('receipt_no') }}">
                                                 </td>
-                                                <td style="width: 25%">
-                                                    <select name="customer_id" class="form-control tom-select">
+                                                <td style="width: 25%"> 
+                                                    <select name="customer_id" id="customer_id" class="form-control tom-select">
                                                         <option value="">Select Customer</option>
+
                                                         @foreach ($customers as $customer)
                                                             <option value="{{ $customer->id }}"
-                                                                @if (request('customer_id') == $customer->id) selected @endif>
-                                                                {{ $customer->company_name }} - {{ $customer->address}}</option>
+                                                                {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
+                                                                {{ $customer->company_name }} - {{ $customer->address }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
@@ -160,20 +162,20 @@
                                             <td>
                                                 <div class="btn-group">
                                                     @if (hasPermission('account.advance-cheque-entries.check') && $value->status == 'Pending')
-                                                        <a href="{{ route('account.advance-cheque-entries.check', $value->id) }}"
+                                                        <a href="{{ route('account.advance-cheque-entries.check', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             title="Checker"
                                                             class="btn btn-xs btn-outline-success checker-confirm-cheque"
-                                                            data-action="{{ route('account.advance-cheque-entries.check', $value->id) }}"
+                                                            data-action="{{ route('account.advance-cheque-entries.check', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             data-confirm-title="Checker Approval?"
                                                             data-confirm-message="Are you sure you want to Checked this?"
                                                             data-confirm-icon="success"
                                                             data-confirm-text="Yes, Approve it!">
                                                             <i class="fas fa-check"></i>
                                                         </a>
-                                                        <a href="{{ route('account.advance-cheque-entries.deny', $value->id) }}"
+                                                        <a href="{{ route('account.advance-cheque-entries.deny', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             class="btn btn-xs btn-outline-danger reject-confirm-cheque"
                                                             title="Reject"
-                                                            data-action="{{ route('account.advance-cheque-entries.deny', $value->id) }}"
+                                                            data-action="{{ route('account.advance-cheque-entries.deny', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             data-confirm-title="Reject Customer?"
                                                             data-confirm-message="Are you sure you want to reject this?"
                                                             data-confirm-icon="warning" data-confirm-text="Yes, Reject it!">
@@ -192,20 +194,21 @@
                                                         @endif
                                                     @endif
                                                     @if (hasPermission('account.advance-cheque-entries.approve') && $value->status == 'Checked')
-                                                        <a href="{{ route('account.advance-cheque-entries.approve', $value->id) }}"
+                                                        <a href="{{ route('account.advance-cheque-entries.approve', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             title="Approver"
                                                             class="btn btn-xs btn-outline-success approval-confirm-cheque"
-                                                            data-action="{{ route('account.advance-cheque-entries.approve', $value->id) }}"
+                                                            data-action="{{ route('account.advance-cheque-entries.approve', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             data-confirm-title="Approve Approval?"
                                                             data-confirm-message="Are you sure you want to approve this?"
                                                             data-confirm-icon="success"
                                                             data-confirm-text="Yes, Approve it!">
                                                             <i class="fas fa-check"></i>
                                                         </a>
-                                                        <a href="{{ route('account.advance-cheque-entries.deny', $value->id) }}"
+                                                        
+                                                        <a href="{{ route('account.advance-cheque-entries.deny', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             class="btn btn-xs btn-outline-danger reject-confirm-cheque"
                                                             title="Reject"
-                                                            data-action="{{ route('account.advance-cheque-entries.deny', $value->id) }}"
+                                                            data-action="{{ route('account.advance-cheque-entries.deny', $value->id) }}?{{ http_build_query(request()->query()) }}"
                                                             data-confirm-title="Reject Customer?"
                                                             data-confirm-message="Are you sure you want to reject this?"
                                                             data-confirm-icon="warning"

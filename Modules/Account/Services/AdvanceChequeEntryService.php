@@ -12,14 +12,51 @@ use Modules\CRM\Models\Customer\Customer;
 
 class AdvanceChequeEntryService
 { 
+ 
     public function getAll(int $limit = 20)
     {
-        return AdvanceChequeEntry::query()
-            ->with('details')
-            ->searchByFields(['receipt_no', 'customer_id'])
-            ->filterByDateRange('collection_date')
+        $query = AdvanceChequeEntry::query()
+            ->with(['details', 'customer', 'createdBy']);
+
+        if (request()->filled('receipt_no')) {
+            $query->where('receipt_no', 'like', '%' . request('receipt_no') . '%');
+        }
+
+        if (request()->filled('customer_id')) {
+            $query->where('customer_id', request('customer_id'));
+        }
+
+        if (request()->filled('from_to')) {
+
+            $dates = preg_split('/\s+-\s+/', request('from_to'));
+
+            if (count($dates) == 2) {
+
+                try {
+
+                    $fromDate = \Carbon\Carbon::createFromFormat(
+                        'd-m-Y',
+                        trim($dates[0])
+                    )->format('Y-m-d');
+
+                    $toDate = \Carbon\Carbon::createFromFormat(
+                        'd-m-Y',
+                        trim($dates[1])
+                    )->format('Y-m-d');
+
+                    $query->whereDate('collection_date', '>=', $fromDate)
+                        ->whereDate('collection_date', '<=', $toDate);
+
+                } catch (\Exception $e) {
+                    // Invalid date range ignore
+                }
+            }
+        }
+
+        return $query
             ->orderBy('created_at', 'desc')
-            ->paginate($limit);
+            ->paginate($limit)
+            ->withQueryString();
     }
     public function store(array $data, array $details)
     {

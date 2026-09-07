@@ -339,7 +339,7 @@ class AdvanceChequeEntryController extends Controller
         $cheque->status = 'Checked';
         $cheque->save();
 
-        return redirect()->route('account.advance-cheque-entries.index')->with('success', 'Checker approved successfully.');
+        return redirect()->route('account.advance-cheque-entries.index', request()->query())->with('success', 'Checker approved successfully.');
     }
     public function approve($id)
     {
@@ -348,7 +348,7 @@ class AdvanceChequeEntryController extends Controller
         $cheque->status = 'Approved';
         $cheque->save();
 
-        return redirect()->route('account.advance-cheque-entries.index')->with('success', 'Approver approved successfully.');
+        return redirect()->route('account.advance-cheque-entries.index', request()->query())->with('success', 'Approver approved successfully.');
     }
 
     public function deny($id)
@@ -358,7 +358,7 @@ class AdvanceChequeEntryController extends Controller
         $cheque->status = 'Denied';
         $cheque->save();
 
-        return redirect()->route('account.advance-cheque-entries.index')->with('warning', 'Approver denied successfully.');
+        return redirect()->route('account.advance-cheque-entries.index', request()->query())->with('warning', 'Approver denied successfully.');
     }
 
 
