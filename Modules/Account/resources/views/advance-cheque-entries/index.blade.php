@@ -406,135 +406,170 @@
         });
 
         $(document).on('click', '.view-document', function () {
-            let url = $(this).attr('data-url');
-            if (!url) {
-                return;
+
+            let documentValue = $(this).attr('data-url');
+
+            if (!documentValue) return;
+
+            let documents = [];
+
+            // JSON array হলে parse করবে
+            try {
+                let parsed = JSON.parse(documentValue);
+
+                if (Array.isArray(parsed)) {
+                    documents = parsed;
+                } else if (typeof parsed === 'string') {
+                    documents = [parsed];
+                }
+            } catch (e) {
+                // Single URL হলে
+                documents = [documentValue];
             }
-            let extension = url
-                .split('?')[0]
-                .split('.')
-                .pop()
-                .toLowerCase();
+
+            // Empty value remove
+            documents = documents.filter(url => url && url.trim() !== '');
+
+            if (!documents.length) return;
+
             let html = '';
 
-            // ==========================
-            // IMAGE
-            // ==========================
+            documents.forEach(function (url, index) {
 
-            if (
-                ['jpg', 'jpeg', 'png', 'gif', 'webp']
-                    .includes(extension)
-            ) {
-                html = `
-                    <div class="text-center">
-                        <img src="${url}" class="img-fluid" style="max-height:75vh;  width:auto; object-fit:contain;" alt="Document">
-                    </div>
-                `;
-            }
+                let extension = url
+                    .split('?')[0]
+                    .split('.')
+                    .pop()
+                    .toLowerCase();
 
+                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
 
-            // ==========================
-            // PDF
-            // ==========================
+                    html += `
+                        <div class="text-center mb-4">
+                            ${documents.length > 1
+                                ? `<div class="fw-bold mb-2">Document ${index + 1}</div>`
+                                : ''
+                            }
 
-            else if (extension === 'pdf') {
-                html = `
-                    <iframe  src="${url}"   width="100%"   height="700"   style="border:none;">
-                    </iframe>
-                `;
-            }
+                            <img src="${url}"
+                                class="img-fluid rounded border"
+                                style="max-height:75vh; width:auto; object-fit:contain;"
+                                alt="Document ${index + 1}">
+                        </div>
+                    `;
 
+                } else if (extension === 'pdf') {
 
-            // ==========================
-            // OTHER FILE
-            // ==========================
+                    html += `
+                        <div class="mb-4">
+                            ${documents.length > 1
+                                ? `<div class="fw-bold mb-2">Document ${index + 1}</div>`
+                                : ''
+                            }
 
-            else {
+                            <iframe src="${url}"
+                                    width="100%"
+                                    height="700"
+                                    style="border:none;">
+                            </iframe>
+                        </div>
+                    `;
 
-                html = `
-                    <div class="text-center py-5">
-                        <i class="fa fa-file-o fa-4x text-secondary"></i>
-                        <h5 class="mt-3">
-                            Document
-                        </h5>
-                        <a href="${url}"
-                        target="_blank"
-                        class="btn btn-primary">
-                            <i class="fa fa-external-link"></i>
-                            Open Document
-                        </a>
-                    </div>
-                `;
-            }
-            $('#documentPreviewContent').html(html);
-            $('#documentPreviewModal').modal('show');
-        });
+                } else {
 
-    $(document).on('click', '.view-cheque-document', function () {
-        let cheques = $(this).attr('data-cheques');
-        try {
-            cheques = JSON.parse(cheques);
-        } catch (e) {
-            console.error('Invalid cheque JSON:', e);
-            cheques = [];
-        }
+                    html += `
+                        <div class="text-center py-5 mb-4">
+                            <i class="fa fa-file-o fa-4x text-secondary"></i>
 
-        let html = '';
-        if (!cheques || cheques.length === 0) {
-            html = `
-                <tr>
-                    <td colspan="5" class="text-center text-muted">
-                        No cheque details found.
-                    </td>
-                </tr>
-            `;
-        } else {
-            $.each(cheques, function (index, cheque) {
-                let documentHtml = `
-                    <span class="text-muted">
-                        No document
-                    </span>
-                `;
-                // Document exists
-                if (cheque.document) {
-                    documentHtml = `
-                        <button type="button" class="btn btn-xs btn-success view-document" data-url="${cheque.document}" title="View Document">
-                            <i class="fa fa-eye"></i>
-                        </button>
+                            <h5 class="mt-3">
+                                Document ${index + 1}
+                            </h5>
+
+                            <a href="${url}"
+                            target="_blank"
+                            class="btn btn-primary">
+                                <i class="fa fa-external-link"></i>
+                                Open Document
+                            </a>
+                        </div>
                     `;
                 }
+            });
 
+            $('#documentPreviewContent').html(html);
 
-                html += `
+            const modal = new bootstrap.Modal(
+                document.getElementById('documentPreviewModal')
+            );
+
+            modal.show();
+        });
+
+        $(document).on('click', '.view-cheque-document', function () {
+            let cheques = $(this).attr('data-cheques');
+            try {
+                cheques = JSON.parse(cheques);
+            } catch (e) {
+                console.error('Invalid cheque JSON:', e);
+                cheques = [];
+            }
+
+            let html = '';
+            if (!cheques || cheques.length === 0) {
+                html = `
                     <tr>
-                        <td class="text-center">
-                            ${index + 1}
-                        </td>
-                        <td>
-                            <strong>
-                                ${cheque.cheque_no || '-'}
-                            </strong>
-                        </td>
-                        <td>
-                            ${cheque.cheque_date || '-'}
-                        </td>
-                        <td>
-                            <strong>
-                                ${cheque.amount || '-'}
-                            </strong>
-                        </td>
-                        <td class="text-center">
-                            ${documentHtml}
+                        <td colspan="5" class="text-center text-muted">
+                            No cheque details found.
                         </td>
                     </tr>
                 `;
-            });
+            } else {
+                $.each(cheques, function (index, cheque) {
+                    let documentHtml = `
+                        <span class="text-muted">
+                            No document
+                        </span>
+                    `;
+                    // Document exists
+                    if (cheque.document) {
+                        documentHtml = `
+                            <button type="button" class="btn btn-xs btn-success view-document" data-url='${cheque.document}' title="View Document">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        `;
+                    }
 
-        }
-        $('#chequeDocumentsTableBody').html(html);
-        $('#chequeDocumentModal').modal('show');
 
-    });
+                    html += `
+                        <tr>
+                            <td class="text-center">
+                                ${index + 1}
+                            </td>
+                            <td>
+                                <strong>
+                                    ${cheque.cheque_no || '-'}
+                                </strong>
+                            </td>
+                            <td>
+                                ${cheque.cheque_date || '-'}
+                            </td>
+                            <td>
+                                <strong>
+                                    ${cheque.amount || '-'}
+                                </strong>
+                            </td>
+                            <td class="text-center">
+                                ${documentHtml}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+            }
+            $('#chequeDocumentsTableBody').html(html);
+            $('#chequeDocumentModal').modal('show');
+
+        });
 
         $(document).on('click', '#chequeDocumentModal .close', function () {
             $('#chequeDocumentModal').modal('hide');

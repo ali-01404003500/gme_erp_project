@@ -264,8 +264,8 @@
                                                                     {{-- Existing attachment থাকলে Eye icon --}}
                                                                     @if(!empty($detail->document))
                                                                         <button type="button"
-                                                                            class="btn btn-xs btn-success view-attachment"
-                                                                            data-url="{{ asset($detail->document) }}"
+                                                                            class="btn btn-xs btn-success view-attachment" 
+                                                                            data-url='{{ $detail->document }}' 
                                                                             title="View Attachment">
                                                                             <i class="fa fa-eye"></i>
                                                                         </button>
@@ -336,6 +336,24 @@
         </div>
     </div>
     
+    <div class="modal fade"  id="documentPreviewModal"  tabindex="-1"  role="dialog"  aria-labelledby="documentPreviewModalLabel"  aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered"  role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"  id="documentPreviewModalLabel">
+                        <i class="fa fa-file"></i>
+                        Document Preview
+                    </h5>
+                    <button type="button"  class="close"   data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center"  id="documentPreviewContent">
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('page_scripts')
@@ -642,6 +660,106 @@
 
         $(document).on('click', '.view-attachment', function () {
 
+            let documentValue = $(this).attr('data-url');
+
+            if (!documentValue) return;
+
+            let documents = [];
+
+            // JSON array হলে parse করবে
+            try {
+                let parsed = JSON.parse(documentValue);
+
+                if (Array.isArray(parsed)) {
+                    documents = parsed;
+                } else if (typeof parsed === 'string') {
+                    documents = [parsed];
+                }
+            } catch (e) {
+                // Single URL হলে
+                documents = [documentValue];
+            }
+
+            // Empty value remove
+            documents = documents.filter(url => url && url.trim() !== '');
+
+            if (!documents.length) return;
+
+            let html = '';
+
+            documents.forEach(function (url, index) {
+
+                let extension = url
+                    .split('?')[0]
+                    .split('.')
+                    .pop()
+                    .toLowerCase();
+
+                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
+
+                    html += `
+                        <div class="text-center mb-4">
+                            ${documents.length > 1
+                                ? `<div class="fw-bold mb-2">Document ${index + 1}</div>`
+                                : ''
+                            }
+
+                            <img src="${url}"
+                                class="img-fluid rounded border"
+                                style="max-height:75vh; width:auto; object-fit:contain;"
+                                alt="Document ${index + 1}">
+                        </div>
+                    `;
+
+                } else if (extension === 'pdf') {
+
+                    html += `
+                        <div class="mb-4">
+                            ${documents.length > 1
+                                ? `<div class="fw-bold mb-2">Document ${index + 1}</div>`
+                                : ''
+                            }
+
+                            <iframe src="${url}"
+                                    width="100%"
+                                    height="700"
+                                    style="border:none;">
+                            </iframe>
+                        </div>
+                    `;
+
+                } else {
+
+                    html += `
+                        <div class="text-center py-5 mb-4">
+                            <i class="fa fa-file-o fa-4x text-secondary"></i>
+
+                            <h5 class="mt-3">
+                                Document ${index + 1}
+                            </h5>
+
+                            <a href="${url}"
+                            target="_blank"
+                            class="btn btn-primary">
+                                <i class="fa fa-external-link"></i>
+                                Open Document
+                            </a>
+                        </div>
+                    `;
+                }
+            });
+
+            $('#documentPreviewContent').html(html);
+
+            const modal = new bootstrap.Modal(
+                document.getElementById('documentPreviewModal')
+            );
+
+            modal.show();
+        });
+
+        /*$(document).on('click', '.view-attachment', function () {
+
             let url = $(this).data('url');
 
             if (!url) {
@@ -706,7 +824,7 @@
             $('#attachmentContent').html(content);
 
             $('#attachmentModal').modal('show');
-        });
+        });*/
 
     </script>
 

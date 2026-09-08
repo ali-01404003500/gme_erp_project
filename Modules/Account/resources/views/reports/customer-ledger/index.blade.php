@@ -467,7 +467,7 @@
                                     <td class="text-center">{{ \Carbon\Carbon::parse($cheque['cheque_date'])->format('d-m-Y') }}</td>
                                     <td>{{ $cheque['cheque_no'] }}</td>
                                     <td class="text-right">
-                                        <span class="badge badge-round badge-success p-2">{{ number_format($cheque['amount']) }}</span>
+                                        {{ number_format($cheque['amount']) }}
                                     </td>  
                                     <td>{{ ucfirst($cheque['cheque_type']) }}</td>
                                     <td>
@@ -530,10 +530,8 @@
                             <tfoot class="font-weight-bold">
                                 <tr>
                                     <td colspan="3" class="text-right"><strong>Total Collected Amount:</strong></td>
-                                    <td class="text-right">
-                                        <span class="badge badge-primary p-2" style="font-size: 14px;">
-                                            {{ number_format($collected_cheque_amount ?? 0) }}
-                                        </span>
+                                    <td class="text-right"> 
+                                        {{ number_format($collected_cheque_amount ?? 0) }} 
                                     </td>
                                     <td colspan="2" class="text-center">
                                         <strong>Total Count: {{ $collected_cheque_count ?? 0 }}</strong>
