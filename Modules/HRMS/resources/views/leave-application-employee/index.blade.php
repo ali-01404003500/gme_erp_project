@@ -79,20 +79,20 @@
                 <div class="col-md-12">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <table id="zero-config" class="table dt-table-hover" data-page='@include('utils.table_paginate', ['data' => $leaveApplications])'
+                            <table id="zero-config" class="table dt-table-hover " data-page='@include('utils.table_paginate', ['data' => $leaveApplications])'
                                 style="width:100%; ">
                                 <thead>
                                     <tr>
                                         <th width="2%">Sl</th>
-                                        <th width="18%">Employee</th>
+                                        <th width="15%">Employee</th>
                                         <th width="8%">From Date</th>
                                         <th width="8%">To Date</th>
                                         <th width="5%">Leave Days</th>
                                         <th width="5%">Leave Type</th>
                                         <th width="10%">Purpose</th>
-                                        <th width="10%">Documents</th>
+                                        <th width="5%">Documents</th>
                                         <th width="10%">Status</th> 
-                                        <th width="14%">Approval Layers</th> 
+                                        <th width="22%">Approval Layers</th> 
                                         <th width="10%" class="no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -141,7 +141,7 @@
                                                 @endif
                                             </td>
                                         
-                                            <td>
+                                            <td class="text-wrap">
                                                 <ul>
                                                     @foreach($value->approvals as $approval)
                                                         <li>
@@ -321,6 +321,7 @@
 .modal-lg {
     max-width: 60%;
 } 
+
 </style>
 @endsection
 @section('page_scripts')

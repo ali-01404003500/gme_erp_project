@@ -105,9 +105,9 @@
                                         <th width="5%">Leave Days</th>
                                         <th width="5%">Leave Type</th>
                                         <th width="10%">Purpose</th>
-                                        <th width="10%">Documents</th>
+                                        <th width="5%">Documents</th>
                                         <th width="10%">Status</th> 
-                                        <th width="17%">Approval Layers</th> 
+                                        <th width="22%">Approval Layers</th> 
                                         <th width="10%" class="no-content">Action</th>
                                     </tr>
                                 </thead>
@@ -156,7 +156,7 @@
                                                 @endif
                                             </td>
                                         
-                                            <td>
+                                            <td  class="text-wrap">
                                                 <ul>
                                                     @foreach($value->approvals as $approval)
                                                         <li>
@@ -360,6 +360,8 @@
 .modal-lg {
     max-width: 60%;
 } 
+
+
 </style>
 @endsection
 @section('page_scripts')
