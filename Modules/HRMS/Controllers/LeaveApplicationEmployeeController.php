@@ -17,6 +17,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\Auth;
 use Modules\HRMS\Models\ApprovalRequest;
+use Modules\HRMS\Models\LeaveGroupDetail;
 use Modules\HRMS\Models\LeaveStatus;
 use Modules\HRMS\Models\LeaveYear;
 use Modules\HRMS\Models\Settings\Holiday;
@@ -123,6 +124,17 @@ class LeaveApplicationEmployeeController extends Controller
             return redirect()->route('hrm.leave-application-employees.create')->with('error', 'Leave balance not configured for you.');
         }
 
+
+         // Half-day leave validation
+            $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
+                ->where('is_half_day', 1)
+                ->first();
+
+            if (!$leaveGroupDetail) {
+                return redirect()
+                    ->route('hrm.leave-application-employees.create')
+                    ->with('error', 'This leave type does not support half-day leave.');
+            }
 
         // =====================================================
         // Check existing pending leave application
@@ -248,6 +260,17 @@ class LeaveApplicationEmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {  
+        // Half-day leave validation
+        $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
+            ->where('is_half_day', 1)
+            ->first();
+
+        if (!$leaveGroupDetail) {
+            return redirect()
+                ->route('hrm.leave-application-employees.create')
+                ->with('error', 'This leave type does not support half-day leave.');
+        }
+        
         $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
         $request->merge(['from_date' => $from_date]);
         $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
