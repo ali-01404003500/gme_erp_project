@@ -58,6 +58,7 @@ class CustomerSettingService
             'additional_credit_limit' => $request->additional_credit_limit,
             'opening_balance' => $request->opening_balance,
             'ledger_files' => !empty($request->ledger_files)? array_values($request->ledger_files): null,
+            'dms_ledger_files' => !empty($request->dms_ledger_files)? array_values($request->dms_ledger_files): null,
             'is_condition_bill' => $request->is_condition_bill,
             'minimum_condition_bill' => $request->minimum_condition_bill,
             'vat_status' => $request->vat_status,

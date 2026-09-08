@@ -13,6 +13,7 @@ class CustomerSetting extends BaseModel
     protected $guarded = [];
     protected $casts = [
         'ledger_files' => 'array',
+        'dms_ledger_files' => 'array',
     ];
     public function customer(){
         return $this->belongsTo(Customer::class);

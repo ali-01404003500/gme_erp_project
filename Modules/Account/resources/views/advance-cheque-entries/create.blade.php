@@ -195,7 +195,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-1" style="padding-top: 30px;">
+                                                <div class="col-md-1 pt-4" >
                                                     <button type="button" class="btn btn-sm btn-primary"
                                                         id="add_bank_info">Add</button>
                                                 </div>
@@ -556,39 +556,76 @@
                 const tableBody = $('#bank_info_table');
                 tableBody.empty();
 
-                if (chequeType === 'collection' || chequeType === 'security' || chequeType ===
-                    'only_deed') {
+                if (chequeType === 'collection' || chequeType === 'only_deed') 
+                {
                     // For non-installment types, just add regular rows
-                    for (let i = 0; i < noOfCheques; i++) {
+                    for (let i = 0; i < noOfCheques; i++) 
+                    {
                         const row = `
-                <tr>
-                    <td>${i + 1}
-                        <input type="hidden" name="is_security_cheque[]" value="0">
-                        </td>
-                    <td><input type="hidden" name="bank_name[]" value="${bankName}">
-                        <input type="hidden" name="bank_ids[]" value="${bankId}">
-                        ${bankName}</td>
-                    <td><input type="hidden" name="branch_name[]" value="${branchName}">
-                        <input type="hidden" name="branch_ids[]" value="${branchId}">
-                        ${branchName}</td>
-                    <td><input type="text" class="form-control" name="cheque_no[]" value="${chequeNo}"></td>
-                    <td><input type="text" name="cheque_date[]" class="form-control flatdate"></td>
-                    <td><input type="number" name="amount[]" class="form-control installment-amount"></td>
-                    <td>
-                        <div class="dropdown dropdown-click">
-                            <div class="btn-group dropleft">
-                                <button type="button" class="btn btn-xs btn-secondary attachments">
-                                    <i class="fa fa-paperclip"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <input type="hidden" name="documents[]" value="" class="attachments_input">
-                    </td>
-                </tr>
-            `;
+                                        <tr>
+                                            <td>${i + 1}
+                                                <input type="hidden" name="is_security_cheque[]" value="0">
+                                                </td>
+                                            <td><input type="hidden" name="bank_name[]" value="${bankName}">
+                                                <input type="hidden" name="bank_ids[]" value="${bankId}">
+                                                ${bankName}</td>
+                                            <td><input type="hidden" name="branch_name[]" value="${branchName}">
+                                                <input type="hidden" name="branch_ids[]" value="${branchId}">
+                                                ${branchName}</td>
+                                            <td><input type="text" class="form-control" name="cheque_no[]" value="${chequeNo}"></td>
+                                            <td><input type="text" name="cheque_date[]" class="form-control flatdate"></td>
+                                            <td><input type="number" name="amount[]" class="form-control installment-amount"></td>
+                                            <td>
+                                                <div class="dropdown dropdown-click">
+                                                    <div class="btn-group dropleft">
+                                                        <button type="button" class="btn btn-xs btn-secondary attachments">
+                                                            <i class="fa fa-paperclip"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="documents[]" value="" class="attachments_input">
+                                            </td>
+                                        </tr>
+                                    `;
                         tableBody.append(row);
                     }
-                } else if (chequeType === 'installment') {
+                } 
+                else if (chequeType === 'security') 
+                {
+                    // For non-installment types, just add regular rows
+                    for (let i = 0; i < noOfCheques; i++) 
+                    {
+                        const row = `
+                                        <tr>
+                                            <td>
+                                                Security Cheque ${i + 1}
+                                                <input type="hidden" name="is_security_cheque[]" value="1">
+                                            </td>
+                                            <td><input type="hidden" name="bank_name[]" value="${bankName}">
+                                                <input type="hidden" name="bank_ids[]" value="${bankId}">
+                                                ${bankName}</td>
+                                            <td><input type="hidden" name="branch_name[]" value="${branchName}">
+                                                <input type="hidden" name="branch_ids[]" value="${branchId}">
+                                                ${branchName}</td>
+                                            <td><input type="text" class="form-control" name="cheque_no[]" value="${chequeNo}"></td>
+                                            <td><input type="text" name="cheque_date[]" class="form-control flatdate"></td>
+                                            <td><input type="number" name="amount[]" class="form-control installment-amount"></td>
+                                            <td>
+                                                <div class="dropdown dropdown-click">
+                                                    <div class="btn-group dropleft">
+                                                        <button type="button" class="btn btn-xs btn-secondary attachments">
+                                                            <i class="fa fa-paperclip"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="documents[]" value="" class="attachments_input">
+                                            </td>
+                                        </tr>
+                                    `;
+                        tableBody.append(row);
+                    }
+                } 
+                else if (chequeType === 'installment') {
                     // For installment type, fetch EMI details
                     $.ajax({
                         url: "{{ route('account.get-customer-references') }}",

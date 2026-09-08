@@ -251,29 +251,44 @@
 
                                         $attachments = is_array($attachments) ? $attachments : [];
                                     @endphp
-                                    <span class="success-label">Statement Period: 04-Oct-2021</span>
+                                    <span class="success-label">Statement Period: 05-Oct-2021</span>
                                     <span class="success-label"> 
                                         @foreach($attachments as $file)
                                             @if(!empty($file))
-                                                <i class="text-primary fa fa-eye  view-old-statement" data-url="{{ url($file) }}"   style="cursor: pointer;"></i> 
+                                                <i class="text-primary fa fa-eye  view-old-statement" data-title="Old Ledger Statement Preview (Period: Upto 05-Oct-2021)" data-url="{{ url($file) }}"   style="cursor: pointer;"></i> 
                                                 <i class="text-primary fa fa-download download-old-statement" data-url="{{ url($file) }}"  data-customer-name="{{ $selectedCustomer->company_name }}" style="cursor: pointer;"  title="Download"></i>
                                             @endif
                                         @endforeach 
                                     </span> 
                                 </div>
-                                <div class="info-row">  
-                                    <span class="success-label">Statement Period: 05-Oct-2021 to 05-Oct-2026</span>
+                                <div class="info-row"> 
+                                    @php
+                                   
+                                        $attachments = $selectedCustomer->customerSetting->first()->dms_ledger_files ?? [];
+
+                                        if (is_string($attachments)) {
+                                            $attachments = json_decode($attachments, true) ?? [];
+                                        }
+
+                                        $attachments = is_array($attachments) ? $attachments : [];
+                                    @endphp
+                                    <span class="success-label">Statement Period: 06-Oct-2021 to 30-Sep-2026</span>
                                     <span class="success-label"> 
-                                        
+                                        @foreach($attachments as $file)
+                                            @if(!empty($file))
+                                                <i class="text-primary fa fa-eye  view-old-statement" data-title="DMS Ledger Statement Preview (Period: 06-Oct-2021 to 30-Sep-2026)" data-url="{{ url($file) }}"   style="cursor: pointer;"></i> 
+                                                <i class="text-primary fa fa-download download-old-statement" data-url="{{ url($file) }}"  data-customer-name="{{ $selectedCustomer->company_name }}" style="cursor: pointer;"  title="Download"></i>
+                                            @endif
+                                        @endforeach 
                                     </span> 
                                 </div>
-                                 
+                       
                                 <div class="info-row">  
                                     <span class="success-label">Deed:</span>
                                     <span class="success-label">
                                         @foreach($deed_document as $file)
                                             @if(!empty($file))
-                                                <i class="text-primary fa fa-eye view-old-statement" data-url="{{ url($file) }}" style="cursor: pointer;"  title="View"></i>
+                                                <i class="text-primary fa fa-eye view-old-statement" data-title="Deed Preview" data-url="{{ url($file) }}" style="cursor: pointer;"  title="View"></i>
                                                 <i class="text-primary fa fa-download download-old-statement" data-url="{{ url($file) }}" data-customer-name="{{ $selectedCustomer->company_name }}" style="cursor: pointer;" title="Download"></i>
                                             @endif
                                         @endforeach
@@ -1079,7 +1094,11 @@ function printRefundedCheque() {
         
         $(document).on('click', '.view-old-statement', function () {
             var fileUrl = $(this).data('url');
+            var title   = $(this).data('title');
+
             $('#oldStatementPreview').attr('src', fileUrl);
+            $('#oldStatementModalLabel').text(title);
+
             var oldStatementModal = new bootstrap.Modal(
                 document.getElementById('oldStatementModal')
             );

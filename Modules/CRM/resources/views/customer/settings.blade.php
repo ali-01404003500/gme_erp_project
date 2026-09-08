@@ -268,15 +268,27 @@
                                                     <p class="text-danger">{{ $errors->first('service_applicable') }}</p>
                                                 @endif
                                             </div>
+                                            <div class="form-group col-md-4 mb-25"> </div>
 
                                             <div class="form-group col-md-4 mb-25"> 
                                                 <label for="ledger_files" class="color-dark fs-14 fw-500 align-center">
-                                                    Old Ledger Files
+                                                Old Ledger Files (Up to 05-Oct-2021)
                                                 </label> 
                                                 <div class="account-profile w-100 mb-25">
 
                                                     <div class="form-group w-100">  
                                                         <x-file-uploader :value="$customer->ledger_files ?? old('ledger_files')"  name="ledger_files" multiple/>
+                                                    </div> 
+                                                </div> 
+                                            </div> 
+                                            <div class="form-group col-md-4 mb-25"> 
+                                                <label for="dms_ledger_files" class="color-dark fs-14 fw-500 align-center">
+                                                DMS Ledger Files (From 06-Oct-2021 to 30-Sep-2026)
+                                                </label> 
+                                                <div class="account-profile w-100 mb-25">
+
+                                                    <div class="form-group w-100">  
+                                                        <x-file-uploader :value="$customer->dms_ledger_files ?? old('dms_ledger_files')"  name="dms_ledger_files" multiple/>
                                                     </div> 
                                                 </div> 
                                             </div> 
