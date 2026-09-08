@@ -180,6 +180,10 @@ class LeaveApplicationEmployeeController extends Controller
         if ($continuous == 1 && $request->total_days > $sanction)
             return redirect()->route('hrm.leave-application-employees.create')->with('error', 'Your leave count exceeds continous sanction limit of this leave type.');
 
+        $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)->first();
+        $requiresLeaveAttachment = $leaveGroupDetail?->requires_leave_attachment;
+
+
 
         $validate = $request->validate([  
             'employee_id' => 'required|exists:employees,id',
@@ -190,7 +194,11 @@ class LeaveApplicationEmployeeController extends Controller
             'to_date_leave_count' => 'required',
             'day_count' => 'required',
             'remarks' => 'required|string',
-            'file_uploads' => 'nullable|array',
+            'file_uploads' => [
+                $requiresLeaveAttachment == 1 ? 'required' : 'nullable',
+                'array',
+                $requiresLeaveAttachment == 1 ? 'min:1' : null,
+            ],
             'file_uploads.*' => 'nullable|mimes:doc,docx,pdf,jpg,jpeg,png|max:20480',
         ]);
         $validate['leave_year_id'] = $leaveYearId;
@@ -284,6 +292,11 @@ class LeaveApplicationEmployeeController extends Controller
         $to_date = Carbon::createFromFormat('Y-m-d', $request->to_date)->format('Y-m-d');
         $request->merge(['to_date' => $to_date]);
 
+        $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)->first();
+        $requiresLeaveAttachment = $leaveGroupDetail?->requires_leave_attachment;
+
+
+
         $leaveApplication = LeaveApplication::find($id);
         $validate = $request->validate([ 
         'employee_id' => 'required|exists:employees,id',
@@ -294,7 +307,11 @@ class LeaveApplicationEmployeeController extends Controller
         'to_date_leave_count' => 'required',
         'day_count' => 'required',
         'remarks' => 'required|string',
-        'file_uploads' => 'nullable|array',
+        'file_uploads' => [
+            $requiresLeaveAttachment == 1 ? 'required' : 'nullable',
+            'array',
+            $requiresLeaveAttachment == 1 ? 'min:1' : null,
+        ],
         'file_uploads.*' => 'nullable|mimes:doc,docx,pdf,jpg,jpeg,png|max:20480',
         ]);
         $this->service->update($leaveApplication, $validate);
