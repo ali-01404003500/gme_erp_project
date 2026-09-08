@@ -125,7 +125,10 @@ class LeaveApplicationEmployeeController extends Controller
         }
 
 
-         // Half-day leave validation
+        // Half-day leave validation
+        $dayCount = (float) $request->day_count;
+        $isFractional = fmod($dayCount, 1) != 0;
+        if ($isFractional) {
             $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
                 ->where('is_half_day', 1)
                 ->first();
@@ -135,6 +138,7 @@ class LeaveApplicationEmployeeController extends Controller
                     ->route('hrm.leave-application-employees.create')
                     ->with('error', 'This leave type does not support half-day leave.');
             }
+        }
 
         // =====================================================
         // Check existing pending leave application
@@ -186,7 +190,7 @@ class LeaveApplicationEmployeeController extends Controller
             'to_date_leave_count' => 'required',
             'day_count' => 'required',
             'remarks' => 'required|string',
-            'file_uploads' => 'nullable|array|min:1',
+            'file_uploads' => 'nullable|array',
             'file_uploads.*' => 'nullable|mimes:doc,docx,pdf,jpg,jpeg,png|max:20480',
         ]);
         $validate['leave_year_id'] = $leaveYearId;
@@ -261,14 +265,18 @@ class LeaveApplicationEmployeeController extends Controller
     public function update(Request $request, $id)
     {  
         // Half-day leave validation
-        $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
-            ->where('is_half_day', 1)
-            ->first();
+        $dayCount = (float) $request->day_count;
+        $isFractional = fmod($dayCount, 1) != 0;
+        if ($isFractional) {
+            $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
+                ->where('is_half_day', 1)
+                ->first();
 
-        if (!$leaveGroupDetail) {
-            return redirect()
-                ->route('hrm.leave-application-employees.create')
-                ->with('error', 'This leave type does not support half-day leave.');
+            if (!$leaveGroupDetail) {
+                return redirect()
+                    ->route('hrm.leave-application-employees.create')
+                    ->with('error', 'This leave type does not support half-day leave.');
+            }
         }
         
         $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
@@ -286,8 +294,8 @@ class LeaveApplicationEmployeeController extends Controller
         'to_date_leave_count' => 'required',
         'day_count' => 'required',
         'remarks' => 'required|string',
-        'file_uploads' => 'nullable|array|min:1',
-        'file_uploads.*' => 'string',
+        'file_uploads' => 'nullable|array',
+        'file_uploads.*' => 'nullable|mimes:doc,docx,pdf,jpg,jpeg,png|max:20480',
         ]);
         $this->service->update($leaveApplication, $validate);
 

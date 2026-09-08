@@ -44,7 +44,7 @@ class LeaveApplicationService
         foreach ($data['file_uploads']??[] as $key => $image) {
             $file_uploads[$key] = $this->uploadFile($image, 'Leave Application');
         }
-        $data['file_uploads'] = json_encode($file_uploads);
+        $data['file_uploads'] = $file_uploads ? json_encode($file_uploads) : null;
 
         $result['employee'] = LeaveApplication::create($data);
 
@@ -74,11 +74,16 @@ class LeaveApplicationService
 
     public function update(LeaveApplication $leaveApplication, array $data)
     {
-        // $file_uploads = [];
-        // foreach ($data['file_uploads']??[] as $key => $image) {
-        //     $file_uploads[$key] = $this->uploadFile($image, 'Leave Application');
-        // }
-        $data['file_uploads'] = $data['file_uploads'];
+        $file_uploads = [];
+
+        foreach ($data['file_uploads'] ?? [] as $key => $image) {
+            if (!empty($image)) {
+                $file_uploads[$key] = $this->uploadFile($image, 'Leave Application');
+            }
+        }
+
+        $data['file_uploads'] = !empty($file_uploads) ? json_encode($file_uploads) : null;
+        
         $leaveApplication->update($data);
         return $leaveApplication;
     }

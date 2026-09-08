@@ -45,12 +45,8 @@
                                             <div class="form-group mb-25">
                                                 <label for="employee_id" class="color-dark fs-14 fw-500 align-center">Employee
                                                     Name <span class="text-danger">*</span></label>
-                                                <select name="employee_id" id="employee_id" class="form-control tom-select required" required>
-                                                    <option value="">Select Employee</option>
-                                                    @foreach ($employees as $employee)
-                                                        <option value="{{ $employee->id }}" {{ $employee->id == $leave->employee_id ? 'selected' : '' }}>{{ $employee->full_name }}
-                                                    @endforeach
-                                                </select>
+                                                <input type="text" class="form-control"  value="{{ $leave->employee->full_name }}" name="employee_name" id="employee_name" placeholder="Employee Name" readonly>
+                                                <input type="hidden" name="employee_id" id="employee_id" value="{{ $leave->employee_id }}" >
                                                 @if ($errors->has('employee_id'))
                                                     <p class="text-danger">{{ $errors->first('employee_id') }}</p>
                                                 @endif
@@ -115,7 +111,7 @@
                                             <div class="form-group mb-25">
                                                 <label for="from_date_leave_count"
                                                     class="color-dark fs-14 fw-500 align-center">From date leave count for<span class="text-danger">*</span></label>
-                                                    <select name="from_date_leave_count" id="from_date_leave_count" class="form-control tom-select" required> 
+                                                    <select name="from_date_leave_count" id="from_date_leave_count" class="form-control tom-select" onchange="getTotalDays()" required> 
                                                         <option value="first_half" {{ $leave->from_date_leave_count == 'first_half' ? 'selected' : '' }}>First Half</option>
                                                         <option value="second_half" {{ $leave->from_date_leave_count == 'second_half' ? 'selected' : '' }}>Second Half</option>
                                                     </select>
@@ -129,7 +125,7 @@
                                             <div class="form-group mb-25">
                                                 <label for="to_date_leave_count"
                                                     class="color-dark fs-14 fw-500 align-center">To date leave count for<span class="text-danger">*</span></label>
-                                                    <select name="to_date_leave_count" id="to_date_leave_count" class="form-control tom-select required" required>
+                                                    <select name="to_date_leave_count" id="to_date_leave_count" class="form-control tom-select required" onchange="getTotalDays()" required>
                                                         <option value="first_half" {{ $leave->to_date_leave_count == 'first_half' ? 'selected' : '' }}>First Half</option>
                                                         <option value="second_half" {{ $leave->to_date_leave_count == 'second_half' ? 'selected' : '' }}>Second Half</option>
                                                     </select>
@@ -454,19 +450,45 @@
    
 
     function loadResponse() {
+
         let employee = $('#employee_id').val();
         let leave_type = $('#leave_type').val();
 
-        if (employee != '' && leave_type != '') {
-            $.get('{{ route('hrm.get.leave.response') }}?employee=' + employee + '&leave_type=' + leave_type, function(res) {    
-                $("#leaveTypeWiseTotalLeave").val(res.leaveTypeWiseBalance.remaining_balance); 
-                $("#halfDayLeave").val(res.leaveTypeWiseBalance.half_day); 
-                $("#simultaneouslyLimit").val(res.leaveTypeWiseBalance.continuous_sanction);
-                $("#leaveBalance").val(res.leaveBalance);
-                getTotalDays(); // Recalculate total days after loading response
-            });
+        if (employee !== '' && leave_type !== '') {
+
+            $.get(
+                '{{ route('hrm.get.leave.response') }}',
+                {
+                    employee: employee,
+                    leave_type: leave_type,
+                    leave_id: '{{ $leave->id }}'
+                },
+                function(res) {
+
+                    let balance = res.leaveTypeWiseBalance;
+
+                    $("#leaveTypeWiseTotalLeave").val(
+                        balance?.remaining_balance ?? 0
+                    );
+
+                    $("#halfDayLeave").val(
+                        balance?.half_day ?? 0
+                    );
+
+                    $("#simultaneouslyLimit").val(
+                        balance?.continuous_sanction ?? 0
+                    );
+
+                    $("#leaveBalance").val(
+                        res.leaveBalance ?? 0
+                    );
+
+                    getTotalDays();
+                }
+            );
         }
     }
+    
     
 </script>
 @endSection

@@ -119,28 +119,33 @@ class LeaveApplicationController extends Controller
     {
         $employee   = $request->employee;
         $leave_type = $request->leave_type;
+        $leave_id   = $request->leave_id;
 
         $leaveTypeWiseBalance = LeaveStatus::where('employee_id', $employee)
             ->where('leave_type', $leave_type)
             ->where('is_active', 1)
             ->first();
 
-        $leaveTaken = LeaveApplication::query()
-            ->where('employee_id', $employee)
+        $leaveTaken = LeaveApplication::where('employee_id', $employee)
             ->where('leave_type_id', $leave_type)
             ->whereNotNull('approved_by')
+            ->when($leave_id, function ($query) use ($leave_id) {
+                $query->where('id', '!=', $leave_id);
+            })
             ->sum('day_count');
 
-        $data['leaveTypeWiseBalance'] = $leaveTypeWiseBalance;
-
-        $data['leaveBalance'] = ($leaveTypeWiseBalance?->remaining_balance ?? 0) - ($leaveTaken ?? 0);
- 
-
-        return response()->json($data);
+        return response()->json([
+            'leaveTypeWiseBalance' => $leaveTypeWiseBalance,
+            'leaveTaken' => $leaveTaken,
+            'remaining_balance' => $leaveTypeWiseBalance?->remaining_balance,
+            'leaveBalance' => ($leaveTypeWiseBalance?->remaining_balance ?? 0) - $leaveTaken,
+            'leave_id' => $leave_id,
+        ]);
     }
-
+    
     public function recommended(Request $request, $id){
         
+    
         $approval = ApprovalRequest::find($id);
 
         $leave = LeaveApplication::find($approval->reference_id);
@@ -221,18 +226,22 @@ class LeaveApplicationController extends Controller
             ->first();
 
         if (!$leaveStatus) {
-            return redirect()->route('hrm.leave-application-employees.create')->with('error', 'Leave balance not configured for this employee.');
+            return redirect()->route('hrm.leaves.create')->with('error', 'Leave balance not configured for this employee.');
         }
 
         // Half-day leave validation
-        $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
-            ->where('is_half_day', 1)
-            ->first();
+        $dayCount = (float) $request->day_count;
+        $isFractional = fmod($dayCount, 1) != 0;
+        if ($isFractional) {
+            $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
+                ->where('is_half_day', 1)
+                ->first();
 
-        if (!$leaveGroupDetail) {
-            return redirect()
-                ->route('hrm.leave-application-employees.create')
-                ->with('error', 'This leave type does not support half-day leave.');
+            if (!$leaveGroupDetail) {
+                return redirect()
+                    ->route('hrm.leaves.create')
+                    ->with('error', 'This leave type does not support half-day leave.');
+            }
         }
             
         // =====================================================
@@ -246,7 +255,7 @@ class LeaveApplicationController extends Controller
 
         if ($pendingLeaveApplication) {
             return redirect()
-                ->route('hrm.leave-application-employees.create')
+                ->route('hrm.leaves.create')
                 ->with('error', 'You already have a pending leave application. Please wait until it is approved.');
         }
 
@@ -269,10 +278,10 @@ class LeaveApplicationController extends Controller
 
 
         if( $remainingLeaveBalance < 0 )
-            return redirect()->route('hrm.leave-application-employees.create')->with('error', 'Your leave balance exceeds limit of this leave type.');
+            return redirect()->route('hrm.leaves.create')->with('error', 'Your leave balance exceeds limit of this leave type.');
 
         if ($continuous == 1 && $request->total_days > $sanction)
-            return redirect()->route('hrm.leave-application-employees.create')->with('error', 'Your leave count exceeds continous sanction limit of this leave type.');
+            return redirect()->route('hrm.leaves.create')->with('error', 'Your leave count exceeds continous sanction limit of this leave type.');
 
         $validate = $request->validate([ 
             'employee_id' => 'required|exists:employees,id',
@@ -283,7 +292,7 @@ class LeaveApplicationController extends Controller
             'to_date_leave_count' => 'required',
             'day_count' => 'required',
             'remarks' => 'required|string',
-            'file_uploads' => 'nullable|array|min:1',
+            'file_uploads' => 'nullable|array',
             'file_uploads.*' => 'nullable|mimes:doc,docx,pdf,jpg,jpeg,png|max:20480',
         ]);
 
@@ -359,14 +368,18 @@ class LeaveApplicationController extends Controller
     public function update(Request $request, $id)
     {  
         // Half-day leave validation
-        $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
-            ->where('is_half_day', 1)
-            ->first();
+        $dayCount = (float) $request->day_count;
+        $isFractional = fmod($dayCount, 1) != 0;
+        if ($isFractional) {
+            $leaveGroupDetail = LeaveGroupDetail::where('leave_type_id', $request->leave_type_id)
+                ->where('is_half_day', 1)
+                ->first();
 
-        if (!$leaveGroupDetail) {
-            return redirect()
-                ->route('hrm.leave-application-employees.create')
-                ->with('error', 'This leave type does not support half-day leave.');
+            if (!$leaveGroupDetail) {
+                return redirect()
+                    ->route('hrm.leaves.edit', $id)
+                    ->with('error', 'This leave type does not support half-day leave.');
+            }
         }
         
         $from_date = Carbon::createFromFormat('Y-m-d', $request->from_date)->format('Y-m-d');
@@ -384,8 +397,8 @@ class LeaveApplicationController extends Controller
         'to_date_leave_count' => 'required',
         'day_count' => 'required',
         'remarks' => 'required|string',
-        'file_uploads' => 'nullable|array|min:1',
-        'file_uploads.*' => 'string',
+        'file_uploads' => 'nullable|array',
+        'file_uploads.*' => 'nullable|mimes:doc,docx,pdf,jpg,jpeg,png|max:20480',
     ]);
         $this->service->update($leaveApplication, $validate);
 
