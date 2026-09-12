@@ -25,7 +25,7 @@ class AdvanceChequeEntryService
         if (request()->filled('status')) {
             $query->where('status', request('status'));
         }
-$query->where('status', 'Pending');
+        //$query->where('status', 'Pending');
 
         if (request()->filled('from_to')) {
 
