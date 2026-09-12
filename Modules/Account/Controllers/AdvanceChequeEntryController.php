@@ -330,7 +330,7 @@ class AdvanceChequeEntryController extends Controller
     public function destroy(AdvanceChequeEntry $advanceChequeEntry)
     {
         $this->service->delete($advanceChequeEntry);
-        return redirect()->route('account.advance-cheque-entries.index')->with('success', 'AdvanceChequeEntry deleted successfully.');
+        return redirect()->route('account.advance-cheque-entries.index',request()->query())->with('success', 'AdvanceChequeEntry deleted successfully.');
     }
     public function check($id)
     {
