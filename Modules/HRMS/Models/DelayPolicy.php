@@ -13,7 +13,7 @@ class DelayPolicy extends Model
     protected $fillable = [
         'consider_delay',
         'deduct_from_gross_salary', 
-        '',
+        'consider_consecutive_delay',
         'delay_limit',
         'adjust_days',
     ];
