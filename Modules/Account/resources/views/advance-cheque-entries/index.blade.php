@@ -40,8 +40,22 @@
                                         <table class="table table-bordered">
                                             <tr>
                                                 <td style="width: 25%">
-                                                    <input type="text" name="receipt_no" class="form-control"
-                                                        placeholder="Receipt No" value="{{ request('receipt_no') }}">
+                                                    <select name="status" id="status" class="form-control">
+                                                        <option value="">All Status</option>
+                                                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>
+                                                            Approved
+                                                        </option>
+                                                        <option value="checked" {{ request('status') == 'checked' ? 'selected' : '' }}>
+                                                            Checked
+                                                        </option>
+                                                        <option value="denied" {{ request('status') == 'denied' ? 'selected' : '' }}>
+                                                            Denied
+                                                        </option>
+                                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
+                                                            Pending
+                                                        </option>
+                                                    </select>
+
                                                 </td>
                                                 <td style="width: 25%"> 
                                                     <select name="customer_id" id="customer_id" class="form-control tom-select">
@@ -83,8 +97,7 @@
                                 style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>SL</th>
-                                        <th>ID</th>
+                                        <th>SL</th> 
                                         <th>Customer</th>
                                         <th>Address</th>
                                         <th>Prepared by</th>
@@ -101,7 +114,6 @@
                                         <tr>
                                             <td>{{ ($advanceChequeEntrys->currentPage() - 1) * $advanceChequeEntrys->perPage() + $loop->iteration }}
                                             </td>
-                                            <td>{{ $value->receipt_no }}</td>
                                             <td>
                                                 @if (hasPermission('account.advance-cheque-entries.show'))
                                                     <a href="{{ route('account.advance-cheque-entries.show', $value->id) }}"
@@ -112,7 +124,7 @@
                                                     {{ $value->customer->company_name }}
                                                 @endif
                                             </td>
-                                            <td>{{ $value->customer->address }}</td>
+                                            <td>{{ $value->customer->area->area }}</td>
                                             <td>{{ $value->createdBy->name }}</td>
                                             <td>
  

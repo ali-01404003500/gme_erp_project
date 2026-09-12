@@ -17,14 +17,15 @@ class AdvanceChequeEntryService
     {
         $query = AdvanceChequeEntry::query()
             ->with(['details', 'customer', 'createdBy']);
-
-        if (request()->filled('receipt_no')) {
-            $query->where('receipt_no', 'like', '%' . request('receipt_no') . '%');
-        }
-
+ 
         if (request()->filled('customer_id')) {
             $query->where('customer_id', request('customer_id'));
         }
+        // Status Filter
+        if (request()->filled('status')) {
+            $query->where('status', request('status'));
+        }
+
 
         if (request()->filled('from_to')) {
 
