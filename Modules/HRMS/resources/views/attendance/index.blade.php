@@ -188,12 +188,14 @@
                                                     $isHoliday = in_array($d, $holidayDates);
                                                     $currentDay = \Carbon\Carbon::parse($date)->format('l');  
                                                     $isWeekend = in_array($currentDay, $weekends);
-                                                    
+                                                     
+                                                        
                                                 @endphp 
+                                                
                                                 <tr>
                                                     <td>{{ $date->format('D') }}, {{ $date->format('d-m-Y') }}</td>
 
-                                                    <td id="flag">{{ $isHoliday ? 'H' : ($isWeekend ? 'W' : ($attendance->flag ?? 'A')) }}</td>
+                                                    <td id="flag">{{ $attendance->isLeave ? 'L' : $isHoliday ? 'H' : ($isWeekend ? 'W' : ($attendance->flag ?? 'A')) }}</td> 
 
                                                     <td> 
                                                         <input type="text" class="form-control intimepicker" @if(optional($attendance)->check_in_time == '')  style="background-color:#f0eba6;" @endif name="check_in_time"   data-touched="{{ optional($attendance)->check_in_time ? 'true' : 'false' }}" 

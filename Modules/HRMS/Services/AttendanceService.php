@@ -4,14 +4,15 @@ namespace Modules\HRMS\Services;
 use Carbon\Carbon;
 use Modules\HRMS\Models\Attendance;
 use Modules\HRMS\Models\AttendancePolicy;
+use Modules\HRMS\Models\LeaveApplication;
 use Modules\HRMS\Models\Settings\Shift;
 
 class AttendanceService
 {
 
     public function getAll(?int $employeeId = null, int $limit = 20)
-    {
-        return Attendance::query()
+{ 
+        $attendances = Attendance::query()
             ->when($employeeId, function ($qr) use ($employeeId) {
                 $qr->where('employee_id', $employeeId);
             })
@@ -23,6 +24,41 @@ class AttendanceService
                 $qr->where('date', '<=', Carbon::parse(request('to'))->format('Y-m-d'));
             })
             ->paginate($limit);
+
+        // Employee IDs
+        $employeeIds = $attendances->getCollection()
+            ->pluck('employee_id')
+            ->unique()
+            ->values();
+
+        // Leave data একবারে নিয়ে আসা
+        $leaves = LeaveApplication::query()
+            ->whereIn('employee_id', $employeeIds)
+            ->when(request()->filled('from'), function ($qr) {
+                $qr->whereDate('from_date', '<=', Carbon::parse(request('to', request('from'))));
+            })
+            ->when(request()->filled('to'), function ($qr) {
+                $qr->whereDate('to_date', '>=', Carbon::parse(request('from', request('to'))));
+            })
+            ->get();
+
+        // প্রতিটি attendance-এর সাথে isLeave attach
+        $attendances->getCollection()->transform(function ($attendance) use ($leaves) {
+
+            $attendanceDate = Carbon::parse($attendance->date)->format('Y-m-d');
+
+            $attendance->isLeave = $leaves->contains(function ($leave) use ($attendance, $attendanceDate) {
+                return $leave->employee_id == $attendance->employee_id
+                    && $attendanceDate >= Carbon::parse($leave->from_date)->format('Y-m-d')
+                    && $attendanceDate <= Carbon::parse($leave->to_date)->format('Y-m-d');
+            });
+
+            return $attendance;
+        });
+
+        return $attendances;
+
+            
     }
     public function getAllForExport(?int $employeeId = null)
     {
