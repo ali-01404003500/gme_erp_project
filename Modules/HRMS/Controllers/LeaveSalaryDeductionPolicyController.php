@@ -77,6 +77,7 @@ class LeaveSalaryDeductionPolicyController extends Controller
                 ['id' => 1],
                 [
                     'consider_delay'             => $request->has('delay_consider'),
+                    'consider_consecutive_delay'         => 0, 
                     'deduct_from_gross_salary'         => $request->has('delay_deduct_gross_salary'), 
                     'delay_limit'                => $request->delay_limit ?? 4,
                     'adjust_days'                => $request->delay_adjust ?? 1,
