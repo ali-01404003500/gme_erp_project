@@ -63,7 +63,9 @@ class AttendanceController extends Controller
         $data['period'] = CarbonPeriod::create($from, $to);
 
         // Get employees attendances from your service
-        $data['attendances'] = $this->service->getAll($request->employee_id ?? null);
+        $result = $this->service->getAll($request->employee_id ?? null);
+        $data['attendances'] = $result['attendances'];
+        $data['leaveDates'] = $result['leaveDates'];
 
         // Optional: group attendances by employee and date for easier lookup in Blade
         $data['attendancesByEmployee'] = $data['attendances']

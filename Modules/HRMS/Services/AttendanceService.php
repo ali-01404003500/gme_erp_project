@@ -11,54 +11,83 @@ class AttendanceService
 {
 
     public function getAll(?int $employeeId = null, int $limit = 20)
-{ 
+    {
         $attendances = Attendance::query()
             ->when($employeeId, function ($qr) use ($employeeId) {
                 $qr->where('employee_id', $employeeId);
             })
             ->searchByFields(['employee_id'])
             ->when(request()->filled('from'), function ($qr) {
-                $qr->where('date', '>=', Carbon::parse(request('from'))->format('Y-m-d'));
+                $qr->where(
+                    'date',
+                    '>=',
+                    Carbon::parse(request('from'))->format('Y-m-d')
+                );
             })
             ->when(request()->filled('to'), function ($qr) {
-                $qr->where('date', '<=', Carbon::parse(request('to'))->format('Y-m-d'));
+                $qr->where(
+                    'date',
+                    '<=',
+                    Carbon::parse(request('to'))->format('Y-m-d')
+                );
             })
             ->paginate($limit);
 
-        // Employee IDs
-        $employeeIds = $attendances->getCollection()
-            ->pluck('employee_id')
-            ->unique()
-            ->values();
+        /*
+        |--------------------------------------------------------------------------
+        | Leave Data
+        |--------------------------------------------------------------------------
+        */
 
-        // Leave data একবারে নিয়ে আসা
+        $from = request()->filled('from')
+            ? Carbon::parse(request('from'))->startOfDay()
+            : now()->startOfMonth();
+
+        $to = request()->filled('to')
+            ? Carbon::parse(request('to'))->endOfDay()
+            : now()->endOfMonth();
+
         $leaves = LeaveApplication::query()
-            ->whereIn('employee_id', $employeeIds)
-            ->when(request()->filled('from'), function ($qr) {
-                $qr->whereDate('from_date', '<=', Carbon::parse(request('to', request('from'))));
+            ->when($employeeId, function ($qr) use ($employeeId) {
+                $qr->where('employee_id', $employeeId);
             })
-            ->when(request()->filled('to'), function ($qr) {
-                $qr->whereDate('to_date', '>=', Carbon::parse(request('from', request('to'))));
-            })
+            ->whereDate('from_date', '<=', $to)
+            ->whereDate('to_date', '>=', $from)
             ->get();
 
-        // প্রতিটি attendance-এর সাথে isLeave attach
-        $attendances->getCollection()->transform(function ($attendance) use ($leaves) {
+        /*
+        |--------------------------------------------------------------------------
+        | Create Leave Date Map
+        |--------------------------------------------------------------------------
+        */
 
-            $attendanceDate = Carbon::parse($attendance->date)->format('Y-m-d');
+        $leaveDates = [];
 
-            $attendance->isLeave = $leaves->contains(function ($leave) use ($attendance, $attendanceDate) {
-                return $leave->employee_id == $attendance->employee_id
-                    && $attendanceDate >= Carbon::parse($leave->from_date)->format('Y-m-d')
-                    && $attendanceDate <= Carbon::parse($leave->to_date)->format('Y-m-d');
-            });
+        foreach ($leaves as $leave) {
 
-            return $attendance;
-        });
+            $start = Carbon::parse($leave->from_date);
+            $end   = Carbon::parse($leave->to_date);
 
-        return $attendances;
+            while ($start->lte($end)) {
 
-            
+                $key = $leave->employee_id . '_' . $start->format('Y-m-d');
+
+                $leaveDates[$key] = true;
+
+                $start->addDay();
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Return
+        |--------------------------------------------------------------------------
+        */
+
+        return [
+            'attendances' => $attendances,
+            'leaveDates'  => $leaveDates,
+        ];
     }
     public function getAllForExport(?int $employeeId = null)
     {
