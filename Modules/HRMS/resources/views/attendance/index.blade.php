@@ -137,7 +137,7 @@
                             <div class="row col-md-12 my-2 align-items-center">
                                 <!-- Avatar -->
                                 <div class="col-md-1">
-                                    <img src="{{ $employee->photograph ?? '' }}" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                                    <img src="{{ $employee->photograph ? $employee->photograph : '/assets/img/author-nav.jpg' }}" class="rounded-circle me-2" style="width: 40px; height: 40px;">
                                 </div>
 
                                 <!-- Name & Card No -->
