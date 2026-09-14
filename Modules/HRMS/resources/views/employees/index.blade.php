@@ -128,7 +128,8 @@
                                     <th>Date of Birth</th>
                                     <th>Joining Date</th>
                                     <th>Email</th>
-                                    <th>Mobile</th>
+                                    <th>Personal Mobile</th>
+                                    <th>Office Phone</th>
                                     <th>Status</th>
                                     <th class="no-content">Action</th>
                                 </tr>
@@ -174,6 +175,7 @@
                                         <td>{{ $employee->employementDetail?->date_of_joining }}</td>
                                         <td>{{ $employee->email_address }}</td>
                                         <td>{{ $employee->personal_mobile }}</td>
+                                        <td>{{ $employee->office_phone }}</td>
                                         <td>{{ $employee->status == 1 ? 'Active' : 'Inactive' }}</td>
   
 

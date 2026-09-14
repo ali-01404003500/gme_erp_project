@@ -88,6 +88,7 @@ class EmployeeSalaryController extends Controller
             'increase_others' => 'nullable|numeric',
             'gross' => 'required|numeric|min:1',
             'tax' => 'nullable|numeric',
+            'dps' => 'nullable|numeric',
             'payment_type' => 'required|in:bank,cash',
             
         ]); 
@@ -162,6 +163,7 @@ class EmployeeSalaryController extends Controller
             'increase_others' => 'nullable|numeric', 
             'gross' => 'required|numeric|min:1',
             'tax' => 'nullable|numeric',
+            'dps' => 'nullable|numeric',
             'payment_type' => 'required|in:bank,cash',
         ]); 
 

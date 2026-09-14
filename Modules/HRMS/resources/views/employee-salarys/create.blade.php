@@ -90,9 +90,13 @@
                                                             @enderror
                                                     </div> 
 
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                         <label class="form-label">Tax</label>
                                                         <input type="text" name="tax" class="form-control" value="{{ old('tax', number_format($employeeSalary->tax)) }}">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">DPS</label>
+                                                        <input type="text" name="dps" class="form-control" value="{{ old('dps', number_format($employeeSalary->dps)) }}">
                                                     </div>
                                                 </div>
 
@@ -207,6 +211,8 @@
                                         <th class="text-center">Payment Type</th>
                                         <th class="text-center">Breakup Details</th> 
                                         <th class="text-center">Total</th>
+                                        <th class="text-center">Tax(Deduction)</th>
+                                        <th class="text-center">DPS(Deduction)</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Action</th>
                                     </tr> 
@@ -248,6 +254,8 @@
                                                 @endforeach
                                             </td> 
                                             <td class="text-center">{{ number_format($value->gross) }}</td> 
+                                            <td class="text-center">{{ number_format($value->tax) }}</td> 
+                                            <td class="text-center">{{ number_format($value->dps) }}</td> 
                                             <td class="text-center">
                                                 <span class="badge badge-round badge-{{ $value->status == 1 ? 'success' : 'danger' }}">{{ $value->status == 1 ? 'Active' : 'Inactive' }}</span>
                                             </td>
