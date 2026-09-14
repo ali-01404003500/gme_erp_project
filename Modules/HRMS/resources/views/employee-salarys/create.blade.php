@@ -16,13 +16,21 @@
                                 </ol>
                             </nav>
                         </div>
-                        <div class="action-btn mt-sm-0 mt-15">
+                        {{-- <div class="action-btn mt-sm-0 mt-15">
                             @if (hasPermission('hrm.employee-salarys.index'))
                             <a href="{{ route('hrm.employee-salarys.index') }}"
                                 class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
                                     class="fa fa-list"></i> List</a>
                             @endif
+                        </div> --}}
+                        <div class="action-btn mt-sm-0 mt-15">
+                            @if (hasPermission('hrm.employees.index'))
+                                <a href="{{ route('hrm.employees.index') }}"
+                                    class="btn btn-warning btn-default btn-squared radius-md shadow2 btn-sm"><i
+                                        class="fa fa-list"></i> List</a>
+                            @endif
                         </div>
+                        
                     </div>
                 </div>
             </div>
