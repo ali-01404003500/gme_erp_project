@@ -38,8 +38,10 @@ class EmployeeService
                 $q->where('personal_mobile', request('personal_mobile'));
             })
 
-            ->when(request('status') !== null, function ($q) {
+            ->when(request()->has('status'), function ($q) {
                 $q->where('status', request('status'));
+            }, function ($q) {
+                $q->where('status', 1);
             })
 
             ->when(request('department'), function ($q) {

@@ -89,10 +89,17 @@
                                             </td> 
                                             <td width="16%">
                                                 <select name="status" id="status" class="form-control tom-select">
-                                                    <option value="" {{ request('status') == 0 ? 'selected' : '' }}>All</option> 
-                                                    <option value="1" {{ request('status') == 1 ? 'selected' : '' }}>Active</option>
-                                                    <option value="0" {{ request('status') == 0 ? 'selected' : '' }}>Inactive</option>
-                                                    
+                                                    <option value="" {{ request()->has('status') && request('status') === '' ? 'selected' : '' }}>
+                                                        All
+                                                    </option>
+
+                                                    <option value="1" {{ !request()->has('status') || request('status') == '1' ? 'selected' : '' }}>
+                                                        Active
+                                                    </option>
+
+                                                    <option value="0" {{ request('status') == '0' ? 'selected' : '' }}>
+                                                        Inactive
+                                                    </option>
                                                 </select>
                                             </td> 
 
