@@ -1,6 +1,6 @@
 @section('title', 'Verification Requests')
 @section('description', 'Verification Requests')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">
@@ -284,41 +284,180 @@
 
         // Existing JavaScript
         $(document).on('click', '.btn-success, .btn-danger', function () {
-            let $btn = $(this);
-            let $card = $btn.closest('.card');
-            let verificationRequestId = $card.data('request-id');
-            let action = $btn.hasClass('btn-success') ? 'accept' : 'deny';
-            let remarks = $card.find('textarea').val();
 
-            // Collect checked pending change IDs
-            let pendingIds = [];
-            $card.find('input[type="checkbox"]:checked').each(function () {
+        let $btn = $(this);
+        let $card = $btn.closest('.card');
+
+        let verificationRequestId =
+            $card.data('request-id');
+
+        let action =
+            $btn.hasClass('btn-success')
+                ? 'accept'
+                : 'deny';
+
+        let remarks =
+            $card.find('textarea').val().trim();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Collect checked pending change IDs
+        |--------------------------------------------------------------------------
+        */
+
+        let pendingIds = [];
+
+        $card.find('input[type="checkbox"]:checked')
+            .each(function () {
                 pendingIds.push($(this).val());
             });
 
-            if (pendingIds.length === 0) {
-                toastr.error('Please select at least one pending change.');
+
+        if (pendingIds.length === 0) {
+
+            toastr.error(
+                'Please select at least one pending change.'
+            );
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Remarks validation
+        |--------------------------------------------------------------------------
+        */
+
+        // if (!remarks) {
+
+        //     toastr.error(
+        //         'Please enter a remark.'
+        //     );
+
+        //     $card.find('textarea').focus();
+
+        //     return;
+        // }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SweetAlert Confirmation
+        |--------------------------------------------------------------------------
+        */
+
+        const isAccept = action === 'accept';
+
+        Swal.fire({
+            title: isAccept
+                ? 'Approve Verification?'
+                : 'Deny Verification?',
+
+            text: isAccept
+                ? 'Are you sure you want to approve this verification request?'
+                : 'Are you sure you want to deny this verification request?',
+
+            icon: isAccept
+                ? 'question'
+                : 'warning',
+
+            showCancelButton: true,
+
+            confirmButtonText: isAccept
+                ? 'Yes, Approve'
+                : 'Yes, Deny',
+
+            cancelButtonText: 'Cancel',
+
+            reverseButtons: true,
+
+            focusCancel: true
+
+        }).then(function (result) {
+
+            if (!result.isConfirmed) {
                 return;
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Disable buttons while processing
+            |--------------------------------------------------------------------------
+            */
+
+            $card.find('.btn-success, .btn-danger')
+                .prop('disabled', true);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | AJAX
+            |--------------------------------------------------------------------------
+            */
+
             $.ajax({
+
                 url: '{{ route('verification.verify-otp') }}',
+
                 method: 'POST',
+
                 data: {
                     _token: '{{ csrf_token() }}',
                     pending_ids: pendingIds,
                     remarks: remarks,
-                    verification_request_id: verificationRequestId,
+                    verification_request_id:
+                        verificationRequestId,
                     action: action
                 },
+
                 success: function (response) {
-                    // Optionally, update UI or reload 
-                    location.reload();
+
+                    if (response.success === true) {
+
+                        Swal.fire({
+                            icon: action === 'accept' ? 'success' : 'warning',
+                            title: action === 'accept' ? 'Approved!' : 'Denied!',
+                            text: response.message ||
+                                (action === 'accept'
+                                    ? 'Verification approved successfully.'
+                                    : 'Verification denied successfully.'),
+                            confirmButtonText: 'OK'
+                        }).then(function () {
+                            location.reload();
+                        });
+
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed',
+                            text: response.message || 'Something went wrong.'
+                        });
+
+                        $card.find('.btn-success, .btn-danger')
+                            .prop('disabled', false);
+                    }
                 },
                 error: function (xhr) {
-                    toastr.error('An error occurred. Please try again.');
+
+                    $card.find('.btn-success, .btn-danger')
+                        .prop('disabled', false);
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: xhr.responseJSON?.message ||
+                            'An error occurred while processing the verification.'
+                    });
                 }
+
             });
+
         });
+
+    });
     </script>
 @endsection

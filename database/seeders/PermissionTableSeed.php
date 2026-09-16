@@ -4965,6 +4965,13 @@ class PermissionTableSeed extends Seeder
                 'key' => 'verification'
             ],
              
+            [
+                'name' => 'Verification Center',
+                'slug' => 'verification.index',
+                'description' => 'Verification Center',
+                'key' => 'verification_center'
+            ],
+
             // Custom Employee Routes
             [
                 'name' => 'Employee Import',
@@ -5137,15 +5144,6 @@ class PermissionTableSeed extends Seeder
                 'description' => 'Branch Type delete permission',
                 'key' => 'access_control.branch-types'
             ],
-
-
-            [
-                'name' => 'All Verification List',
-                'slug' => 'verification.all-verification-tab',
-                'description' => 'All Verification List',
-                'key' => 'verification'
-            ],
-
 
             [
                 'name' => 'Employee Cash Handling Report',

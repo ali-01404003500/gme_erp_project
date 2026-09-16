@@ -1,5 +1,5 @@
 
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('title', 'Cash Transfers')
 @section('description', 'Manage Cash Transfers')

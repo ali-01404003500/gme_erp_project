@@ -14,12 +14,18 @@ class OtpVerifyController extends Controller
     
     public function showVerificationForm(Request $request=null)
     {
+        
 
         $user = auth()->user()->id ?? null;
         $requestsIds = Cache::get("user_verifications:{$user}", []);
+        if (empty($requestsIds)) {
+            OtpVerification::where('status', 'pending')
+                ->update(['status' => 'expired']);
+        }
         $requests = collect($requestsIds)->map(function ($id) {
-            $optVerification = Cache::get("otp_verification:{$id}");
-            if (!$optVerification) {
+            $optVerification = Cache::get("otp_verification:{$id}");  
+            if (!$optVerification) { 
+                OtpVerification::where('id', $id)->update(['status' => 'expired']);
                 return null;
             }
             $optVerification['id'] = $id;
@@ -29,7 +35,7 @@ class OtpVerifyController extends Controller
         });
         // return response()->json(['requests' => $requests]);
 
-        $data['verificationRequests']= $requests;
+        $data['verificationRequests'] = $requests;
         return view('verification.verification-requests', $data);
     }
  
@@ -83,7 +89,13 @@ class OtpVerifyController extends Controller
 
         // dd($verificationData);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => $status === 'approved'
+                ? 'OTP verification approved successfully.'
+                : 'OTP verification denied successfully.',
+        ]);
+ 
     }
 
 

@@ -192,11 +192,11 @@
                         </li>
                     @endif
 
-                    @if (hasPermission('verification.all-verification-tab'))
+                    @if (hasPermission('verification.index'))
                         <li>
-                            <a href="{{ route('verification.all-verification-tab') }}" class="{{ request()->routeIs('verification.all-verification-tab') ? 'active' : '' }}">
+                            <a href="{{ route('verification.index') }}" class="{{ request()->routeIs('verification.index') ? 'active' : '' }}">
                                 <span class="nav-icon uil uil-file-alt"></span>
-                                <span class="menu-text">{{ t_('menu.all-verification-tab') }}</span>
+                                <span class="menu-text">{{ t_('menu.verification-center') }}</span>
                             </a>
                         </li>
                     @endif

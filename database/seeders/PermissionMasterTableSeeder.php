@@ -1333,9 +1333,17 @@ class PermissionMasterTableSeeder extends Seeder
 
             //verification.verification-requests
             [
-                'title' => 'Verifications',
-                'description' => 'Verification of One Time Permissions',
+                'title' => 'OTP Verifications',
+                'description' => 'Otp Verification of One Time Permissions',
                 'key' => 'verification',
+            ],
+
+
+            //verification.index
+            [
+                'title' => 'Verifications Center',
+                'description' => 'Verification Center of One Time Permissions',
+                'key' => 'verification_center',
             ],
 
             //Sms Templates
