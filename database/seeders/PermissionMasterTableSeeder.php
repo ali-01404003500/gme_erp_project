@@ -1158,7 +1158,7 @@ class PermissionMasterTableSeeder extends Seeder
                 'title' => 'Loan Collections',
                 'description' => 'Permission of Add, Remove, Update, Delete Loan Collections',
                 'key' => 'account.loan-collections',
-                'parent_key' => 'account',
+                'parent_key' => 'accounts',
             ],
 
             //Default Payable & Receivables
