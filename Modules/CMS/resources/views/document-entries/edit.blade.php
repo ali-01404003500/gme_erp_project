@@ -4,7 +4,16 @@
 
 @section('content')
 <style>
-    
+    .action-btn {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.action-btn a {
+    white-space: nowrap;
+}
 </style>
 
 <div class="container-fluid mb-5">
@@ -22,11 +31,22 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="action-btn">
-                    <a href="{{ route('cms.document-entries.index') }}"
-                        class="btn btn-outline-warning btn-sm radius-md px-3">
-                        <i class="fa fa-list me-1"></i> Back to List
-                    </a>
+                <div class="action-btn"> 
+                    @if (hasPermission('cms.document-entries.index'))
+                        <a href="{{ route('cms.document-entries.index') }}"
+                            class="btn btn-outline-warning btn-sm radius-md px-3">
+                            <i class="fa fa-list me-1"></i> Back to List
+                        </a>
+                    @endif
+
+
+                    @if (hasPermission('cms.document-entries.create'))
+                        <a href="{{ route('cms.document-entries.create') }}"
+                            class="btn btn-primary btn-sm px-4 shadow-sm border-0"
+                            style="border-radius: 10px; background: linear-gradient(90deg, #5f63f2, #7928ca);">
+                            <i class="las la-plus fs-16 me-1"></i> Add New Entry
+                        </a>
+                    @endif
                 </div>
             </div>
             <x-error-alart />
