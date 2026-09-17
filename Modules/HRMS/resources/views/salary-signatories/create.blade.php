@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('title', 'Create Salary Signatory')
 @section('description', 'Create Salary Signatory')

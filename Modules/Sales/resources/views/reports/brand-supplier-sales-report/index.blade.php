@@ -1,6 +1,6 @@
 @section('title', 'Brand/Supplier Wise Sales Report')
 @section('description', 'Brand/Supplier Wise Sales Report')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

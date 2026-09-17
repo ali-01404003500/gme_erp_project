@@ -2,7 +2,7 @@
 @section('description',
     'Comprehensive customer balance report with opening, sales, returns, collections, and closing
     balances')
-    @extends('layout.app')
+    @extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

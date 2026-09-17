@@ -1,5 +1,5 @@
 @section('title', 'Edit Target Matrix')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">

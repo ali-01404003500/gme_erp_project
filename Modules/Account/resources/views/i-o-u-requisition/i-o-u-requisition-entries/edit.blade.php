@@ -2,7 +2,7 @@
 @section('title', 'Edit IOU Requisition')
 @section('description', 'Edit your IOU requisition')
 
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
 <!-- Same as create.blade.php but with values filled and update method -->

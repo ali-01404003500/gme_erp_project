@@ -1,6 +1,6 @@
 @section('title', 'Product Free Sales Invoice')
 @section('description', 'Product Free Sales Invoice')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

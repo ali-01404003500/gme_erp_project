@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('title', 'Create Score Wise Suggestion')
 @section('description', 'Score-to-Grade Mapping Setup')

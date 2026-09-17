@@ -1,6 +1,6 @@
 @section('title', 'Fake Invoice Edit')
 @section('description', 'Fake Invoice Edit')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

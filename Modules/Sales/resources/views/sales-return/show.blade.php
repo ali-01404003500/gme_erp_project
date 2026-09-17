@@ -1,6 +1,6 @@
 @section('title', 'Sales Return')
 @section('description', 'Sales Return for ' . $salesReturn->customer->company_name)
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

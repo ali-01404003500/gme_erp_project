@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('title', 'EMI Customer-Wise Report')
 @section('description', 'EMI Customer Wise Report')
 

@@ -1,6 +1,6 @@
 @section('title', 'Salary Deduction Policy')
 @section('description', 'Salary Deduction Policy')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 
     <div class="container-fluid py-3">

@@ -1,6 +1,6 @@
 @section('title', 'Edit Payment Voucher')
 @section('description', 'Edit Payment Voucher')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('page-head')
 

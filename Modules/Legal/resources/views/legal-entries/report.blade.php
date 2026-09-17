@@ -1,6 +1,6 @@
 @section('title', 'Legal Report')
 @section('description', 'View Case Report and Notice Report')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <style>
         .dm-tab.tab-horizontal .nav-tabs .nav-item .nav-link {

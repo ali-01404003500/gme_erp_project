@@ -1,6 +1,6 @@
 @section('title', 'CBC License Requisition Sms Send')
 @section('description', 'CBC License Requisition Sms Send')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

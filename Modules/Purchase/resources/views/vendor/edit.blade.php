@@ -1,6 +1,6 @@
 @section('title', 'Vendor Update')
 @section('description', 'Vendor Update')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 
     <style>

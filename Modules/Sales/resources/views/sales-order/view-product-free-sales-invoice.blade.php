@@ -1,6 +1,6 @@
 @section('title', 'Free Sales Invoice Details')
 @section('description', 'Details for Free Sales Invoice ' . $freeSalesInvoice->invoice_id)
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
         .my-header img {

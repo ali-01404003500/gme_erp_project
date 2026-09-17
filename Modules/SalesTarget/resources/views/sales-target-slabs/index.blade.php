@@ -1,7 +1,7 @@
 // resources/views/sales-target-slabs/index.blade.php
 @section('title', 'Sales Target Slab')
 @section('description', 'Sales Target Slab')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

@@ -1,6 +1,6 @@
 @section('title', 'Vendor Bill')
 @section('description', 'View and print generated vendor bill details')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
 @section('content')

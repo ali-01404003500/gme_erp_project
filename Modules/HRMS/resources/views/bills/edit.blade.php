@@ -1,6 +1,6 @@
 @section('title', 'Edit TA/DA ')
 @section('description', 'Edit TA/DA ')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('page-header')
     <style>

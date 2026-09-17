@@ -1,6 +1,6 @@
 @section('title', 'Customer Create')
 @section('description', 'Customer Create')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 
     <Style>

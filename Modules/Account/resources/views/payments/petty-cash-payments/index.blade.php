@@ -1,7 +1,7 @@
 {{-- resources/views/Account/payments/petty-cash-payments/index.blade.php --}}
 @section('title', "TA/DA List for Payment")
 @section('description', "TA/DA List for Payment")
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
 <div class="container-fluid">

@@ -1,6 +1,6 @@
 @section('title', 'Edit Product Transfer')
 @section('description', 'Edit Product Transfer')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 <style>
     

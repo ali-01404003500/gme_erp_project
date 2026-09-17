@@ -1,6 +1,6 @@
 @section('title', 'Contra Voucher')
 @section('description', 'Contra Voucher')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('page-head')
 

@@ -1,6 +1,6 @@
 @section('title', 'Verification Center')
 @section('description', 'Verification Center')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
 

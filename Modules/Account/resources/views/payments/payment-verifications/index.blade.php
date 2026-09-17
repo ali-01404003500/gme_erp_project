@@ -1,6 +1,6 @@
 @section('title', 'Payment Verification List')
 @section('description', 'Payment Verification List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 <style>
     .dm-tab.tab-horizontal .nav-tabs .nav-item .nav-link {

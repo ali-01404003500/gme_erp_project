@@ -1,6 +1,6 @@
 @section('title', 'Sales Requisition Details')
 @section('description', 'Sales Requisition Details')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
             <style>
                 .my-header img {

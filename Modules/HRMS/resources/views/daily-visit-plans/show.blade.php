@@ -1,6 +1,6 @@
 @section('title', 'Daily Visit Plan Details')
 @section('description', 'Daily Visit Plan Details')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('page-head')
     <style>

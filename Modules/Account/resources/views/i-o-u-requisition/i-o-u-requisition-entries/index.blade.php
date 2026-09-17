@@ -2,7 +2,7 @@
 @section('title', 'IOU Requisition List')
 @section('description', 'List of IOU requisitions')
 
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
     .otp-input-container {

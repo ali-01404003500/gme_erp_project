@@ -1,6 +1,6 @@
 @section('title', 'Condition Amount Collection')
 @section('description', 'Condition Amount Collection List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="row">

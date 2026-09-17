@@ -3285,16 +3285,10 @@ class PermissionTableSeed extends Seeder
             [
                 'name' => 'CBC License Requisitions Approve',
                 'slug' => 'licenses.cbc-license-requisitions.approve',
-                'description' => 'CBC License Requisitions delete permission',
+                'description' => 'CBC License Requisitions approve permission',
                 'key' => 'licenses.cbc-license-requisitions'
             ],
-            [
-                'name' => 'CBC License Requisitions Approve',
-                'slug' => 'licenses.cbc-license-requisitions.approve',
-                'description' => 'CBC License Requisitions delete permission',
-                'key' => 'licenses.cbc-license-requisitions'
-            ],
-
+            
             //licenses.usg-opg-sms
             [
                 'name' => 'USG OPG SMS Update',
@@ -4258,16 +4252,16 @@ class PermissionTableSeed extends Seeder
             //Loan Colleciton 
             [
                 'name' => 'Loan Collections List',
-                'slug' => 'account.collections.loan-collections.index',
+                'slug' => 'account.loan-collections.index',
                 'description' => 'Loan Collections list permission',
-                'key' => 'account.collections.loan-collections'
+                'key' => 'account.loan-collections'
             ],
 
             [
                 'name' => 'Create Loan Collections',
-                'slug' => 'account.collections.loan-collections.create',
+                'slug' => 'account.loan-collections.create',
                 'description' => 'Loan Collections create permission',
-                'key' => 'account.collections.loan-collections'
+                'key' => 'account.loan-collections'
             ],
  
 
@@ -4969,6 +4963,13 @@ class PermissionTableSeed extends Seeder
                 'name' => 'Verification Center',
                 'slug' => 'verification.index',
                 'description' => 'Verification Center',
+                'key' => 'verification_center'
+            ],
+
+            [
+                'name' => 'Account Quick Access',
+                'slug' => 'verification.account-quick-access',
+                'description' => 'Account Quick Access',
                 'key' => 'verification_center'
             ],
 

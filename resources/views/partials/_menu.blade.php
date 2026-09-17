@@ -200,6 +200,15 @@
                             </a>
                         </li>
                     @endif
+
+                    @if (hasPermission('verification.account-quick-access'))
+                        <li>
+                            <a href="{{ route('verification.account-quick-access') }}" class="{{ request()->routeIs('verification.account-quick-access') ? 'active' : '' }}">
+                                <span class="nav-icon uil uil-file-alt"></span>
+                                <span class="menu-text">{{ t_('menu.account-quick-access') }}</span>
+                            </a>
+                        </li>
+                    @endif
  
 
 

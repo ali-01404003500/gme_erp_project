@@ -1,6 +1,6 @@
 @section('title', 'Branch Type')
 @section('description', 'Branch Type for Inventory / warehouse ')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <!-- CONTENT AREA -->
     <div class="container-fluid">

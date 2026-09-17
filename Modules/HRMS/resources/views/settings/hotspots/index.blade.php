@@ -1,6 +1,6 @@
 @section('title', 'Hotspot Setup')
 @section('description', 'Hotspot Setup')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <!-- CONTENT AREA -->
     <div class="container-fluid">

@@ -1,6 +1,6 @@
 @section('title', 'View Product Transfer Request')
 @section('description', 'View Product Transfer Request')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
         /* Print-specific styles - hide everything except the card */

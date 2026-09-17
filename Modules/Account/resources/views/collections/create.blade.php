@@ -1,6 +1,6 @@
 @section('title', 'Collection')
 @section('description', 'Record a new Collection')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
 @endsection
 @section('content')

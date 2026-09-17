@@ -1,6 +1,6 @@
 od@section('title', 'Product Catalog Information')
 @section('description', 'Product Catalog Information')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 
     <style>

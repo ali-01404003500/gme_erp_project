@@ -136,15 +136,15 @@ class VerificationCenterController extends Controller
             [
                 'key'   => 'cbc_license_key_send',
                 'title' => 'CBC License Key Send',
-                'route' => route('licenses.cbc-sms.index'),
-                'permission' => 'licenses.cbc-sms.update',
+                'route' => route('licenses.cbc-license-requisitions.index'),
+                'permission' => 'licenses.cbc-license-requisitions.approve',
             ],
 
             [
                 'key'   => 'usg_license_key_send',
                 'title' => 'USG License Key Send',
-                'route' => route('licenses.usg-opg-sms.index'),
-                'permission' => 'licenses.usg-opg-sms.update',
+                'route' => route('licenses.usg-opg-license-requisitions.index'),
+                'permission' => 'licenses.usg-opg-license-requisitions.approve',
             ],
 
           

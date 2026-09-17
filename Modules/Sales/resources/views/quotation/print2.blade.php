@@ -1,7 +1,7 @@
 <!-- views/sales/quotation/show.blade.php (Web View Blade) -->
 @section('title', 'Quotation Information Details')
 @section('description', 'Quotation Information Details')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
         body {

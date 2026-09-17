@@ -1,6 +1,6 @@
 @section('title', 'Document Head')
 @section('description', 'Document Head')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <style>

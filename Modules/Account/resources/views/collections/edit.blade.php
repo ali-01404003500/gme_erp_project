@@ -1,6 +1,6 @@
 @section('title', 'Edit Collection')
 @section('description', 'Edit an existing Collection')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
 @endsection
 @section('content')

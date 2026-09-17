@@ -1,6 +1,6 @@
 {{-- Modules/Account/resources/views/setup/account-control/index.blade.php --}}
 
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('title', 'Account Control')
 @section('description', 'Account Control')

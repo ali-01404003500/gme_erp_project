@@ -1,6 +1,6 @@
 @section('title', 'Customer List')
 @section('description', 'Customer List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

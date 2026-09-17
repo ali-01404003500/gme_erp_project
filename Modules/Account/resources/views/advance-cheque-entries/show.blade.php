@@ -1,6 +1,6 @@
 @section('title', 'Advance Cheque Receipt Detail')
 @section('description', 'Advance Cheque Receipt Detail')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('title','Account Subsidiary Edit')
 @section('page-header')
     <i class="fa fa-list"></i> Account Subsidiary Edit

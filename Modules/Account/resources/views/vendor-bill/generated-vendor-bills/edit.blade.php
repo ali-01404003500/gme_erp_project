@@ -1,7 +1,7 @@
 @section('title', 'Manage Vendor Bill')
 @section('description', 'Edit amount and update verification status of generated vendor bill')
 
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">

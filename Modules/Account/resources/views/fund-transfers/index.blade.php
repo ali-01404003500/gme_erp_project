@@ -2,7 +2,7 @@
 @section('title', 'Fund Transfer List')
 @section('description', 'List of Fund Transfer')
 
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
     .otp-input-container {

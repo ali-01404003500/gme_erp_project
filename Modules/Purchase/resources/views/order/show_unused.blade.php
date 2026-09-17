@@ -1,6 +1,6 @@
 @section('title', 'Purchase Order Details')
 @section('description', 'Purchase Order Details')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 @section('page-head')
 <style>

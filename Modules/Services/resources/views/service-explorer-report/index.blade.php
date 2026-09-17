@@ -1,6 +1,6 @@
 @section('title', 'Service Explorer Report')
 @section('description', 'Comprehensive Service Activity Report with Advanced Filters')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

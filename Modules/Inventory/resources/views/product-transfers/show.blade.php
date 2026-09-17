@@ -1,6 +1,6 @@
 @section('title', 'Product Transfer List')
 @section('description', 'Product Transfer List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
 
     <style>

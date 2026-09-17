@@ -6,7 +6,8 @@ use App\Http\Controllers\AccessControl\GlobalSettingController;
 use App\Http\Controllers\AccessControl\RoleController;
 use App\Http\Controllers\AccessControl\ServiceNameController;
 use App\Http\Controllers\AccessControl\SmsTemplateController;
-use App\Http\Controllers\AccessControl\TriggerNameController; 
+use App\Http\Controllers\AccessControl\TriggerNameController;
+use App\Http\Controllers\AccountsQuickAccessController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeoLocationController;
@@ -135,6 +136,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 
+
+    Route::middleware(['auth'])->prefix('account-quick-access')->name('verification.')->group(function () {
+        Route::get('/',[AccountsQuickAccessController::class, 'index'])->name('account-quick-access');
+        Route::get( '/counts',[AccountsQuickAccessController::class, 'counts'])->name('account-quick-access.counts');
+
+    });
+ 
    
     Route::group(['prefix' => 'sms', 'as' => 'sms.'], function () {
         Route::resource('templates', SmsTemplateController::class);

@@ -1,6 +1,6 @@
 @section('title', 'Issue Products List')
 @section('description', 'Issue Products List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <!-- CONTENT AREA -->
     <div class="container-fluid">

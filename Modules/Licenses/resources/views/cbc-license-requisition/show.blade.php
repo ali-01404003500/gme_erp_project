@@ -1,6 +1,6 @@
 @section('title', 'CBC License Requisition View')
 @section('description', 'CBC License Requisition View')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">

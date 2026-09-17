@@ -1,7 +1,7 @@
 
 @section('title', 'Attendance Policy List')
 @section('description', 'Attendance Policy List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid mt-4">
         <div class="card border-0 shadow-sm">

@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('title', 'Monthly KPI Appraisal Details')
 @section('description', 'View Monthly KPI Appraisal Details')

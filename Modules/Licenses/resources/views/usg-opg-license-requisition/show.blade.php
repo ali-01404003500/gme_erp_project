@@ -1,6 +1,6 @@
 @section('title', 'USG/OPG License Requisition View')
 @section('description', 'USG/OPG License Requisition View')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">

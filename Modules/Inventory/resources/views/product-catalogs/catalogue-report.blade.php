@@ -1,6 +1,6 @@
 @section('title', 'Catalogue Print Report')
 @section('description', 'View and Download Product Catalogues')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
 <div class="container-fluid">

@@ -1,6 +1,6 @@
 @section('title', 'Stock Balance Report with Costing and Sales Value')
 @section('description', 'Stock Balance Report with Costing and Sales Value')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 <div class="container-fluid">
     <div class="social-dash-wrap">

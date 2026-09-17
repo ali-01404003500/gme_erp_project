@@ -1,7 +1,7 @@
 {{-- @dd($salesOrder->source_type    ) --}}
 @section('title', 'Sales Order Edit')
 @section('description', 'Sales Order Edit')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

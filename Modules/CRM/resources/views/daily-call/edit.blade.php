@@ -1,6 +1,6 @@
 @section('title', 'Daily Calls Edit')
 @section('description', 'Daily Calls Edit')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 
 <style>

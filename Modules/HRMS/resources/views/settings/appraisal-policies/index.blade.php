@@ -1,6 +1,6 @@
 @section('title', 'Appraisal Policies')
 @section('description', 'Appraisal Policies')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 @section('content')
     <!-- CONTENT AREA -->

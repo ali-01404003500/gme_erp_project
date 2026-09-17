@@ -1,6 +1,6 @@
 @section('title', 'Service Assign List')
 @section('description', 'Service Assign List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 <style>
 #zero-config td, 
 #zero-config th {

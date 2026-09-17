@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('title', 'Sales Return Verification') 
 @section('description', 'Sales Return Verification') 
 @section('content')

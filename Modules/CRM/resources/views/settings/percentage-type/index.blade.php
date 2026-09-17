@@ -1,6 +1,6 @@
 @section('title', 'Percentage Type')
 @section('description', 'Percentage Type')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 @section('content')
     <!-- CONTENT AREA -->

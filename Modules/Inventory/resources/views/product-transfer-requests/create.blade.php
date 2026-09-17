@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('title', 'Add Product Transfer Request')
 @section('description', 'Add Product Transfer Request')
 @section('page-head')

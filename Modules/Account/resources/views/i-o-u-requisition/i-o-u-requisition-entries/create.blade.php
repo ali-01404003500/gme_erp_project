@@ -1,7 +1,7 @@
 <!-- resources/views/i-o-u-requisition/i-o-u-requisition-entries/create.blade.php -->
 @section('title', 'Create IOU Requisition')
 @section('description', 'Submit a new IOU requisition for expense or advance')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 <div class="container-fluid">
     <div class="social-dash-wrap">

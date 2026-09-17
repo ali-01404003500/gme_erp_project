@@ -1,8 +1,7 @@
 <!-- resources/views/funs-transfers/show.blade.php --> 
 @section('title', 'View Fund Transfer')
 @section('description', 'View Fund Transfer')
-
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
 <div class="container-fluid">

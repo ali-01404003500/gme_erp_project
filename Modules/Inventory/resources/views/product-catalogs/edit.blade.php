@@ -1,6 +1,6 @@
 @section('title', 'Edit Product Catalog')
 @section('description', 'Edit Product Catalog')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
 @endsection
 @section('content')

@@ -1,6 +1,6 @@
 @section('title',"Document Entry List")
 @section('description',"Document Entry List")
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 <div class="container-fluid">
     <div class="social-dash-wrap">

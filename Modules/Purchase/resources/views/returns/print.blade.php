@@ -1,6 +1,6 @@
 @section('title', 'Purchase Return Invoice Bill Details')
 @section('description', 'Purchase Return Invoice Bill Details')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
 @endsection
 

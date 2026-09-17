@@ -1,7 +1,7 @@
 {{-- @dd( $salesRequisition->shipment)/ --}}
 @section('title', 'Sales Requisition Edit')
 @section('description', 'Sales Requisition Edit')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

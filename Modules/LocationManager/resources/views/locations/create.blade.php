@@ -1,6 +1,6 @@
 @section('title', 'Location Create')
 @section('description', 'Create Create ')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 <style>
     /* Style for all <a> tags */

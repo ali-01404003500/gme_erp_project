@@ -1,7 +1,7 @@
 
 @section('title', 'Leave Year')
 @section('description', 'Leave Year')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">

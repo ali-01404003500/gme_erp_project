@@ -1,6 +1,6 @@
 @section('title', 'Edit Loan/Advance')
 @section('description', 'Edit Loan/Advance')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
 <div class="container-fluid">

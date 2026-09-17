@@ -1,6 +1,6 @@
 @section('title', 'Brand')
 @section('description', 'Brand')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 @section('content')
     <!-- CONTENT AREA -->

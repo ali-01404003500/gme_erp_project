@@ -1341,7 +1341,7 @@ class PermissionMasterTableSeeder extends Seeder
 
             //verification.index
             [
-                'title' => 'Verifications Center',
+                'title' => 'Quick Access Center',
                 'description' => 'Verification Center of One Time Permissions',
                 'key' => 'verification_center',
             ],

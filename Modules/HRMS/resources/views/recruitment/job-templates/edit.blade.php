@@ -1,6 +1,6 @@
 @section('title', 'Update Job Template ')
 @section('description', 'Update Job Template ')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">

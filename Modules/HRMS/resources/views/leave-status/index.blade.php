@@ -1,7 +1,7 @@
 
 @section('title', 'Create Leave Status ')
 @section('description', 'Current Leave Status')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="card mb-4 border-0 shadow-sm mt-4">

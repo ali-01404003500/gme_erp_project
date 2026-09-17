@@ -1,6 +1,6 @@
 @section('title', 'Quotation List')
 @section('description', 'Quotation List')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
         .filter td {

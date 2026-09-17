@@ -1,6 +1,6 @@
 @section('title', 'Service Name')
 @section('description', 'Service Name')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 @section('content')
     <!-- CONTENT AREA -->

@@ -1,6 +1,6 @@
 @section('title', 'Product Transfer Receive Details')
 @section('description', 'Product Transfer Receive Details')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
         @media print {

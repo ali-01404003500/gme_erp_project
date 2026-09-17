@@ -1,6 +1,6 @@
 @section('title', 'Supplier Profile')
 @section('description', 'Supplier Profile')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">

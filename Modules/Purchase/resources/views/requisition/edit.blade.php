@@ -1,6 +1,6 @@
 @section('title', 'Purchase Requisition Edit')
 @section('description', 'Purchase Requisition Edit')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <div class="container-fluid">
         <div class="social-dash-wrap">

@@ -1,6 +1,6 @@
 @section('title', 'KPI List')
 @section('description', 'Key Performance Indicators')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">

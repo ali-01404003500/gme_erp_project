@@ -1,6 +1,6 @@
 @section('title', 'Bank Branches')
 @section('description', 'Bank Branches')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
     <!-- CONTENT AREA -->
     <div class="container-fluid">

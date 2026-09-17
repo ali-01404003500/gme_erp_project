@@ -1,7 +1,7 @@
  <!-- resources/views/i-o-u-requisition/i-o-u-requisition-entries/create.blade.php -->
 @section('title', 'Edit Fund Transfer')
 @section('description', 'Submit a Edit Fund Transfer')
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('content')
 <div class="container-fluid">
     <div class="social-dash-wrap">

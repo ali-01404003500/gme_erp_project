@@ -2,7 +2,7 @@
 @php $isFree = $salesOrder->sales_type == 'free_sales'; @endphp
 @section('title', $isFree ? 'Free Sales Invoice Bill' : 'Sales Order Details')
 @section('description', $isFree ? 'Free Sales Invoice for ' . $salesOrder->customer->company_name : 'Sales Order Details for ' . $salesOrder->customer->company_name)
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 @section('page-head')
     <style>
         .my-header img {

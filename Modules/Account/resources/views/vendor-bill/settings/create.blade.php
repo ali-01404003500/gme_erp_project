@@ -1,7 +1,7 @@
 @section('title', 'Create Vendor Bill Settings')
 @section('description', 'Create vendor bill settings for recurring expenses like internet, telephone, utilities, etc.')
 
-@extends('layout.app')
+@extends(request()->boolean('embed')? 'layout.embed': 'layout.app')
 
 @section('content')
     <div class="container-fluid">
