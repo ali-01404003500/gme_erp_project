@@ -82,12 +82,13 @@ class EMIEntryController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     */
+     * 'sales_order_id' => 'required',
+     */ 
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'customer_id' => 'required',
-            'sales_order_id' => 'required',
+            'customer_id' => 'required', 
+            'sales_order_id' => 'nullable',
             'start_date' => 'required',
             'tenure_type' => 'required',
             'tenure_no' => 'required',
