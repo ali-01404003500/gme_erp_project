@@ -50,7 +50,7 @@
                                         <div class="edit-profile__body">
                                             <div class="form-group mb-20 pt-3">
                                                 <label for="email">Username Or Email Address</label>
-                                                <input type="text" class="form-control" id="email" name="email" placeholder="Email address">
+                                                <input type="text" class="form-control" id="email" name="email" placeholder="Email address" autofocus>
                                                 @if($errors->has('email'))
                                                     <p class="text-danger">{{$errors->first('email')}}</p>
                                                 @endif

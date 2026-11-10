@@ -562,7 +562,7 @@
                                                                     <tr>
                                                                         <td>
                                                                             <select name="fixed_type[]" class="form-control product_ids" onchange="getFixed(this)">
-                                                                                <option value="{{ $item->fixed_type }}" >{{ $item->product->name }}</option> 
+                                                                                <option value="{{ $item->fixed_type ?? '' }}" >{{ optional($item->product)->name ?? '' }}</option> 
                                                                             </select>
                                                                         </td>
                                                                         <td>
