@@ -276,6 +276,7 @@ public function update($request, $brokerId)
     } 
     if (in_array(2, $request->commission_type ?? []) ) {  
         $broker->brokerCommission()->where('commission_type', 2)->delete();
+        $broker->brokerCommission()->where('commission_type', 3)->delete();
 
         foreach ($request->fixed_type as $key => $fixedType) { 
 
@@ -292,13 +293,13 @@ public function update($request, $brokerId)
             else
             {
                 if ($fixedType != null && $request->fixed[$key] != 0) { 
-                BrokerCommission::create([
-                    'commission_type' => '2',
-                    'broker_id' => $broker->id,
-                    'fixed_type' => $request->fixed_type[$key],
-                    'fixed' => $request->fixed[$key] ?? 0,
-                ]);
-            }
+                    BrokerCommission::create([
+                        'commission_type' => '2',
+                        'broker_id' => $broker->id,
+                        'fixed_type' => $request->fixed_type[$key],
+                        'fixed' => $request->fixed[$key] ?? 0,
+                    ]);
+                }
             }
             
         }

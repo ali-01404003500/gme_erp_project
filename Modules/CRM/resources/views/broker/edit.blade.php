@@ -437,7 +437,8 @@
                                                             </th>
                                                         </thead>
                                                         <tbody>
-                                                            @if ($broker->brokerCommission->count() > 0)
+                                                             
+                                                            @if ($broker->brokerCommission->where('percentage_type', 1)->count() > 0)
                                                                 @foreach ($broker->brokerCommission->where('commission_type','1') as $key => $item)
                                                                     <tr>
                                                                         <td>
@@ -556,8 +557,14 @@
                                                                     </div>
                                                                 </td>
                                                             </tr> 
-                                                            @if ($broker->brokerCommission->count() > 0)
+                                                           
+                                                            @php
+                                                                $fixedCommissions = $broker->brokerCommission->where('commission_type', 2)->whereNotNull('fixed_type');
+                                                            @endphp
+
+                                                            @if ($fixedCommissions->count() > 0)
                                                                 @foreach ($broker->brokerCommission->where('commission_type','2') as $key => $item)
+                                                              
 
                                                                     <tr>
                                                                         <td>
@@ -605,8 +612,7 @@
                                                                             </button>
                                                                         </div>
                                                                     </td>
-                                                                </tr>
-
+                                                                </tr> 
                                                             @endif 
                                                        
                                                         </tbody>
@@ -973,7 +979,7 @@
         newRow.insertAfter(table);
 
         // Reinitialize TomSelect
-        prouctAutocompleteLoad(newRow);
+        productAutocompleteLoad(newRow);
     }
 
     function deleteFixedRow(object) {
@@ -1134,7 +1140,7 @@
                 if (!query.length || query.length < 2) return callback();
 
                 $.ajax({
-                    url: "{{ route('crm.autocomplete.products') }}",
+                    url: "{{ route('sales.sales-orders-autocomplete.products') }}",
                     type: "GET",
                     data: { search: query },
                     success: function(res) {
@@ -1188,7 +1194,7 @@
 
  
 
-    function prouctAutocompleteLoad(row){
+    function productAutocompleteLoad(row){
         const p = $(row).find(".product_ids");
         const productSelect = new TomSelect(p[0], {
             valueField: "id",

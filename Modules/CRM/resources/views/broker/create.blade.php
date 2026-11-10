@@ -35,6 +35,7 @@
         .ts-control {
             height: 48px !important;
         }
+ 
     </style>
     <div class="container-fluid">
         <div class="row">
@@ -500,7 +501,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <select name="fixed_type[]" class="form-control input-sm product_ids" onchange="getFixed(this)">
+                                                                <select name="fixed_type[]" class="form-control  product_ids" onchange="getFixed(this)">
                                                                     <option value="">Select Product</option> 
                                                                 </select>
                                                             </td>
@@ -1001,7 +1002,7 @@
                 if (!query.length || query.length < 2) return callback();
 
                 $.ajax({
-                    url: "{{ route('crm.autocomplete.products') }}",
+                    url: "{{ route('sales.sales-orders-autocomplete.products') }}",
                     type: "GET",
                     data: { search: query },
                     success: function(res) {
