@@ -15,114 +15,116 @@ class DashboardService
     public function getSummary($type) {
 
         $currentSales = $previousSales = $currentPurchase = $previousPurchase = 0;
+        $paidSales = $previousPaidSales = $dueSales = $previousDueSales = 0;
         $currentCollection = $previousCollection = $currentPayment = $previousPayment = 0;
-
-        if($type == 'monthly')  {
-            // Current month
-            $currentMonth = Carbon::now()->month;
-            $currentYear  = Carbon::now()->year;
-
-            $currentSales = SalesOrder::whereYear('invoice_date', $currentYear)
-                ->whereMonth('invoice_date', $currentMonth)
-                ->sum('net_amount');
-
-            $previousMonth = Carbon::now()->subMonth();
-            $previousSales = SalesOrder::whereYear('invoice_date', $previousMonth->year)
-                ->whereMonth('invoice_date', $previousMonth->month)
-                ->sum('net_amount');
-
-            $currentPurchase = Requisition::whereYear('invoice_date', $currentYear)
-                ->whereMonth('invoice_date', $currentMonth)
-                ->sum('net_amount');
-
-            $previousPurchase = Requisition::whereYear('invoice_date', $previousMonth->year)
-                ->whereMonth('invoice_date', $previousMonth->month)
-                ->sum('net_amount');
-
-
-            $currentCollection = Account::where('account_subsidiary_id',1005)->with(['transactions'=>function($q) use($currentYear,$currentMonth){
-                $q->where('balance_type','credit')->whereYear('transaction_date',$currentYear)->whereMonth('transaction_date',$currentMonth);
-            }])->get()->sum('transactions.amount');
+        $inventoryValue = $previousInventoryValue = $totalPayable = $previousPayable = $totalReceivable = $previousReceivable = 0;
  
-            $previousCollection = Account::where('account_subsidiary_id',1005)->with(['transactions'=>function($q) use($previousMonth){
-                $q->where('balance_type','credit')->whereYear('transaction_date',$previousMonth->year)->whereMonth('transaction_date',$previousMonth->month);
-            }])->get()->sum('transactions.amount');
+
+        if($type == 'monthly') {
+ 
+            $currentMonth = Carbon::now()->month;
+            $previousMonth = Carbon::now()->subMonth()->month;
+
+            $currentSales = SalesOrder::whereMonth('invoice_date', $currentMonth)->sum('net_amount');
+            $previousSales = SalesOrder::whereMonth('invoice_date', $previousMonth)->sum('net_amount');
+
+            $currentPurchase = Requisition::whereMonth('invoice_date', $currentMonth)->sum('net_amount');
+            $previousPurchase = Requisition::whereMonth('invoice_date', $previousMonth)->sum('net_amount');
+    
+            
+            $currentCollection = Account::where('account_subsidiary_id', 1001)
+                ->withSum(['transactions as total_amount' => function ($q) use ($currentMonth) {
+                    $q->where('balance_type', 'debit')
+                    ->whereMonth('transaction_date', $currentMonth);
+                }], 'amount')
+                ->get()
+                ->sum('total_amount');
 
 
-            $currentPayment = Account::where('account_subsidiary_id',2001)->with(['transactions'=>function($q) use($currentYear,$currentMonth){
-                $q->where('balance_type','debit')->whereYear('transaction_date',$currentYear)->whereMonth('transaction_date',$currentMonth);
+            $previousCollection = Account::where('account_subsidiary_id', 1001)
+                ->withSum(['transactions as total_amount' => function ($q) use ($previousMonth) {
+                    $q->where('balance_type', 'debit')
+                    ->whereMonth('transaction_date', $previousMonth);
+                }], 'amount')
+                ->get()
+                ->sum('total_amount');
+            
+            $currentPayment = Account::where('account_subsidiary_id',2001)->with(['transactions'=>function($q) use($currentMonth){
+                $q->where('balance_type','debit')->whereMonth('transaction_date',$currentMonth);
             }])->get()->sum('transactions.amount');
  
             $previousPayment = Account::where('account_subsidiary_id',2001)->with(['transactions'=>function($q) use($previousMonth){
-                $q->where('balance_type','debit')->whereYear('transaction_date',$previousMonth->year)->whereMonth('transaction_date',$previousMonth->month);
-            }])->get()->sum('transactions.amount');
-            
-
- 
-
-        } elseif($type == 'yearly') {
-            $currentYear = Carbon::now()->year;
-            $previousYear = Carbon::now()->subYear()->year;
-
-            $currentSales = SalesOrder::whereYear('invoice_date', $currentYear)->sum('net_amount');
-            $previousSales = SalesOrder::whereYear('invoice_date', $previousYear)->sum('net_amount');
-
-            $currentPurchase = Requisition::whereYear('invoice_date', $currentYear)->sum('net_amount');
-            $previousPurchase = Requisition::whereYear('invoice_date', $previousYear)->sum('net_amount');
-
-
-            $currentCollection = Account::where('account_subsidiary_id',1005)->with(['transactions'=>function($q) use($currentYear){
-                $q->where('balance_type','credit')->whereYear('transaction_date',$currentYear);
-            }])->get()->sum('transactions.amount');
- 
-            $previousCollection = Account::where('account_subsidiary_id',1005)->with(['transactions'=>function($q) use($previousYear){
-                $q->where('balance_type','credit')->whereYear('transaction_date',$previousYear);
+                $q->where('balance_type','debit')->whereMonth('transaction_date',$previousMonth);
             }])->get()->sum('transactions.amount');
 
-            
-            $currentPayment = Account::where('account_subsidiary_id',2001)->with(['transactions'=>function($q) use($currentYear){
-                $q->where('balance_type','debit')->whereYear('transaction_date',$currentYear);
-            }])->get()->sum('transactions.amount');
- 
-            $previousPayment = Account::where('account_subsidiary_id',2001)->with(['transactions'=>function($q) use($previousYear){
-                $q->where('balance_type','debit')->whereYear('transaction_date',$previousYear);
-            }])->get()->sum('transactions.amount');
 
-        } else { // daily
+            $inventoryValue = 0; 
+            $previousInventoryValue = 0;
+
+            $totalPayable = 0; 
+            $previousPayable = 0;
+
+            $totalReceivable = 0;  
+            $previousReceivable = 0; 
+
+
+        } else { // daily  
             $currentSales = SalesOrder::whereDate('invoice_date', today())->sum('net_amount');
             $previousSales = SalesOrder::whereDate('invoice_date', Carbon::yesterday())->sum('net_amount');
+
+            $paidSales = SalesOrder::whereDate('invoice_date', today())->where('paid_status', 'paid')->sum('net_amount');
+            $previousPaidSales = SalesOrder::whereDate('invoice_date', Carbon::yesterday())->where('paid_status', 'paid')->sum('net_amount');
+
+            $dueSales = SalesOrder::whereDate('invoice_date', today()) ->where('paid_status', 'unpaid')->sum('net_amount');
+            $previousDueSales = SalesOrder::whereDate('invoice_date', Carbon::yesterday())->where('paid_status', 'unpaid')->sum('net_amount');
 
             $currentPurchase = Requisition::whereDate('invoice_date', today())->sum('net_amount');
             $previousPurchase = Requisition::whereDate('invoice_date', Carbon::yesterday())->sum('net_amount');
 
-            $currentCollection = Account::where('account_subsidiary_id',1005)->with(['transactions'=>function($q){
-                $q->where('balance_type','credit')->whereDate('transaction_date',today());
-            }])->get()->sum('transactions.amount');
- 
-            $previousCollection = Account::where('account_subsidiary_id',1005)->with(['transactions'=>function($q){
-                $q->where('balance_type','credit')->whereDate('transaction_date',today());
-            }])->get()->sum('transactions.amount');
+            $currentCollection = Account::where('account_subsidiary_id', 1001)
+                ->withSum(['transactions as total_amount' => function ($q) {
+                    $q->where('balance_type', 'debit')->whereDate('transaction_date', today());
+                }], 'amount')
+                ->get()->sum('total_amount');
+  
 
-
+            $previousCollection = Account::where('account_subsidiary_id', 1001)
+                ->withSum(['transactions as total_amount' => function ($q) {
+                    $q->where('balance_type', 'debit')->whereDate('transaction_date', Carbon::yesterday());
+                }], 'amount')
+                ->get()->sum('total_amount');
+                
             $currentPayment = Account::where('account_subsidiary_id',2001)->with(['transactions'=>function($q){
-                $q->where('balance_type','debit')->whereDate('transaction_date',today());
+                $q->where('balance_type','credit')->whereDate('transaction_date',today());
             }])->get()->sum('transactions.amount');
  
             $previousPayment = Account::where('account_subsidiary_id',2001)->with(['transactions'=>function($q){
-                $q->where('balance_type','debit')->whereDate('transaction_date',today());
+                $q->where('balance_type','credit')->whereDate('transaction_date',Carbon::yesterday());
             }])->get()->sum('transactions.amount');
         }
 
         $data = [ 
             'currentSales'=>$currentSales,
             'previousSales'=>$previousSales,
+            'paidSales'=>$paidSales,
+            'previousPaidSales'=>$previousPaidSales,
+            'dueSales'=>$dueSales,
+            'previousDueSales'=>$previousDueSales, 
             'currentPurchase'=>$currentPurchase,
             'previousPurchase'=>$previousPurchase,
             'currentCollection'=>$currentCollection,
             'previousCollection'=>$previousCollection,
             'currentPayment'=>$currentPayment,
-            'previousPayment'=>$previousPayment
+            'previousPayment'=>$previousPayment,
+            'inventoryValue'=>$inventoryValue,
+            'previousInventoryValue'=>$previousInventoryValue,
+            'totalPayable'=>$totalPayable,
+            'previousPayable'=>$previousPayable,
+            'totalReceivable'=>$totalReceivable,
+            'previousReceivable'=>$previousReceivable
         ];
+ 
+
 
         return $data;
     }
